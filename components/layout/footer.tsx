@@ -14,7 +14,8 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-gray-600 text-sm max-w-md">
-              All in one Energy Trading Platform. The infrastructure for the next generation of energy trading.
+              Digital Solar platform enabling you to save on power bills without installation. 
+              Reserve solar capacity and offset your electricity bills with credits.
             </p>
           </div>
 
@@ -43,8 +44,13 @@ export function Footer() {
             <h3 className="font-semibold text-charcoal mb-4">Company</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>
-                <Link href="/about" className="hover:text-forest">
-                  About
+                <Link href="/help" className="hover:text-forest">
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link href="/refund" className="hover:text-forest">
+                  Refund Policy
                 </Link>
               </li>
               <li>

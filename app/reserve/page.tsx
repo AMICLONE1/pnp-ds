@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { formatCurrency, calculateSavings } from "@/lib/utils";
-import { MapPin, Zap, TrendingUp } from "lucide-react";
+import { MapPin, Zap, TrendingUp, Calendar } from "lucide-react";
+import { ProjectComparison } from "@/components/features/projects/ProjectComparison";
 
 interface Project {
   id: string;
@@ -20,6 +21,9 @@ interface Project {
   price_per_kw: number;
   available_capacity_kw: number;
   image_url?: string;
+  commission_date?: string;
+  operational_until?: string;
+  rate_per_kwh?: number;
 }
 
 export const dynamic = 'force-dynamic';
@@ -91,9 +95,17 @@ export default function ReservePage() {
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Project Selection */}
-              <div className="space-y-4">
+            <>
+              {projects.length > 1 && (
+                <Card className="mb-12">
+                  <CardContent className="p-6">
+                    <ProjectComparison projects={projects} />
+                  </CardContent>
+                </Card>
+              )}
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Project Selection */}
+                <div className="space-y-4">
                 <h2 className="text-2xl font-semibold text-charcoal mb-4">
                   Available Projects
                 </h2>
@@ -132,8 +144,15 @@ export default function ReservePage() {
                           {Number(project.available_capacity_kw).toLocaleString()} kW
                           available
                         </div>
+                        {project.commission_date && (
+                          <div className="text-xs text-gray-500 flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            Commissioned: {new Date(project.commission_date).toLocaleDateString()}
+                          </div>
+                        )}
                         {project.operational_until && (
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-gray-500 flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
                             Operational until {new Date(project.operational_until).getFullYear()}
                           </div>
                         )}
@@ -227,6 +246,7 @@ export default function ReservePage() {
                 </Card>
               </div>
             </div>
+            </>
           )}
         </div>
       </main>

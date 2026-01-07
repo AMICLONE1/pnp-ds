@@ -22,7 +22,12 @@ export async function GET() {
     }
 
     // Get user's allocations
-    const { data: allocations, error } = await supabase
+    // Try with join first, fallback to separate queries if join fails
+    let allocations: any[] = [];
+    let error: any = null;
+
+    // First, try to get allocations with project join
+    const { data: allocationsData, error: allocationsError } = await supabase
       .from("allocations")
       .select(
         `
@@ -33,9 +38,71 @@ export async function GET() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
+    if (allocationsError) {
+      // If join fails (likely due to RLS or missing FK), try without join
+      console.error("Error with join, trying without:", allocationsError);
+      
+      const { data: allocationsOnly, error: errorOnly } = await supabase
+        .from("allocations")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (errorOnly) {
+        error = errorOnly;
+      } else {
+        // Fetch projects separately and merge
+        allocations = allocationsOnly || [];
+        
+        if (allocations.length > 0) {
+          const projectIds = allocations
+            .map((a: any) => a.project_id)
+            .filter((id: string) => id);
+
+          if (projectIds.length > 0) {
+            const { data: projects, error: projectsError } = await supabase
+              .from("projects")
+              .select("*")
+              .in("id", projectIds);
+
+            if (!projectsError && projects) {
+              // Merge project data into allocations
+              allocations = allocations.map((allocation: any) => ({
+                ...allocation,
+                project: projects.find((p: any) => p.id === allocation.project_id) || null,
+              }));
+            } else {
+              // If projects fetch fails, just add null project
+              allocations = allocations.map((allocation: any) => ({
+                ...allocation,
+                project: null,
+              }));
+            }
+          } else {
+            // No project IDs, add null project
+            allocations = allocations.map((allocation: any) => ({
+              ...allocation,
+              project: null,
+            }));
+          }
+        }
+      }
+    } else {
+      // Join succeeded
+      allocations = allocationsData || [];
+    }
+
     if (error) {
+      console.error("Allocations fetch error:", error);
       return NextResponse.json(
-        { success: false, error: { code: "DB_ERROR", message: error.message } },
+        {
+          success: false,
+          error: {
+            code: "DB_ERROR",
+            message: error.message || "Failed to fetch allocations",
+            details: process.env.NODE_ENV === "development" ? error : undefined,
+          },
+        },
         { status: 500 }
       );
     }

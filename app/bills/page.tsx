@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { FileText, CheckCircle, Clock, RefreshCw, Plus } from "lucide-react";
+import { BillPayment } from "@/components/features/bills/BillPayment";
 
 export const dynamic = 'force-dynamic';
 
@@ -318,78 +319,86 @@ export default function BillsPage() {
           ) : (
             <div className="space-y-4">
               {bills.map((bill) => (
-                <Card key={bill.id}>
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-semibold text-charcoal">
-                            {bill.bill_number}
-                          </h3>
-                          <span
-                            className={`px-2 py-1 rounded text-xs font-medium flex items-center gap-1 ${
-                              bill.status === "PAID" || bill.status === "paid"
-                                ? "bg-green-100 text-green-700"
+                <div key={bill.id} className="space-y-4">
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-lg font-semibold text-charcoal">
+                              {bill.bill_number}
+                            </h3>
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-medium flex items-center gap-1 ${
+                                bill.status === "PAID" || bill.status === "paid"
+                                  ? "bg-green-100 text-green-700"
+                                  : bill.status === "OVERDUE" || bill.status === "overdue"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
+                              }`}
+                            >
+                              {bill.status === "PAID" || bill.status === "paid" ? (
+                                <CheckCircle className="h-3 w-3" />
+                              ) : (
+                                <Clock className="h-3 w-3" />
+                              )}
+                              {bill.status === "PAID" || bill.status === "paid"
+                                ? "Paid"
                                 : bill.status === "OVERDUE" || bill.status === "overdue"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
-                          >
-                            {bill.status === "PAID" || bill.status === "paid" ? (
-                              <CheckCircle className="h-3 w-3" />
-                            ) : (
-                              <Clock className="h-3 w-3" />
-                            )}
-                            {bill.status === "PAID" || bill.status === "paid"
-                              ? "Paid"
-                              : bill.status === "OVERDUE" || bill.status === "overdue"
-                              ? "Overdue"
-                              : "Pending"}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-4">
-                          {bill.bill_month && bill.bill_year
-                            ? new Date(bill.bill_year, bill.bill_month - 1).toLocaleDateString(
-                                "en-IN",
-                                { month: "long", year: "numeric" }
-                              )
-                            : bill.fetched_at
-                            ? new Date(bill.fetched_at).toLocaleDateString("en-IN", {
-                                month: "long",
-                                year: "numeric",
-                              })
-                            : "N/A"}{" "}
-                          • Due: {bill.due_date ? formatDate(bill.due_date) : "N/A"}
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Bill Amount</span>
-                            <span className="font-medium">{formatCurrency(Number(bill.amount))}</span>
+                                ? "Overdue"
+                                : "Pending"}
+                            </span>
                           </div>
-                          {Number(bill.credits_applied || 0) > 0 && (
+                          <p className="text-sm text-gray-600 mb-4">
+                            {bill.bill_month && bill.bill_year
+                              ? new Date(bill.bill_year, bill.bill_month - 1).toLocaleDateString(
+                                  "en-IN",
+                                  { month: "long", year: "numeric" }
+                                )
+                              : bill.fetched_at
+                              ? new Date(bill.fetched_at).toLocaleDateString("en-IN", {
+                                  month: "long",
+                                  year: "numeric",
+                                })
+                              : "N/A"}{" "}
+                            • Due: {bill.due_date ? formatDate(bill.due_date) : "N/A"}
+                          </p>
+                          <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                              <span className="text-gray-600 text-green-600">
-                                Solar Credits Applied
-                              </span>
-                              <span className="font-medium text-green-600">
-                                -{formatCurrency(Number(bill.credits_applied || 0))}
+                              <span className="text-gray-600">Bill Amount</span>
+                              <span className="font-medium">{formatCurrency(Number(bill.amount))}</span>
+                            </div>
+                            {Number(bill.credits_applied || 0) > 0 && (
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 text-green-600">
+                                  Solar Credits Applied
+                                </span>
+                                <span className="font-medium text-green-600">
+                                  -{formatCurrency(Number(bill.credits_applied || 0))}
+                                </span>
+                              </div>
+                            )}
+                            <div className="pt-2 border-t flex justify-between">
+                              <span className="font-semibold text-charcoal">Final Amount</span>
+                              <span className="font-bold text-lg text-charcoal">
+                                {formatCurrency(
+                                  Number(bill.final_amount || bill.amount) -
+                                    Number(bill.credits_applied || 0)
+                                )}
                               </span>
                             </div>
-                          )}
-                          <div className="pt-2 border-t flex justify-between">
-                            <span className="font-semibold text-charcoal">Final Amount</span>
-                            <span className="font-bold text-lg text-charcoal">
-                              {formatCurrency(
-                                Number(bill.final_amount || bill.amount) -
-                                  Number(bill.credits_applied || 0)
-                              )}
-                            </span>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                  <BillPayment
+                    bill={bill}
+                    onPaymentComplete={() => {
+                      fetchBills();
+                    }}
+                  />
+                </div>
               ))}
             </div>
           )}

@@ -20,6 +20,10 @@ import { Hero3D } from "@/components/features/landing/Hero3D";
 import { SolarIcon, EnergyWave } from "@/components/features/landing/AnimatedSVG";
 import { ScrollAnimation } from "@/components/features/landing/ScrollAnimation";
 import { SavingsCalculator } from "@/components/features/landing/SavingsCalculator";
+import { LiveStats } from "@/components/features/landing/LiveStats";
+import { UtilityCompatibilityChecker } from "@/components/features/landing/UtilityCompatibilityChecker";
+import { Testimonials } from "@/components/features/landing/Testimonials";
+import { Newsletter } from "@/components/features/landing/Newsletter";
 import { useHeroAnimation } from "@/hooks/useHeroAnimation";
 import { useStatsCounter } from "@/hooks/useStatsCounter";
 
@@ -154,6 +158,24 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Savings Calculator Section */}
+        <section className="py-24 bg-gradient-to-b from-white to-offwhite relative">
+          <div className="container mx-auto px-4">
+            <ScrollAnimation direction="fade">
+              <SavingsCalculator />
+            </ScrollAnimation>
+          </div>
+        </section>
+
+        {/* Utility Compatibility Checker */}
+        <section className="py-24 bg-white relative">
+          <div className="container mx-auto px-4">
+            <ScrollAnimation direction="fade">
+              <UtilityCompatibilityChecker />
+            </ScrollAnimation>
+          </div>
+        </section>
+
         {/* How It Works - Enhanced */}
         <section className="py-24 bg-gradient-to-b from-offwhite to-white relative">
           <div className="container mx-auto px-4">
@@ -264,9 +286,11 @@ export default function HomePage() {
                       <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
                       Zero Installation - No extra hardware or permits needed
                     </li>
-                    <li className="flex items-center">
-                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
-                      Secured Generation - 75% of forecasted generation is covered
+                    <li className="flex items-start">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Secured Generation</strong> - 75% of forecasted generation is covered*
+                      </span>
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
@@ -281,6 +305,12 @@ export default function HomePage() {
                       Can add more solar capacity later
                     </li>
                   </ul>
+                  <div className="mt-4 pt-4 border-t border-forest/20">
+                    <p className="text-xs text-gray-600 italic">
+                      *75% of forecasted generation is covered. This means even if actual generation
+                      is lower than forecast, you&apos;re protected up to 75% of the expected output.
+                    </p>
+                  </div>
                 </div>
               </ScrollAnimation>
 
@@ -491,13 +521,13 @@ export default function HomePage() {
                 Here&apos;s everything you need to know before joining us.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/reserve">
+                <Link href="/help">
                   <Button
                     variant="primary"
                     size="lg"
                     className="text-lg px-8 py-6 group bg-forest hover:bg-forest-light text-white"
                   >
-                    Contact us
+                    Visit Help Center
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
