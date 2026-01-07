@@ -31,13 +31,13 @@ function AnimatedSphere() {
 
 export function Hero3D() {
   return (
-    <div className="absolute inset-0 w-full h-full opacity-20">
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+    <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none">
+      <Canvas camera={{ position: [0, 0, 5], fov: 75 }} className="w-full h-full">
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <pointLight position={[-10, -10, -5]} intensity={0.5} color="#D4A03A" />
         <AnimatedSphere />
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} enablePan={false} />
       </Canvas>
     </div>
   );

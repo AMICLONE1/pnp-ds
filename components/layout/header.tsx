@@ -37,7 +37,7 @@ export function Header() {
   const isPublicPage = pathname === "/" || pathname.startsWith("/reserve");
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur-md shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <Sun className="h-6 w-6 text-gold" />

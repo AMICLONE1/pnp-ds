@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef } from "react";
+import type { ReactNode } from "react";
 import { useInView } from "react-intersection-observer";
 import gsap from "gsap";
 
