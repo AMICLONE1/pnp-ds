@@ -80,15 +80,18 @@ export function checkRateLimit(
   };
 }
 
-// Cleanup old entries periodically
+// Cleanup old entries periodically (server-side only)
 if (typeof window === "undefined") {
-  setInterval(() => {
-    const now = Date.now();
-    Object.keys(store).forEach((key) => {
-      if (store[key].resetTime < now) {
-        delete store[key];
-      }
-    });
-  }, 60 * 1000); // Cleanup every minute
+  // Only run cleanup in Node.js environment
+  if (typeof setInterval !== "undefined") {
+    setInterval(() => {
+      const now = Date.now();
+      Object.keys(store).forEach((key) => {
+        if (store[key].resetTime < now) {
+          delete store[key];
+        }
+      });
+    }, 60 * 1000); // Cleanup every minute
+  }
 }
 

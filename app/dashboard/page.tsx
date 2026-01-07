@@ -9,6 +9,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Zap, TrendingUp, Leaf, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { CreditHistoryChart } from "@/components/features/dashboard/CreditHistoryChart";
+import { RealTimeMonitoring } from "@/components/features/dashboard/RealTimeMonitoring";
 
 export const dynamic = 'force-dynamic';
 
@@ -127,6 +128,11 @@ export default function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Real-Time Monitoring */}
+          <div className="mb-8">
+            <RealTimeMonitoring />
           </div>
 
           {/* Quick Actions */}

@@ -126,10 +126,22 @@ export default function ReservePage() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-gray-600 text-sm mb-3">{project.description}</p>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Zap className="h-4 w-4 mr-1" />
-                        {Number(project.available_capacity_kw).toLocaleString()} kW
-                        available
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Zap className="h-4 w-4 mr-1" />
+                          {Number(project.available_capacity_kw).toLocaleString()} kW
+                          available
+                        </div>
+                        {project.operational_until && (
+                          <div className="text-xs text-gray-500">
+                            Operational until {new Date(project.operational_until).getFullYear()}
+                          </div>
+                        )}
+                        {project.rate_per_kwh && (
+                          <div className="text-sm font-medium text-forest">
+                            ₹{project.rate_per_kwh}/kWh credit value
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

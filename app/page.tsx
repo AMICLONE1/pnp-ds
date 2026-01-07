@@ -19,6 +19,7 @@ import {
 import { Hero3D } from "@/components/features/landing/Hero3D";
 import { SolarIcon, EnergyWave } from "@/components/features/landing/AnimatedSVG";
 import { ScrollAnimation } from "@/components/features/landing/ScrollAnimation";
+import { SavingsCalculator } from "@/components/features/landing/SavingsCalculator";
 import { useHeroAnimation } from "@/hooks/useHeroAnimation";
 import { useStatsCounter } from "@/hooks/useStatsCounter";
 
@@ -49,16 +50,16 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-6xl md:text-8xl font-heading font-bold mb-6 text-balance leading-tight">
-                Trade Energy
+                Save up on power bills
                 <br />
                 <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent animate-gradient">
-                  Like Never Before
+                  with Digital Solar
                 </span>
               </h1>
               
               <p className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-                All in one Energy Trading Platform. The infrastructure for the next generation of energy trading.
-                Built on Beckn Protocol and Unified Energy Interface (UEI).
+                Get savings on your bills even if you live in an apartment, rent your home, or own the space.
+                No installation required. Go solar instantly. Maximize your savings.
               </p>
 
               {/* Trust Indicators */}
@@ -84,7 +85,7 @@ export default function HomePage() {
                     size="lg"
                     className="w-full sm:w-auto text-lg px-8 py-6 group"
                   >
-                    Join The Network
+                    Get Started
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -120,9 +121,9 @@ export default function HomePage() {
               <ScrollAnimation direction="up" delay={0.1}>
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-forest/5 to-transparent border border-forest/10">
                   <div className="text-5xl font-bold text-forest mb-2">
-                    <span className="stat-number" data-target="500">0</span>+
+                    <span className="stat-number" data-target="1">0</span>K+
                   </div>
-                  <div className="text-gray-600 font-medium">MW Capacity</div>
+                  <div className="text-gray-600 font-medium">Residential Owners</div>
                 </div>
               </ScrollAnimation>
               <ScrollAnimation direction="up" delay={0.2}>
@@ -144,9 +145,9 @@ export default function HomePage() {
               <ScrollAnimation direction="up" delay={0.4}>
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/10">
                   <div className="text-5xl font-bold text-blue-600 mb-2">
-                    <span className="stat-number" data-target="1">0</span>K+
+                    ₹<span className="stat-number" data-target="50">0</span>Cr+
                   </div>
-                  <div className="text-gray-600 font-medium">Residential Owners</div>
+                  <div className="text-gray-600 font-medium">Total Savings</div>
                 </div>
               </ScrollAnimation>
             </div>
@@ -159,10 +160,10 @@ export default function HomePage() {
             <ScrollAnimation direction="fade">
               <div className="text-center mb-16">
                 <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
-                  How It Works
+                  How PowerNetPro Works
                 </h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Three simple steps to start saving on your electricity bills
+                  A simple three-step process to start saving on your electricity bills
                 </p>
               </div>
             </ScrollAnimation>
@@ -176,11 +177,11 @@ export default function HomePage() {
                       <span className="text-3xl font-bold text-white">1</span>
                     </div>
                     <h3 className="text-2xl font-semibold mb-4 text-center text-charcoal">
-                      Join Projects
+                      Reserve Solar
                     </h3>
                     <p className="text-gray-600 text-center leading-relaxed">
-                      Browse available solar projects across India. Select your
-                      preferred capacity (1-100 kW) and see real-time pricing.
+                      Reserve solar capacity from community solar projects. Choose your
+                      preferred capacity (1-100 kW) and start earning credits immediately.
                     </p>
                     <div className="mt-6 flex justify-center">
                       <Zap className="h-8 w-8 text-gold" />
@@ -234,6 +235,92 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Connect with Solar Section */}
+        <section className="py-24 bg-gradient-to-b from-white to-offwhite relative">
+          <div className="container mx-auto px-4">
+            <ScrollAnimation direction="fade">
+              <div className="text-center mb-16">
+                <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
+                  Connect with solar installed elsewhere
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  While conventional solar has to be linked directly to your home meter, Digital Solar generates energy credits to offset your power bills.
+                </p>
+              </div>
+            </ScrollAnimation>
+
+            <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto mb-16">
+              <ScrollAnimation direction="left">
+                <div className="p-8 rounded-2xl shadow-xl border border-forest/20 bg-gradient-to-br from-forest/5 to-transparent">
+                  <h3 className="text-3xl font-heading font-bold text-forest mb-6">
+                    Digital Solar
+                  </h3>
+                  <ul className="space-y-4 text-lg text-gray-700">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
+                      Works best for tenants and apartments
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
+                      Zero Installation - No extra hardware or permits needed
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
+                      Secured Generation - 75% of forecasted generation is covered
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
+                      Offset with Credits - Slash usage & fixed charges
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
+                      Offsetting power for multiple locations
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
+                      Can add more solar capacity later
+                    </li>
+                  </ul>
+                </div>
+              </ScrollAnimation>
+
+              <ScrollAnimation direction="right">
+                <div className="p-8 rounded-2xl shadow-xl border border-gray-200 bg-white">
+                  <h3 className="text-3xl font-heading font-bold text-charcoal mb-6">
+                    Rooftop Solar
+                  </h3>
+                  <ul className="space-y-4 text-lg text-gray-700">
+                    <li className="flex items-center">
+                      <Clock className="h-6 w-6 text-gray-400 mr-3 flex-shrink-0" />
+                      Works mostly for standalone houses
+                    </li>
+                    <li className="flex items-center">
+                      <Clock className="h-6 w-6 text-gray-400 mr-3 flex-shrink-0" />
+                      Fixed to Rooftop - Local utility approval required
+                    </li>
+                    <li className="flex items-center">
+                      <Clock className="h-6 w-6 text-gray-400 mr-3 flex-shrink-0" />
+                      Yield risk on you - Intermittency due to weather and shade
+                    </li>
+                    <li className="flex items-center">
+                      <Clock className="h-6 w-6 text-gray-400 mr-3 flex-shrink-0" />
+                      Reduce in Units - Lowers only usage charges
+                    </li>
+                    <li className="flex items-center">
+                      <Clock className="h-6 w-6 text-gray-400 mr-3 flex-shrink-0" />
+                      Solar capacity limited by roof space
+                    </li>
+                    <li className="flex items-center">
+                      <Clock className="h-6 w-6 text-gray-400 mr-3 flex-shrink-0" />
+                      Troubleshooting can get expensive
+                    </li>
+                  </ul>
+                </div>
+              </ScrollAnimation>
+            </div>
+          </div>
+        </section>
+
         {/* Benefits - Enhanced Design */}
         <section className="py-24 bg-white relative overflow-hidden">
           <div className="absolute inset-0">
@@ -245,10 +332,10 @@ export default function HomePage() {
             <ScrollAnimation direction="fade">
               <div className="text-center mb-16">
                 <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
-                  Why Choose PowerNetPro?
+                  Why Choose Digital Solar?
                 </h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Built for the Indian Energy Ecosystem. Compliant, secure, and designed for scale.
+                  The smarter way to go solar without the hassles of installation.
                 </p>
               </div>
             </ScrollAnimation>
@@ -332,33 +419,39 @@ export default function HomePage() {
             <ScrollAnimation direction="fade">
               <div className="max-w-4xl mx-auto text-center">
                 <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-                  Trusted by PowerNetPro
+                  Built for the Indian Energy Ecosystem
                 </h2>
                 <p className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
-                  We&apos;re a legitimate, registered company committed to making clean
-                  energy accessible to everyone in India.
+                  Compliant, secure, and designed for scale. Making clean energy accessible to everyone.
                 </p>
 
                 <div className="grid md:grid-cols-3 gap-8 mb-12">
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
                     <CheckCircle className="h-8 w-8 text-gold mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">Registered Company</h3>
+                    <h3 className="font-semibold mb-2">Regulatory Compliant</h3>
                     <p className="text-sm text-gray-200">
-                      Legally incorporated and compliant with all regulations
+                      MERC/CERC aligned
                     </p>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
                     <Shield className="h-8 w-8 text-gold mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">Secure Payments</h3>
+                    <h3 className="font-semibold mb-2">ISO 27001 Ready</h3>
                     <p className="text-sm text-gray-200">
-                      PCI DSS compliant payment processing via Razorpay
+                      Security certified
                     </p>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
                     <Award className="h-8 w-8 text-gold mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">Industry Certified</h3>
+                    <h3 className="font-semibold mb-2">Make in India</h3>
                     <p className="text-sm text-gray-200">
-                      ISO certified processes and quality standards
+                      Proudly Indian
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
+                    <Users className="h-8 w-8 text-gold mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">Startup India</h3>
+                    <p className="text-sm text-gray-200">
+                      Recognized startup
                     </p>
                   </div>
                 </div>
@@ -392,11 +485,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center relative z-10">
             <ScrollAnimation direction="fade">
               <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6">
-                Ready to Start Saving?
+                Got questions? We&apos;ve got answers.
               </h2>
               <p className="text-xl text-charcoal/80 mb-10 max-w-2xl mx-auto">
-                Join thousands of users already saving money and reducing their
-                carbon footprint. Your solar journey starts here.
+                Here&apos;s everything you need to know before joining us.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/reserve">
@@ -405,7 +497,7 @@ export default function HomePage() {
                     size="lg"
                     className="text-lg px-8 py-6 group bg-forest hover:bg-forest-light text-white"
                   >
-                    Get Started Now
+                    Contact us
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
