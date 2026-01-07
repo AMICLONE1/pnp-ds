@@ -1,0 +1,172 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+
+/**
+ * POST /api/bills/manual
+ * Manually create a bill (for testing or when BBPS is not available)
+ */
+export async function POST(request: Request) {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "UNAUTHORIZED", message: "Not authenticated" },
+        },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { bill_number, amount, due_date, bill_month, bill_year, discom } = body;
+
+    // Validation
+    if (!bill_number || !amount || !due_date || !discom) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "VALIDATION_ERROR",
+            message: "Missing required fields: bill_number, amount, due_date, discom",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check if bill already exists
+    const { data: existingBill } = await supabase
+      .from("bills")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("bill_number", bill_number)
+      .single();
+
+    if (existingBill) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "BILL_EXISTS",
+            message: "A bill with this number already exists",
+          },
+        },
+        { status: 409 }
+      );
+    }
+
+    // Create bill
+    const billInsert: any = {
+      user_id: user.id,
+      bill_number,
+      amount: Number(amount),
+      due_date,
+      discom,
+      status: "PENDING",
+    };
+
+    if (bill_month) billInsert.bill_month = Number(bill_month);
+    if (bill_year) billInsert.bill_year = Number(bill_year);
+
+    const { data: bill, error: billError } = await supabase
+      .from("bills")
+      .insert(billInsert)
+      .select()
+      .single();
+
+    if (billError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "DB_ERROR", message: billError.message },
+        },
+        { status: 500 }
+      );
+    }
+
+    // Auto-apply credits if available
+    const { data: availableCredits } = await supabase
+      .from("credit_ledgers")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "PENDING")
+      .order("created_at", { ascending: true });
+
+    if (availableCredits && availableCredits.length > 0) {
+      let remainingAmount = Number(amount);
+      const creditsToApply: any[] = [];
+
+      for (const credit of availableCredits) {
+        if (remainingAmount <= 0) break;
+        const creditAmount = Number(credit.amount);
+        const appliedAmount = Math.min(creditAmount, remainingAmount);
+
+        creditsToApply.push({
+          id: credit.id,
+          appliedAmount,
+        });
+
+        remainingAmount -= appliedAmount;
+      }
+
+      if (creditsToApply.length > 0) {
+        const totalCreditsApplied = creditsToApply.reduce(
+          (sum, c) => sum + c.appliedAmount,
+          0
+        );
+
+        await supabase
+          .from("bills")
+          .update({
+            credits_applied: totalCreditsApplied,
+            final_amount: Number(amount) - totalCreditsApplied,
+            status: totalCreditsApplied >= Number(amount) ? "PAID" : "PENDING",
+          })
+          .eq("id", bill.id);
+
+        for (const credit of creditsToApply) {
+          await supabase
+            .from("credit_ledgers")
+            .update({
+              status: "APPLIED",
+              ref_id: bill.id,
+              ref_type: "bill",
+            })
+            .eq("id", credit.id);
+        }
+      }
+    }
+
+    // Fetch updated bill
+    const { data: updatedBill } = await supabase
+      .from("bills")
+      .select("*")
+      .eq("id", bill.id)
+      .single();
+
+    return NextResponse.json({
+      success: true,
+      data: updatedBill,
+      message: "Bill added and credits applied successfully",
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: "SERVER_ERROR",
+          message: error.message || "Failed to add bill",
+        },
+      },
+      { status: 500 }
+    );
+  }
+}
+

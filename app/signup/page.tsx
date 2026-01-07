@@ -77,7 +77,7 @@ function SignupContent() {
             </div>
             <CardTitle className="text-3xl">Create Account</CardTitle>
             <CardDescription>
-              Join Digital Solar and start saving on electricity bills
+              Join PowerNetPro and start trading energy like never before
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -10,12 +10,11 @@ export function Footer() {
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <Sun className="h-6 w-6 text-gold" />
               <span className="text-xl font-heading font-bold text-forest">
-                Digital Solar
+                PowerNetPro
               </span>
             </Link>
             <p className="text-gray-600 text-sm max-w-md">
-              Making clean energy accessible to everyone, regardless of whether
-              you own property or can install solar panels.
+              All in one Energy Trading Platform. The infrastructure for the next generation of energy trading.
             </p>
           </div>
 
@@ -58,7 +57,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
-          <p>&copy; {new Date().getFullYear()} Digital Solar. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} PowerNetPro. All rights reserved.</p>
         </div>
       </div>
     </footer>

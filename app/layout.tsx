@@ -15,8 +15,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Digital Solar - Community Solar Platform",
-  description: "Join the solar revolution. No installation required.",
+  title: "PowerNetPro - Trade Energy Like Never Before",
+  description: "All in one Energy Trading Platform. The infrastructure for the next generation of energy trading.",
 };
 
 export default function RootLayout({

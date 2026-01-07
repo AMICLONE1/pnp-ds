@@ -49,17 +49,16 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-6xl md:text-8xl font-heading font-bold mb-6 text-balance leading-tight">
-                Power the Future with
+                Trade Energy
                 <br />
                 <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent animate-gradient">
-                  Digital Solar
+                  Like Never Before
                 </span>
               </h1>
               
               <p className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Join India&apos;s largest community solar platform. Reserve capacity,
-                save on bills, and make a real environmental impact—all without
-                installing a single panel.
+                All in one Energy Trading Platform. The infrastructure for the next generation of energy trading.
+                Built on Beckn Protocol and Unified Energy Interface (UEI).
               </p>
 
               {/* Trust Indicators */}
@@ -70,11 +69,11 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                   <Users className="h-4 w-4 text-gold" />
-                  <span>10,000+ Active Users</span>
+                  <span>1K+ Residential Owners</span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                   <Award className="h-4 w-4 text-gold" />
-                  <span>ISO Certified</span>
+                  <span>ISO 27001 Ready</span>
                 </div>
               </div>
 
@@ -85,7 +84,7 @@ export default function HomePage() {
                     size="lg"
                     className="w-full sm:w-auto text-lg px-8 py-6 group"
                   >
-                    Start Your Solar Journey
+                    Join The Network
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -129,25 +128,25 @@ export default function HomePage() {
               <ScrollAnimation direction="up" delay={0.2}>
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-gold/5 to-transparent border border-gold/10">
                   <div className="text-5xl font-bold text-gold mb-2">
-                    <span className="stat-number" data-target="10000">0</span>+
+                    <span className="stat-number" data-target="500">0</span> MT
                   </div>
-                  <div className="text-gray-600 font-medium">Active Users</div>
+                  <div className="text-gray-600 font-medium">Carbon Reduced</div>
                 </div>
               </ScrollAnimation>
               <ScrollAnimation direction="up" delay={0.3}>
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/10">
                   <div className="text-5xl font-bold text-green-600 mb-2">
-                    <span className="stat-number" data-target="2500">0</span>+
+                    <span className="stat-number" data-target="45">0</span>%
                   </div>
-                  <div className="text-gray-600 font-medium">Tons CO₂ Saved</div>
+                  <div className="text-gray-600 font-medium">Higher Returns</div>
                 </div>
               </ScrollAnimation>
               <ScrollAnimation direction="up" delay={0.4}>
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/10">
                   <div className="text-5xl font-bold text-blue-600 mb-2">
-                    ₹<span className="stat-number" data-target="50">0</span>Cr+
+                    <span className="stat-number" data-target="1">0</span>K+
                   </div>
-                  <div className="text-gray-600 font-medium">Total Savings</div>
+                  <div className="text-gray-600 font-medium">Residential Owners</div>
                 </div>
               </ScrollAnimation>
             </div>
@@ -246,10 +245,10 @@ export default function HomePage() {
             <ScrollAnimation direction="fade">
               <div className="text-center mb-16">
                 <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
-                  Why Choose Digital Solar?
+                  Why Choose PowerNetPro?
                 </h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Built by PowerNetPro—India&apos;s trusted energy solutions provider
+                  Built for the Indian Energy Ecosystem. Compliant, secure, and designed for scale.
                 </p>
               </div>
             </ScrollAnimation>
@@ -366,16 +365,16 @@ export default function HomePage() {
 
                 <div className="flex flex-wrap justify-center gap-4 text-sm">
                   <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
-                    GST Registered
+                    Regulatory Compliant
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
-                    RBI Compliant
+                    ISO 27001 Ready
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
-                    Data Protected
+                    Make in India
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
-                    24/7 Support
+                    Startup India
                   </div>
                 </div>
               </div>

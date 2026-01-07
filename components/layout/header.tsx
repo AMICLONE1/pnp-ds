@@ -42,7 +42,7 @@ export function Header() {
         <Link href="/" className="flex items-center space-x-2">
           <Sun className="h-6 w-6 text-gold" />
           <span className="text-xl font-heading font-bold text-forest">
-            Digital Solar
+            PowerNetPro
           </span>
         </Link>
 

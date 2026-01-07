@@ -120,7 +120,7 @@ function PaymentContent() {
           key: orderResult.data.key,
           amount: orderResult.data.amount,
           currency: orderResult.data.currency,
-          name: "Digital Solar",
+              name: "PowerNetPro",
           description: `Solar Capacity Reservation - ${capacity} kW`,
           order_id: orderResult.data.order_id,
           handler: async function (response: any) {

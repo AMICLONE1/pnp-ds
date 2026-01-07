@@ -57,7 +57,7 @@ export default function LoginPage() {
             </div>
             <CardTitle className="text-3xl">Welcome Back</CardTitle>
             <CardDescription>
-              Sign in to your Digital Solar account
+              Sign in to your PowerNetPro account
             </CardDescription>
           </CardHeader>
           <CardContent>
