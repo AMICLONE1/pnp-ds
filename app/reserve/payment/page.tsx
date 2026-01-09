@@ -97,8 +97,19 @@ function PaymentContent() {
         return;
       }
 
-      // If mock payment (Razorpay not configured), simulate success
+      // If mock payment (Razorpay not configured), activate allocation directly
       if (orderResult.data.mock) {
+        // Update payment status to completed
+        await fetch("/api/payments/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            razorpay_order_id: orderResult.data.order_id,
+            razorpay_payment_id: `mock_payment_${Date.now()}`,
+            razorpay_signature: "mock_signature",
+          }),
+        });
+
         await new Promise((resolve) => setTimeout(resolve, 1500));
         router.push(
           `/reserve/success?allocation=${allocationResult.data.id}&project=${projectId}`
@@ -160,6 +171,17 @@ function PaymentContent() {
         setLoading(false);
       } else {
         // Fallback: simulate payment if Razorpay not loaded
+        // Update payment status to completed
+        await fetch("/api/payments/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            razorpay_order_id: orderResult.data.order_id,
+            razorpay_payment_id: `mock_payment_${Date.now()}`,
+            razorpay_signature: "mock_signature",
+          }),
+        });
+
         await new Promise((resolve) => setTimeout(resolve, 1500));
         router.push(
           `/reserve/success?allocation=${allocationResult.data.id}&project=${projectId}`

@@ -72,7 +72,7 @@ Create a landing page that **immediately captures attention**, builds trust, and
 - **Live user counter** showing "X people joined today"
 - **Trust badges** prominently displayed (ISO, MERC, etc.)
 - **Real customer photos** in a grid showing diversity
-- **Partner logos** (Zerodha, IIMB, etc.) prominently featured
+
 - **Success stories** with before/after savings screenshots
 
 **Emotional Triggers:**

@@ -90,6 +90,8 @@ function SignupContent() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="name"
+                autoFocus
               />
               <Input
                 type="email"
@@ -99,6 +101,7 @@ function SignupContent() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="email"
               />
               <Input
                 type="password"
@@ -108,6 +111,7 @@ function SignupContent() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="new-password"
               />
               <Input
                 type="password"
@@ -117,6 +121,7 @@ function SignupContent() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="new-password"
               />
               {error && (
                 <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">

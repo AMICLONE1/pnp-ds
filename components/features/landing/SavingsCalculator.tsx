@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/lib/utils";
-import { TrendingUp, Zap, Calendar, DollarSign } from "lucide-react";
+import { TrendingUp, Zap, Calendar, IndianRupee } from "lucide-react";
 
 interface SavingsCalculatorProps {
   defaultBill?: number;
@@ -136,7 +136,7 @@ export function SavingsCalculator({
             <div className="p-4 bg-gradient-to-br from-forest/10 to-gold/10 rounded-lg border border-forest/20">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-forest" />
+                  <IndianRupee className="h-5 w-5 text-forest" />
                   <span className="text-sm font-medium text-charcoal">
                     {yearsToCalculate} Yr Savings
                   </span>

@@ -79,10 +79,20 @@ export async function POST(request: Request) {
     const razorpayInstance = initRazorpay();
     if (!razorpayInstance) {
       // Return mock order if Razorpay not configured
+      const mockOrderId = `order_mock_${Date.now()}`;
+      
+      // Update payment with mock order ID
+      await supabase
+        .from("payments")
+        .update({
+          gateway_order_id: mockOrderId,
+        })
+        .eq("id", payment.id);
+      
       return NextResponse.json({
         success: true,
         data: {
-          order_id: `order_mock_${Date.now()}`,
+          order_id: mockOrderId,
           amount: Math.round(amount * 100),
           currency: "INR",
           payment_id: payment.id,

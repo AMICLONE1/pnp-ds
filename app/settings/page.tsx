@@ -26,7 +26,17 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch("/api/user/profile");
+        const response = await fetch("/api/user/profile", { credentials: "include" });
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Redirect to login if unauthorized
+            window.location.href = "/login";
+            return;
+          }
+          throw new Error("Failed to fetch profile");
+        }
+
         const result = await response.json();
         if (result.success) {
           setProfile(result.data);
@@ -39,6 +49,7 @@ export default function SettingsPage() {
         }
       } catch (error) {
         console.error("Error fetching profile:", error);
+        // Don't leave page blank - show error state
       }
     };
     fetchProfile();

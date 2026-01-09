@@ -21,13 +21,35 @@ export function RealTimeMonitoring() {
     const fetchData = async () => {
       try {
         // In production, this would be a WebSocket or polling endpoint
-        const response = await fetch("/api/monitoring/realtime");
+        const response = await fetch("/api/monitoring/realtime", { credentials: "include" });
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch real-time data");
+        }
+        
         const result = await response.json();
         if (result.success) {
           setData(result.data);
+        } else {
+          // Set default data to prevent blank component
+          setData({
+            currentGeneration: 0,
+            todayGeneration: 0,
+            monthlyGeneration: 0,
+            creditsGenerated: 0,
+            efficiency: 0,
+          });
         }
       } catch (error) {
         console.error("Error fetching real-time data:", error);
+        // Set default data on error
+        setData({
+          currentGeneration: 0,
+          todayGeneration: 0,
+          monthlyGeneration: 0,
+          creditsGenerated: 0,
+          efficiency: 0,
+        });
       } finally {
         setLoading(false);
       }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET() {
   try {
@@ -149,6 +150,102 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate capacity
+    if (capacity_kw <= 0 || capacity_kw > 100) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "VALIDATION_ERROR", message: "Capacity must be between 1 and 100 kW" },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check if project exists and is active
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
+      .select("id, total_kw, status")
+      .eq("id", project_id)
+      .single();
+
+    if (projectError || !project) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "NOT_FOUND", message: "Project not found" },
+        },
+        { status: 404 }
+      );
+    }
+
+    // Check if project is active
+    if (project.status !== "ACTIVE" && project.status !== "active") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "INVALID_STATUS", message: "Project is not active" },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check available capacity from capacity_blocks
+    // Use admin client to ensure we can read all blocks regardless of RLS
+    let adminClient;
+    try {
+      adminClient = createAdminClient();
+    } catch (error: any) {
+      console.error("Failed to create admin client:", error.message);
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "CONFIG_ERROR",
+            message: error.message || "Server configuration error. Please check environment variables.",
+          },
+        },
+        { status: 500 }
+      );
+    }
+    
+    const { data: availableBlocks, error: blocksError } = await adminClient
+      .from("capacity_blocks")
+      .select("id, kw")
+      .eq("project_id", project_id)
+      .eq("status", "AVAILABLE");
+
+    if (blocksError) {
+      console.error("Error checking capacity blocks:", blocksError);
+      console.error("Project ID:", project_id);
+      console.error("Error details:", JSON.stringify(blocksError, null, 2));
+      return NextResponse.json(
+        {
+          success: false,
+          error: { 
+            code: "DB_ERROR", 
+            message: "Failed to check available capacity",
+            details: process.env.NODE_ENV === "development" ? blocksError.message : undefined,
+          },
+        },
+        { status: 500 }
+      );
+    }
+
+    const availableCapacity = availableBlocks?.reduce((sum, block) => sum + Number(block.kw || 0), 0) || 0;
+
+    if (availableCapacity < capacity_kw) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "INSUFFICIENT_CAPACITY",
+            message: `Only ${availableCapacity.toFixed(2)} kW available. Requested: ${capacity_kw} kW`,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
     // Create allocation
     const { data: allocation, error } = await supabase
       .from("allocations")
@@ -171,8 +268,17 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: allocation });
   } catch (error: any) {
+    console.error("Unexpected error in POST /api/allocations:", error);
+    console.error("Error stack:", error.stack);
     return NextResponse.json(
-      { success: false, error: { code: "SERVER_ERROR", message: error.message } },
+      { 
+        success: false, 
+        error: { 
+          code: "SERVER_ERROR", 
+          message: error.message || "An unexpected error occurred",
+          details: process.env.NODE_ENV === "development" ? error.stack : undefined,
+        } 
+      },
       { status: 500 }
     );
   }

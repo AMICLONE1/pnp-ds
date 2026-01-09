@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
@@ -30,8 +30,30 @@ function AnimatedSphere() {
 }
 
 export function Hero3D() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Only render on client and if WebGL is supported
+  if (!mounted || typeof window === "undefined") {
+    return null;
+  }
+
+  // Check for WebGL support
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    if (!gl) {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+
   return (
-    <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none">
+    <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none hidden md:block">
       <Canvas camera={{ position: [0, 0, 5], fov: 75 }} className="w-full h-full">
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />

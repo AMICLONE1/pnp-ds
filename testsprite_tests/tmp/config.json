@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "loginUser": "omkarkolhe912@gmail.com",
+  "loginPassword": "123456789",
+  "executionArgs": {
+    "projectName": "digital-solar",
+    "projectPath": "D:\\PowerNetPro\\PNP-DS",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-833Cr6vL_yfQ2BBkT6dQnLz4fAi7FHX11YRndgSs-mlwEtpZH8rHXar5ENaZsHvKyZQBMyonQnd89N3sNQ_J9XSh90d8khJvcLJmVz3cMdrCqlO1LlSXv2b_aj4tTinfygY"
+    }
+  },
+  "proxy": "http://1f6fd02a-99e0-4b33-9cca-1da1f5e674b8:ULyZPqsjRIkNSfensFbAWXE38E9QWUR6@tun.testsprite.com:8080"
+}

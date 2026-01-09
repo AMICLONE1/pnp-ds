@@ -191,10 +191,15 @@ export default function ReservePage() {
                           <input
                             type="range"
                             min="1"
-                            max="100"
+                            max={Math.min(100, Math.floor(selectedProject.available_capacity_kw || 100))}
                             value={capacity}
                             onChange={(e) => setCapacity(Number(e.target.value))}
-                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-forest"
+                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-forest slider-custom"
+                            disabled={!selectedProject}
+                            aria-label="Select solar capacity in kilowatts"
+                            aria-valuemin={1}
+                            aria-valuemax={Math.min(100, Math.floor(selectedProject.available_capacity_kw || 100))}
+                            aria-valuenow={capacity}
                           />
                           <div className="flex justify-between text-xs text-gray-500 mt-1">
                             <span>1 kW</span>

@@ -29,9 +29,14 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         const [summaryRes, allocationsRes] = await Promise.all([
-          fetch("/api/dashboard/summary"),
-          fetch("/api/allocations"),
+          fetch("/api/dashboard/summary", { credentials: "include" }),
+          fetch("/api/allocations", { credentials: "include" }),
         ]);
+
+        // Check if responses are ok
+        if (!summaryRes.ok || !allocationsRes.ok) {
+          throw new Error("Failed to fetch dashboard data");
+        }
 
         const summaryData = await summaryRes.json();
         const allocationsData = await allocationsRes.json();
@@ -44,6 +49,14 @@ export default function DashboardPage() {
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        // Set default values to prevent blank page
+        setSummary({
+          totalCapacity: 0,
+          totalSavings: 0,
+          co2Offset: "0",
+          recentActivity: [],
+        });
+        setAllocations([]);
       } finally {
         setLoading(false);
       }

@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { useInView } from "react-intersection-observer";
-import gsap from "gsap";
 
 interface ScrollAnimationProps {
   children: ReactNode;
@@ -21,9 +20,14 @@ export function ScrollAnimation({
     triggerOnce: true,
   });
   const elementRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!elementRef.current) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !elementRef.current || typeof window === "undefined") return;
 
     const directions = {
       up: { y: 50, x: 0 },
@@ -36,24 +40,29 @@ export function ScrollAnimation({
     const { x, y } = directions[direction];
 
     if (inView) {
-      gsap.fromTo(
-        elementRef.current,
-        {
-          opacity: 0,
-          x,
-          y,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          duration: 0.8,
-          delay,
-          ease: "power3.out",
-        }
-      );
+      // Dynamically import gsap to avoid SSR issues
+      import("gsap").then(({ default: gsap }) => {
+        if (!elementRef.current) return;
+        
+        gsap.fromTo(
+          elementRef.current,
+          {
+            opacity: 0,
+            x,
+            y,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            duration: 0.8,
+            delay,
+            ease: "power3.out",
+          }
+        );
+      });
     }
-  }, [inView, direction, delay]);
+  }, [mounted, inView, direction, delay]);
 
   return (
     <div ref={ref}>

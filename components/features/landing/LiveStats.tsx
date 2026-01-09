@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { ScrollAnimation } from "@/components/features/landing/ScrollAnimation";
-import { Zap, Leaf, TrendingUp, DollarSign } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { Zap, Leaf, TrendingUp, IndianRupee } from "lucide-react";
+import { formatCurrency, formatNumber } from "@/lib/utils";
 
 interface LiveStatsData {
   totalCapacity: number; // kW
@@ -20,8 +20,15 @@ export function LiveStats() {
     carbonOffset: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const fetchStats = async () => {
       try {
         const response = await fetch("/api/stats/live");
@@ -40,10 +47,53 @@ export function LiveStats() {
     // Refresh every 5 minutes
     const interval = setInterval(fetchStats, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [mounted]);
+
+  // Return a placeholder during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-forest to-forest-dark text-white relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+              Connecting people, power and planet
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                <div className="h-8 w-8 bg-gold/20 rounded mx-auto mb-4" />
+                <div className="h-8 bg-white/20 rounded mb-2" />
+                <div className="h-4 bg-white/10 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (loading) {
-    return null;
+    return (
+      <section className="py-20 bg-gradient-to-br from-forest to-forest-dark text-white relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+              Connecting people, power and planet
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                <div className="h-8 w-8 bg-gold/20 rounded mx-auto mb-4 animate-pulse" />
+                <div className="h-8 bg-white/20 rounded mb-2 animate-pulse" />
+                <div className="h-4 bg-white/10 rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -80,10 +130,7 @@ export function LiveStats() {
               <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
                 <Leaf className="h-8 w-8 text-gold mx-auto mb-4" />
                 <div className="text-4xl font-bold mb-2">
-                  {stats.totalEnergy.toLocaleString("en-IN", {
-                    maximumFractionDigits: 1,
-                  })}
-                  kWh
+                  {formatNumber(stats.totalEnergy, { maximumFractionDigits: 1 })} kWh
                 </div>
                 <div className="text-sm text-gray-200">Clean Energy Delivered</div>
               </div>
@@ -91,7 +138,7 @@ export function LiveStats() {
 
             <ScrollAnimation direction="up" delay={0.3}>
               <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                <DollarSign className="h-8 w-8 text-gold mx-auto mb-4" />
+                <IndianRupee className="h-8 w-8 text-gold mx-auto mb-4" />
                 <div className="text-4xl font-bold mb-2">
                   {formatCurrency(stats.totalCredits)}
                 </div>
@@ -103,10 +150,7 @@ export function LiveStats() {
               <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
                 <TrendingUp className="h-8 w-8 text-gold mx-auto mb-4" />
                 <div className="text-4xl font-bold mb-2">
-                  {stats.carbonOffset.toLocaleString("en-IN", {
-                    maximumFractionDigits: 2,
-                  })}
-                  kg
+                  {formatNumber(stats.carbonOffset, { maximumFractionDigits: 2 })} kg
                 </div>
                 <div className="text-sm text-gray-200">Carbon Avoided</div>
               </div>

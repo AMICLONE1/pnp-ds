@@ -13,6 +13,18 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
+// Consistent number formatter to prevent hydration mismatches
+// Uses a simple approach that works consistently on both server and client
+export function formatNumber(value: number, options?: { maximumFractionDigits?: number }): string {
+  const maxFractionDigits = options?.maximumFractionDigits ?? 0;
+  const rounded = maxFractionDigits > 0 
+    ? Number(value.toFixed(maxFractionDigits))
+    : Math.round(value);
+  
+  // Simple formatting: add commas for thousands
+  return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export function formatDate(date: Date | string): string {
   return new Intl.DateTimeFormat("en-IN", {
     year: "numeric",

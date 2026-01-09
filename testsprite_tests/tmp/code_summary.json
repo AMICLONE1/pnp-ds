@@ -1,0 +1,168 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "Next.js 14.2.5",
+    "React 18.3.1",
+    "Tailwind CSS",
+    "Supabase",
+    "Framer Motion",
+    "React Three Fiber",
+    "Zod",
+    "Zustand"
+  ],
+  "features": [
+    {
+      "name": "Landing Page",
+      "description": "Main homepage with hero section, animations, calculators, testimonials, and call-to-action sections",
+      "files": [
+        "app/page.tsx",
+        "components/features/landing/AnimatedHeadline.tsx",
+        "components/features/landing/AnimatedSVG.tsx",
+        "components/features/landing/GlassCard.tsx",
+        "components/features/landing/Hero3D.tsx",
+        "components/features/landing/InlineCalculator.tsx",
+        "components/features/landing/LiveStats.tsx",
+        "components/features/landing/LiveStatsTicker.tsx",
+        "components/features/landing/Newsletter.tsx",
+        "components/features/landing/ParticleSystem.tsx",
+        "components/features/landing/ProcessVisualization.tsx",
+        "components/features/landing/ScrollAnimation.tsx",
+        "components/features/landing/StickyCTA.tsx",
+        "components/features/landing/Testimonials.tsx",
+        "components/features/landing/UtilityCompatibilityChecker.tsx"
+      ]
+    },
+    {
+      "name": "User Authentication",
+      "description": "User signup, login, password reset, and session management with Supabase Auth",
+      "files": [
+        "app/login/page.tsx",
+        "app/signup/page.tsx",
+        "app/forgot-password/page.tsx",
+        "lib/supabase/client.ts",
+        "lib/supabase/server.ts",
+        "lib/supabase/middleware.ts",
+        "middleware.ts"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "User dashboard showing capacity, savings, environmental impact, and real-time monitoring",
+      "files": [
+        "app/dashboard/page.tsx",
+        "components/features/dashboard/RealTimeMonitoring.tsx",
+        "app/api/dashboard/route.ts"
+      ]
+    },
+    {
+      "name": "Project Reservation",
+      "description": "Browse and reserve solar capacity from community projects with payment integration",
+      "files": [
+        "app/reserve/page.tsx",
+        "app/reserve/payment/page.tsx",
+        "app/reserve/success/page.tsx",
+        "app/api/projects/route.ts",
+        "app/api/allocations/route.ts"
+      ]
+    },
+    {
+      "name": "Utility Connection",
+      "description": "Connect electricity provider accounts to receive automatic solar credits",
+      "files": [
+        "app/connect/page.tsx",
+        "app/connect/multiple/page.tsx",
+        "lib/bbps/client.ts"
+      ]
+    },
+    {
+      "name": "Bills Management",
+      "description": "View electricity bills with applied solar credits and payment functionality",
+      "files": [
+        "app/bills/page.tsx",
+        "components/features/bills/BillPayment.tsx",
+        "app/api/bills/route.ts",
+        "app/api/bills/pay/route.ts"
+      ]
+    },
+    {
+      "name": "Payment Processing",
+      "description": "Payment integration with Razorpay for capacity reservations",
+      "files": [
+        "app/api/payments/route.ts",
+        "app/api/payments/verify/route.ts"
+      ]
+    },
+    {
+      "name": "API Routes",
+      "description": "Backend API endpoints for stats, credits, notifications, and user management",
+      "files": [
+        "app/api/stats/live/route.ts",
+        "app/api/credits/route.ts",
+        "app/api/notifications/route.ts",
+        "app/api/user/route.ts",
+        "app/api/user/profile/route.ts",
+        "app/api/monitoring/realtime/route.ts",
+        "app/api/newsletter/subscribe/route.ts"
+      ]
+    },
+    {
+      "name": "Layout Components",
+      "description": "Header and footer navigation components",
+      "files": [
+        "components/layout/header.tsx",
+        "components/layout/footer.tsx"
+      ]
+    },
+    {
+      "name": "UI Components",
+      "description": "Reusable UI components like buttons, cards, inputs, and loading states",
+      "files": [
+        "components/ui/button.tsx",
+        "components/ui/card.tsx",
+        "components/ui/input.tsx",
+        "components/ui/loading.tsx",
+        "components/ui/skeleton.tsx"
+      ]
+    },
+    {
+      "name": "Custom Hooks",
+      "description": "React hooks for animations, scroll effects, parallax, gestures, and stats counting",
+      "files": [
+        "hooks/useHeroAnimation.ts",
+        "hooks/useScrollAnimation.ts",
+        "hooks/useParallax.ts",
+        "hooks/useGesture.ts",
+        "hooks/useStatsCounter.ts"
+      ]
+    },
+    {
+      "name": "Utilities and Helpers",
+      "description": "Utility functions for formatting, validation, animations, and security",
+      "files": [
+        "lib/utils.ts",
+        "lib/validations.ts",
+        "lib/animations.ts",
+        "lib/constants.ts",
+        "lib/security/inputSanitizer.ts",
+        "lib/security/xssProtection.ts",
+        "lib/security/csrfProtection.ts"
+      ]
+    },
+    {
+      "name": "Settings and Help",
+      "description": "User settings page and help center with FAQs",
+      "files": [
+        "app/settings/page.tsx",
+        "app/help/page.tsx",
+        "app/contact/page.tsx"
+      ]
+    },
+    {
+      "name": "Refund Management",
+      "description": "Refund policy and exit feature for capacity reservations",
+      "files": [
+        "app/refund/page.tsx"
+      ]
+    }
+  ]
+}

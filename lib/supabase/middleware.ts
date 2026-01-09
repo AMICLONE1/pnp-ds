@@ -45,11 +45,14 @@ export async function updateSession(request: NextRequest) {
     "/reserve",
     "/forgot-password",
     "/reset-password",
+    "/help",
+    "/contact",
   ];
   const isPublicPath =
     publicPaths.includes(request.nextUrl.pathname) ||
     request.nextUrl.pathname.startsWith("/reserve") ||
-    request.nextUrl.pathname.startsWith("/api");
+    request.nextUrl.pathname.startsWith("/api") ||
+    request.nextUrl.pathname.startsWith("/_next");
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();

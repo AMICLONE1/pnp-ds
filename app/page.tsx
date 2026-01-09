@@ -16,105 +16,222 @@ import {
   Users,
   Award,
 } from "lucide-react";
-import { Hero3D } from "@/components/features/landing/Hero3D";
+import dynamic from "next/dynamic";
 import { SolarIcon, EnergyWave } from "@/components/features/landing/AnimatedSVG";
 import { ScrollAnimation } from "@/components/features/landing/ScrollAnimation";
-import { SavingsCalculator } from "@/components/features/landing/SavingsCalculator";
 import { LiveStats } from "@/components/features/landing/LiveStats";
 import { UtilityCompatibilityChecker } from "@/components/features/landing/UtilityCompatibilityChecker";
 import { Testimonials } from "@/components/features/landing/Testimonials";
 import { Newsletter } from "@/components/features/landing/Newsletter";
+import { InlineCalculator } from "@/components/features/landing/InlineCalculator";
+import { LiveStatsTicker } from "@/components/features/landing/LiveStatsTicker";
+import { AnimatedHeadline } from "@/components/features/landing/AnimatedHeadline";
+import { ProcessVisualization } from "@/components/features/landing/ProcessVisualization";
+import { StickyCTA } from "@/components/features/landing/StickyCTA";
+import { GlassCard } from "@/components/features/landing/GlassCard";
+
+// Lazy load heavy 3D components to avoid webpack issues
+const Hero3D = dynamic(() => import("@/components/features/landing/Hero3D").then(mod => ({ default: mod.Hero3D })), {
+  ssr: false,
+  loading: () => null,
+});
+
+const ParticleSystem = dynamic(() => import("@/components/features/landing/ParticleSystem").then(mod => ({ default: mod.ParticleSystem })), {
+  ssr: false,
+  loading: () => null,
+});
 import { useHeroAnimation } from "@/hooks/useHeroAnimation";
 import { useStatsCounter } from "@/hooks/useStatsCounter";
+import { motion } from "framer-motion";
+import { heroSequence } from "@/lib/animations";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function HomePage() {
   const heroRef = useHeroAnimation();
   const statsRef = useStatsCounter();
 
   return (
-    <div className="min-h-screen flex flex-col overflow-hidden">
+    <div className="min-h-screen flex flex-col">
+      {/* Skip to main content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-gold focus:text-charcoal focus:rounded-lg focus:font-semibold focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <Header />
-      <main className="flex-1">
-        {/* Hero Section with 3D Background */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-forest via-forest-light to-forest-dark text-white">
-          {/* 3D Background */}
+      <main id="main-content" className="flex-1" tabIndex={-1}>
+        {/* Hero Section with 3D Background - Enhanced */}
+        <section 
+          className="relative min-h-screen flex items-center justify-center overflow-x-hidden bg-gradient-to-br from-forest via-forest-light to-forest-dark text-white pb-24"
+          aria-label="Hero section"
+        >
+          {/* Particle System Background */}
+          <ParticleSystem />
+          
+          {/* 3D Background - Lazy loaded to avoid SSR issues */}
           <Hero3D />
           
           {/* Animated Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-forest/50 to-forest" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-forest/50 to-forest gradient-mesh opacity-30" />
           
           {/* Content */}
-          <div className="relative z-10 container mx-auto px-4 py-24 md:py-32">
-            <div ref={heroRef} className="max-w-5xl mx-auto text-center">
+          <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
+            <div ref={heroRef} className="max-w-6xl mx-auto text-center">
               {/* Animated Icon */}
-              <div className="flex justify-center mb-8">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="flex justify-center mb-6"
+              >
                 <div className="animate-bounce">
                   <SolarIcon />
                 </div>
-              </div>
+              </motion.div>
 
-              <h1 className="text-6xl md:text-8xl font-heading font-bold mb-6 text-balance leading-tight">
-                Save up on power bills
-                <br />
-                <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent animate-gradient">
-                  with Digital Solar
-                </span>
-              </h1>
+              {/* Massive Headline - Progressive Disclosure */}
+              <AnimatedHeadline delay={heroSequence.headline.delay * 1000}>
+                <div className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-4 text-balance leading-tight">
+                  Save ₹2,000/month
+                  <br />
+                  <span className="gradient-text">
+                    on Electricity Bills
+                  </span>
+                </div>
+              </AnimatedHeadline>
               
-              <p className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Get savings on your bills even if you live in an apartment, rent your home, or own the space.
-                No installation required. Go solar instantly. Maximize your savings.
-              </p>
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: heroSequence.subheadline.delay }}
+                className="text-xl md:text-2xl lg:text-3xl text-gray-100 mb-6 max-w-3xl mx-auto leading-relaxed font-medium"
+              >
+                No Installation. No Hassle. Just Savings.
+              </motion.p>
 
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <Shield className="h-4 w-4 text-gold" />
-                  <span>Bank-Grade Security</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <Users className="h-4 w-4 text-gold" />
-                  <span>1K+ Residential Owners</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <Award className="h-4 w-4 text-gold" />
-                  <span>ISO 27001 Ready</span>
-                </div>
-              </div>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: heroSequence.subheadline.delay + 0.1 }}
+                className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto"
+              >
+                Reserve solar capacity from community projects. Credits automatically applied to your bills.
+              </motion.p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/reserve">
+              {/* Inline Calculator - Progressive Disclosure */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: heroSequence.calculator.duration,
+                  delay: heroSequence.calculator.delay,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                className="mb-10"
+              >
+                <InlineCalculator />
+              </motion.div>
+
+              {/* Trust Indicators - Sequential Fade In */}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.1,
+                      delayChildren: heroSequence.trustIndicators.delay,
+                    },
+                  },
+                }}
+                className="flex flex-wrap justify-center gap-4 md:gap-6 mb-10 text-sm md:text-base"
+              >
+                {[
+                  { icon: Users, text: "1,000+ Users" },
+                  { icon: TrendingUp, text: "₹50Cr+ Saved" },
+                  { icon: Award, text: "ISO Certified" },
+                  { icon: Shield, text: "Bank-Grade Security" },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center gap-2 glass-card px-5 py-3 rounded-full"
+                  >
+                    <item.icon className="h-5 w-5 text-gold" aria-hidden="true" />
+                    <span className="font-semibold">{item.text}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Enhanced CTAs - Slide In */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: heroSequence.ctas.delay }}
+                className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+              >
+                <Link href="/reserve" aria-label="Start saving now">
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="w-full sm:w-auto text-lg px-8 py-6 group"
+                    className="w-full sm:w-auto text-lg md:text-xl px-10 py-7 group bg-gold hover:bg-gold-light text-charcoal font-bold shadow-2xl hover:shadow-gold/50 transition-all transform hover:scale-105 glow-button focus-visible-ring"
                   >
-                    Get Started
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    Start Saving Now
+                    <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                   </Button>
                 </Link>
-                <Link href="/signup">
+                <Link href="/signup" aria-label="Watch 60 second demo">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full sm:w-auto text-lg px-8 py-6 border-2 border-white text-white hover:bg-white/10 backdrop-blur-sm"
+                    className="w-full sm:w-auto text-lg md:text-xl px-10 py-7 border-2 border-white text-white hover:bg-white/20 backdrop-blur-sm font-semibold focus-visible-ring"
                   >
-                    Watch Demo
+                    Watch 60s Demo
                   </Button>
                 </Link>
-              </div>
+              </motion.div>
             </div>
           </div>
 
           {/* Animated Wave */}
           <EnergyWave />
           
+          {/* Live Stats Ticker - Progressive Disclosure */}
+          <LiveStatsTicker />
+          
           {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse" />
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+            className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20"
+          >
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center cursor-pointer"
+              aria-label="Scroll down"
+              role="button"
+              tabIndex={0}
+              onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+                }
+              }}
+            >
+              <div className="w-1 h-3 bg-white/50 rounded-full mt-2" />
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* Stats Section */}
@@ -158,12 +275,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Savings Calculator Section */}
-        <section className="py-24 bg-gradient-to-b from-white to-offwhite relative">
+        {/* Testimonials Section - Early in Page */}
+        <section className="py-24 bg-white relative">
           <div className="container mx-auto px-4">
-            <ScrollAnimation direction="fade">
-              <SavingsCalculator />
-            </ScrollAnimation>
+            <Testimonials />
           </div>
         </section>
 
@@ -177,85 +292,7 @@ export default function HomePage() {
         </section>
 
         {/* How It Works - Enhanced */}
-        <section className="py-24 bg-gradient-to-b from-offwhite to-white relative">
-          <div className="container mx-auto px-4">
-            <ScrollAnimation direction="fade">
-              <div className="text-center mb-16">
-                <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
-                  How PowerNetPro Works
-                </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  A simple three-step process to start saving on your electricity bills
-                </p>
-              </div>
-            </ScrollAnimation>
-
-            <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-              <ScrollAnimation direction="up" delay={0.1}>
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-forest to-gold rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-                  <div className="relative bg-white p-8 rounded-2xl shadow-xl border border-gray-100 h-full">
-                    <div className="w-20 h-20 bg-gradient-to-br from-forest to-forest-light rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-                      <span className="text-3xl font-bold text-white">1</span>
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-4 text-center text-charcoal">
-                      Reserve Solar
-                    </h3>
-                    <p className="text-gray-600 text-center leading-relaxed">
-                      Reserve solar capacity from community solar projects. Choose your
-                      preferred capacity (1-100 kW) and start earning credits immediately.
-                    </p>
-                    <div className="mt-6 flex justify-center">
-                      <Zap className="h-8 w-8 text-gold" />
-                    </div>
-                  </div>
-                </div>
-              </ScrollAnimation>
-
-              <ScrollAnimation direction="up" delay={0.2}>
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-gold to-forest rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-                  <div className="relative bg-white p-8 rounded-2xl shadow-xl border border-gray-100 h-full">
-                    <div className="w-20 h-20 bg-gradient-to-br from-gold to-gold-light rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-                      <span className="text-3xl font-bold text-charcoal">2</span>
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-4 text-center text-charcoal">
-                      Connect Utility
-                    </h3>
-                    <p className="text-gray-600 text-center leading-relaxed">
-                      Link your electricity provider account. We support all major
-                      DISCOMs across India. Setup takes less than 2 minutes.
-                    </p>
-                    <div className="mt-6 flex justify-center">
-                      <TrendingUp className="h-8 w-8 text-forest" />
-                    </div>
-                  </div>
-                </div>
-              </ScrollAnimation>
-
-              <ScrollAnimation direction="up" delay={0.3}>
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-forest rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-                  <div className="relative bg-white p-8 rounded-2xl shadow-xl border border-gray-100 h-full">
-                    <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-                      <span className="text-3xl font-bold text-white">3</span>
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-4 text-center text-charcoal">
-                      Offset Bills
-                    </h3>
-                    <p className="text-gray-600 text-center leading-relaxed">
-                      Watch your savings grow! Solar credits are automatically
-                      applied to your monthly bills. Track everything in real-time.
-                    </p>
-                    <div className="mt-6 flex justify-center">
-                      <Leaf className="h-8 w-8 text-green-600" />
-                    </div>
-                  </div>
-                </div>
-              </ScrollAnimation>
-            </div>
-          </div>
-        </section>
+        <ProcessVisualization />
 
         {/* Connect with Solar Section */}
         <section className="py-24 bg-gradient-to-b from-white to-offwhite relative">
@@ -352,25 +389,43 @@ export default function HomePage() {
         </section>
 
         {/* Benefits - Enhanced Design */}
-        <section className="py-24 bg-white relative overflow-hidden">
+        <section className="py-24 bg-white relative overflow-hidden" aria-label="Benefits">
           <div className="absolute inset-0">
             <div className="absolute top-0 left-0 w-96 h-96 bg-forest/5 rounded-full blur-3xl" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
           </div>
           
           <div className="container mx-auto px-4 relative z-10">
-            <ScrollAnimation direction="fade">
-              <div className="text-center mb-16">
-                <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
-                  Why Choose Digital Solar?
-                </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  The smarter way to go solar without the hassles of installation.
-                </p>
-              </div>
-            </ScrollAnimation>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
+                Why Choose Digital Solar?
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                The smarter way to go solar without the hassles of installation.
+              </p>
+            </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
+            >
               {[
                 {
                   icon: Zap,
@@ -384,14 +439,14 @@ export default function HomePage() {
                   title: "Lower Bills",
                   description:
                     "Save money on electricity bills with automatic credit applications every month. Average savings: ₹500-2000/month.",
-                  gradient: "from-green-500 to-green-600",
+                  gradient: "from-energy-green to-green-600",
                 },
                 {
                   icon: Leaf,
                   title: "Environmental Impact",
                   description:
                     "Track your CO₂ offset and contribute to India&apos;s renewable energy goals. Every kW matters.",
-                  gradient: "from-blue-500 to-blue-600",
+                  gradient: "from-energy-blue to-blue-600",
                 },
                 {
                   icon: Clock,
@@ -415,22 +470,28 @@ export default function HomePage() {
                   gradient: "from-gold to-gold-light",
                 },
               ].map((benefit, index) => (
-                <ScrollAnimation key={index} direction="up" delay={index * 0.1}>
-                  <div className="group relative p-6 rounded-2xl bg-white border border-gray-200 hover:border-forest/50 transition-all duration-300 hover:shadow-2xl">
+                <motion.div
+                  key={index}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                >
+                  <GlassCard className="p-6 h-full" hover>
                     <div
-                      className={`w-16 h-16 bg-gradient-to-br ${benefit.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg`}
+                      className={`w-16 h-16 bg-gradient-to-br ${benefit.gradient} rounded-xl flex items-center justify-center mb-4 transition-transform shadow-lg`}
                     >
-                      <benefit.icon className="h-8 w-8 text-white" />
+                      <benefit.icon className="h-8 w-8 text-white" aria-hidden="true" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-3 text-charcoal group-hover:text-forest transition-colors">
+                    <h3 className="text-xl font-semibold mb-3 text-charcoal transition-colors">
                       {benefit.title}
                     </h3>
                     <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-forest/0 to-gold/0 group-hover:from-forest/5 group-hover:to-gold/5 transition-all duration-300 -z-10" />
-                  </div>
-                </ScrollAnimation>
+                  </GlassCard>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -546,6 +607,7 @@ export default function HomePage() {
         </section>
       </main>
       <Footer />
+      <StickyCTA />
     </div>
   );
 }

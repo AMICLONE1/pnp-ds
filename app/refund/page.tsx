@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, Clock, DollarSign } from "lucide-react";
+import { ArrowLeft, CheckCircle, Clock, IndianRupee } from "lucide-react";
 import Link from "next/link";
 
 export default function RefundPage() {
@@ -56,7 +56,7 @@ export default function RefundPage() {
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-6 w-6 text-forest" />
+                <IndianRupee className="h-6 w-6 text-forest" />
                 Refund Calculation
               </CardTitle>
             </CardHeader>

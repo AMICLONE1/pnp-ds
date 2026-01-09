@@ -2,6 +2,24 @@
 
 import { useEffect, useRef } from "react";
 
+// Pre-calculate ray coordinates to ensure server/client consistency
+// Round to 4 decimal places to prevent hydration mismatches from floating-point precision
+const RAY_COUNT = 12;
+const RAY_ANGLES = Array.from({ length: RAY_COUNT }, (_, i) => (i * 30 * Math.PI) / 180);
+
+// Helper function to round consistently
+const roundCoord = (value: number): number => {
+  return Math.round(value * 10000) / 10000;
+};
+
+const RAY_COORDS = RAY_ANGLES.map((angle) => {
+  const x1 = roundCoord(60 + 35 * Math.cos(angle));
+  const y1 = roundCoord(60 + 35 * Math.sin(angle));
+  const x2 = roundCoord(60 + 45 * Math.cos(angle));
+  const y2 = roundCoord(60 + 45 * Math.sin(angle));
+  return { x1, y1, x2, y2 };
+});
+
 export function SolarIcon() {
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -23,6 +41,7 @@ export function SolarIcon() {
       height="120"
       viewBox="0 0 120 120"
       className="drop-shadow-2xl"
+      suppressHydrationWarning
     >
       <defs>
         <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -46,28 +65,21 @@ export function SolarIcon() {
         className="animate-pulse"
       />
       
-      {/* Rays */}
-      {[...Array(12)].map((_, i) => {
-        const angle = (i * 30 * Math.PI) / 180;
-        const x1 = 60 + 35 * Math.cos(angle);
-        const y1 = 60 + 35 * Math.sin(angle);
-        const x2 = 60 + 45 * Math.cos(angle);
-        const y2 = 60 + 45 * Math.sin(angle);
-        
-        return (
-          <line
-            key={i}
-            className="ray"
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#D4A03A"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        );
-      })}
+      {/* Rays - using pre-calculated coordinates */}
+      {RAY_COORDS.map((coords, i) => (
+        <line
+          key={i}
+          className="ray"
+          x1={coords.x1}
+          y1={coords.y1}
+          x2={coords.x2}
+          y2={coords.y2}
+          stroke="#D4A03A"
+          strokeWidth="3"
+          strokeLinecap="round"
+          suppressHydrationWarning
+        />
+      ))}
       
     </svg>
   );

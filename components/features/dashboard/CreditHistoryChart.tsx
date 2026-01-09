@@ -18,7 +18,12 @@ export function CreditHistoryChart() {
   useEffect(() => {
     const fetchCredits = async () => {
       try {
-        const response = await fetch("/api/credits");
+        const response = await fetch("/api/credits", { credentials: "include" });
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch credits");
+        }
+        
         const result = await response.json();
         if (result.success) {
           // Group by month/year and sum amounts

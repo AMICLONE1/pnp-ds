@@ -26,13 +26,31 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    // Validate inputs
+    if (!email.trim()) {
+      setError("Email is required");
+      setLoading(false);
+      return;
+    }
+
+    if (!password) {
+      setError("Password is required");
+      setLoading(false);
+      return;
+    }
+
     const { data, error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim().toLowerCase(),
       password,
     });
 
     if (authError) {
-      setError(authError.message);
+      // Provide user-friendly error messages
+      if (authError.message.includes("Invalid login credentials")) {
+        setError("Invalid email or password. Please check your credentials and try again.");
+      } else {
+        setError(authError.message);
+      }
       setLoading(false);
       return;
     }
@@ -43,6 +61,9 @@ export default function LoginPage() {
       // Redirect to dashboard
       router.push("/dashboard");
       router.refresh();
+    } else {
+      setError("Login failed. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -70,6 +91,8 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="off"
+                autoFocus
               />
               <Input
                 type="password"
@@ -79,6 +102,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="off"
               />
               {error && (
                 <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">

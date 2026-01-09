@@ -8,16 +8,10 @@ import DOMPurify from "isomorphic-dompurify";
 
 /**
  * Sanitize HTML content
+ * isomorphic-dompurify handles both client and server automatically
  */
 export function sanitizeHtml(dirty: string): string {
-  if (typeof window !== "undefined") {
-    return DOMPurify.sanitize(dirty);
-  }
-  // Server-side sanitization
-  const { JSDOM } = require("jsdom");
-  const window = new JSDOM("").window;
-  const purify = DOMPurify(window);
-  return purify.sanitize(dirty);
+  return DOMPurify.sanitize(dirty);
 }
 
 /**
