@@ -10,7 +10,7 @@ export function useStatsCounter() {
   }, []);
 
   useEffect(() => {
-    if (!mounted || !statsRef.current) return;
+    if (!mounted || !statsRef.current || typeof window === "undefined") return;
 
     const counters = statsRef.current.querySelectorAll(".stat-number");
     

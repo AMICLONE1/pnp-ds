@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   description: "Reserve solar capacity from community projects. No installation required. Credits automatically applied to your bills. Join 1,000+ homeowners saving ₹50,000+ annually.",
   keywords: ["solar energy", "digital solar", "electricity savings", "renewable energy", "solar credits", "community solar"],
   authors: [{ name: "PowerNetPro" }],
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     title: "PowerNetPro - Save on Electricity Bills with Digital Solar",
     description: "No installation required. Start saving on your electricity bills today.",

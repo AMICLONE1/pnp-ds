@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ReactNode, useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
 
 interface GlassCardProps {
   children: ReactNode;
@@ -17,11 +16,13 @@ export function GlassCard({
   hover = true,
   delay = 0,
 }: GlassCardProps) {
-  const prefersReducedMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
   }, []);
 
   const variants = {

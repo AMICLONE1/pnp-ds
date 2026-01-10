@@ -1,66 +1,37 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei";
-import * as THREE from "three";
+import { useState, useEffect, Suspense, lazy } from "react";
 
-function AnimatedSphere() {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-    }
-  });
-
-  return (
-    <Sphere ref={meshRef} args={[1, 100, 200]} scale={2.5}>
-      <MeshDistortMaterial
-        color="#D4A03A"
-        attach="material"
-        distort={0.3}
-        speed={2}
-        roughness={0.1}
-        metalness={0.8}
-      />
-    </Sphere>
-  );
-}
+// Lazy load the 3D canvas component to avoid webpack issues with Three.js
+const Canvas3D = lazy(() => import("./Hero3DCanvas"));
 
 export function Hero3D() {
   const [mounted, setMounted] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    
+    // Check for WebGL support
+    try {
+      const canvas = document.createElement("canvas");
+      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      setWebGLSupported(!!gl);
+    } catch {
+      setWebGLSupported(false);
+    }
   }, []);
 
   // Only render on client and if WebGL is supported
-  if (!mounted || typeof window === "undefined") {
-    return null;
-  }
-
-  // Check for WebGL support
-  try {
-    const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-    if (!gl) {
-      return null;
-    }
-  } catch (e) {
+  if (!mounted || !webGLSupported) {
     return null;
   }
 
   return (
     <div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none hidden md:block">
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }} className="w-full h-full">
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <pointLight position={[-10, -10, -5]} intensity={0.5} color="#D4A03A" />
-        <AnimatedSphere />
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} enablePan={false} />
-      </Canvas>
+      <Suspense fallback={null}>
+        <Canvas3D />
+      </Suspense>
     </div>
   );
 }

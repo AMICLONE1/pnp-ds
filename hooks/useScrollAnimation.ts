@@ -1,14 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { motion, useAnimation, useReducedMotion } from "framer-motion";
+import { useAnimation } from "framer-motion";
 
 interface UseScrollAnimationOptions {
   threshold?: number;
   triggerOnce?: boolean;
   delay?: number;
   direction?: "up" | "down" | "left" | "right" | "fade" | "scale";
+}
+
+// Custom hook to safely check reduced motion preference
+function useReducedMotionSafe() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+  
+  return prefersReducedMotion;
 }
 
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
@@ -19,7 +35,8 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
     direction = "up",
   } = options;
 
-  const prefersReducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  const prefersReducedMotion = useReducedMotionSafe();
   const controls = useAnimation();
   const [ref, inView] = useInView({
     threshold,
@@ -27,6 +44,12 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   });
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     if (prefersReducedMotion) {
       controls.set({ opacity: 1, y: 0, x: 0, scale: 1 });
       return;
@@ -62,7 +85,7 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
     } else if (!triggerOnce) {
       controls.start(animationVariants[direction]);
     }
-  }, [inView, direction, delay, triggerOnce, prefersReducedMotion, controls]);
+  }, [mounted, inView, direction, delay, triggerOnce, prefersReducedMotion, controls]);
 
   return { ref, controls, inView };
 }
@@ -73,7 +96,7 @@ export function useStaggerAnimation(itemCount: number, delay = 100) {
     triggerOnce: true,
   });
 
-  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotion = useReducedMotionSafe();
 
   const containerVariants = {
     hidden: { opacity: 0 },

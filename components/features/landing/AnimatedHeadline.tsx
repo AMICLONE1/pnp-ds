@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useReducedMotion } from "framer-motion";
 
 interface AnimatedHeadlineProps {
   children: React.ReactNode;
@@ -15,7 +14,14 @@ export function AnimatedHeadline({
   delay = 0,
   className = "",
 }: AnimatedHeadlineProps) {
-  const prefersReducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+  }, []);
 
   const variants = {
     hidden: { opacity: 0, y: 50 },
@@ -30,7 +36,7 @@ export function AnimatedHeadline({
     },
   };
 
-  if (prefersReducedMotion) {
+  if (!mounted || prefersReducedMotion) {
     return <h1 className={className}>{children}</h1>;
   }
 
