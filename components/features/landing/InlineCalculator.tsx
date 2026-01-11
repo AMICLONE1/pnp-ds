@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { TrendingUp, Leaf, DollarSign } from "lucide-react";
+import { TrendingUp, Leaf, DollarSign, Sparkles, PartyPopper } from "lucide-react";
 import { GlassCard } from "./GlassCard";
 import { formatNumber } from "@/lib/utils";
+import { SparkleBurst } from "@/components/ui/ConfettiCelebration";
 
 interface InlineCalculatorProps {
   onCalculate?: (savings: number) => void;
@@ -14,6 +15,8 @@ interface InlineCalculatorProps {
 export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
   const [billAmount, setBillAmount] = useState("2000");
   const [mounted, setMounted] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationShown, setCelebrationShown] = useState(false);
   const savingsPercent = 75; // Default 75% savings
   const animationRef = useRef<number | null>(null);
 
@@ -33,10 +36,20 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
     const bill = parseFloat(billAmount) || 0;
     const calculatedSavings = (bill * savingsPercent) / 100;
     setSavings(calculatedSavings);
+    
+    // Trigger celebration when savings exceed threshold
+    if (calculatedSavings >= 1500 && !celebrationShown && mounted) {
+      setShowCelebration(true);
+      setCelebrationShown(true);
+      setTimeout(() => setShowCelebration(false), 1500);
+    } else if (calculatedSavings < 1500) {
+      setCelebrationShown(false);
+    }
+    
     if (onCalculate) {
       onCalculate(calculatedSavings);
     }
-  }, [billAmount, onCalculate]);
+  }, [billAmount, onCalculate, celebrationShown, mounted]);
 
   // Animate savings counter and progress bar
   useEffect(() => {
@@ -121,14 +134,50 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                 initial={{ scale: 1 }}
                 animate={{ scale: savings > 0 ? [1, 1.05, 1] : 1 }}
                 transition={{ duration: 0.3 }}
-                className="text-3xl md:text-4xl font-bold text-gold flex items-center gap-2 bg-white/10 rounded-lg px-4 py-3 border border-gold/30"
+                className="relative text-3xl md:text-4xl font-bold text-gold flex items-center gap-2 bg-white/10 rounded-lg px-4 py-3 border border-gold/30"
               >
+                <SparkleBurst trigger={showCelebration} />
                 <TrendingUp className="h-6 w-6 md:h-8 md:w-8" />
                 <span>₹{formatNumber(displaySavings)}</span>
                 <span className="text-xl md:text-2xl">/month</span>
+                <AnimatePresence>
+                  {savings >= 1500 && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      className="absolute -top-2 -right-2 bg-energy-green text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      Great!
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </div>
           </div>
+
+          {/* Celebration Message */}
+          <AnimatePresence>
+            {savings >= 2000 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="flex items-center gap-3 bg-gradient-to-r from-gold/20 to-energy-green/20 rounded-xl p-4 border border-gold/30">
+                  <PartyPopper className="w-6 h-6 text-gold flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-semibold">
+                      🎉 That&apos;s like getting {Math.round(annualSavings / (bill * 12) * 12)} months of FREE power every year!
+                    </p>
+                    <p className="text-white/70 text-sm">You&apos;re in the top 10% of savers</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Visual Progress Bar */}
           {bill > 0 && (
