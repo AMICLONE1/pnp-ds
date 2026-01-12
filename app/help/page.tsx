@@ -1,12 +1,28 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ChevronDown, ChevronUp, Video, BookOpen, MessageCircle } from "lucide-react";
+import { 
+  Search, 
+  ChevronDown, 
+  Video, 
+  BookOpen, 
+  MessageCircle,
+  HelpCircle,
+  Sparkles,
+  Zap,
+  Sun,
+  CreditCard,
+  ArrowRight,
+  ExternalLink,
+  Phone,
+  Mail
+} from "lucide-react";
 
 interface FAQ {
   category: string;
@@ -78,6 +94,13 @@ export default function HelpPage() {
 
   const categories = ["All", ...Array.from(new Set(faqs.map((f) => f.category)))];
 
+  const categoryIcons: Record<string, React.ElementType> = {
+    "All": Sparkles,
+    "General": HelpCircle,
+    "Reserving Solar": Sun,
+    "Using Credits": CreditCard,
+  };
+
   const filteredFAQs = faqs.filter((faq) => {
     const matchesSearch =
       faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -87,108 +110,329 @@ export default function HelpPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-offwhite">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-offwhite via-white to-offwhite">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-charcoal">
-              Help Center
-            </h1>
-            <p className="text-xl text-gray-600">
-              Find answers to common questions and learn how to use PowerNetPro
-            </p>
+      <main className="flex-1 pt-28 pb-16">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-forest via-forest to-forest-light py-16 mb-12">
+          {/* Background decorations */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gold/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-energy-green/10 rounded-full blur-3xl" />
+            <div className="absolute inset-0 opacity-5" style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 1px)`,
+              backgroundSize: '32px 32px',
+            }} />
           </div>
-
-          {/* Search */}
-          <div className="mb-8">
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search for help..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 text-lg py-6"
-              />
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <Video className="h-12 w-12 text-forest mx-auto mb-4" />
-                <h3 className="font-semibold text-charcoal mb-2">Video Library</h3>
-                <p className="text-sm text-gray-600">Watch tutorials and guides</p>
-              </CardContent>
-            </Card>
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <BookOpen className="h-12 w-12 text-forest mx-auto mb-4" />
-                <h3 className="font-semibold text-charcoal mb-2">Documentation</h3>
-                <p className="text-sm text-gray-600">Read detailed guides</p>
-              </CardContent>
-            </Card>
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <MessageCircle className="h-12 w-12 text-forest mx-auto mb-4" />
-                <h3 className="font-semibold text-charcoal mb-2">Contact Support</h3>
-                <p className="text-sm text-gray-600">Get help from our team</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Categories */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "primary" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
+          
+          <div className="container mx-auto px-4 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/90 text-sm font-medium mb-6"
               >
-                {category}
-              </Button>
-            ))}
-          </div>
+                <HelpCircle className="h-4 w-4" />
+                We're here to help
+              </motion.div>
+              
+              <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-white">
+                Help Center
+              </h1>
+              <p className="text-lg text-white/70 mb-8">
+                Find answers to common questions and learn how to use PowerNetPro
+              </p>
 
-          {/* FAQs */}
-          <div className="space-y-4">
-            {filteredFAQs.map((faq, index) => (
-              <Card key={index}>
-                <CardContent className="p-6">
-                  <button
-                    className="w-full flex items-center justify-between text-left"
-                    onClick={() =>
-                      setExpandedFAQ(expandedFAQ === index ? null : index)
-                    }
+              {/* Search */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="relative max-w-2xl mx-auto"
+              >
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search for help topics..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 pr-4 py-4 h-14 text-lg rounded-2xl border-0 shadow-xl shadow-black/10 focus:ring-2 focus:ring-gold"
+                />
+                {searchQuery && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xs text-gray-400"
                   >
-                    <div className="flex-1">
-                      <div className="text-xs text-gray-500 mb-1">{faq.category}</div>
-                      <h3 className="text-lg font-semibold text-charcoal">{faq.question}</h3>
-                    </div>
-                    {expandedFAQ === index ? (
-                      <ChevronUp className="h-5 w-5 text-gray-400 flex-shrink-0 ml-4" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-gray-400 flex-shrink-0 ml-4" />
+                    {filteredFAQs.length} results
+                  </motion.div>
+                )}
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            {/* Quick Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="grid md:grid-cols-3 gap-6 mb-12 -mt-8"
+            >
+              {[
+                { 
+                  icon: Video, 
+                  title: "Video Tutorials", 
+                  desc: "Watch step-by-step guides",
+                  color: "from-blue-500 to-blue-600",
+                  badge: "5 videos"
+                },
+                { 
+                  icon: BookOpen, 
+                  title: "Documentation", 
+                  desc: "Read detailed guides",
+                  color: "from-emerald-500 to-emerald-600",
+                  badge: "12 articles"
+                },
+                { 
+                  icon: MessageCircle, 
+                  title: "Contact Support", 
+                  desc: "Get help from our team",
+                  color: "from-gold to-amber-500",
+                  badge: "24/7"
+                },
+              ].map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                  whileHover={{ y: -4 }}
+                  className="group cursor-pointer"
+                >
+                  <Card className="h-full bg-white border-0 shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color} shadow-lg`}>
+                          <item.icon className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold text-charcoal group-hover:text-forest transition-colors">
+                              {item.title}
+                            </h3>
+                            <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                              {item.badge}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600">{item.desc}</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-forest group-hover:translate-x-1 transition-all" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Categories */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-wrap gap-2 mb-8"
+            >
+              {categories.map((category) => {
+                const Icon = categoryIcons[category] || HelpCircle;
+                return (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "primary" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category)}
+                    className={`transition-all duration-200 ${
+                      selectedCategory === category 
+                        ? "shadow-lg shadow-forest/20" 
+                        : "hover:bg-forest/5"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-1.5" />
+                    {category}
+                    {selectedCategory !== category && (
+                      <span className="ml-1.5 text-xs opacity-60">
+                        ({faqs.filter(f => category === "All" || f.category === category).length})
+                      </span>
                     )}
-                  </button>
-                  {expandedFAQ === index && (
-                    <p className="mt-4 text-gray-700 leading-relaxed">{faq.answer}</p>
-                  )}
+                  </Button>
+                );
+              })}
+            </motion.div>
+
+            {/* FAQs */}
+            <div className="space-y-3">
+              <AnimatePresence mode="popLayout">
+                {filteredFAQs.map((faq, index) => (
+                  <motion.div
+                    key={faq.question}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ delay: index * 0.05 }}
+                    layout
+                  >
+                    <Card className={`border-0 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${
+                      expandedFAQ === index ? "ring-2 ring-forest/20" : ""
+                    }`}>
+                      <CardContent className="p-0">
+                        <button
+                          className="w-full flex items-center justify-between text-left p-5 hover:bg-gray-50/50 transition-colors"
+                          onClick={() =>
+                            setExpandedFAQ(expandedFAQ === index ? null : index)
+                          }
+                        >
+                          <div className="flex items-center gap-4 flex-1">
+                            <div className={`p-2 rounded-lg transition-colors ${
+                              expandedFAQ === index 
+                                ? "bg-forest text-white" 
+                                : "bg-forest/10 text-forest"
+                            }`}>
+                              {faq.category === "General" && <HelpCircle className="h-4 w-4" />}
+                              {faq.category === "Reserving Solar" && <Sun className="h-4 w-4" />}
+                              {faq.category === "Using Credits" && <CreditCard className="h-4 w-4" />}
+                            </div>
+                            <div className="flex-1">
+                              <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-1 ${
+                                faq.category === "General" ? "bg-blue-100 text-blue-700" :
+                                faq.category === "Reserving Solar" ? "bg-amber-100 text-amber-700" :
+                                "bg-emerald-100 text-emerald-700"
+                              }`}>
+                                {faq.category}
+                              </span>
+                              <h3 className="text-base font-semibold text-charcoal">{faq.question}</h3>
+                            </div>
+                          </div>
+                          <motion.div
+                            animate={{ rotate: expandedFAQ === index ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={`ml-4 p-1 rounded-full ${
+                              expandedFAQ === index ? "bg-forest text-white" : "bg-gray-100 text-gray-400"
+                            }`}
+                          >
+                            <ChevronDown className="h-5 w-5" />
+                          </motion.div>
+                        </button>
+                        <AnimatePresence>
+                          {expandedFAQ === index && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="px-5 pb-5 pt-0 ml-14">
+                                <div className="p-4 bg-gray-50 rounded-xl">
+                                  <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                                </div>
+                                <div className="flex items-center gap-4 mt-4 text-sm">
+                                  <span className="text-gray-400">Was this helpful?</span>
+                                  <button className="text-forest hover:underline font-medium">Yes</button>
+                                  <button className="text-gray-500 hover:underline">No</button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {filteredFAQs.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-12 text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                      <Search className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-charcoal mb-2">No results found</h3>
+                    <p className="text-gray-600 mb-4">Try a different search term or browse by category</p>
+                    <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}>
+                      Clear filters
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Still Need Help Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="mt-16"
+            >
+              <Card className="border-0 bg-gradient-to-br from-forest via-forest to-forest-light text-white overflow-hidden">
+                <CardContent className="p-8 md:p-12 relative">
+                  {/* Background decorations */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-energy-green/10 rounded-full blur-3xl" />
+                  
+                  <div className="relative grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                      <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4">
+                        Still have questions?
+                      </h2>
+                      <p className="text-white/70 mb-6">
+                        Can't find what you're looking for? Our support team is ready to help you with any questions.
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        <a href="/contact">
+                          <Button className="bg-gold hover:bg-gold-light text-charcoal font-semibold">
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Contact Support
+                          </Button>
+                        </a>
+                        <a href="mailto:help@powernetpro.in">
+                          <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Email Us
+                          </Button>
+                        </a>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
+                        <Phone className="h-6 w-6 text-gold mb-3" />
+                        <h3 className="font-semibold mb-1">Call Us</h3>
+                        <p className="text-sm text-white/70">+91 800 123 4567</p>
+                        <p className="text-xs text-white/50 mt-1">Mon-Fri, 9AM-6PM IST</p>
+                      </div>
+                      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
+                        <Zap className="h-6 w-6 text-gold mb-3" />
+                        <h3 className="font-semibold mb-1">Quick Response</h3>
+                        <p className="text-sm text-white/70">Under 2 hours</p>
+                        <p className="text-xs text-white/50 mt-1">Average response time</p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            ))}
+            </motion.div>
           </div>
-
-          {filteredFAQs.length === 0 && (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <p className="text-gray-600">No results found. Try a different search term.</p>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </main>
       <Footer />

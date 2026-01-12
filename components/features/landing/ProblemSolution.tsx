@@ -191,78 +191,170 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
           >
             <div className="relative bg-white rounded-3xl shadow-xl border-2 border-energy-green/30 p-8 h-full overflow-hidden group hover:border-energy-green/50 transition-colors">
               {/* Animated background pattern */}
-              <div className="absolute inset-0 opacity-5">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: `radial-gradient(circle at 2px 2px, #4CAF50 1px, transparent 1px)`,
-                  backgroundSize: '20px 20px',
-                }} />
+              <div className="absolute inset-0 opacity-[0.03] overflow-hidden">
+                {/* Primary dot grid with animation */}
+                <motion.div 
+                  className="absolute inset-0"
+                  animate={{ 
+                    backgroundPosition: ['0px 0px', '20px 20px'],
+                  }}
+                  transition={{ 
+                    duration: 20, 
+                    repeat: Infinity, 
+                    ease: "linear" 
+                  }}
+                  style={{
+                    backgroundImage: `radial-gradient(circle at 1.5px 1.5px, #4CAF50 1.5px, transparent 1.5px)`,
+                    backgroundSize: '24px 24px',
+                  }} 
+                />
+                {/* Secondary larger dots for depth */}
+                <motion.div 
+                  className="absolute inset-0 opacity-50"
+                  animate={{ 
+                    backgroundPosition: ['0px 0px', '-40px -40px'],
+                  }}
+                  transition={{ 
+                    duration: 30, 
+                    repeat: Infinity, 
+                    ease: "linear" 
+                  }}
+                  style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, #4CAF50 2px, transparent 2px)`,
+                    backgroundSize: '48px 48px',
+                  }} 
+                />
+                {/* Gradient fade at edges */}
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    background: 'radial-gradient(ellipse at center, transparent 0%, white 70%)',
+                  }}
+                />
               </div>
               
-              {/* Winner badge */}
+              {/* Winner badge - ribbon style */}
               <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ delay: 1, type: "spring" }}
-                className="absolute -top-3 -right-3 bg-gradient-to-r from-gold to-gold-light px-4 py-1 rounded-full shadow-lg"
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
+                className="absolute top-6 -right-2 z-10"
               >
-                <span className="text-charcoal font-bold text-sm flex items-center gap-1">
-                  <Sparkles className="w-4 h-4" />
-                  WINNER
-                </span>
+                <div className="relative">
+                  {/* Ribbon tail */}
+                  <div className="absolute -bottom-2 right-0 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-amber-600" />
+                  {/* Main badge */}
+                  <div className="bg-gradient-to-r from-gold via-gold-light to-gold px-4 py-2 rounded-l-full shadow-lg flex items-center gap-2">
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 10, -10, 0] 
+                      }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
+                    >
+                      <Sparkles className="w-4 h-4 text-charcoal" />
+                    </motion.div>
+                    <span className="text-charcoal font-bold text-sm tracking-wide">WINNER</span>
+                  </div>
+                </div>
               </motion.div>
 
               {/* Header */}
               <div className="relative mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-energy-green/10 rounded-xl flex items-center justify-center">
-                    <Zap className="w-6 h-6 text-energy-green" />
-                  </div>
+                <div className="flex items-center gap-4 mb-4">
+                  <motion.div 
+                    className="w-14 h-14 bg-gradient-to-br from-energy-green/20 to-emerald-100 rounded-2xl flex items-center justify-center shadow-sm"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <Zap className="w-7 h-7 text-energy-green" />
+                  </motion.div>
                   <div>
                     <h3 className="text-2xl font-bold text-gray-800">The New Way</h3>
-                    <p className="text-sm text-energy-green font-medium">Digital Solar Power</p>
+                    <p className="text-sm text-energy-green font-semibold flex items-center gap-1.5">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-energy-green opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-energy-green"></span>
+                      </span>
+                      Digital Solar Power
+                    </p>
                   </div>
                 </div>
                 
                 {/* Savings Animation */}
                 <motion.div 
-                  className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-energy-green/20"
+                  className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-6 border border-energy-green/20 relative overflow-hidden"
                   initial={{ scale: 1 }}
                   whileHover={{ scale: 1.02 }}
                 >
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-4xl font-bold text-energy-green">₹2,500</span>
-                    <span className="text-gray-500">/month</span>
-                    <span className="ml-2 bg-energy-green/10 text-energy-green text-sm font-semibold px-2 py-1 rounded-full">
+                  {/* Subtle shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  
+                  <div className="flex items-baseline gap-2 mb-2 relative">
+                    <motion.span 
+                      className="text-4xl font-bold text-energy-green"
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: 0.6, type: "spring" }}
+                    >
+                      ₹2,500
+                    </motion.span>
+                    <span className="text-gray-500 font-medium">/month</span>
+                    <motion.span 
+                      className="ml-2 bg-gradient-to-r from-energy-green to-emerald-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-sm"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={isInView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ delay: 0.8 }}
+                    >
                       50% OFF
-                    </span>
+                    </motion.span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-energy-green">
+                  <div className="flex items-center gap-2 text-sm text-energy-green font-medium relative">
                     <Shield className="w-4 h-4" />
                     <span>Locked rates • No surprises</span>
+                  </div>
+                  
+                  {/* Comparison line */}
+                  <div className="mt-3 pt-3 border-t border-energy-green/10 flex items-center justify-between text-xs">
+                    <span className="text-gray-400 line-through">Traditional: ₹5,000/mo</span>
+                    <span className="text-energy-green font-semibold flex items-center gap-1">
+                      <TrendingDown className="w-3.5 h-3.5" />
+                      Save ₹30,000/year
+                    </span>
                   </div>
                 </motion.div>
               </div>
 
               {/* Benefits List */}
-              <div className="space-y-4 relative">
+              <div className="space-y-3 relative">
                 {newWayBenefits.map((benefit, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: 20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ delay: 0.5 + index * 0.1 }}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-energy-green/5 border border-energy-green/10"
+                    whileHover={{ x: 4, backgroundColor: "rgba(76, 175, 80, 0.08)" }}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-energy-green/5 border border-energy-green/10 cursor-default transition-colors"
                   >
-                    <div className="w-8 h-8 bg-energy-green/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-energy-green" />
-                    </div>
+                    <motion.div 
+                      className="w-8 h-8 bg-energy-green/15 rounded-lg flex items-center justify-center flex-shrink-0"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <Check className="w-4 h-4 text-energy-green" strokeWidth={3} />
+                    </motion.div>
                     <span className="text-gray-700 font-medium">{benefit.text}</span>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Bottom decoration */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-energy-green to-emerald-400" />
+              {/* Bottom decoration - animated gradient */}
+              <motion.div 
+                className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-energy-green via-emerald-400 to-teal-400"
+                initial={{ scaleX: 0 }}
+                animate={isInView ? { scaleX: 1 } : {}}
+                transition={{ delay: 1.2, duration: 0.8 }}
+                style={{ transformOrigin: "left" }}
+              />
             </div>
           </motion.div>
         </div>
