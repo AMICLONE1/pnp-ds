@@ -2,12 +2,12 @@
 
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { 
-  Zap, 
-  Home, 
-  Clock, 
-  Shield, 
-  TrendingUp, 
+import {
+  Zap,
+  Home,
+  Clock,
+  Shield,
+  TrendingUp,
   Leaf,
   ArrowRight,
   CheckCircle,
@@ -132,11 +132,11 @@ const benefitCategories = [
 ];
 
 // Navigation pill for category selection
-function CategoryNav({ 
-  categories, 
-  activeIndex, 
-  onSelect 
-}: { 
+function CategoryNav({
+  categories,
+  activeIndex,
+  onSelect
+}: {
   categories: typeof benefitCategories;
   activeIndex: number;
   onSelect: (index: number) => void;
@@ -148,43 +148,31 @@ function CategoryNav({
           key={category.id}
           onClick={() => onSelect(index)}
           className={cn(
-            "relative px-5 py-3 md:px-7 md:py-3.5 rounded-2xl text-sm md:text-base font-medium transition-all duration-300",
-            "flex items-center gap-2.5",
+            "relative px-4 py-2.5 md:px-6 md:py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300",
+            "flex items-center gap-2",
             activeIndex === index
-              ? "text-white shadow-xl shadow-black/15"
-              : "text-charcoal/70 bg-white hover:bg-white hover:text-charcoal border border-gray-200/80 hover:border-gray-300 hover:shadow-md"
+              ? "text-white shadow-lg"
+              : "text-charcoal/70 bg-white/80 hover:bg-white hover:text-charcoal border border-gray-200/50"
           )}
-          whileHover={{ scale: 1.03, y: -2 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: activeIndex === index ? 1 : 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           {/* Active background */}
           {activeIndex === index && (
             <motion.div
               layoutId="activeCategory"
-              className={cn("absolute inset-0 rounded-2xl bg-gradient-to-r", category.color)}
-              transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+              className={cn("absolute inset-0 rounded-full bg-gradient-to-r", category.color)}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
-          
-          {/* Number badge */}
+
           <span className={cn(
-            "relative z-10 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors",
-            activeIndex === index 
-              ? "bg-white/20 text-white" 
-              : "bg-gray-100 text-charcoal/50"
+            "relative z-10 font-bold",
+            activeIndex === index ? "text-white/90" : "text-charcoal/50"
           )}>
             {category.number}
           </span>
-          <span className="relative z-10 font-semibold">{category.title}</span>
-          
-          {/* Active indicator dot */}
-          {activeIndex === index && (
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="relative z-10 w-1.5 h-1.5 rounded-full bg-white/80 ml-1"
-            />
-          )}
+          <span className="relative z-10">{category.title}</span>
         </motion.button>
       ))}
     </div>
@@ -202,7 +190,7 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
         <motion.div
           ref={ref}
           key={category.id}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
@@ -210,69 +198,46 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
         >
           {/* Category header */}
           <div className="text-center mb-10">
-            {/* Animated badge */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 }}
               className={cn(
-                "inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-sm font-semibold mb-6",
-                "shadow-lg"
+                "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-4",
+                `bg-${category.accentColor}/10 text-${category.accentColor}`
               )}
               style={{
-                background: `linear-gradient(135deg, var(--${category.accentColor}, #f59e0b)15, var(--${category.accentColor}, #f59e0b)08)`,
-                color: `var(--${category.accentColor}, #f59e0b)`,
-                border: `1px solid var(--${category.accentColor}, #f59e0b)30`
+                backgroundColor: `var(--${category.accentColor}, #f59e0b)20`,
+                color: `var(--${category.accentColor}, #f59e0b)`
               }}
             >
-              <motion.div
-                animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
-              >
-                <Sparkles className="w-4 h-4" />
-              </motion.div>
-              <span className="font-bold opacity-70">{category.number}</span>
-              <span className="w-1 h-1 rounded-full bg-current opacity-40" />
-              <span>{category.title}</span>
+              <Sparkles className="w-4 h-4" />
+              {category.number} · {category.title}
             </motion.div>
-            
-            {/* Main headline */}
+
             <motion.h3
-              initial={{ y: 30, opacity: 0 }}
+              initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-5"
+              transition={{ delay: 0.2 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
             >
               {category.tagline.split('.')[0]}
               <span className={cn(
                 "bg-gradient-to-r bg-clip-text text-transparent",
                 category.color
               )}>
-                {category.tagline.includes('.') ? '.' : ''}
+                {category.tagline.includes('.') ? '.' + category.tagline.split('.')[1] : ''}
               </span>
             </motion.h3>
-            
-            {/* Description with animated highlight */}
+
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
             >
               {category.description}
             </motion.p>
-            
-            {/* Decorative line */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className={cn(
-                "mx-auto mt-8 h-1 w-24 rounded-full bg-gradient-to-r",
-                category.color
-              )}
-              style={{ transformOrigin: "center" }}
-            />
           </div>
         </motion.div>
       )}
@@ -281,12 +246,12 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
 }
 
 // Feature card with enhanced design
-function FeatureCard({ 
-  feature, 
+function FeatureCard({
+  feature,
   index,
   categoryColor,
   isActive
-}: { 
+}: {
   feature: typeof benefitCategories[0]['features'][0];
   index: number;
   categoryColor: string;
@@ -305,62 +270,48 @@ function FeatureCard({
       onHoverStart={() => setIsExpanded(true)}
       onHoverEnd={() => setIsExpanded(false)}
       onClick={() => setIsExpanded(!isExpanded)}
-      whileHover={{ y: -8 }}
       className={cn(
         "group relative cursor-pointer",
         "bg-white rounded-2xl md:rounded-3xl",
-        "border border-gray-100",
+        "border border-gray-100/80",
         "transition-all duration-500 ease-out",
-        "hover:shadow-2xl hover:shadow-black/[0.08]",
+        "hover:shadow-2xl hover:shadow-black/10",
         "overflow-hidden"
       )}
     >
       {/* Gradient border on hover */}
       <div className={cn(
         "absolute inset-0 rounded-2xl md:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-        "bg-gradient-to-br p-[1.5px]",
+        "bg-gradient-to-br p-[1px]",
         categoryColor
       )}>
         <div className="w-full h-full bg-white rounded-2xl md:rounded-3xl" />
       </div>
-      
-      {/* Subtle glow effect on hover */}
-      <div className={cn(
-        "absolute -inset-px rounded-2xl md:rounded-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl",
-        "bg-gradient-to-br",
-        categoryColor
-      )} />
-      
+
       {/* Content container */}
       <div className="relative p-6 md:p-8">
         {/* Icon and number */}
         <div className="flex items-start justify-between mb-6">
-          <motion.div 
-            className={cn(
-              "w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center",
-              "bg-gradient-to-br shadow-lg transition-all duration-500",
-              "group-hover:shadow-xl group-hover:scale-110",
-              categoryColor
-            )}
-            whileHover={{ rotate: [0, -5, 5, 0] }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className={cn(
+            "w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center",
+            "bg-gradient-to-br shadow-lg transition-transform duration-500 group-hover:scale-110",
+            categoryColor
+          )}>
             <feature.icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
-          </motion.div>
-          
+          </div>
+
           <motion.span
-            className="text-5xl md:text-6xl font-heading font-bold text-gray-100/80 group-hover:text-gray-200 transition-colors select-none"
-            animate={{ 
-              scale: isExpanded ? 1.05 : 1,
-              x: isExpanded ? -5 : 0,
-              opacity: isExpanded ? 0.6 : 0.5
+            className="text-5xl md:text-6xl font-heading font-bold text-gray-100 group-hover:text-gray-200 transition-colors"
+            animate={{
+              scale: isExpanded ? 1.1 : 1,
+              x: isExpanded ? -10 : 0
             }}
             transition={{ duration: 0.3 }}
           >
             0{index + 1}
           </motion.span>
         </div>
-        
+
         {/* Title and subtitle */}
         <div className="mb-4">
           <h4 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-1 group-hover:text-forest transition-colors">
@@ -368,16 +319,16 @@ function FeatureCard({
           </h4>
           <p className="text-sm text-gray-500">{feature.subtitle}</p>
         </div>
-        
+
         {/* Description */}
         <p className="text-gray-600 leading-relaxed mb-4">
           {feature.description}
         </p>
-        
+
         {/* Benefits list - animated expansion */}
         <motion.div
           initial={{ height: 0, opacity: 0 }}
-          animate={{ 
+          animate={{
             height: isExpanded ? "auto" : 0,
             opacity: isExpanded ? 1 : 0
           }}
@@ -405,9 +356,9 @@ function FeatureCard({
             ))}
           </div>
         </motion.div>
-        
+
         {/* Expand indicator */}
-        <motion.div 
+        <motion.div
           className="flex items-center gap-2 mt-4 text-sm font-medium text-gray-400 group-hover:text-forest transition-colors"
           animate={{ x: isExpanded ? 5 : 0 }}
         >
@@ -418,7 +369,7 @@ function FeatureCard({
           )} />
         </motion.div>
       </div>
-      
+
       {/* Bottom gradient accent */}
       <motion.div
         className={cn(
@@ -437,10 +388,10 @@ function FeatureCard({
 // Stats banner
 function StatsBanner() {
   const stats = [
-    { value: "5", suffix: "min", label: "Setup Time", icon: Clock },
-    { value: "75", suffix: "%", label: "Guaranteed", icon: Shield },
-    { value: "24K", suffix: "+", label: "Annual Savings", icon: Wallet },
-    { value: "340", suffix: "", label: "Trees Equivalent", icon: Leaf },
+    { value: "5", suffix: "min", label: "Setup Time" },
+    { value: "75", suffix: "%", label: "Guaranteed" },
+    { value: "24K", suffix: "+", label: "Annual Savings" },
+    { value: "340", suffix: "", label: "Trees Equivalent" },
   ];
 
   return (
@@ -451,88 +402,55 @@ function StatsBanner() {
       transition={{ duration: 0.6 }}
       className="mt-16 md:mt-20"
     >
-      <div className="bg-gradient-to-br from-forest via-forest to-emerald-700 rounded-2xl md:rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden relative">
-        {/* Enhanced background pattern */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold/20 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(0,0,0,0.2)_100%)]" />
-          {/* Dot pattern */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 1px)`,
-            backgroundSize: '32px 32px',
-          }} />
+      <div className="bg-gradient-to-r from-forest via-forest to-energy-green rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-10 overflow-hidden relative">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold rounded-full blur-3xl" />
         </div>
-        
-        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+
+        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, type: "spring" }}
-              className="text-center group"
+              transition={{ delay: index * 0.1 }}
+              className="text-center"
             >
-              {/* Icon */}
-              <motion.div
-                className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/10"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-              >
-                <stat.icon className="w-6 h-6 text-gold" />
-              </motion.div>
-              
-              <div className="flex items-baseline justify-center gap-1 mb-2">
-                <motion.span 
-                  className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 + 0.3 }}
-                >
+              <div className="flex items-baseline justify-center gap-1 mb-1">
+                <span className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white">
                   {stat.value}
-                </motion.span>
+                </span>
                 <span className="text-xl md:text-2xl font-bold text-gold">
                   {stat.suffix}
                 </span>
               </div>
-              <p className="text-sm md:text-base text-white/70 font-medium">{stat.label}</p>
+              <p className="text-sm md:text-base text-white/80">{stat.label}</p>
             </motion.div>
           ))}
         </div>
-        
-        {/* Bottom accent line */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent"
-          style={{ transformOrigin: "center" }}
-        />
       </div>
     </motion.div>
   );
 }
 
 // Progress indicator
-function ProgressIndicator({ total, current, categories }: { total: number; current: number; categories: typeof benefitCategories }) {
+function ProgressIndicator({ total, current }: { total: number; current: number }) {
   return (
-    <div className="hidden md:flex items-center justify-center gap-3 mt-10">
+    <div className="hidden md:flex items-center justify-center gap-2 mt-8">
       {Array.from({ length: total }).map((_, i) => (
         <motion.div
           key={i}
           className={cn(
-            "h-2 rounded-full transition-all duration-500 cursor-pointer",
-            i === current 
-              ? cn("w-10 bg-gradient-to-r shadow-lg", categories[i].color)
-              : "w-2 bg-gray-300 hover:bg-gray-400"
+            "h-1.5 rounded-full transition-all duration-300",
+            i === current ? "w-8 bg-forest" : "w-2 bg-gray-300"
           )}
-          animate={{ 
-            scale: i === current ? 1 : 0.85,
-            opacity: i === current ? 1 : 0.4
+          animate={{
+            scale: i === current ? 1 : 0.8,
+            opacity: i === current ? 1 : 0.5
           }}
-          whileHover={{ scale: i === current ? 1 : 1.2 }}
         />
       ))}
     </div>
@@ -550,42 +468,42 @@ export function BenefitsSection() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveCategory((prev) => (prev + 1) % benefitCategories.length);
-    }, 8000);
-    
+    }, 9000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [benefitCategories.length]);
 
   const currentCategory = benefitCategories[activeCategory];
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      id="benefits" 
+      id="benefits"
       className="relative py-20 md:py-28 lg:py-32 bg-gradient-to-b from-offwhite via-white to-offwhite overflow-hidden"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <motion.div 
+        <motion.div
           className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl"
-          animate={{ 
+          animate={{
             scale: [1, 1.1, 1],
             opacity: [0.3, 0.5, 0.3]
           }}
           transition={{ duration: 8, repeat: Infinity }}
         />
-        <motion.div 
+        <motion.div
           className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-energy-green/5 rounded-full blur-3xl"
-          animate={{ 
+          animate={{
             scale: [1.1, 1, 1.1],
             opacity: [0.4, 0.6, 0.4]
           }}
           transition={{ duration: 10, repeat: Infinity }}
         />
-        
+
         {/* Grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
-      
+
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Main section header */}
         <motion.div
@@ -604,32 +522,32 @@ export function BenefitsSection() {
             <Sun className="w-4 h-4" />
             Why Digital Solar
           </motion.span>
-          
+
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4">
             Benefits That{" "}
             <span className="bg-gradient-to-r from-gold via-energy-green to-forest bg-clip-text text-transparent">
               Actually Matter
             </span>
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Traditional solar has barriers. We removed them all. Here&apos;s why thousands of Indian families are choosing Digital Solar.
           </p>
         </motion.div>
-        
+
         {/* Category navigation */}
-        <CategoryNav 
+        <CategoryNav
           categories={benefitCategories}
           activeIndex={activeCategory}
           onSelect={setActiveCategory}
         />
-        
+
         {/* Category hero content */}
-        <CategoryHero 
+        <CategoryHero
           category={currentCategory}
           isActive={true}
         />
-        
+
         {/* Feature cards grid */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
           {currentCategory.features.map((feature, index) => (
@@ -642,70 +560,43 @@ export function BenefitsSection() {
             />
           ))}
         </div>
-        
+
         {/* Progress indicator */}
-        <ProgressIndicator 
+        <ProgressIndicator
           total={benefitCategories.length}
           current={activeCategory}
-          categories={benefitCategories}
         />
-        
+
         {/* Stats banner */}
         <StatsBanner />
-        
+
         {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
-          className="mt-16 md:mt-20 text-center"
+          className="mt-12 md:mt-16 text-center"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-forest/10 text-forest text-sm font-medium mb-4"
-          >
-            <Zap className="w-4 h-4" />
-            Join 10,000+ families saving with solar
-          </motion.div>
-          <p className="text-gray-600 mb-8 text-lg">
+          <p className="text-gray-600 mb-6">
             Ready to experience these benefits yourself?
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/reserve">
-              <motion.div 
-                whileHover={{ scale: 1.03, y: -2 }} 
-                whileTap={{ scale: 0.98 }}
-                className="inline-block"
+          <Link href="/reserve">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-block"
+            >
+              <Button
+                variant="primary"
+                size="lg"
+                className="bg-forest hover:bg-forest-light text-white font-semibold px-8 py-6 text-lg group shadow-lg shadow-forest/25"
               >
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="bg-forest hover:bg-forest-light text-white font-semibold px-10 py-6 text-lg group shadow-xl shadow-forest/25 rounded-2xl"
-                >
-                  Start Your Solar Journey
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-                </Button>
-              </motion.div>
-            </Link>
-            <Link href="/#how-it-works">
-              <motion.div 
-                whileHover={{ scale: 1.03 }} 
-                whileTap={{ scale: 0.98 }}
-                className="inline-block"
-              >
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="font-semibold px-8 py-6 text-lg rounded-2xl border-2"
-                >
-                  See How It Works
-                </Button>
-              </motion.div>
-            </Link>
-          </div>
+                Start Your Solar Journey
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </motion.div>
+          </Link>
         </motion.div>
       </div>
     </section>

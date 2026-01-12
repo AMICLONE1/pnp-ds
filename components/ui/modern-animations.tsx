@@ -1,73 +1,88 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useInView, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // ===== CURSOR FOLLOWER =====
 export function CursorFollower() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
 
+  // Raw cursor position (instant)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Spring for smooth following (same config = same speed)
+  const springConfig = {
+    stiffness: 1200,
+    damping: 40,
+    mass: 0.6,
+  };
+
+  const x = useSpring(mouseX, springConfig);
+  const y = useSpring(mouseY, springConfig);
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    const move = (e: PointerEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
 
-    const handleMouseEnter = (e: MouseEvent) => {
+    const enter = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target && typeof target.closest === 'function' && target.closest('[data-cursor-hover]')) {
+      if (target?.closest("[data-cursor-hover]")) {
         setIsHovering(true);
       }
     };
 
-    const handleMouseLeave = (e: MouseEvent) => {
+    const leave = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target && typeof target.closest === 'function' && target.closest('[data-cursor-hover]')) {
+      if (target?.closest("[data-cursor-hover]")) {
         setIsHovering(false);
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseenter', handleMouseEnter, true);
-    document.addEventListener('mouseleave', handleMouseLeave, true);
+    window.addEventListener("pointermove", move, { passive: true });
+    document.addEventListener("mouseenter", enter, true);
+    document.addEventListener("mouseleave", leave, true);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseenter', handleMouseEnter, true);
-      document.removeEventListener('mouseleave', handleMouseLeave, true);
+      window.removeEventListener("pointermove", move);
+      document.removeEventListener("mouseenter", enter, true);
+      document.removeEventListener("mouseleave", leave, true);
     };
   }, []);
 
   return (
     <>
+      {/* Inner dot */}
       <motion.div
         className="fixed top-0 left-0 w-4 h-4 bg-gold rounded-full pointer-events-none z-[9999] mix-blend-difference hidden lg:block"
+        style={{
+          x,
+          y,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
         animate={{
-          x: mousePosition.x - 8,
-          y: mousePosition.y - 8,
           scale: isHovering ? 2.5 : 1,
         }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28,
-          mass: 0.5,
-        }}
+        transition={{ duration: 0.15 }}
       />
+
+      {/* Outer ring */}
       <motion.div
         className="fixed top-0 left-0 w-10 h-10 border border-gold/50 rounded-full pointer-events-none z-[9998] hidden lg:block"
+        style={{
+          x,
+          y,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
         animate={{
-          x: mousePosition.x - 20,
-          y: mousePosition.y - 20,
           scale: isHovering ? 1.5 : 1,
         }}
-        transition={{
-          type: "spring",
-          stiffness: 150,
-          damping: 15,
-          mass: 0.8,
-        }}
+        transition={{ duration: 0.2 }}
       />
     </>
   );
@@ -91,26 +106,26 @@ export function SmoothScrollProgress() {
 }
 
 // ===== TEXT SCRAMBLE EFFECT =====
-export function TextScramble({ 
-  text, 
+export function TextScramble({
+  text,
   className,
   duration = 1000,
-  trigger = true 
-}: { 
-  text: string; 
+  trigger = true
+}: {
+  text: string;
   className?: string;
   duration?: number;
   trigger?: boolean;
 }) {
   const [displayText, setDisplayText] = useState(text);
   const chars = "!<>-_\\/[]{}—=+*^?#________";
-  
+
   useEffect(() => {
     if (!trigger) return;
-    
+
     let iteration = 0;
     const originalText = text;
-    
+
     const interval = setInterval(() => {
       setDisplayText(
         originalText
@@ -138,12 +153,12 @@ export function TextScramble({
 }
 
 // ===== PARALLAX SECTION =====
-export function ParallaxSection({ 
-  children, 
+export function ParallaxSection({
+  children,
   className,
-  speed = 0.5 
-}: { 
-  children: React.ReactNode; 
+  speed = 0.5
+}: {
+  children: React.ReactNode;
   className?: string;
   speed?: number;
 }) {
@@ -153,7 +168,7 @@ export function ParallaxSection({
     offset: ["start end", "end start"],
     layoutEffect: false,
   });
-  
+
   const y = useTransform(scrollYProgress, [0, 1], [100 * speed, -100 * speed]);
 
   return (
@@ -166,13 +181,13 @@ export function ParallaxSection({
 }
 
 // ===== REVEAL TEXT ON SCROLL =====
-export function RevealText({ 
-  text, 
+export function RevealText({
+  text,
   className,
   as = "p",
   delay = 0
-}: { 
-  text: string; 
+}: {
+  text: string;
   className?: string;
   as?: "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "div";
   delay?: number;
@@ -187,10 +202,10 @@ export function RevealText({
         className="block"
         initial={{ y: "100%" }}
         animate={isInView ? { y: 0 } : { y: "100%" }}
-        transition={{ 
-          duration: 0.8, 
+        transition={{
+          duration: 0.8,
           ease: [0.16, 1, 0.3, 1],
-          delay 
+          delay
         }}
       >
         <Tag>{text}</Tag>
@@ -200,10 +215,10 @@ export function RevealText({
 }
 
 // ===== MORPHING BLOB =====
-export function MorphingBlob({ 
+export function MorphingBlob({
   className,
   colors = ["#FFB800", "#4CAF50", "#00BCD4"]
-}: { 
+}: {
   className?: string;
   colors?: string[];
 }) {
@@ -213,19 +228,19 @@ export function MorphingBlob({
         <defs>
           <linearGradient id="blob-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={colors[0]} stopOpacity="0.3">
-              <animate 
-                attributeName="stop-color" 
-                values={`${colors[0]};${colors[1]};${colors[2]};${colors[0]}`} 
-                dur="10s" 
-                repeatCount="indefinite" 
+              <animate
+                attributeName="stop-color"
+                values={`${colors[0]};${colors[1]};${colors[2]};${colors[0]}`}
+                dur="10s"
+                repeatCount="indefinite"
               />
             </stop>
             <stop offset="100%" stopColor={colors[2]} stopOpacity="0.3">
-              <animate 
-                attributeName="stop-color" 
-                values={`${colors[2]};${colors[0]};${colors[1]};${colors[2]}`} 
-                dur="10s" 
-                repeatCount="indefinite" 
+              <animate
+                attributeName="stop-color"
+                values={`${colors[2]};${colors[0]};${colors[1]};${colors[2]}`}
+                dur="10s"
+                repeatCount="indefinite"
               />
             </stop>
           </linearGradient>
@@ -249,12 +264,12 @@ export function MorphingBlob({
 }
 
 // ===== NUMBERED SECTION INDICATOR (Inspired by Acron.no) =====
-export function SectionIndicator({ 
-  current, 
+export function SectionIndicator({
+  current,
   total,
-  className 
-}: { 
-  current: number; 
+  className
+}: {
+  current: number;
   total: number;
   className?: string;
 }) {
@@ -264,7 +279,7 @@ export function SectionIndicator({
         {String(current).padStart(2, '0')}
       </span>
       <div className="w-px h-16 bg-gray-300 relative overflow-hidden">
-        <motion.div 
+        <motion.div
           className="absolute top-0 left-0 w-full bg-gold"
           initial={{ height: 0 }}
           animate={{ height: `${(current / total) * 100}%` }}
@@ -279,10 +294,10 @@ export function SectionIndicator({
 }
 
 // ===== HORIZONTAL SCROLL SECTION =====
-export function HorizontalScrollSection({ 
+export function HorizontalScrollSection({
   children,
-  className 
-}: { 
+  className
+}: {
   children: React.ReactNode;
   className?: string;
 }) {
@@ -307,14 +322,14 @@ export function HorizontalScrollSection({
 }
 
 // ===== ANIMATED COUNTER =====
-export function AnimatedCounter({ 
-  value, 
+export function AnimatedCounter({
+  value,
   prefix = "",
   suffix = "",
   duration = 2,
-  className 
-}: { 
-  value: number; 
+  className
+}: {
+  value: number;
   prefix?: string;
   suffix?: string;
   duration?: number;
@@ -352,11 +367,11 @@ export function AnimatedCounter({
 }
 
 // ===== STAGGERED GRID =====
-export function StaggeredGrid({ 
+export function StaggeredGrid({
   children,
   className,
-  staggerDelay = 0.1 
-}: { 
+  staggerDelay = 0.1
+}: {
   children: React.ReactNode;
   className?: string;
   staggerDelay?: number;
@@ -384,9 +399,9 @@ export function StaggeredGrid({
         <motion.div
           variants={{
             hidden: { opacity: 0, y: 30, scale: 0.95 },
-            visible: { 
-              opacity: 1, 
-              y: 0, 
+            visible: {
+              opacity: 1,
+              y: 0,
               scale: 1,
               transition: {
                 type: "spring",
@@ -404,11 +419,11 @@ export function StaggeredGrid({
 }
 
 // ===== INTERACTIVE CARD (Inspired by Jaeco.fr) =====
-export function InteractiveCard({ 
+export function InteractiveCard({
   children,
   className,
   glowColor = "rgba(255, 184, 0, 0.3)"
-}: { 
+}: {
   children: React.ReactNode;
   className?: string;
   glowColor?: string;
@@ -452,7 +467,7 @@ export function InteractiveCard({
         }}
         animate={{ opacity: isHovered ? 1 : 0 }}
       />
-      
+
       {/* Border gradient on hover */}
       <motion.div
         className="absolute inset-0 rounded-2xl pointer-events-none"
@@ -461,7 +476,7 @@ export function InteractiveCard({
         }}
         animate={{ opacity: isHovered ? 0.5 : 0 }}
       />
-      
+
       <div className="relative z-10">
         {children}
       </div>
@@ -470,12 +485,12 @@ export function InteractiveCard({
 }
 
 // ===== FLOATING NAVIGATION DOTS (Inspired by Citytour) =====
-export function FloatingNavDots({ 
+export function FloatingNavDots({
   sections,
   activeSection,
   onNavigate,
-  className 
-}: { 
+  className
+}: {
   sections: { id: string; label: string }[];
   activeSection: string;
   onNavigate: (id: string) => void;
@@ -495,8 +510,8 @@ export function FloatingNavDots({
           <motion.div
             className={cn(
               "w-3 h-3 rounded-full border-2 transition-colors",
-              activeSection === section.id 
-                ? "bg-gold border-gold" 
+              activeSection === section.id
+                ? "bg-gold border-gold"
                 : "border-gray-400 hover:border-gold"
             )}
             whileHover={{ scale: 1.3 }}
@@ -508,12 +523,12 @@ export function FloatingNavDots({
 }
 
 // ===== MARQUEE TEXT =====
-export function MarqueeText({ 
+export function MarqueeText({
   text,
   className,
   speed = 50,
   direction = "left"
-}: { 
+}: {
   text: string;
   className?: string;
   speed?: number;
@@ -523,7 +538,7 @@ export function MarqueeText({
     <div className={cn("overflow-hidden whitespace-nowrap", className)}>
       <motion.div
         className="inline-flex"
-        animate={{ 
+        animate={{
           x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"]
         }}
         transition={{
@@ -542,12 +557,12 @@ export function MarqueeText({
 }
 
 // ===== SPLIT HERO TEXT =====
-export function SplitHeroText({ 
+export function SplitHeroText({
   line1,
   line2,
   highlight,
-  className 
-}: { 
+  className
+}: {
   line1: string;
   line2: string;
   highlight?: string;
@@ -555,7 +570,7 @@ export function SplitHeroText({
 }) {
   return (
     <div className={cn("overflow-hidden", className)}>
-      <motion.h1 
+      <motion.h1
         className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold leading-tight"
         initial="hidden"
         animate="visible"
@@ -597,12 +612,12 @@ export function SplitHeroText({
 }
 
 // ===== VIDEO BACKGROUND WITH OVERLAY =====
-export function VideoBackground({ 
+export function VideoBackground({
   src,
   poster,
   overlay = true,
-  className 
-}: { 
+  className
+}: {
   src: string;
   poster?: string;
   overlay?: boolean;
@@ -628,12 +643,12 @@ export function VideoBackground({
 }
 
 // ===== FEATURE PILL =====
-export function FeaturePill({ 
+export function FeaturePill({
   icon: Icon,
   text,
   variant = "default",
-  className 
-}: { 
+  className
+}: {
   icon?: React.ElementType;
   text: string;
   variant?: "default" | "gold" | "green" | "blue";
@@ -663,11 +678,11 @@ export function FeaturePill({
 }
 
 // ===== ANIMATED GRADIENT BORDER =====
-export function AnimatedGradientBorder({ 
+export function AnimatedGradientBorder({
   children,
   className,
   borderWidth = 2
-}: { 
+}: {
   children: React.ReactNode;
   className?: string;
   borderWidth?: number;
@@ -683,12 +698,12 @@ export function AnimatedGradientBorder({
 }
 
 // ===== HOVER CARD WITH IMAGE REVEAL =====
-export function HoverRevealCard({ 
+export function HoverRevealCard({
   title,
   description,
   image,
-  className 
-}: { 
+  className
+}: {
   title: string;
   description: string;
   image: string;
@@ -709,13 +724,13 @@ export function HoverRevealCard({
         animate={{ scale: isHovered ? 1.1 : 1 }}
         transition={{ duration: 0.6 }}
       />
-      
+
       {/* Overlay */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/50 to-transparent"
         animate={{ opacity: isHovered ? 0.9 : 0.7 }}
       />
-      
+
       {/* Content */}
       <div className="absolute inset-0 p-6 flex flex-col justify-end">
         <motion.h3

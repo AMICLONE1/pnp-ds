@@ -37,6 +37,7 @@ import {
   AuroraBackground,
   DotPattern,
   GradientMesh,
+  StickyTextFill,
 } from "@/components/ui/animations";
 
 // FAQ Data
@@ -135,13 +136,13 @@ const partnerLogos = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Smooth Scroll Progress Indicator */}
       <SmoothScrollProgress />
-      
+
       {/* Custom Cursor (desktop only) */}
       <CursorFollower />
-      
+
       {/* Skip to main content link for accessibility */}
       <a
         href="#main-content"
@@ -149,12 +150,24 @@ export default function HomePage() {
       >
         Skip to main content
       </a>
-      
+
       <Header />
-      
+
       <main id="main-content" className="flex-1" tabIndex={-1}>
         {/* HERO SECTION - New Modern Design */}
         <HeroSection />
+
+        {/* Text Fill Animation */}
+        <StickyTextFill
+          texts={[
+            "Start Saving Now. No Installation. No Hassle.",
+            "Quick Setup. Easy Management. Big Savings.",
+          ]}
+          height="300vh"
+          backgroundColor="bg-gray-900"
+          textClassName="text-white"
+          fadeDirection="up"
+        />
 
         {/* STATS SECTION - New Animated Stats */}
         <StatsSection />
@@ -186,7 +199,7 @@ export default function HomePage() {
                 </p>
               </div>
             </ScrollFade>
-            
+
             <TestimonialCarousel testimonials={testimonialData} />
           </div>
         </section>
@@ -203,7 +216,7 @@ export default function HomePage() {
         {/* TRUST SECTION */}
         <section className="py-24 bg-gradient-to-br from-forest via-forest to-forest-dark text-white relative overflow-hidden">
           <GradientMesh className="absolute inset-0 opacity-20" />
-          
+
           <div className="container mx-auto px-4 relative z-10">
             <ScrollFade direction="up">
               <div className="max-w-4xl mx-auto text-center">
@@ -271,7 +284,7 @@ export default function HomePage() {
         <section className="py-32 relative overflow-hidden">
           <AuroraBackground className="absolute inset-0" />
           <div className="absolute inset-0 bg-gradient-to-b from-gold/90 via-gold to-gold-dark/90" />
-          
+
           <div className="container mx-auto px-4 text-center relative z-10">
             <ScrollFade direction="up">
               <FloatingElement amplitude={5} duration={6}>
@@ -279,7 +292,7 @@ export default function HomePage() {
                   <Sun className="w-10 h-10 text-gold" />
                 </div>
               </FloatingElement>
-              
+
               {/* Live signup counter */}
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -295,14 +308,14 @@ export default function HomePage() {
                   3 people signed up in the last hour
                 </span>
               </motion.div>
-              
+
               <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-charcoal">
                 Join 1,247 Families Who<br />Switched This Month
               </h2>
               <p className="text-xl md:text-2xl text-charcoal/80 mb-10 max-w-2xl mx-auto">
                 Most people finish setup during their coffee break. ☕
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <MagneticButton strength={0.3}>
                   <Link href="/reserve">
@@ -328,7 +341,7 @@ export default function HomePage() {
                   </Link>
                 </MagneticButton>
               </div>
-              
+
               <p className="mt-8 text-sm text-charcoal/60">
                 No credit card required • 5-minute setup • Cancel anytime
               </p>
@@ -336,7 +349,7 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-      
+
       <Footer />
       <StickyCTA />
     </div>
