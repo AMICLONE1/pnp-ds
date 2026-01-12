@@ -245,6 +245,37 @@ const config: Config = {
         "glass-lg": "0 16px 64px 0 rgba(31, 38, 135, 0.5)",
         glow: "0 0 20px rgba(255, 184, 0, 0.5)",
         "glow-lg": "0 0 40px rgba(255, 184, 0, 0.8)",
+        "glow-forest": "0 0 30px rgba(13, 40, 24, 0.4)",
+        "glow-energy": "0 0 30px rgba(76, 175, 80, 0.4)",
+        "inner-glow": "inset 0 0 20px rgba(255, 184, 0, 0.2)",
+        "card-hover": "0 20px 40px -12px rgba(0, 0, 0, 0.25)",
+        "elevation-1": "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+        "elevation-2": "0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12)",
+        "elevation-3": "0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10)",
+        "elevation-4": "0 15px 25px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.05)",
+        "elevation-5": "0 20px 40px rgba(0,0,0,0.2)",
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.19, 1, 0.22, 1)",
+        "in-expo": "cubic-bezier(0.95, 0.05, 0.795, 0.035)",
+        "out-back": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+      },
+      scale: {
+        "102": "1.02",
+        "103": "1.03",
+        "98": "0.98",
+        "97": "0.97",
+      },
+      borderRadius: {
+        "4xl": "2rem",
+        "5xl": "2.5rem",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-mesh": "linear-gradient(135deg, rgba(13, 40, 24, 0.1) 0%, transparent 50%, rgba(255, 184, 0, 0.1) 100%)",
+        "hero-pattern": "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
       },
     },
   },
@@ -252,4 +283,3 @@ const config: Config = {
 };
 
 export default config;
-

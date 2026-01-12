@@ -305,6 +305,7 @@ export function StatCard({
     
     const duration = 2000;
     const startTime = Date.now();
+    const numericValue = typeof value === 'number' ? value : parseFloat(String(value)) || 0;
     
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -312,7 +313,7 @@ export function StatCard({
       
       // Easing function for smooth animation
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(Math.round(easeOut * value));
+      setDisplayValue(Math.round(easeOut * numericValue));
       
       if (progress < 1) {
         requestAnimationFrame(animate);
