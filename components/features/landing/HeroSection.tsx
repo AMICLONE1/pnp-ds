@@ -1122,7 +1122,7 @@ export function HeroSection() {
 
       <motion.div
         style={{ y }}
-        className="relative z-10 container mx-auto px-4 lg:px-8 py-24 md:py-32"
+        className="relative z-10 container mx-auto px-4 lg:px-8 py-24"
       >
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
@@ -1141,8 +1141,8 @@ export function HeroSection() {
             </motion.div>
 
             {/* Main Headline with Enhanced Animations */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-[1.05] tracking-tight mb-6">
-              <div className="overflow-hidden">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-[1.05] tracking-tight mb-6" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              <div>
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1151,7 +1151,7 @@ export function HeroSection() {
                   Stop Paying
                 </motion.div>
               </div>
-              <div className="overflow-hidden">
+              <div className="mt-3">
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1161,7 +1161,7 @@ export function HeroSection() {
                   <ShimmeringText text="Full Price" className="font-bold" />
                 </motion.div>
               </div>
-              <div className="overflow-hidden">
+              <div className="mt-1">
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1178,6 +1178,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
               className="text-xl md:text-2xl text-gray-300 mb-4 max-w-lg"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               Go Solar in <span className="text-gold font-semibold">60 Seconds</span>.
               <br className="hidden md:block" />
@@ -1190,6 +1191,7 @@ export function HeroSection() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
               className="mb-6"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               <span className="text-lg text-gray-400">
                 Make your energy{" "}
@@ -1205,6 +1207,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
               className="text-base text-gray-400 mb-6 max-w-lg"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               The average family saves{" "}
               <span className="text-gold font-medium">
@@ -1219,6 +1222,7 @@ export function HeroSection() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4 }}
               className="mb-8"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               <AnimatedCheckList
                 items={[
@@ -1236,6 +1240,7 @@ export function HeroSection() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.8 }}
               className="flex flex-wrap gap-3 mb-8"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               {heroStats.map((stat, index) => (
                 <StatPill
@@ -1252,6 +1257,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.2, duration: 0.5 }}
               className="flex flex-col sm:flex-row gap-4"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               <MagneticButton>
                 <Link href="/reserve">
@@ -1260,6 +1266,7 @@ export function HeroSection() {
                       variant="secondary"
                       size="lg"
                       className="relative w-full sm:w-auto text-lg px-8 py-6 bg-gradient-to-r from-gold to-gold-light hover:from-gold-light hover:to-gold text-charcoal font-bold shadow-2xl shadow-gold/30 group overflow-hidden"
+                      style={{ fontFamily: "'Open Sans', sans-serif" }}
                     >
                       {/* Button shine effect */}
                       <motion.div
@@ -1284,6 +1291,7 @@ export function HeroSection() {
                       variant="outline"
                       size="lg"
                       className="w-full sm:w-auto text-lg px-8 py-6 border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold group"
+                      style={{ fontFamily: "'Open Sans', sans-serif" }}
                     >
                       <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                       See How It Works

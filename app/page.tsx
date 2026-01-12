@@ -37,7 +37,6 @@ import {
   AuroraBackground,
   DotPattern,
   GradientMesh,
-  StickyTextFill,
 } from "@/components/ui/animations";
 
 // FAQ Data
@@ -157,18 +156,6 @@ export default function HomePage() {
         {/* HERO SECTION - New Modern Design */}
         <HeroSection />
 
-        {/* Text Fill Animation */}
-        <StickyTextFill
-          texts={[
-            "Start Saving Now. No Installation. No Hassle.",
-            "Quick Setup. Easy Management. Big Savings.",
-          ]}
-          height="300vh"
-          backgroundColor="bg-gray-900"
-          textClassName="text-white"
-          fadeDirection="up"
-        />
-
         {/* STATS SECTION - New Animated Stats */}
         <StatsSection />
 
@@ -187,14 +174,14 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative z-10">
             <ScrollFade direction="up">
               <div className="text-center mb-16">
-                <span className="inline-flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-4">
                   <Users className="w-4 h-4" />
                   Customer Stories
                 </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
+                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
                   What Our Users Say
                 </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl text-gray-600 max-w-2xl mx-auto">
                   Real savings from real people across India
                 </p>
               </div>
@@ -220,14 +207,14 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative z-10">
             <ScrollFade direction="up">
               <div className="max-w-4xl mx-auto text-center">
-                <span className="inline-flex items-center gap-2 bg-gold/20 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-flex items-center gap-2 bg-gold/20 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-6">
                   <Award className="w-4 h-4" />
                   Built for India
                 </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-4xl md:text-5xl font-heading font-bold mb-6">
                   Built for the Indian Energy Ecosystem
                 </h2>
-                <p className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
                   Compliant, secure, and designed for scale. Making clean energy accessible to everyone.
                 </p>
 
@@ -240,10 +227,10 @@ export default function HomePage() {
                   ].map((item, index) => (
                     <ScrollFade key={index} direction="up" delay={index * 0.1}>
                       <CardTilt maxTilt={8}>
-                        <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                        <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
                           <item.icon className="h-8 w-8 text-gold mx-auto mb-4" />
-                          <h3 className="font-semibold mb-2">{item.title}</h3>
-                          <p className="text-sm text-gray-200">{item.desc}</p>
+                          <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold mb-2">{item.title}</h3>
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-200">{item.desc}</p>
                         </div>
                       </CardTilt>
                     </ScrollFade>
@@ -260,13 +247,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative z-10">
             <ScrollFade direction="up">
               <div className="text-center mb-16">
-                <span className="inline-block bg-energy-blue/10 text-energy-blue px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-block bg-energy-blue/10 text-energy-blue px-4 py-2 rounded-full text-sm font-semibold mb-4">
                   Got Questions?
                 </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
+                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
                   Frequently Asked Questions
                 </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl text-gray-600 max-w-2xl mx-auto">
                   Everything you need to know about Digital Solar
                 </p>
               </div>
@@ -288,7 +275,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center relative z-10">
             <ScrollFade direction="up">
               <FloatingElement amplitude={5} duration={6}>
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-forest rounded-2xl mb-8 shadow-2xl">
+                <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-flex items-center justify-center w-20 h-20 bg-forest rounded-2xl mb-8 shadow-2xl">
                   <Sun className="w-10 h-10 text-gold" />
                 </div>
               </FloatingElement>
@@ -300,7 +287,7 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 className="inline-flex items-center gap-2 bg-charcoal/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6"
               >
-                <span className="relative flex h-3 w-3">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-energy-green opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-energy-green"></span>
                 </span>
@@ -309,14 +296,14 @@ export default function HomePage() {
                 </span>
               </motion.div>
 
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-charcoal">
+              <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-charcoal">
                 Join 1,247 Families Who<br />Switched This Month
               </h2>
-              <p className="text-xl md:text-2xl text-charcoal/80 mb-10 max-w-2xl mx-auto">
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl md:text-2xl text-charcoal/80 mb-10 max-w-2xl mx-auto">
                 Most people finish setup during their coffee break. ☕
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="flex flex-col sm:flex-row gap-4 justify-center">
                 <MagneticButton strength={0.3}>
                   <Link href="/reserve">
                     <Button
@@ -342,7 +329,7 @@ export default function HomePage() {
                 </MagneticButton>
               </div>
 
-              <p className="mt-8 text-sm text-charcoal/60">
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-8 text-sm text-charcoal/60">
                 No credit card required • 5-minute setup • Cancel anytime
               </p>
             </ScrollFade>
