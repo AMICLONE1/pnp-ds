@@ -7,3 +7,4 @@ export * from "./Backgrounds";
 export * from "./Accordion";
 export * from "./Comparison";
 export * from "./Testimonials";
+export * from "./EnhancedStickyTextFill";

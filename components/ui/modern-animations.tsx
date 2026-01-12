@@ -29,15 +29,15 @@ export function CursorFollower() {
     };
 
     const enter = (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (target?.closest("[data-cursor-hover]")) {
+      const target = e.target;
+      if (target instanceof Element && target.closest("[data-cursor-hover]")) {
         setIsHovering(true);
       }
     };
 
     const leave = (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (target?.closest("[data-cursor-hover]")) {
+      const target = e.target;
+      if (target instanceof Element && target.closest("[data-cursor-hover]")) {
         setIsHovering(false);
       }
     };

@@ -38,6 +38,7 @@ import {
   DotPattern,
   GradientMesh,
   StickyTextFill,
+  EnhancedStickyTextFill,
 } from "@/components/ui/animations";
 
 // FAQ Data
@@ -157,8 +158,8 @@ export default function HomePage() {
         {/* HERO SECTION - New Modern Design */}
         <HeroSection />
 
-        {/* Text Fill Animation */}
-        <StickyTextFill
+        {/* Text Fill Animation - Enhanced with Canvas particles, energy beams, and effects */}
+        <EnhancedStickyTextFill
           texts={[
             "Start Saving Now. No Installation. No Hassle.",
             "Quick Setup. Easy Management. Big Savings.",

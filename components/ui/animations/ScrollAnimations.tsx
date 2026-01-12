@@ -462,6 +462,7 @@ export function StickyTextFill({
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
+    layoutEffect: false,
   });
 
   return (
