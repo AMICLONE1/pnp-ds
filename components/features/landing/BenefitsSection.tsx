@@ -2,12 +2,12 @@
 
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { 
-  Zap, 
-  Home, 
-  Clock, 
-  Shield, 
-  TrendingUp, 
+import {
+  Zap,
+  Home,
+  Clock,
+  Shield,
+  TrendingUp,
   Leaf,
   ArrowRight,
   CheckCircle,
@@ -132,11 +132,11 @@ const benefitCategories = [
 ];
 
 // Navigation pill for category selection
-function CategoryNav({ 
-  categories, 
-  activeIndex, 
-  onSelect 
-}: { 
+function CategoryNav({
+  categories,
+  activeIndex,
+  onSelect
+}: {
   categories: typeof benefitCategories;
   activeIndex: number;
   onSelect: (index: number) => void;
@@ -165,7 +165,7 @@ function CategoryNav({
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
-          
+
           <span className={cn(
             "relative z-10 font-bold",
             activeIndex === index ? "text-white/90" : "text-charcoal/50"
@@ -214,7 +214,7 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
               <Sparkles className="w-4 h-4" />
               {category.number} · {category.title}
             </motion.div>
-            
+
             <motion.h3
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -229,7 +229,7 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
                 {category.tagline.includes('.') ? '.' + category.tagline.split('.')[1] : ''}
               </span>
             </motion.h3>
-            
+
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -246,12 +246,12 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
 }
 
 // Feature card with enhanced design
-function FeatureCard({ 
-  feature, 
+function FeatureCard({
+  feature,
   index,
   categoryColor,
   isActive
-}: { 
+}: {
   feature: typeof benefitCategories[0]['features'][0];
   index: number;
   categoryColor: string;
@@ -287,7 +287,7 @@ function FeatureCard({
       )}>
         <div className="w-full h-full bg-white rounded-2xl md:rounded-3xl" />
       </div>
-      
+
       {/* Content container */}
       <div className="relative p-6 md:p-8">
         {/* Icon and number */}
@@ -299,10 +299,10 @@ function FeatureCard({
           )}>
             <feature.icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
           </div>
-          
+
           <motion.span
             className="text-5xl md:text-6xl font-heading font-bold text-gray-100 group-hover:text-gray-200 transition-colors"
-            animate={{ 
+            animate={{
               scale: isExpanded ? 1.1 : 1,
               x: isExpanded ? -10 : 0
             }}
@@ -311,7 +311,7 @@ function FeatureCard({
             0{index + 1}
           </motion.span>
         </div>
-        
+
         {/* Title and subtitle */}
         <div className="mb-4">
           <h4 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-1 group-hover:text-forest transition-colors">
@@ -319,16 +319,16 @@ function FeatureCard({
           </h4>
           <p className="text-sm text-gray-500">{feature.subtitle}</p>
         </div>
-        
+
         {/* Description */}
         <p className="text-gray-600 leading-relaxed mb-4">
           {feature.description}
         </p>
-        
+
         {/* Benefits list - animated expansion */}
         <motion.div
           initial={{ height: 0, opacity: 0 }}
-          animate={{ 
+          animate={{
             height: isExpanded ? "auto" : 0,
             opacity: isExpanded ? 1 : 0
           }}
@@ -356,9 +356,9 @@ function FeatureCard({
             ))}
           </div>
         </motion.div>
-        
+
         {/* Expand indicator */}
-        <motion.div 
+        <motion.div
           className="flex items-center gap-2 mt-4 text-sm font-medium text-gray-400 group-hover:text-forest transition-colors"
           animate={{ x: isExpanded ? 5 : 0 }}
         >
@@ -369,7 +369,7 @@ function FeatureCard({
           )} />
         </motion.div>
       </div>
-      
+
       {/* Bottom gradient accent */}
       <motion.div
         className={cn(
@@ -408,7 +408,7 @@ function StatsBanner() {
           <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold rounded-full blur-3xl" />
         </div>
-        
+
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {stats.map((stat, index) => (
             <motion.div
@@ -447,7 +447,7 @@ function ProgressIndicator({ total, current }: { total: number; current: number 
             "h-1.5 rounded-full transition-all duration-300",
             i === current ? "w-8 bg-forest" : "w-2 bg-gray-300"
           )}
-          animate={{ 
+          animate={{
             scale: i === current ? 1 : 0.8,
             opacity: i === current ? 1 : 0.5
           }}
@@ -468,42 +468,42 @@ export function BenefitsSection() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveCategory((prev) => (prev + 1) % benefitCategories.length);
-    }, 8000);
-    
+    }, 9000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [benefitCategories.length]);
 
   const currentCategory = benefitCategories[activeCategory];
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      id="benefits" 
+      id="benefits"
       className="relative py-20 md:py-28 lg:py-32 bg-gradient-to-b from-offwhite via-white to-offwhite overflow-hidden"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <motion.div 
+        <motion.div
           className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl"
-          animate={{ 
+          animate={{
             scale: [1, 1.1, 1],
             opacity: [0.3, 0.5, 0.3]
           }}
           transition={{ duration: 8, repeat: Infinity }}
         />
-        <motion.div 
+        <motion.div
           className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-energy-green/5 rounded-full blur-3xl"
-          animate={{ 
+          animate={{
             scale: [1.1, 1, 1.1],
             opacity: [0.4, 0.6, 0.4]
           }}
           transition={{ duration: 10, repeat: Infinity }}
         />
-        
+
         {/* Grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
-      
+
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Main section header */}
         <motion.div
@@ -522,32 +522,32 @@ export function BenefitsSection() {
             <Sun className="w-4 h-4" />
             Why Digital Solar
           </motion.span>
-          
+
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4">
             Benefits That{" "}
             <span className="bg-gradient-to-r from-gold via-energy-green to-forest bg-clip-text text-transparent">
               Actually Matter
             </span>
           </h2>
-          
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Traditional solar has barriers. We removed them all. Here&apos;s why thousands of Indian families are choosing Digital Solar.
           </p>
         </motion.div>
-        
+
         {/* Category navigation */}
-        <CategoryNav 
+        <CategoryNav
           categories={benefitCategories}
           activeIndex={activeCategory}
           onSelect={setActiveCategory}
         />
-        
+
         {/* Category hero content */}
-        <CategoryHero 
+        <CategoryHero
           category={currentCategory}
           isActive={true}
         />
-        
+
         {/* Feature cards grid */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
           {currentCategory.features.map((feature, index) => (
@@ -560,16 +560,16 @@ export function BenefitsSection() {
             />
           ))}
         </div>
-        
+
         {/* Progress indicator */}
-        <ProgressIndicator 
+        <ProgressIndicator
           total={benefitCategories.length}
           current={activeCategory}
         />
-        
+
         {/* Stats banner */}
         <StatsBanner />
-        
+
         {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -582,8 +582,8 @@ export function BenefitsSection() {
             Ready to experience these benefits yourself?
           </p>
           <Link href="/reserve">
-            <motion.div 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="inline-block"
             >

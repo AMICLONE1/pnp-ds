@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, BarChart3, ArrowRight, Sparkles, Clock } from "lucide-react";
+import Link from "next/link";
 
 interface CreditData {
   month: number;
@@ -64,14 +67,26 @@ export function CreditHistoryChart() {
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Credit History</CardTitle>
-          <CardDescription>Monthly solar credits</CardDescription>
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-green-50 to-transparent">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+              <BarChart3 className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle>Credit History</CardTitle>
+              <CardDescription>Monthly solar credits</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="h-48 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+          <div className="h-48 flex flex-col items-center justify-center">
+            <motion.div
+              className="w-12 h-12 rounded-full border-4 border-green-200 border-t-green-600"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
+            <p className="mt-4 text-sm text-gray-500">Loading credit history...</p>
           </div>
         </CardContent>
       </Card>
@@ -80,15 +95,60 @@ export function CreditHistoryChart() {
 
   if (credits.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Credit History</CardTitle>
-          <CardDescription>Monthly solar credits</CardDescription>
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-green-50 to-transparent">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+              <BarChart3 className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle>Credit History</CardTitle>
+              <CardDescription>Monthly solar credits</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="h-48 flex items-center justify-center text-gray-500">
-            <p>No credits yet</p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="py-12 text-center"
+          >
+            {/* Animated chart placeholder */}
+            <div className="flex items-end justify-center gap-2 h-24 mb-6">
+              {[40, 65, 45, 80, 55, 70].map((height, i) => (
+                <motion.div
+                  key={i}
+                  className="w-8 bg-gradient-to-t from-gray-200 to-gray-100 rounded-t-md"
+                  initial={{ height: 0 }}
+                  animate={{ height: `${height}%` }}
+                  transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
+                />
+              ))}
+            </div>
+            
+            <motion.div
+              className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Clock className="h-8 w-8 text-green-600" />
+            </motion.div>
+            
+            <h3 className="text-lg font-semibold text-charcoal mb-2">No Credits Yet</h3>
+            <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+              Your solar credits will appear here once you reserve capacity and start generating energy.
+            </p>
+            
+            <Link href="/reserve">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Start Earning Credits
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </motion.div>
+            </Link>
+          </motion.div>
         </CardContent>
       </Card>
     );

@@ -18,7 +18,7 @@ export function ParallaxSection({
 }: ParallaxSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -67,7 +67,7 @@ export function StickyScroll({
   const containerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -92,7 +92,7 @@ export function StickyScroll({
   // If content prop is provided, render the content-based layout
   if (content && content.length > 0) {
     const totalHeight = height || `${content.length * 100}vh`;
-    
+
     if (!mounted) {
       return (
         <div className={className}>
@@ -114,7 +114,7 @@ export function StickyScroll({
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ 
+                  animate={{
                     opacity: activeIndex === index ? 1 : 0.3,
                     y: activeIndex === index ? 0 : 10,
                   }}
@@ -130,7 +130,7 @@ export function StickyScroll({
                 </motion.div>
               ))}
             </div>
-            
+
             {/* Right side - Visual content */}
             <div className="relative h-64 md:h-96">
               {content.map((item, index) => (
@@ -138,7 +138,7 @@ export function StickyScroll({
                   key={index}
                   className="absolute inset-0"
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
+                  animate={{
                     opacity: activeIndex === index ? 1 : 0,
                     scale: activeIndex === index ? 1 : 0.8,
                   }}
@@ -172,7 +172,7 @@ interface HorizontalScrollProps {
 export function HorizontalScroll({ children, className = "" }: HorizontalScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -238,16 +238,16 @@ interface ScrollFadeProps {
   delay?: number;
 }
 
-export function ScrollFade({ 
-  children, 
-  className = "", 
+export function ScrollFade({
+  children,
+  className = "",
   threshold = 0.2,
   direction = "up",
   delay = 0,
 }: ScrollFadeProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  
+
   // Use layoutEffect: false to prevent hydration mismatch with SSR
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -281,8 +281,8 @@ export function ScrollFade({
   }
 
   return (
-    <motion.div 
-      ref={ref} 
+    <motion.div
+      ref={ref}
       className={className}
       initial={{ opacity: 0, ...getInitialTransform() }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -291,5 +291,209 @@ export function ScrollFade({
     >
       {children}
     </motion.div>
+  );
+}
+
+
+interface StickyTextFillProps {
+  texts: string[];
+  className?: string;
+  height?: string;
+  textClassName?: string;
+  backgroundColor?: string;
+  fadeDirection?: 'up' | 'down' | 'left' | 'right' | 'scale' | 'none';
+}
+
+function TextFillItem({
+  text,
+  index,
+  totalTexts,
+  scrollYProgress,
+  textClassName,
+  fadeDirection = 'none',
+}: {
+  text: string;
+  index: number;
+  totalTexts: number;
+  scrollYProgress: MotionValue<number>;
+  textClassName: string;
+  fadeDirection?: 'up' | 'down' | 'left' | 'right' | 'scale' | 'none';
+}) {
+  // Calculate progress for each text segment
+  const segmentStart = index / totalTexts;
+  const segmentEnd = (index + 1) / totalTexts;
+
+  // Opacity: show only when in this segment
+  const opacity = useTransform(
+    scrollYProgress,
+    [
+      Math.max(0, segmentStart - 0.05),
+      segmentStart + 0.05,
+      segmentEnd - 0.15,
+      segmentEnd - 0.05,
+    ],
+    [0, 1, 1, 0]
+  );
+
+  // Clip path progress for fill effect (0 to 1 within segment)
+  const fillProgress = useTransform(
+    scrollYProgress,
+    [segmentStart, segmentEnd],
+    [0, 1]
+  );
+
+  // Convert fillProgress to clip-path percentage
+  const clipPath = useTransform(
+    fillProgress,
+    (progress) => `inset(0 ${100 - progress * 100}% 0 0)`
+  );
+
+  // Different fade animations based on direction
+  let y = useTransform(scrollYProgress, [segmentStart, segmentEnd], [0, 0]);
+  let x = useTransform(scrollYProgress, [segmentStart, segmentEnd], [0, 0]);
+  let scale = useTransform(scrollYProgress, [segmentStart, segmentEnd], [1, 1]);
+
+  switch (fadeDirection) {
+    case 'up':
+      y = useTransform(
+        scrollYProgress,
+        [
+          Math.max(0, segmentStart - 0.05),
+          segmentStart + 0.05,
+          segmentEnd - 0.15,
+          segmentEnd - 0.05,
+        ],
+        [100, 0, 0, -100]
+      );
+      break;
+    case 'down':
+      y = useTransform(
+        scrollYProgress,
+        [
+          Math.max(0, segmentStart - 0.05),
+          segmentStart + 0.05,
+          segmentEnd - 0.15,
+          segmentEnd - 0.05,
+        ],
+        [-100, 0, 0, 100]
+      );
+      break;
+    case 'left':
+      x = useTransform(
+        scrollYProgress,
+        [
+          Math.max(0, segmentStart - 0.05),
+          segmentStart + 0.05,
+          segmentEnd - 0.15,
+          segmentEnd - 0.05,
+        ],
+        [100, 0, 0, -100]
+      );
+      break;
+    case 'right':
+      x = useTransform(
+        scrollYProgress,
+        [
+          Math.max(0, segmentStart - 0.05),
+          segmentStart + 0.05,
+          segmentEnd - 0.15,
+          segmentEnd - 0.05,
+        ],
+        [-100, 0, 0, 100]
+      );
+      break;
+    case 'scale':
+      scale = useTransform(
+        scrollYProgress,
+        [
+          Math.max(0, segmentStart - 0.05),
+          segmentStart + 0.05,
+          segmentEnd - 0.15,
+          segmentEnd - 0.05,
+        ],
+        [0.6, 1, 1, 0.6]
+      );
+      break;
+  }
+  return (
+    <motion.div
+      className="absolute inset-0 flex items-center justify-center"
+      style={{ opacity, y, x, scale }}
+    >
+      <div className="relative inline-block">
+        {/* Base text with stroke only */}
+        <h2
+          className={`text-5xl md:text-7xl lg:text-8xl font-bold text-center px-4 ${textClassName}`}
+          style={{
+            WebkitTextFillColor: "transparent",
+            WebkitTextStroke: "2px white",
+            margin: 0,
+          }}
+        >
+          {text}
+        </h2>
+        {/* Filled text overlay */}
+        <motion.h2
+          className={`absolute top-0 left-0 right-0 text-5xl md:text-7xl lg:text-8xl font-bold text-center px-4 ${textClassName}`}
+          style={{
+            WebkitTextFillColor: "white",
+            clipPath,
+            margin: 0,
+            pointerEvents: "none",
+          }}
+        >
+          {text}
+        </motion.h2>
+      </div>
+    </motion.div>
+  );
+}
+
+export function StickyTextFill({
+  texts,
+  className = "",
+  height = "300vh",
+  textClassName = "",
+  backgroundColor = "bg-charcoal",
+  fadeDirection = 'none',
+}: StickyTextFillProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  return (
+    <div
+      ref={containerRef}
+      className={`w-full ${className} ${backgroundColor}`}
+      style={{
+        height,
+        position: 'relative'
+      }}
+    >
+      <div
+        className="sticky top-0 left-0 w-full h-screen flex items-center justify-center overflow-hidden"
+        style={{
+          position: 'sticky',
+          top: 0,
+        }}
+      >
+        <div className="relative w-full h-full flex items-center justify-center">
+          {texts.map((text, index) => (
+            <TextFillItem
+              key={index}
+              text={text}
+              index={index}
+              totalTexts={texts.length}
+              scrollYProgress={scrollYProgress}
+              textClassName={textClassName}
+              fadeDirection={fadeDirection}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

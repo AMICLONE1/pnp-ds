@@ -1,16 +1,15 @@
 "use client";
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence, useAnimationControls } from "framer-motion";
-import { useRef, useState, useEffect, Suspense, useMemo, useCallback } from "react";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useInView } from "framer-motion";
+import { useRef, useState, useEffect, Suspense, useMemo, memo, useCallback } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { 
-  ArrowRight, 
-  Play, 
-  Sparkles, 
-  Users, 
-  TrendingUp, 
-  Leaf, 
+import {
+  ArrowRight,
+  Play,
+  Users,
+  TrendingUp,
+  Leaf,
   Shield,
   ChevronDown,
   Zap,
@@ -24,9 +23,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
+import React from "react";
 
 // Dynamically import Three.js canvas to prevent SSR issues
-const Hero3DScene = dynamic(() => import("./Hero3DScene"), { 
+const Hero3DScene = dynamic(() => import("./Hero3DScene"), {
   ssr: false,
   loading: () => <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
 });
@@ -40,7 +40,7 @@ const heroStats = [
 ];
 
 // ============================================
-// ENERGY WAVE ANIMATION
+// ENERGY WAVE ANIMATION (Optimized with CSS transform)
 // ============================================
 function EnergyWaves() {
   return (
@@ -48,12 +48,11 @@ function EnergyWaves() {
       {[...Array(3)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold/20"
-          initial={{ width: 100, height: 100, opacity: 0.6 }}
+          className="absolute left-1/2 top-1/2 w-[100px] h-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold/20 will-change-transform"
+          initial={{ scale: 1, opacity: 0.4 }}
           animate={{
-            width: [100, 800],
-            height: [100, 800],
-            opacity: [0.4, 0],
+            scale: 8,
+            opacity: 0,
           }}
           transition={{
             duration: 4,
@@ -68,160 +67,147 @@ function EnergyWaves() {
 }
 
 // ============================================
-// FLOATING ICONS ANIMATION
+// FLOATING ICONS ANIMATION (Optimized with CSS animations)
 // ============================================
-function FloatingIcons() {
-  const icons = [
-    { Icon: Sun, color: "#FFB800", x: "10%", y: "20%", delay: 0 },
-    { Icon: Bolt, color: "#4CAF50", x: "85%", y: "15%", delay: 0.5 },
-    { Icon: Battery, color: "#00BCD4", x: "75%", y: "70%", delay: 1 },
-    { Icon: Leaf, color: "#4CAF50", x: "15%", y: "75%", delay: 1.5 },
-    { Icon: Zap, color: "#FFB800", x: "90%", y: "45%", delay: 2 },
-    { Icon: CircleDollarSign, color: "#4CAF50", x: "5%", y: "50%", delay: 2.5 },
-  ];
+const floatingIconsData = [
+  { Icon: Sun, color: "#FFB800", x: "10%", y: "20%", delay: 0, size: 40 },
+  { Icon: Bolt, color: "#4CAF50", x: "85%", y: "15%", delay: 0.5, size: 45 },
+  { Icon: Battery, color: "#00BCD4", x: "75%", y: "70%", delay: 1, size: 50 },
+  { Icon: Leaf, color: "#4CAF50", x: "15%", y: "75%", delay: 1.5, size: 55 },
+  { Icon: Zap, color: "#FFB800", x: "90%", y: "45%", delay: 2, size: 60 },
+  { Icon: CircleDollarSign, color: "#4CAF50", x: "5%", y: "50%", delay: 2.5, size: 65 },
+];
 
+function FloatingIcons() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {icons.map(({ Icon, color, x, y, delay }, i) => (
-        <motion.div
-          key={i}
-          className="absolute"
-          style={{ left: x, top: y }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 0.15, scale: 1 }}
-          transition={{ delay: 2 + delay, duration: 0.5 }}
-        >
+    <>
+      <style jsx global>{`
+        @keyframes floatIcon {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          25% { transform: translateY(-15px) rotate(8deg); }
+          75% { transform: translateY(-5px) rotate(-8deg); }
+        }
+      `}</style>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {floatingIconsData.map(({ Icon, color, x, y, delay, size }, i) => (
           <motion.div
-            animate={{
-              y: [0, -20, 0],
-              rotate: [0, 10, -10, 0],
+            key={i}
+            className="absolute will-change-transform"
+            style={{
+              left: x,
+              top: y,
+              animation: `floatIcon ${6 + i}s ease-in-out infinite`,
+              animationDelay: `${2 + delay}s`,
             }}
-            transition={{
-              duration: 6 + i,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 0.15, scale: 1 }}
+            transition={{ delay: 2 + delay, duration: 0.5 }}
           >
-            <Icon size={40 + i * 5} color={color} strokeWidth={1} />
+            <Icon size={size} color={color} strokeWidth={1} />
           </motion.div>
-        </motion.div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 }
 
 // ============================================
 // MORPHING BLOB ANIMATION
 // ============================================
-function MorphingBlob({ className, color = "#FFB800" }: { className?: string; color?: string }) {
+const MorphingBlob = memo(function MorphingBlob({
+  className,
+  color = "#FFB800",
+}: {
+  className?: string;
+  color?: string;
+}) {
   return (
     <motion.div
-      className={cn("absolute rounded-full blur-3xl", className)}
-      style={{ background: color }}
+      className={`absolute rounded-full blur-2xl ${className}`}
+      style={{
+        background: color,
+        willChange: "transform",
+      }}
       animate={{
-        borderRadius: [
-          "60% 40% 30% 70%/60% 30% 70% 40%",
-          "30% 60% 70% 40%/50% 60% 30% 60%",
-          "60% 40% 30% 70%/60% 30% 70% 40%",
-        ],
-        scale: [1, 1.1, 1],
+        scale: [1, 1.15, 1],
+        rotate: [0, 180, 360],
       }}
       transition={{
-        duration: 8,
+        duration: 10,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: "linear",
       }}
     />
   );
-}
-
-// ============================================
-// GLITCH TEXT EFFECT
-// ============================================
-function GlitchText({ text, className }: { text: string; className?: string }) {
-  const [isGlitching, setIsGlitching] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsGlitching(true);
-      setTimeout(() => setIsGlitching(false), 200);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <span className={cn("relative inline-block", className)}>
-      <span className="relative z-10">{text}</span>
-      {isGlitching && (
-        <>
-          <span 
-            className="absolute top-0 left-0 text-red-500/50 z-0"
-            style={{ transform: "translate(-2px, -1px)" }}
-          >
-            {text}
-          </span>
-          <span 
-            className="absolute top-0 left-0 text-cyan-500/50 z-0"
-            style={{ transform: "translate(2px, 1px)" }}
-          >
-            {text}
-          </span>
-        </>
-      )}
-    </span>
-  );
-}
+});
 
 // ============================================
 // TYPEWRITER EFFECT
 // ============================================
-function TypewriterText({ 
-  texts, 
+function TypewriterText({
+  texts,
   className,
   typingSpeed = 100,
   deletingSpeed = 50,
-  pauseDuration = 2000 
-}: { 
-  texts: string[]; 
+  pauseDuration = 2000,
+}: {
+  texts: string[];
   className?: string;
   typingSpeed?: number;
   deletingSpeed?: number;
   pauseDuration?: number;
 }) {
-  const [displayText, setDisplayText] = useState("");
-  const [textIndex, setTextIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [text, setText] = useState("");
+
+  const indexRef = useRef(0);
+  const charRef = useRef(0);
+  const deletingRef = useRef(false);
+  const timeoutRef = useRef<number>();
 
   useEffect(() => {
-    const currentText = texts[textIndex];
-    
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        if (displayText.length < currentText.length) {
-          setDisplayText(currentText.slice(0, displayText.length + 1));
-        } else {
-          setTimeout(() => setIsDeleting(true), pauseDuration);
+    function tick() {
+      const current = texts[indexRef.current];
+
+      if (!deletingRef.current) {
+        charRef.current++;
+        setText(current.slice(0, charRef.current));
+
+        if (charRef.current === current.length) {
+          timeoutRef.current = window.setTimeout(
+            () => (deletingRef.current = true),
+            pauseDuration
+          );
+          return;
         }
       } else {
-        if (displayText.length > 0) {
-          setDisplayText(displayText.slice(0, -1));
-        } else {
-          setIsDeleting(false);
-          setTextIndex((prev) => (prev + 1) % texts.length);
+        charRef.current--;
+        setText(current.slice(0, charRef.current));
+
+        if (charRef.current === 0) {
+          deletingRef.current = false;
+          indexRef.current = (indexRef.current + 1) % texts.length;
         }
       }
-    }, isDeleting ? deletingSpeed : typingSpeed);
 
-    return () => clearTimeout(timeout);
-  }, [displayText, textIndex, isDeleting, texts, typingSpeed, deletingSpeed, pauseDuration]);
+      timeoutRef.current = window.setTimeout(
+        tick,
+        deletingRef.current ? deletingSpeed : typingSpeed
+      );
+    }
+
+    tick();
+
+    return () => clearTimeout(timeoutRef.current);
+  }, [texts, typingSpeed, deletingSpeed, pauseDuration]);
 
   return (
     <span className={className}>
-      {displayText}
+      {text}
       <motion.span
+        aria-hidden
         animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.5, repeat: Infinity }}
-        className="inline-block w-[3px] h-[1em] bg-gold ml-1 align-middle"
+        transition={{ duration: 0.6, repeat: Infinity }}
+        className="inline-block w-[2px] h-[1em] bg-gold ml-1 align-middle"
       />
     </span>
   );
@@ -230,81 +216,42 @@ function TypewriterText({
 // ============================================
 // ANIMATED NUMBER TICKER
 // ============================================
-function NumberTicker({ 
-  value, 
+function NumberTicker({
+  value,
   direction = "up",
-  className 
-}: { 
-  value: number; 
+  className,
+}: {
+  value: number;
   direction?: "up" | "down";
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
   const motionValue = useMotionValue(direction === "up" ? 0 : value);
-  const springValue = useSpring(motionValue, { damping: 60, stiffness: 100 });
-  const [displayValue, setDisplayValue] = useState(0);
-  const [isInView, setIsInView] = useState(false);
+  const spring = useSpring(motionValue, {
+    stiffness: 120,
+    damping: 25,
+    mass: 0.8,
+  });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isInView) {
-          setIsInView(true);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [isInView]);
+    if (!isInView) return;
+    motionValue.set(direction === "up" ? value : 0);
+  }, [isInView, value, direction, motionValue]);
 
   useEffect(() => {
-    if (isInView) {
-      motionValue.set(direction === "up" ? value : 0);
-    }
-  }, [isInView, motionValue, value, direction]);
-
-  useEffect(() => {
-    const unsubscribe = springValue.on("change", (latest) => {
-      setDisplayValue(Math.round(latest));
+    const unsubscribe = spring.on("change", (latest) => {
+      if (ref.current) {
+        ref.current.textContent = Math.round(latest).toLocaleString();
+      }
     });
     return unsubscribe;
-  }, [springValue]);
+  }, [spring]);
 
   return (
     <span ref={ref} className={className}>
-      {displayValue.toLocaleString()}
-    </span>
-  );
-}
-
-// ============================================
-// ROTATING WORDS
-// ============================================
-function RotatingWords({ words, className }: { words: string[]; className?: string }) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % words.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [words.length]);
-
-  return (
-    <span className={cn("relative inline-block overflow-hidden", className)}>
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={words[index]}
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -40, opacity: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="inline-block"
-        >
-          {words[index]}
-        </motion.span>
-      </AnimatePresence>
+      0
     </span>
   );
 }
@@ -312,21 +259,36 @@ function RotatingWords({ words, className }: { words: string[]; className?: stri
 // ============================================
 // MAGNETIC BUTTON
 // ============================================
-function MagneticButton({ children, className }: { children: React.ReactNode; className?: string }) {
+const MagneticButton = memo(function MagneticButton({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
+  const bounds = useRef<DOMRect | null>(null);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) * 0.2);
-    y.set((e.clientY - centerY) * 0.2);
+  useEffect(() => {
+    if (ref.current) {
+      bounds.current = ref.current.getBoundingClientRect();
+    }
+  }, []);
+
+  const handleMove = (e: React.PointerEvent) => {
+    if (!bounds.current) return;
+    const { left, top, width, height } = bounds.current;
+    const centerX = left + width / 2;
+    const centerY = top + height / 2;
+
+    x.set((e.clientX - centerX) * 0.15);
+    y.set((e.clientY - centerY) * 0.15);
   };
 
-  const handleMouseLeave = () => {
+  const handleLeave = () => {
     x.set(0);
     y.set(0);
   };
@@ -335,34 +297,45 @@ function MagneticButton({ children, className }: { children: React.ReactNode; cl
     <motion.div
       ref={ref}
       className={className}
-      style={{ x, y }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      transition={{ type: "spring", stiffness: 150, damping: 15 }}
+      style={{ x, y, willChange: "transform" }}
+      onPointerMove={handleMove}
+      onPointerLeave={handleLeave}
+      transition={{ type: "spring", stiffness: 180, damping: 20 }}
     >
       {children}
     </motion.div>
   );
-}
+});
 
 // ============================================
 // PULSE RING ANIMATION
 // ============================================
 function PulseRing({ className, color = "#FFB800" }: { className?: string; color?: string }) {
+  // Memoize the animation variants to prevent recalculation
+  const variants = useMemo(() => ({
+    initial: { scale: 1, opacity: 0.5 },
+    animate: { scale: 2, opacity: 0 }
+  }), []);
+
   return (
-    <div className={cn("relative", className)}>
-      {[...Array(3)].map((_, i) => (
+    <div className={`relative ${className || ''}`}>
+      {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
           className="absolute inset-0 rounded-full"
-          style={{ border: `2px solid ${color}` }}
-          initial={{ scale: 1, opacity: 0.5 }}
-          animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+          style={{
+            border: `2px solid ${color}`,
+            willChange: 'transform, opacity' // Hint to browser for optimization
+          }}
+          variants={variants}
+          initial="initial"
+          animate="animate"
           transition={{
             duration: 2,
             delay: i * 0.6,
             repeat: Infinity,
             ease: "easeOut",
+            repeatType: "loop"
           }}
         />
       ))}
@@ -371,19 +344,28 @@ function PulseRing({ className, color = "#FFB800" }: { className?: string; color
 }
 
 // ============================================
-// ANIMATED GRADIENT BORDER
+// OPTIMIZED GRADIENT BORDER
 // ============================================
 function GradientBorder({ children, className }: { children: React.ReactNode; className?: string }) {
+  // Memoize gradient style
+  const gradientStyle = useMemo(() => ({
+    background: "linear-gradient(90deg, #FFB800, #4CAF50, #00BCD4, #FFB800)",
+    backgroundSize: "300% 100%",
+    willChange: 'background-position' // Optimize for background animation
+  }), []);
+
   return (
-    <div className={cn("relative p-[2px] rounded-2xl overflow-hidden", className)}>
+    <div className={`relative p-[2px] rounded-2xl overflow-hidden ${className || ''}`}>
       <motion.div
         className="absolute inset-0"
-        style={{
-          background: "linear-gradient(90deg, #FFB800, #4CAF50, #00BCD4, #FFB800)",
-          backgroundSize: "300% 100%",
+        style={gradientStyle}
+        animate={{ backgroundPosition: ["0% 0%", "100% 0%"] }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "linear",
+          repeatType: "loop"
         }}
-        animate={{ backgroundPosition: ["0% 0%", "100% 0%", "0% 0%"] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
       />
       <div className="relative bg-forest-dark rounded-2xl">
         {children}
@@ -408,44 +390,6 @@ function ShimmeringText({ text, className }: { text: string; className?: string 
     >
       {text}
     </motion.span>
-  );
-}
-
-// ============================================
-// FLOATING CARD STACK
-// ============================================
-function FloatingCardStack() {
-  const cards = [
-    { icon: Sun, label: "Solar Power", value: "100kW", color: "#FFB800" },
-    { icon: Leaf, label: "CO₂ Saved", value: "50 MT", color: "#4CAF50" },
-    { icon: Zap, label: "Energy", value: "450 kWh", color: "#00BCD4" },
-  ];
-
-  return (
-    <div className="relative h-48 w-48">
-      {cards.map((card, i) => (
-        <motion.div
-          key={card.label}
-          className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-4"
-          initial={{ y: i * 10, rotate: -5 + i * 5, scale: 1 - i * 0.05 }}
-          animate={{
-            y: [i * 10, i * 10 - 5, i * 10],
-            rotate: [-5 + i * 5, -3 + i * 5, -5 + i * 5],
-          }}
-          transition={{
-            duration: 3,
-            delay: i * 0.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{ zIndex: cards.length - i }}
-        >
-          <card.icon size={24} color={card.color} />
-          <p className="text-white/60 text-xs mt-2">{card.label}</p>
-          <p className="text-white font-bold text-lg">{card.value}</p>
-        </motion.div>
-      ))}
-    </div>
   );
 }
 
@@ -481,61 +425,77 @@ function AnimatedCheckList({ items, delay = 0 }: { items: string[]; delay?: numb
 // STAR RATING ANIMATION
 // ============================================
 function StarRating({ rating = 5, delay = 0 }: { rating?: number; delay?: number }) {
+  // Memoize animation variants
+  const getVariants = useCallback((i: number) => ({
+    initial: { opacity: 0, scale: 0, rotate: -180 },
+    animate: {
+      opacity: i < rating ? 1 : 0.3,
+      scale: 1,
+      rotate: 0
+    }
+  }), [rating]);
+
+  // Memoize transition
+  const getTransition = useCallback((i: number) => ({
+    delay: delay + i * 0.1,
+    type: "spring"
+  }), [delay]);
+
   return (
     <div className="flex gap-1">
-      {[...Array(5)].map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, scale: 0, rotate: -180 }}
-          animate={{ 
-            opacity: i < rating ? 1 : 0.3, 
-            scale: 1, 
-            rotate: 0 
-          }}
-          transition={{ delay: delay + i * 0.1, type: "spring" }}
-        >
-          <Star 
-            className={cn(
-              "w-5 h-5",
-              i < rating ? "text-gold fill-gold" : "text-gray-500"
-            )} 
-          />
-        </motion.div>
-      ))}
+      {[0, 1, 2, 3, 4].map((i) => {
+        const isActive = i < rating;
+        return (
+          <motion.div
+            key={i}
+            initial={getVariants(i).initial}
+            animate={getVariants(i).animate}
+            transition={getTransition(i)}
+            style={{ willChange: 'transform, opacity' }}
+          >
+            <Star
+              className={`w-5 h-5 ${isActive ? "text-yellow-500 fill-yellow-500" : "text-gray-500"}`}
+            />
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
 
 // ============================================
-// ORIGINAL COMPONENTS (preserved)
+// OPTIMIZED FLOATING PARTICLES
 // ============================================
-
-// Floating particles component
 function FloatingParticles() {
-  const particles = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 20 + 15,
-    delay: Math.random() * 5,
-  }));
+  // Memoize particles array - only create once
+  const particles = useMemo(() =>
+    Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      size: Math.random() * 4 + 2,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      duration: Math.random() * 20 + 15,
+      delay: Math.random() * 5,
+      xOffset: Math.random() * 50 - 25,
+    })), []
+  );
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute rounded-full bg-gold/20"
+          className="absolute rounded-full bg-yellow-500/20"
           style={{
             width: particle.size,
             height: particle.size,
             left: `${particle.x}%`,
             top: `${particle.y}%`,
+            willChange: 'transform, opacity'
           }}
           animate={{
             y: [0, -100, 0],
-            x: [0, Math.random() * 50 - 25, 0],
+            x: [0, particle.xOffset, 0],
             opacity: [0, 0.6, 0],
             scale: [0, 1, 0],
           }}
@@ -544,6 +504,7 @@ function FloatingParticles() {
             delay: particle.delay,
             repeat: Infinity,
             ease: "easeInOut",
+            repeatType: "loop"
           }}
         />
       ))}
@@ -553,66 +514,88 @@ function FloatingParticles() {
 
 // Animated background with gradient mesh
 function AnimatedBackground() {
+  // Memoize static styles that don't change
+  const gridStyle = useMemo(() => ({
+    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                     linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+    backgroundSize: '60px 60px',
+  }), []);
+
+  const noiseStyle = useMemo(() => ({
+    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+  }), []);
+
+  // Memoize orb configurations
+  const orbs = useMemo(() => [
+    {
+      className: "absolute -top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full",
+      style: {
+        background: "radial-gradient(circle, rgba(255,184,0,0.15) 0%, transparent 60%)",
+        filter: "blur(80px)",
+        willChange: "transform"
+      },
+      animate: {
+        x: [0, 100, 0],
+        y: [0, 50, 0],
+        scale: [1, 1.2, 1],
+      },
+      transition: { duration: 20, repeat: Infinity, ease: "easeInOut", repeatType: "loop" as const }
+    },
+    {
+      className: "absolute -bottom-1/4 -right-1/4 w-[700px] h-[700px] rounded-full",
+      style: {
+        background: "radial-gradient(circle, rgba(76,175,80,0.15) 0%, transparent 60%)",
+        filter: "blur(80px)",
+        willChange: "transform"
+      },
+      animate: {
+        x: [0, -80, 0],
+        y: [0, -60, 0],
+        scale: [1.2, 1, 1.2],
+      },
+      transition: { duration: 18, repeat: Infinity, ease: "easeInOut", repeatType: "loop" as const }
+    },
+    {
+      className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full",
+      style: {
+        background: "radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 60%)",
+        filter: "blur(80px)",
+        willChange: "transform"
+      },
+      animate: {
+        scale: [1, 1.3, 1],
+        rotate: [0, 180, 360],
+      },
+      transition: { duration: 25, repeat: Infinity, ease: "easeInOut", repeatType: "loop" as const }
+    }
+  ], []);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* Base gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a1f14] via-[#0D2818] to-[#061610]" />
-      
+
       {/* Animated gradient orbs */}
-      <motion.div
-        className="absolute -top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(255,184,0,0.15) 0%, transparent 60%)",
-          filter: "blur(80px)",
-        }}
-        animate={{
-          x: [0, 100, 0],
-          y: [0, 50, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute -bottom-1/4 -right-1/4 w-[700px] h-[700px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(76,175,80,0.15) 0%, transparent 60%)",
-          filter: "blur(80px)",
-        }}
-        animate={{
-          x: [0, -80, 0],
-          y: [0, -60, 0],
-          scale: [1.2, 1, 1.2],
-        }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 60%)",
-          filter: "blur(80px)",
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-      />
-      
+      {orbs.map((orb, index) => (
+        <motion.div
+          key={index}
+          className={orb.className}
+          style={orb.style}
+          animate={orb.animate}
+          transition={orb.transition}
+        />
+      ))}
+
       {/* Grid overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" 
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={gridStyle}
       />
-      
+
       {/* Noise texture */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.02] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
+        style={noiseStyle}
       />
     </div>
   );
@@ -623,19 +606,39 @@ function MouseSpotlight() {
   const [mounted, setMounted] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  
-  const spotlightX = useSpring(mouseX, { stiffness: 50, damping: 20 });
-  const spotlightY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  // Memoize spring config
+  const springConfig = useMemo(() => ({
+    stiffness: 50,
+    damping: 20
+  }), []);
+
+  const spotlightX = useSpring(mouseX, springConfig);
+  const spotlightY = useSpring(mouseY, springConfig);
+
+  // Memoize spotlight style
+  const spotlightStyle = useMemo(() => ({
+    background: "radial-gradient(circle, rgba(255,184,0,0.08) 0%, transparent 60%)",
+    filter: "blur(40px)",
+  }), []);
+
+  // Memoize motion style
+  const motionStyle = useMemo(() => ({
+    translateX: "-50%",
+    translateY: "-50%",
+  }), []);
+
+  // Use useCallback to prevent recreating handler
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    mouseX.set(e.clientX);
+    mouseY.set(e.clientY);
+  }, [mouseX, mouseY]);
 
   useEffect(() => {
     setMounted(true);
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [handleMouseMove]);
 
   if (!mounted) return null;
 
@@ -645,110 +648,51 @@ function MouseSpotlight() {
       style={{
         x: spotlightX,
         y: spotlightY,
-        translateX: "-50%",
-        translateY: "-50%",
+        ...motionStyle,
       }}
     >
-      <div 
+      <div
         className="w-[500px] h-[500px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(255,184,0,0.08) 0%, transparent 60%)",
-          filter: "blur(40px)",
-        }}
+        style={spotlightStyle}
       />
     </motion.div>
   );
 }
 
-// Animated text with split characters
-function SplitText({ 
-  text, 
-  className, 
-  delay = 0,
-  staggerDelay = 0.03 
-}: { 
-  text: string; 
-  className?: string; 
-  delay?: number;
-  staggerDelay?: number;
-}) {
-  const words = text.split(" ");
-  
-  return (
-    <span className={cn("inline-block", className)}>
-      {words.map((word, wordIndex) => (
-        <span key={wordIndex} className="inline-block mr-[0.25em]">
-          {word.split("").map((char, charIndex) => (
-            <motion.span
-              key={charIndex}
-              className="inline-block"
-              initial={{ y: 100, opacity: 0, rotateX: -90 }}
-              animate={{ y: 0, opacity: 1, rotateX: 0 }}
-              transition={{
-                duration: 0.6,
-                delay: delay + (wordIndex * word.length + charIndex) * staggerDelay,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              {char}
-            </motion.span>
-          ))}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-// Animated counter
-function AnimatedCounter({ value, prefix = "", suffix = "" }: { value: number; prefix?: string; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          let start = 0;
-          const end = value;
-          const duration = 2000;
-          const startTime = performance.now();
-
-          const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-            setCount(Math.floor(easeOutQuart * end));
-            
-            if (progress < 1) {
-              requestAnimationFrame(animate);
-            }
-          };
-          requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [value, hasAnimated]);
-
-  return (
-    <span ref={ref}>
-      {prefix}{count.toLocaleString()}{suffix}
-    </span>
-  );
-}
-
-// Glowing badge
+// ============================================
+// OPTIMIZED GLOWING BADGE
+// ============================================
 function GlowingBadge() {
+  // Memoize animation variants
+  const badgeVariants = useMemo(() => ({
+    initial: { opacity: 0, y: -30, scale: 0.9 },
+    animate: { opacity: 1, y: 0, scale: 1 }
+  }), []);
+
+  const badgeTransition = useMemo(() => ({
+    delay: 0.2,
+    duration: 0.8,
+    type: "spring"
+  }), []);
+
+  const sunRotateTransition = useMemo(() => ({
+    duration: 8,
+    repeat: Infinity,
+    ease: "linear",
+    repeatType: "loop" as const
+  }), []);
+
+  const sunPulseTransition = useMemo(() => ({
+    duration: 2,
+    repeat: Infinity,
+    repeatType: "loop" as const
+  }), []);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: -30, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
+      initial={badgeVariants.initial}
+      animate={badgeVariants.animate}
+      transition={badgeTransition}
       className="inline-block mb-8"
     >
       <motion.div
@@ -756,25 +700,27 @@ function GlowingBadge() {
         whileHover={{ scale: 1.02 }}
       >
         {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-gold/20 via-energy-green/20 to-gold/20 rounded-full blur-xl" />
-        
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-green-500/20 to-yellow-500/20 rounded-full blur-xl" />
+
         <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            transition={sunRotateTransition}
             className="relative"
+            style={{ willChange: "transform" }}
           >
-            <Sun className="w-5 h-5 text-gold" />
+            <Sun className="w-5 h-5 text-yellow-500" />
             <motion.div
               className="absolute inset-0"
               animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              transition={sunPulseTransition}
+              style={{ willChange: "transform, opacity" }}
             >
-              <Sun className="w-5 h-5 text-gold" />
+              <Sun className="w-5 h-5 text-yellow-500" />
             </motion.div>
           </motion.div>
           <span className="text-sm font-medium text-white">India&apos;s #1 Digital Solar Platform</span>
-          <span className="px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-gold to-gold-light text-charcoal rounded-full shadow-lg shadow-gold/20">
+          <span className="px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-full shadow-lg shadow-yellow-500/20">
             NEW
           </span>
         </div>
@@ -783,47 +729,60 @@ function GlowingBadge() {
   );
 }
 
+
 // Interactive savings calculator card with SundayGrids-style calculation
 function InteractiveSavingsCard() {
   const [avgBill, setAvgBill] = useState(2500);
   const [savingsPercent, setSavingsPercent] = useState(75);
   const [isBillFocused, setIsBillFocused] = useState(false);
-  
-  const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
+
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Memoize currency formatter (expensive to create)
+  const currencyFormatter = useMemo(() =>
+    new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }), []
+  );
+
+  // Memoized format function
+  const formatCurrency = useCallback((value: number) => {
+    return currencyFormatter.format(value);
+  }, [currencyFormatter]);
 
   // Calculate all values based on bill and savings percentage
   const calculations = useMemo(() => {
     // Monthly savings target
     const monthlySavings = (avgBill * savingsPercent) / 100;
-    
+
     // Energy needed to generate these savings (kWh)
-    // savings = energy * credit rate => energy = savings / credit rate
     const energyNeededKwh = monthlySavings / SOLAR_CONSTANTS.creditRatePerUnit;
-    
+
     // Solar capacity needed (in Watts)
-    // energy = capacity * generation per kW per day * days
-    // capacity = energy / (generation per kW per day * days)
     const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth;
     const capacityNeededKw = energyNeededKwh / monthlyGenerationPerKw;
     const capacityNeededWatts = Math.round(capacityNeededKw * 1000);
-    
+
     // Annual and lifetime savings
     const annualSavings = monthlySavings * 12;
     const lifetimeSavings = annualSavings * SOLAR_CONSTANTS.projectLifespan;
-    
+
     // One-time reservation fee
     const reservationFee = capacityNeededWatts * SOLAR_CONSTANTS.reservationFeePerWatt;
-    
+
     // CO2 offset per year (in tonnes)
     const annualEnergyKwh = energyNeededKwh * 12;
     const co2OffsetKg = annualEnergyKwh * SOLAR_CONSTANTS.co2PerKwh;
     const co2OffsetTonnes = co2OffsetKg / 1000;
-    
+
     // Return on Investment (years to recover reservation fee)
     const roiYears = reservationFee / annualSavings;
-    
+
     return {
       monthlySavings: Math.round(monthlySavings * 100) / 100,
       energyProducedKwh: Math.round(energyNeededKwh * 100) / 100,
@@ -837,30 +796,25 @@ function InteractiveSavingsCard() {
     };
   }, [avgBill, savingsPercent]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Memoize mouse move handler
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
+
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
+
     setRotateX((y - centerY) / 25);
     setRotateY((centerX - x) / 25);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  // Memoize mouse leave handler
+  const handleMouseLeave = useCallback(() => {
     setRotateX(0);
     setRotateY(0);
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(value);
-  };
+  }, []);
 
   return (
     <motion.div
@@ -870,14 +824,14 @@ function InteractiveSavingsCard() {
       className="relative max-w-sm mx-auto"
     >
       {/* Subtle glow */}
-      <div 
+      <div
         className="absolute -inset-1 rounded-2xl opacity-40 pointer-events-none"
         style={{
           background: "linear-gradient(135deg, rgba(255,184,0,0.3) 0%, rgba(76,175,80,0.3) 100%)",
           filter: "blur(20px)",
         }}
       />
-      
+
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
@@ -888,13 +842,13 @@ function InteractiveSavingsCard() {
         className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl border border-white/20 p-5 overflow-hidden transition-transform duration-150"
       >
         {/* Card shine effect */}
-        <div 
+        <div
           className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
             background: `radial-gradient(circle at ${50 + rotateY * 3}% ${50 - rotateX * 3}%, rgba(255,255,255,0.15) 0%, transparent 60%)`,
           }}
         />
-        
+
         {/* Project Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
@@ -917,7 +871,7 @@ function InteractiveSavingsCard() {
             <p className="text-gold font-bold text-sm">₹7<span className="text-[9px] text-white/40">/unit</span></p>
           </div>
         </div>
-        
+
         {/* Enhanced Inputs */}
         <div className="space-y-4 mb-4">
           {/* Bill Input - Enhanced */}
@@ -928,8 +882,8 @@ function InteractiveSavingsCard() {
             </label>
             <div className={cn(
               "relative flex items-center rounded-xl border-2 transition-all duration-200 overflow-hidden",
-              isBillFocused 
-                ? "border-gold/60 bg-gradient-to-r from-gold/10 to-transparent shadow-lg shadow-gold/10" 
+              isBillFocused
+                ? "border-gold/60 bg-gradient-to-r from-gold/10 to-transparent shadow-lg shadow-gold/10"
                 : "border-white/15 bg-white/5 hover:border-white/25"
             )}>
               <div className="pl-3.5 pr-1 py-3 flex items-center">
@@ -955,17 +909,17 @@ function InteractiveSavingsCard() {
                   onClick={() => setAvgBill(preset)}
                   className={cn(
                     "flex-1 py-1 px-2 text-[10px] font-medium rounded-md transition-all",
-                    avgBill === preset 
-                      ? "bg-gold/20 text-gold border border-gold/30" 
+                    avgBill === preset
+                      ? "bg-gold/20 text-gold border border-gold/30"
                       : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70"
                   )}
                 >
-                  ₹{(preset/1000).toFixed(preset >= 1000 ? 0 : 1)}k
+                  ₹{(preset / 1000).toFixed(preset >= 1000 ? 0 : 1)}k
                 </button>
               ))}
             </div>
           </div>
-          
+
           {/* Savings Slider - Enhanced */}
           <div>
             <div className="flex justify-between items-center mb-2">
@@ -980,7 +934,7 @@ function InteractiveSavingsCard() {
             <div className="relative pt-1 pb-2">
               {/* Track background with gradient */}
               <div className="absolute top-1 left-0 right-0 h-2 bg-white/10 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-energy-green via-energy-blue to-gold rounded-full transition-all duration-150"
                   style={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
                 />
@@ -1003,8 +957,8 @@ function InteractiveSavingsCard() {
               {/* Tick marks */}
               <div className="flex justify-between mt-1 px-0.5">
                 {[10, 25, 50, 75, 100].map((tick) => (
-                  <span 
-                    key={tick} 
+                  <span
+                    key={tick}
                     className={cn(
                       "text-[8px] transition-colors",
                       savingsPercent >= tick ? "text-energy-green" : "text-white/30"
@@ -1017,7 +971,7 @@ function InteractiveSavingsCard() {
             </div>
           </div>
         </div>
-        
+
         {/* Main Savings - Prominent */}
         <div className="p-3 rounded-xl bg-gradient-to-br from-forest-dark/60 to-forest/40 border border-gold/20 mb-3">
           <div className="flex items-center gap-1.5 mb-1">
@@ -1034,7 +988,7 @@ function InteractiveSavingsCard() {
             {formatCurrency(calculations.annualSavings)}/year
           </p>
         </div>
-        
+
         {/* Stats Grid - Compact */}
         <div className="grid grid-cols-3 gap-2 mb-3">
           <div className="p-2 rounded-lg bg-white/5 text-center">
@@ -1053,7 +1007,7 @@ function InteractiveSavingsCard() {
             <p className="text-white/40 text-[9px]">CO₂/yr</p>
           </div>
         </div>
-        
+
         {/* Reservation Fee & CTA - Compact */}
         <div className="p-3 rounded-xl bg-gradient-to-r from-forest-dark/60 to-forest/40 border border-white/10">
           <div className="flex items-center justify-between mb-2">
@@ -1084,16 +1038,16 @@ function InteractiveSavingsCard() {
 }
 
 // Stat pill with animation
-function StatPill({ 
-  icon: Icon, 
-  value, 
-  label, 
-  color, 
-  delay 
-}: { 
-  icon: React.ElementType; 
-  value: string; 
-  label: string; 
+function StatPill({
+  icon: Icon,
+  value,
+  label,
+  color,
+  delay
+}: {
+  icon: React.ElementType;
+  value: string;
+  label: string;
   color: string;
   delay: number;
 }) {
@@ -1121,13 +1075,12 @@ export function HeroSection() {
     offset: ["start start", "end start"],
     layoutEffect: false,
   });
-  
+
   // Reduced parallax effects for better UX
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  // const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const y = useTransform(scrollYProgress, [0, 0.7], [0, 50]);
 
   // Rotating words for dynamic headline
-  const savingsWords = ["Save More", "Go Green", "Cut Bills", "Own Solar"];
   const benefitWords = ["cleaner", "cheaper", "smarter", "better"];
 
   return (
@@ -1141,41 +1094,41 @@ export function HeroSection() {
           <Hero3DScene />
         </Suspense>
       </div>
-      
+
       {/* Gradient overlay */}
       <AnimatedBackground />
-      
+
       {/* Floating particles */}
       <FloatingParticles />
-      
+
       {/* Energy Waves */}
       <EnergyWaves />
-      
+
       {/* Floating Icons */}
       <FloatingIcons />
-      
+
       {/* Morphing Blobs */}
-      <MorphingBlob 
-        className="w-96 h-96 -top-20 -left-20 opacity-20" 
-        color="rgba(255, 184, 0, 0.3)" 
+      <MorphingBlob
+        className="w-96 h-96 -top-20 -left-20 opacity-20"
+        color="rgba(255, 184, 0, 0.3)"
       />
-      <MorphingBlob 
-        className="w-80 h-80 -bottom-20 -right-20 opacity-15" 
-        color="rgba(76, 175, 80, 0.3)" 
+      <MorphingBlob
+        className="w-80 h-80 -bottom-20 -right-20 opacity-15"
+        color="rgba(76, 175, 80, 0.3)"
       />
-      
+
       {/* Mouse spotlight */}
       <MouseSpotlight />
-      
-      <motion.div 
-        style={{ opacity, y }}
+
+      <motion.div
+        style={{ y }}
         className="relative z-10 container mx-auto px-4 lg:px-8 py-24 md:py-32"
       >
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
           <div className="text-white">
             <GlowingBadge />
-            
+
             {/* Trust Badge with Star Rating */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -1186,7 +1139,7 @@ export function HeroSection() {
               <StarRating rating={5} delay={0.5} />
               <span className="text-white/60 text-sm">Trusted by 1,200+ families</span>
             </motion.div>
-            
+
             {/* Main Headline with Enhanced Animations */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-[1.05] tracking-tight mb-6">
               <div className="overflow-hidden">
@@ -1218,7 +1171,7 @@ export function HeroSection() {
                 </motion.div>
               </div>
             </h1>
-            
+
             {/* Dynamic Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -1226,11 +1179,11 @@ export function HeroSection() {
               transition={{ delay: 0.8, duration: 0.6 }}
               className="text-xl md:text-2xl text-gray-300 mb-4 max-w-lg"
             >
-              Go Solar in <span className="text-gold font-semibold">60 Seconds</span>. 
+              Go Solar in <span className="text-gold font-semibold">60 Seconds</span>.
               <br className="hidden md:block" />
               No Roof Required. No Installation.
             </motion.p>
-            
+
             {/* Typewriter Effect */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -1240,13 +1193,13 @@ export function HeroSection() {
             >
               <span className="text-lg text-gray-400">
                 Make your energy{" "}
-                <TypewriterText 
-                  texts={benefitWords} 
+                <TypewriterText
+                  texts={benefitWords}
                   className="text-energy-green font-semibold"
                 />
               </span>
             </motion.div>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1259,7 +1212,7 @@ export function HeroSection() {
               </span>{" "}
               per year with Digital Solar.
             </motion.p>
-            
+
             {/* Animated Benefits Checklist */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -1267,16 +1220,16 @@ export function HeroSection() {
               transition={{ delay: 1.4 }}
               className="mb-8"
             >
-              <AnimatedCheckList 
+              <AnimatedCheckList
                 items={[
                   "No rooftop required",
-                  "Zero maintenance costs", 
+                  "Zero maintenance costs",
                   "75% guaranteed savings"
                 ]}
                 delay={1.5}
               />
             </motion.div>
-            
+
             {/* Stats with Gradient Border */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -1292,7 +1245,7 @@ export function HeroSection() {
                 />
               ))}
             </motion.div>
-            
+
             {/* CTAs with Magnetic Effect */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1323,7 +1276,7 @@ export function HeroSection() {
                   </motion.div>
                 </Link>
               </MagneticButton>
-              
+
               <MagneticButton>
                 <Link href="/#how-it-works">
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -1340,7 +1293,7 @@ export function HeroSection() {
               </MagneticButton>
             </motion.div>
           </div>
-          
+
           {/* Right Content - Interactive Card with Gradient Border */}
           <div className="hidden lg:block">
             <GradientBorder className="max-w-sm mx-auto">
@@ -1350,7 +1303,7 @@ export function HeroSection() {
             </GradientBorder>
           </div>
         </div>
-        
+
         {/* Mobile Calculator Card */}
         <div className="lg:hidden mt-8">
           <GradientBorder>
@@ -1360,7 +1313,7 @@ export function HeroSection() {
           </GradientBorder>
         </div>
       </motion.div>
-      
+
       {/* Scroll Indicator with Pulse Ring */}
       <motion.div
         initial={{ opacity: 0 }}

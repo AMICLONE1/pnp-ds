@@ -2,12 +2,26 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { FileText, CheckCircle, Clock, RefreshCw, Plus } from "lucide-react";
+import { 
+  FileText, 
+  CheckCircle, 
+  Clock, 
+  RefreshCw, 
+  Plus, 
+  Zap, 
+  Receipt, 
+  ArrowRight,
+  Sparkles,
+  TrendingDown,
+  Calendar,
+  CreditCard
+} from "lucide-react";
 import { BillPayment } from "@/components/features/bills/BillPayment";
 
 export const dynamic = 'force-dynamic';
@@ -118,13 +132,24 @@ export default function BillsPage() {
   return (
     <div className="min-h-screen flex flex-col bg-offwhite">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-12">
+      <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* Page Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          >
             <div>
-              <h1 className="text-4xl font-heading font-bold mb-2 text-charcoal">
-                Your Bills
-              </h1>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 rounded-xl bg-forest/10">
+                  <Receipt className="h-6 w-6 text-forest" />
+                </div>
+                <h1 className="text-4xl font-heading font-bold text-charcoal">
+                  Your Bills
+                </h1>
+              </div>
               <p className="text-gray-600">
                 View your electricity bills and applied solar credits
               </p>
@@ -149,8 +174,9 @@ export default function BillsPage() {
                 Fetch Latest Bill
               </Button>
             </div>
-          </div>
+          </motion.div>
 
+          <AnimatePresence mode="wait">
           {showManualForm && (
             <Card className="mb-6">
               <CardHeader>
@@ -298,95 +324,242 @@ export default function BillsPage() {
           )}
 
           {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16"
+            >
+              <div className="relative inline-flex">
+                <div className="w-16 h-16 rounded-full border-4 border-forest/20 border-t-forest animate-spin" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Receipt className="h-6 w-6 text-forest/60" />
+                </div>
+              </div>
+              <p className="mt-4 text-gray-500 font-medium">Loading your bills...</p>
+            </motion.div>
           ) : bills.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2 text-charcoal">
-                  No Bills Yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Once you connect your utility, your bills will appear here. You can also fetch your latest bill using the button above.
-                </p>
-                <Link href="/connect">
-                  <Button variant="primary">Connect Utility</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {bills.map((bill) => (
-                <div key={bill.id} className="space-y-4">
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-charcoal">
-                              {bill.bill_number}
-                            </h3>
-                            <span
-                              className={`px-2 py-1 rounded text-xs font-medium flex items-center gap-1 ${
-                                bill.status === "PAID" || bill.status === "paid"
-                                  ? "bg-green-100 text-green-700"
-                                  : bill.status === "OVERDUE" || bill.status === "overdue"
-                                  ? "bg-red-100 text-red-700"
-                                  : "bg-yellow-100 text-yellow-700"
-                              }`}
-                            >
-                              {bill.status === "PAID" || bill.status === "paid" ? (
-                                <CheckCircle className="h-3 w-3" />
-                              ) : (
-                                <Clock className="h-3 w-3" />
-                              )}
-                              {bill.status === "PAID" || bill.status === "paid"
-                                ? "Paid"
-                                : bill.status === "OVERDUE" || bill.status === "overdue"
-                                ? "Overdue"
-                                : "Pending"}
-                            </span>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="overflow-hidden">
+                <CardContent className="p-0">
+                  {/* Decorative Header */}
+                  <div className="relative bg-gradient-to-br from-forest via-forest to-forest-light p-8 text-center">
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/10 rounded-full blur-3xl" />
+                      <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-energy-green/10 rounded-full blur-2xl" />
+                    </div>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
+                      className="relative inline-flex p-4 rounded-2xl bg-white/10 backdrop-blur-sm mb-4"
+                    >
+                      <FileText className="h-10 w-10 text-white" />
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                        className="absolute -top-1 -right-1 p-1 rounded-full bg-gold"
+                      >
+                        <Sparkles className="h-3 w-3 text-charcoal" />
+                      </motion.div>
+                    </motion.div>
+                    <h3 className="text-2xl font-heading font-bold text-white mb-2">
+                      No Bills Yet
+                    </h3>
+                    <p className="text-white/80 max-w-md mx-auto">
+                      Connect your utility to automatically track bills and apply solar credits
+                    </p>
+                  </div>
+                  
+                  {/* Features Grid */}
+                  <div className="p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                      {[
+                        { icon: Zap, title: "Auto-fetch Bills", desc: "Automatic BBPS integration" },
+                        { icon: TrendingDown, title: "Track Savings", desc: "See credits applied instantly" },
+                        { icon: CreditCard, title: "Easy Payments", desc: "Pay bills in one click" },
+                      ].map((feature, index) => (
+                        <motion.div
+                          key={feature.title}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.4 + index * 0.1 }}
+                          className="p-4 rounded-xl bg-gray-50 border border-gray-100 text-center group hover:bg-forest/5 hover:border-forest/20 transition-all duration-300"
+                        >
+                          <div className="inline-flex p-2 rounded-lg bg-forest/10 mb-3 group-hover:bg-forest/20 transition-colors">
+                            <feature.icon className="h-5 w-5 text-forest" />
                           </div>
-                          <p className="text-sm text-gray-600 mb-4">
-                            {bill.bill_month && bill.bill_year
-                              ? new Date(bill.bill_year, bill.bill_month - 1).toLocaleDateString(
-                                  "en-IN",
-                                  { month: "long", year: "numeric" }
-                                )
-                              : bill.fetched_at
-                              ? new Date(bill.fetched_at).toLocaleDateString("en-IN", {
-                                  month: "long",
-                                  year: "numeric",
-                                })
-                              : "N/A"}{" "}
-                            • Due: {bill.due_date ? formatDate(bill.due_date) : "N/A"}
-                          </p>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">Bill Amount</span>
-                              <span className="font-medium">{formatCurrency(Number(bill.amount))}</span>
-                            </div>
-                            {Number(bill.credits_applied || 0) > 0 && (
-                              <div className="flex justify-between text-sm">
-                                <span className="text-gray-600 text-green-600">
-                                  Solar Credits Applied
-                                </span>
-                                <span className="font-medium text-green-600">
-                                  -{formatCurrency(Number(bill.credits_applied || 0))}
-                                </span>
-                              </div>
-                            )}
-                            <div className="pt-2 border-t flex justify-between">
-                              <span className="font-semibold text-charcoal">Final Amount</span>
-                              <span className="font-bold text-lg text-charcoal">
-                                {formatCurrency(
-                                  Number(bill.final_amount || bill.amount) -
-                                    Number(bill.credits_applied || 0)
-                                )}
+                          <h4 className="font-semibold text-charcoal text-sm mb-1">{feature.title}</h4>
+                          <p className="text-xs text-gray-500">{feature.desc}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                      <Link href="/connect">
+                        <Button variant="primary" className="group">
+                          <Zap className="h-4 w-4 mr-2" />
+                          Connect Utility
+                          <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                      </Link>
+                      <span className="text-gray-400 text-sm">or</span>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowManualForm(true)}
+                        className="group"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Bill Manually
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-4"
+            >
+              {/* Bills Summary Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                {[
+                  { label: "Total Bills", value: bills.length, icon: Receipt },
+                  { label: "Pending", value: bills.filter(b => b.status !== "PAID" && b.status !== "paid").length, icon: Clock },
+                  { label: "Paid", value: bills.filter(b => b.status === "PAID" || b.status === "paid").length, icon: CheckCircle },
+                  { label: "Total Saved", value: formatCurrency(bills.reduce((sum, b) => sum + Number(b.credits_applied || 0), 0)), icon: TrendingDown, isGreen: true },
+                ].map((stat, index) => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <stat.icon className={`h-4 w-4 ${stat.isGreen ? 'text-energy-green' : 'text-gray-400'}`} />
+                      <span className="text-xs text-gray-500">{stat.label}</span>
+                    </div>
+                    <p className={`text-xl font-bold ${stat.isGreen ? 'text-energy-green' : 'text-charcoal'}`}>
+                      {stat.value}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {bills.map((bill, index) => (
+                <motion.div 
+                  key={bill.id} 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                  className="space-y-4"
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                    <CardContent className="p-0">
+                      {/* Bill Header with Status */}
+                      <div className={`px-6 py-3 border-b flex items-center justify-between ${
+                        bill.status === "PAID" || bill.status === "paid"
+                          ? "bg-green-50 border-green-100"
+                          : bill.status === "OVERDUE" || bill.status === "overdue"
+                          ? "bg-red-50 border-red-100"
+                          : "bg-amber-50 border-amber-100"
+                      }`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-lg ${
+                            bill.status === "PAID" || bill.status === "paid"
+                              ? "bg-green-100"
+                              : bill.status === "OVERDUE" || bill.status === "overdue"
+                              ? "bg-red-100"
+                              : "bg-amber-100"
+                          }`}>
+                            <Receipt className={`h-4 w-4 ${
+                              bill.status === "PAID" || bill.status === "paid"
+                                ? "text-green-600"
+                                : bill.status === "OVERDUE" || bill.status === "overdue"
+                                ? "text-red-600"
+                                : "text-amber-600"
+                            }`} />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-charcoal">{bill.bill_number}</h3>
+                            <p className="text-xs text-gray-500">
+                              {bill.bill_month && bill.bill_year
+                                ? new Date(bill.bill_year, bill.bill_month - 1).toLocaleDateString(
+                                    "en-IN",
+                                    { month: "long", year: "numeric" }
+                                  )
+                                : bill.fetched_at
+                                ? new Date(bill.fetched_at).toLocaleDateString("en-IN", {
+                                    month: "long",
+                                    year: "numeric",
+                                  })
+                                : "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                        <span
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+                            bill.status === "PAID" || bill.status === "paid"
+                              ? "bg-green-100 text-green-700"
+                              : bill.status === "OVERDUE" || bill.status === "overdue"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {bill.status === "PAID" || bill.status === "paid" ? (
+                            <CheckCircle className="h-3.5 w-3.5" />
+                          ) : (
+                            <Clock className="h-3.5 w-3.5" />
+                          )}
+                          {bill.status === "PAID" || bill.status === "paid"
+                            ? "Paid"
+                            : bill.status === "OVERDUE" || bill.status === "overdue"
+                            ? "Overdue"
+                            : "Pending"}
+                        </span>
+                      </div>
+
+                      {/* Bill Details */}
+                      <div className="p-6">
+                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                          <Calendar className="h-4 w-4" />
+                          <span>Due: {bill.due_date ? formatDate(bill.due_date) : "N/A"}</span>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Bill Amount</span>
+                            <span className="font-medium">{formatCurrency(Number(bill.amount))}</span>
+                          </div>
+                          {Number(bill.credits_applied || 0) > 0 && (
+                            <motion.div 
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="flex justify-between text-sm bg-green-50 -mx-2 px-2 py-2 rounded-lg"
+                            >
+                              <span className="text-green-600 flex items-center gap-2">
+                                <Sparkles className="h-4 w-4" />
+                                Solar Credits Applied
                               </span>
-                            </div>
+                              <span className="font-semibold text-green-600">
+                                -{formatCurrency(Number(bill.credits_applied || 0))}
+                              </span>
+                            </motion.div>
+                          )}
+                          <div className="pt-3 border-t border-dashed flex justify-between items-center">
+                            <span className="font-semibold text-charcoal">Final Amount</span>
+                            <span className="font-bold text-2xl text-charcoal">
+                              {formatCurrency(
+                                Number(bill.final_amount || bill.amount) -
+                                  Number(bill.credits_applied || 0)
+                              )}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -398,10 +571,11 @@ export default function BillsPage() {
                       fetchBills();
                     }}
                   />
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
+          </AnimatePresence>
         </div>
       </main>
       <Footer />

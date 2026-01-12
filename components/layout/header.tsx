@@ -39,6 +39,13 @@ export function Header() {
   const [isHidden, setIsHidden] = useState(false);
   const supabase = createClient();
 
+  // Pages with dark hero sections that need transparent header with white text
+  const darkHeroPages = ['/', '/reserve'];
+  const hasDarkHero = darkHeroPages.includes(pathname);
+  
+  // Force solid header on light background pages
+  const needsSolidHeader = !hasDarkHero || isScrolled;
+
   const { scrollY } = useScroll();
   
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -95,8 +102,8 @@ export function Header() {
         transition={{ duration: 0.3 }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          isScrolled 
-            ? "bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-100" 
+          needsSolidHeader 
+            ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-100" 
             : "bg-transparent"
         )}
       >
@@ -111,7 +118,7 @@ export function Header() {
               <motion.div
                 className={cn(
                   "relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-300",
-                  isScrolled ? "bg-forest" : "bg-white/10 backdrop-blur-md"
+                  needsSolidHeader ? "bg-forest" : "bg-white/10 backdrop-blur-md"
                 )}
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
@@ -126,7 +133,7 @@ export function Header() {
               </motion.div>
               <span className={cn(
                 "text-xl font-heading font-bold transition-colors duration-300",
-                isScrolled ? "text-forest" : "text-white"
+                needsSolidHeader ? "text-forest" : "text-white"
               )}>
                 PowerNet<span className="text-gold">Pro</span>
               </span>
@@ -145,10 +152,10 @@ export function Header() {
                     href={item.href}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
-                      isScrolled 
+                      needsSolidHeader 
                         ? "text-charcoal hover:text-forest hover:bg-forest/5" 
                         : "text-white/90 hover:text-white hover:bg-white/10",
-                      pathname === item.href && (isScrolled ? "bg-forest/10 text-forest" : "bg-white/10")
+                      pathname === item.href && (needsSolidHeader ? "bg-forest/10 text-forest" : "bg-white/10")
                     )}
                     data-cursor-hover
                   >
@@ -211,17 +218,17 @@ export function Header() {
                   <NotificationBell />
                   <div className={cn(
                     "hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm",
-                    isScrolled ? "bg-gray-100 text-gray-600" : "bg-white/10 text-white/80"
+                    needsSolidHeader ? "bg-gray-100 text-gray-600" : "bg-white/10 text-white/80"
                   )}>
                     <div className="w-2 h-2 rounded-full bg-energy-green animate-pulse" />
                     <span className="max-w-32 truncate">{user.email}</span>
                   </div>
                   <Button 
-                    variant={isScrolled ? "outline" : "ghost"} 
+                    variant={needsSolidHeader ? "outline" : "ghost"} 
                     size="sm" 
                     onClick={handleLogout}
                     className={cn(
-                      !isScrolled && "text-white border-white/30 hover:bg-white/10"
+                      !needsSolidHeader && "text-white border-white/30 hover:bg-white/10"
                     )}
                   >
                     Logout
@@ -235,7 +242,7 @@ export function Header() {
                       size="sm"
                       className={cn(
                         "hidden sm:inline-flex",
-                        !isScrolled && "text-white hover:bg-white/10"
+                        !needsSolidHeader && "text-white hover:bg-white/10"
                       )}
                     >
                       Login
@@ -265,7 +272,7 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className={cn(
                   "lg:hidden p-2 rounded-lg transition-colors",
-                  isScrolled 
+                  needsSolidHeader 
                     ? "text-charcoal hover:bg-gray-100" 
                     : "text-white hover:bg-white/10"
                 )}
