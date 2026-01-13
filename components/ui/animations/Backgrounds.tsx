@@ -2,114 +2,57 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-
+import { cn } from '@/lib/utils'; // Adjust import path as needed
 interface AuroraBackgroundProps {
   className?: string;
   children?: React.ReactNode;
   intensity?: "subtle" | "medium" | "strong";
 }
 
-export function AuroraBackground({
+// ===== LIGHTWEIGHT VERSION (Minimal GPU Usage) =====
+export function LightweightAuroraBackground({
   className = "",
   children,
   intensity = "medium",
-}: AuroraBackgroundProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+}: Omit<AuroraBackgroundProps, 'delay' | 'disableOnMobile'>) {
   const opacityMap = {
     subtle: 0.3,
     medium: 0.5,
     strong: 0.7,
   };
 
-  const opacity = opacityMap[intensity];
-
-  if (!mounted) {
-    return (
-      <div className={`relative overflow-hidden ${className}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
-        {children}
-      </div>
-    );
-  }
-
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={cn("relative overflow-hidden", className)}>
       {/* Base gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
-      
-      {/* Aurora blobs */}
-      <motion.div
-        className="absolute inset-0"
-        style={{ opacity }}
-      >
-        {/* Gold blob */}
-        <motion.div
-          className="absolute w-[800px] h-[800px] rounded-full"
+
+      {/* CSS-only animated blobs (no Framer Motion) */}
+      <div className="absolute inset-0" style={{ opacity: opacityMap[intensity] }}>
+        <div
+          className="absolute w-[800px] h-[800px] rounded-full animate-aurora-slow"
           style={{
             background: "radial-gradient(circle, rgba(255,184,0,0.4) 0%, transparent 70%)",
             filter: "blur(80px)",
-          }}
-          animate={{
-            x: ["-20%", "30%", "-20%"],
-            y: ["-20%", "20%", "-20%"],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
+            left: "-20%",
+            top: "-20%",
           }}
         />
-        
-        {/* Green blob */}
-        <motion.div
-          className="absolute w-[600px] h-[600px] rounded-full right-0 bottom-0"
+        <div
+          className="absolute w-[600px] h-[600px] rounded-full right-0 bottom-0 animate-aurora-medium"
           style={{
             background: "radial-gradient(circle, rgba(76,175,80,0.3) 0%, transparent 70%)",
             filter: "blur(80px)",
           }}
-          animate={{
-            x: ["20%", "-30%", "20%"],
-            y: ["20%", "-20%", "20%"],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
         />
-        
-        {/* Cyan blob */}
-        <motion.div
-          className="absolute w-[500px] h-[500px] rounded-full top-1/2 left-1/2"
+        <div
+          className="absolute w-[500px] h-[500px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-aurora-fast"
           style={{
             background: "radial-gradient(circle, rgba(0,188,212,0.2) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
-          animate={{
-            x: ["-50%", "-30%", "-70%", "-50%"],
-            y: ["-50%", "-70%", "-30%", "-50%"],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
         />
-      </motion.div>
-      
-      {/* Grain overlay */}
-      <div 
-        className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-      />
-      
+      </div>
+
       {/* Content */}
       <div className="relative z-10">
         {children}
@@ -187,7 +130,7 @@ export function GradientMesh({
     const size = 35 + Math.random() * 30;
     const startX = (index * 20 + Math.random() * 15) % 90;
     const startY = (index * 25 + Math.random() * 20) % 85;
-    
+
     return {
       color,
       size,
@@ -367,7 +310,7 @@ export function GradientMesh({
           }}
         />
       ))}
-      
+
       {/* Accent glow spots */}
       {colors.slice(0, 3).map((color, index) => (
         <motion.div
@@ -394,7 +337,7 @@ export function GradientMesh({
       ))}
 
       {/* Noise overlay for texture */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -420,7 +363,7 @@ export function Spotlight({ className = "", size = 400 }: SpotlightProps) {
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();

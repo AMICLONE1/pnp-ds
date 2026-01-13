@@ -29,15 +29,31 @@ export function CursorFollower() {
     };
 
     const enter = (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (target?.closest("[data-cursor-hover]")) {
+      const target = e.target;
+
+      if (
+        !target ||
+        typeof (target as Element).closest !== "function"
+      ) {
+        return;
+      }
+
+      if ((target as Element).closest("[data-cursor-hover]")) {
         setIsHovering(true);
       }
     };
 
     const leave = (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (target?.closest("[data-cursor-hover]")) {
+      const target = e.target;
+
+      if (
+        !target ||
+        typeof (target as Element).closest !== "function"
+      ) {
+        return;
+      }
+
+      if ((target as Element).closest("[data-cursor-hover]")) {
         setIsHovering(false);
       }
     };
@@ -152,34 +168,6 @@ export function TextScramble({
   return <span className={className}>{displayText}</span>;
 }
 
-// ===== PARALLAX SECTION =====
-export function ParallaxSection({
-  children,
-  className,
-  speed = 0.5
-}: {
-  children: React.ReactNode;
-  className?: string;
-  speed?: number;
-}) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-    layoutEffect: false,
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [100 * speed, -100 * speed]);
-
-  return (
-    <div ref={ref} className={cn("relative overflow-hidden", className)}>
-      <motion.div style={{ y }}>
-        {children}
-      </motion.div>
-    </div>
-  );
-}
-
 // ===== REVEAL TEXT ON SCROLL =====
 export function RevealText({
   text,
@@ -210,55 +198,6 @@ export function RevealText({
       >
         <Tag>{text}</Tag>
       </motion.span>
-    </div>
-  );
-}
-
-// ===== MORPHING BLOB =====
-export function MorphingBlob({
-  className,
-  colors = ["#FFB800", "#4CAF50", "#00BCD4"]
-}: {
-  className?: string;
-  colors?: string[];
-}) {
-  return (
-    <div className={cn("absolute inset-0 overflow-hidden pointer-events-none", className)}>
-      <svg className="w-full h-full" viewBox="0 0 800 800" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="blob-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={colors[0]} stopOpacity="0.3">
-              <animate
-                attributeName="stop-color"
-                values={`${colors[0]};${colors[1]};${colors[2]};${colors[0]}`}
-                dur="10s"
-                repeatCount="indefinite"
-              />
-            </stop>
-            <stop offset="100%" stopColor={colors[2]} stopOpacity="0.3">
-              <animate
-                attributeName="stop-color"
-                values={`${colors[2]};${colors[0]};${colors[1]};${colors[2]}`}
-                dur="10s"
-                repeatCount="indefinite"
-              />
-            </stop>
-          </linearGradient>
-        </defs>
-        <path fill="url(#blob-gradient)">
-          <animate
-            attributeName="d"
-            dur="20s"
-            repeatCount="indefinite"
-            values="
-              M400,400Q500,300,400,200Q300,100,200,200Q100,300,200,400Q300,500,400,400;
-              M400,400Q550,250,400,150Q250,50,150,200Q50,350,200,450Q350,550,400,400;
-              M400,400Q600,200,400,100Q200,0,100,200Q0,400,200,500Q400,600,400,400;
-              M400,400Q500,300,400,200Q300,100,200,200Q100,300,200,400Q300,500,400,400
-            "
-          />
-        </path>
-      </svg>
     </div>
   );
 }
@@ -607,37 +546,6 @@ export function SplitHeroText({
           {line2}
         </motion.span>
       </motion.h1>
-    </div>
-  );
-}
-
-// ===== VIDEO BACKGROUND WITH OVERLAY =====
-export function VideoBackground({
-  src,
-  poster,
-  overlay = true,
-  className
-}: {
-  src: string;
-  poster?: string;
-  overlay?: boolean;
-  className?: string;
-}) {
-  return (
-    <div className={cn("absolute inset-0 overflow-hidden", className)}>
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster={poster}
-        className="absolute w-full h-full object-cover"
-      >
-        <source src={src} type="video/mp4" />
-      </video>
-      {overlay && (
-        <div className="absolute inset-0 bg-gradient-to-b from-forest/80 via-forest/60 to-forest-dark/90" />
-      )}
     </div>
   );
 }
