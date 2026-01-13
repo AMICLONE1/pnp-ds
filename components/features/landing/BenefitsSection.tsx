@@ -156,6 +156,7 @@ function CategoryNav({
           )}
           whileHover={{ scale: activeIndex === index ? 1 : 1.02 }}
           whileTap={{ scale: 0.98 }}
+          style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           {/* Active background */}
           {activeIndex === index && (
@@ -220,6 +221,7 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
               className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               {category.tagline.split('.')[0]}
               <span className={cn(
@@ -235,6 +237,7 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
               className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               {category.description}
             </motion.p>
@@ -314,14 +317,14 @@ function FeatureCard({
 
         {/* Title and subtitle */}
         <div className="mb-4">
-          <h4 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-1 group-hover:text-forest transition-colors">
+          <h4 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-1 group-hover:text-forest transition-colors" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             {feature.title}
           </h4>
-          <p className="text-sm text-gray-500">{feature.subtitle}</p>
+          <p className="text-sm text-gray-500" style={{ fontFamily: "'Montserrat', sans-serif" }}>{feature.subtitle}</p>
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 leading-relaxed mb-4">
+        <p className="text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           {feature.description}
         </p>
 
@@ -420,14 +423,18 @@ function StatsBanner() {
               className="text-center"
             >
               <div className="flex items-baseline justify-center gap-1 mb-1">
-                <span className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white">
+                <span className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
                   {stat.value}
                 </span>
-                <span className="text-xl md:text-2xl font-bold text-gold">
+                <span className="text-xl md:text-2xl font-bold text-gold"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
                   {stat.suffix}
                 </span>
               </div>
-              <p className="text-sm md:text-base text-white/80">{stat.label}</p>
+              <p className="text-sm md:text-base text-white/80" style={{ fontFamily: "'Montserrat', sans-serif" }}>{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -518,19 +525,22 @@ export function BenefitsSection() {
             animate={isHeaderInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-semibold mb-4"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             <Sun className="w-4 h-4" />
             Why Digital Solar
           </motion.span>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             Benefits That{" "}
-            <span className="bg-gradient-to-r from-gold via-energy-green to-forest bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gold via-energy-green to-forest bg-clip-text text-transparent" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Actually Matter
             </span>
           </h2>
 
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             Traditional solar has barriers. We removed them all. Here&apos;s why thousands of Indian families are choosing Digital Solar.
           </p>
         </motion.div>
@@ -578,7 +588,7 @@ export function BenefitsSection() {
           transition={{ delay: 0.4 }}
           className="mt-12 md:mt-16 text-center"
         >
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-6" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             Ready to experience these benefits yourself?
           </p>
           <Link href="/reserve">
@@ -590,7 +600,7 @@ export function BenefitsSection() {
               <Button
                 variant="primary"
                 size="lg"
-                className="bg-forest hover:bg-forest-light text-white font-semibold px-8 py-6 text-lg group shadow-lg shadow-forest/25"
+                className="bg-forest hover:bg-forest-light text-white font-semibold px-8 py-6 text-lg group shadow-lg shadow-forest/25" style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 Start Your Solar Journey
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

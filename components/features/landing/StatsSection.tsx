@@ -2,10 +2,10 @@
 
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useRef, useEffect } from "react";
-import { 
-  Users, 
-  Leaf, 
-  TrendingUp, 
+import {
+  Users,
+  Leaf,
+  TrendingUp,
   IndianRupee,
   Zap,
   Home
@@ -59,27 +59,27 @@ const stats = [
 function useAnimatedCounter(value: number, duration: number = 2) {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.floor(latest));
-  
+
   useEffect(() => {
     const controls = animate(count, value, { duration, ease: "easeOut" });
     return controls.stop;
   }, [count, value, duration]);
-  
+
   return rounded;
 }
 
 // Individual stat card
-function StatCard({ 
-  stat, 
-  index 
-}: { 
-  stat: typeof stats[0]; 
+function StatCard({
+  stat,
+  index
+}: {
+  stat: typeof stats[0];
   index: number;
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const animatedValue = useAnimatedCounter(isInView ? stat.value : 0);
-  
+
   const colors = {
     gold: {
       bg: "bg-gold/10",
@@ -110,7 +110,7 @@ function StatCard({
       glow: "shadow-forest/20"
     }
   };
-  
+
   const colorScheme = colors[stat.color as keyof typeof colors];
 
   return (
@@ -118,8 +118,8 @@ function StatCard({
       ref={ref}
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
-      transition={{ 
-        duration: 0.5, 
+      transition={{
+        duration: 0.5,
         delay: index * 0.1,
         type: "spring",
         stiffness: 100
@@ -138,7 +138,7 @@ function StatCard({
           "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500",
           colorScheme.bg
         )} />
-        
+
         <div className="relative z-10">
           {/* Icon */}
           <div className={cn(
@@ -147,33 +147,38 @@ function StatCard({
           )}>
             <stat.icon className="w-7 h-7 text-white" />
           </div>
-          
+
           {/* Value */}
           <div className="flex items-baseline gap-1 mb-2">
-            <span className={cn("text-4xl md:text-5xl font-heading font-bold", colorScheme.text)}>
+            <span className={cn("text-4xl md:text-5xl font-heading font-bold", colorScheme.text)}
+              style={{ fontFamily: "'Montserrat', sans-serif" }}>
               {stat.prefix}
               <motion.span>{animatedValue}</motion.span>
               {stat.suffix}
             </span>
           </div>
-          
+
           {/* Label */}
-          <h3 className="text-lg font-semibold text-charcoal mb-1">
+          <h3 className="text-lg font-semibold text-charcoal mb-1"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             {stat.label}
           </h3>
-          
+
           {/* Description */}
-          <p className="text-sm text-gray-500 mb-3">
+          <p className="text-sm text-gray-500 mb-3"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             {stat.description}
           </p>
-          
+
           {/* Trend indicator */}
           <div className={cn(
             "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium",
             colorScheme.bg,
             colorScheme.text
           )}>
-            <TrendingUp className="w-3 h-3" />
+            <TrendingUp className="w-3 h-3" style={{ fontFamily: "'Montserrat', sans-serif" }} />
             {stat.trend}
           </div>
         </div>
@@ -201,7 +206,7 @@ export function StatsSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section 
+    <section
       id="stats-section"
       ref={ref}
       className="relative py-24 md:py-32 bg-gradient-to-b from-offwhite to-white overflow-hidden"
@@ -219,12 +224,12 @@ export function StatsSection() {
             <rect width="100%" height="100%" fill="url(#stats-grid)" className="text-charcoal" />
           </svg>
         </div>
-        
+
         {/* Decorative blurs */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-energy-green/5 rounded-full blur-3xl" />
       </div>
-      
+
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
@@ -244,26 +249,31 @@ export function StatsSection() {
             </motion.span>
             <LiveIndicator />
           </div>
-          
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4">
+
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             Trusted by{" "}
             <span className="bg-gradient-to-r from-forest to-energy-green bg-clip-text text-transparent">
               Thousands
             </span>
           </h2>
-          
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+
+          >
             Join India&apos;s fastest-growing solar community. Real numbers, real impact, real savings.
           </p>
         </motion.div>
-        
+
         {/* Stats Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {stats.map((stat, index) => (
             <StatCard key={stat.label} stat={stat} index={index} />
           ))}
         </div>
-        
+
         {/* Bottom banner */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -283,22 +293,23 @@ export function StatsSection() {
                 <rect width="100%" height="100%" fill="url(#banner-pattern)" />
               </svg>
             </div>
-            
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-white">
               <div className="text-center md:text-left">
-                <h3 className="text-xl md:text-2xl font-heading font-bold mb-2">
+                <h3 className="text-xl md:text-2xl font-heading font-bold mb-2" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                   Ready to be part of this community?
                 </h3>
-                <p className="text-white/80">
+                <p className="text-white/80" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                   Start saving today with zero installation required.
                 </p>
               </div>
-              
+
               <motion.a
                 href="/reserve"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex-shrink-0 px-6 py-3 bg-gold hover:bg-gold-light text-charcoal font-semibold rounded-xl transition-colors flex items-center gap-2 group"
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 Join Now
                 <Zap className="w-4 h-4 group-hover:animate-pulse" />

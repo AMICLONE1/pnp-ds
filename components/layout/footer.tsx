@@ -55,13 +55,13 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-forest overflow-hidden">
+    <footer style={{ fontFamily: "'Montserrat', sans-serif" }} className="relative bg-forest overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-energy-green/5 rounded-full blur-3xl" />
       </div>
-      
+
       {/* Newsletter CTA Section */}
       <div className="relative border-b border-white/10">
         <div className="container mx-auto px-4 lg:px-8 py-16">
@@ -72,19 +72,20 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+              <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
                 Ready to start{" "}
                 <span className="text-gold">saving?</span>
               </h2>
-              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-                Join thousands of Indian families saving on electricity bills. 
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-400 mb-8 max-w-xl mx-auto">
+                Join thousands of Indian families saving on electricity bills.
                 Get exclusive updates and tips delivered to your inbox.
               </p>
-              
+
               <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                 <div className="flex-1 relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -110,8 +111,8 @@ export function Footer() {
                   </Button>
                 </motion.div>
               </form>
-              
-              <p className="text-xs text-gray-500 mt-4">
+
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-500 mt-4">
                 No spam, unsubscribe anytime. By subscribing you agree to our Privacy Policy.
               </p>
             </motion.div>
@@ -132,14 +133,14 @@ export function Footer() {
                 PowerNet<span className="text-gold">Pro</span>
               </span>
             </Link>
-            
-            <p className="text-gray-400 text-sm mb-6 max-w-xs leading-relaxed">
-              Digital Solar platform enabling you to save on power bills without installation. 
+
+            <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-400 text-sm mb-6 max-w-xs leading-relaxed">
+              Digital Solar platform enabling you to save on power bills without installation.
               Reserve solar capacity and offset your electricity bills with credits.
             </p>
 
             {/* Contact Info */}
-            <div className="space-y-3 mb-6">
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3 mb-6">
               <a href="mailto:hello@powernetpro.in" className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-sm group">
                 <Mail className="w-4 h-4 text-gold" />
                 hello@powernetpro.in
@@ -157,7 +158,7 @@ export function Footer() {
             </div>
 
             {/* Social Links */}
-            <div className="flex items-center gap-3">
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <motion.a
                   key={social.label}
@@ -176,16 +177,16 @@ export function Footer() {
 
           {/* Product Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Product</h3>
-            <ul className="space-y-3">
+            <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Product</h3>
+            <ul style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors text-sm inline-flex items-center gap-1 group"
                   >
                     {link.label}
-                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight style={{ fontFamily: "'Montserrat', sans-serif" }} className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </Link>
                 </li>
               ))}
@@ -194,21 +195,21 @@ export function Footer() {
 
           {/* Company Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Company</h3>
-            <ul className="space-y-3">
+            <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Company</h3>
+            <ul style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors text-sm inline-flex items-center gap-2 group"
                   >
                     {link.label}
                     {link.badge && (
-                      <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-gold/20 text-gold rounded">
+                      <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="px-1.5 py-0.5 text-[10px] font-semibold bg-gold/20 text-gold rounded">
                         {link.badge}
                       </span>
                     )}
-                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight style={{ fontFamily: "'Montserrat', sans-serif" }} className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </Link>
                 </li>
               ))}
@@ -217,11 +218,11 @@ export function Footer() {
 
           {/* Resources Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Resources</h3>
-            <ul className="space-y-3">
+            <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Resources</h3>
+            <ul style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors text-sm inline-flex items-center gap-1 group"
                   >
@@ -235,11 +236,11 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Legal</h3>
-            <ul className="space-y-3">
+            <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Legal</h3>
+            <ul style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
                     className="text-gray-400 hover:text-white transition-colors text-sm inline-flex items-center gap-1 group"
                   >
@@ -254,20 +255,20 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="relative border-t border-white/10">
+      <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="relative border-t border-white/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-500 text-sm text-center md:text-left">
+            <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500 text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} PowerNetPro. All rights reserved. Made with 💚 in India.
             </p>
-            
+
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <div className="w-2 h-2 rounded-full bg-energy-green animate-pulse" />
                 All systems operational
               </div>
-              
-              <button 
+
+              <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm group"
               >

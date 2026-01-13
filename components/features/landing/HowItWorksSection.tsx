@@ -2,10 +2,10 @@
 
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { 
-  Sun, 
-  CreditCard, 
-  Zap, 
+import {
+  Sun,
+  CreditCard,
+  Zap,
   CheckCircle,
   ArrowRight,
   Play
@@ -66,13 +66,13 @@ const steps = [
 ];
 
 // Step component
-function StepCard({ 
-  step, 
-  index, 
+function StepCard({
+  step,
+  index,
   isActive,
-  progress 
-}: { 
-  step: typeof steps[0]; 
+  progress
+}: {
+  step: typeof steps[0];
   index: number;
   isActive: boolean;
   progress: number;
@@ -107,7 +107,7 @@ function StepCard({
       gradient: "from-forest to-forest-light"
     }
   };
-  
+
   const colorScheme = colors[step.color as keyof typeof colors];
 
   return (
@@ -124,8 +124,8 @@ function StepCard({
       {/* Card */}
       <div className={cn(
         "relative p-6 md:p-8 rounded-2xl transition-all duration-500",
-        isActive 
-          ? "bg-white shadow-2xl shadow-black/10" 
+        isActive
+          ? "bg-white shadow-2xl shadow-black/10"
           : "bg-white/70 hover:bg-white hover:shadow-lg"
       )}>
         {/* Number badge */}
@@ -137,7 +137,7 @@ function StepCard({
         )}>
           {step.number}
         </div>
-        
+
         {/* Icon */}
         <div className={cn(
           "w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300",
@@ -148,21 +148,21 @@ function StepCard({
             isActive ? "text-white" : colorScheme.text
           )} />
         </div>
-        
+
         {/* Content */}
-        <h3 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-3">
+        <h3 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-3" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           {step.title}
         </h3>
-        <p className="text-gray-600 leading-relaxed mb-4">
+        <p className="text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           {step.description}
         </p>
-        
+
         {/* Details */}
         <motion.div
           initial={{ height: 0, opacity: 0 }}
-          animate={{ 
-            height: isActive ? "auto" : 0, 
-            opacity: isActive ? 1 : 0 
+          animate={{
+            height: isActive ? "auto" : 0,
+            opacity: isActive ? 1 : 0
           }}
           transition={{ duration: 0.3 }}
           className="overflow-hidden"
@@ -175,6 +175,7 @@ function StepCard({
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-2 text-sm"
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 <CheckCircle className={cn("w-4 h-4", colorScheme.text)} />
                 <span className="text-gray-600">{detail}</span>
@@ -193,7 +194,7 @@ function TimelineLine({ activeIndex }: { activeIndex: number }) {
     <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
       {/* Background line */}
       <div className="absolute inset-0 bg-gray-200" />
-      
+
       {/* Progress line */}
       <motion.div
         className="absolute top-0 left-0 w-full bg-gradient-to-b from-gold via-energy-green to-forest"
@@ -201,7 +202,7 @@ function TimelineLine({ activeIndex }: { activeIndex: number }) {
         animate={{ height: `${((activeIndex + 1) / steps.length) * 100}%` }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       />
-      
+
       {/* Step dots */}
       {steps.map((_, index) => (
         <motion.div
@@ -223,7 +224,7 @@ function TimelineLine({ activeIndex }: { activeIndex: number }) {
 export function HowItWorksSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState(0);
-  
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
@@ -243,8 +244,8 @@ export function HowItWorksSection() {
   }, [scrollYProgress]);
 
   return (
-    <section 
-      id="how-it-works" 
+    <section
+      id="how-it-works"
       ref={containerRef}
       className="relative py-24 md:py-32 bg-gradient-to-b from-white to-offwhite overflow-hidden"
     >
@@ -253,7 +254,7 @@ export function HowItWorksSection() {
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-energy-blue/5 rounded-full blur-3xl" />
       </div>
-      
+
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
@@ -269,26 +270,31 @@ export function HowItWorksSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
             className="inline-block px-4 py-2 bg-gold/10 text-gold rounded-full text-sm font-semibold mb-4"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             Simple Process
           </motion.span>
-          
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4">
+
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             How It Works
           </h2>
-          
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             From sign-up to savings in just 4 simple steps. No technical knowledge required.
           </p>
         </motion.div>
-        
+
         {/* Steps */}
         <div className="relative max-w-5xl mx-auto">
           <TimelineLine activeIndex={activeStep} />
-          
+
           <div className="grid md:grid-cols-2 gap-12 md:gap-y-24">
             {steps.map((step, index) => (
-              <div 
+              <div
                 key={step.number}
                 className={cn(
                   index % 2 === 1 && "md:col-start-2",
@@ -305,7 +311,7 @@ export function HowItWorksSection() {
             ))}
           </div>
         </div>
-        
+
         {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -321,20 +327,21 @@ export function HowItWorksSection() {
                   variant="secondary"
                   size="lg"
                   className="bg-gold hover:bg-gold-light text-charcoal font-semibold px-8 py-6 text-lg group"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   Get Started Now
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </motion.div>
             </Link>
-            
-            <span className="text-gray-400">or</span>
-            
+
+            <span className="text-gray-400" style={{ fontFamily: "'Montserrat', sans-serif" }}>or</span>
+
             <button className="flex items-center gap-2 text-forest hover:text-forest-light transition-colors group">
               <div className="w-10 h-10 rounded-full bg-forest/10 flex items-center justify-center group-hover:bg-forest/20 transition-colors">
                 <Play className="w-4 h-4" />
               </div>
-              <span className="font-medium">Watch video explainer</span>
+              <span className="font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>Watch video explainer</span>
             </button>
           </div>
         </motion.div>

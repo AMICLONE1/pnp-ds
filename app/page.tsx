@@ -25,114 +25,20 @@ import { SmoothScrollProgress, CursorFollower } from "@/components/ui/modern-ani
 import { UtilityCompatibilityChecker } from "@/components/features/landing/UtilityCompatibilityChecker";
 import { ProblemSolution } from "@/components/features/landing/ProblemSolution";
 import { StickyCTA } from "@/components/features/landing/StickyCTA";
-import { GlassCard } from "@/components/features/landing/GlassCard";
 import {
   FAQAccordion,
   TestimonialCarousel,
-  LogoMarquee,
   ScrollFade,
   CardTilt,
   MagneticButton,
   FloatingElement,
-  AuroraBackground,
-  DotPattern,
+  LightweightAuroraBackground,
   GradientMesh,
-  StickyTextFill,
+  DotPattern
 } from "@/components/ui/animations";
+import { faqData } from "../lib/utils/data.js"
+import { Testimonials } from "@/components/ui/Testimonials";
 
-// FAQ Data
-const faqData = [
-  {
-    question: "What is Digital Solar and how does it work?",
-    answer: "Digital Solar allows you to access clean solar energy without installing panels on your property. You reserve capacity from community solar projects, and the energy generated creates credits that automatically offset your electricity bills.",
-    category: "Getting Started"
-  },
-  {
-    question: "Do I need to own my home to participate?",
-    answer: "No! Digital Solar is perfect for renters, apartment dwellers, and anyone who can't install panels. As long as you pay an electricity bill, you can participate and save.",
-    category: "Eligibility"
-  },
-  {
-    question: "How much can I save on my electricity bills?",
-    answer: "Most users save between ₹500-2,000 per month depending on their capacity reservation. Our calculator can give you a personalized estimate based on your current usage.",
-    category: "Savings"
-  },
-  {
-    question: "Is there any installation required?",
-    answer: "Zero installation required. No technicians visiting your home, no permits, no hardware. Everything is managed digitally through our platform.",
-    category: "Getting Started"
-  },
-  {
-    question: "How do solar credits appear on my bill?",
-    answer: "Credits are automatically applied to your utility bill each month. You'll see them as a line item showing the energy generated from your reserved capacity, reducing your total bill.",
-    category: "Billing"
-  },
-  {
-    question: "What happens if the solar project generates less energy than expected?",
-    answer: "We guarantee 75% of forecasted generation. This means even during cloudy periods or monsoon season, you're protected against significant shortfalls.",
-    category: "Guarantees"
-  },
-  {
-    question: "Can I change my capacity reservation later?",
-    answer: "Yes! You can increase your capacity at any time. Decreasing capacity or cancelling follows our 30-day notice policy with pro-rated refunds.",
-    category: "Flexibility"
-  },
-  {
-    question: "Which utilities are supported?",
-    answer: "We currently support major utilities across Maharashtra, Karnataka, Tamil Nadu, and Gujarat. Use our compatibility checker to see if your utility is supported.",
-    category: "Eligibility"
-  },
-];
-
-// Testimonial Data
-const testimonialData = [
-  {
-    content: "I've been saving over ₹1,800 every month since joining PowerNet Pro. As someone living in an apartment, I never thought I could go solar. This is revolutionary!",
-    author: "Priya Sharma",
-    role: "Apartment Resident",
-    location: "Mumbai",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
-    savings: "₹1,800/month"
-  },
-  {
-    content: "The setup took literally 5 minutes. No technicians, no roof inspections, nothing. Just sign up and start saving. Wish I knew about this years ago.",
-    author: "Rajesh Kumar",
-    role: "IT Professional",
-    location: "Bangalore",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh",
-    savings: "₹2,100/month"
-  },
-  {
-    content: "Finally, clean energy that works for tenants! I've moved twice since joining and my solar credits follow me. Best green decision I've made.",
-    author: "Ananya Patel",
-    role: "Tenant",
-    location: "Pune",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ananya",
-    savings: "₹1,500/month"
-  },
-  {
-    content: "As a small business owner, every rupee counts. Digital Solar has reduced our electricity costs by 35%. The team support is exceptional too.",
-    author: "Mohammed Ismail",
-    role: "Business Owner",
-    location: "Chennai",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mohammed",
-    savings: "₹4,200/month"
-  },
-];
-
-// Partner Logos - using inline SVG data URIs
-const partnerLogos = [
-  { name: "TATA Power", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect fill='%23FFB800' width='120' height='40' rx='4'/%3E%3Ctext x='60' y='25' fill='%23000' font-family='Arial,sans-serif' font-size='14' font-weight='bold' text-anchor='middle'%3ETATA%3C/text%3E%3C/svg%3E" },
-  { name: "Adani Green", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect fill='%234CAF50' width='120' height='40' rx='4'/%3E%3Ctext x='60' y='25' fill='%23FFF' font-family='Arial,sans-serif' font-size='14' font-weight='bold' text-anchor='middle'%3EAdani%3C/text%3E%3C/svg%3E" },
-  { name: "NTPC", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect fill='%231a1a2e' width='120' height='40' rx='4'/%3E%3Ctext x='60' y='25' fill='%23FFF' font-family='Arial,sans-serif' font-size='14' font-weight='bold' text-anchor='middle'%3ENTPC%3C/text%3E%3C/svg%3E" },
-  { name: "ReNew Power", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect fill='%2300BCD4' width='120' height='40' rx='4'/%3E%3Ctext x='60' y='25' fill='%23FFF' font-family='Arial,sans-serif' font-size='14' font-weight='bold' text-anchor='middle'%3EReNew%3C/text%3E%3C/svg%3E" },
-  { name: "Azure Power", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect fill='%232196F3' width='120' height='40' rx='4'/%3E%3Ctext x='60' y='25' fill='%23FFF' font-family='Arial,sans-serif' font-size='14' font-weight='bold' text-anchor='middle'%3EAzure%3C/text%3E%3C/svg%3E" },
-  { name: "Hero Future", logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Crect fill='%239C27B0' width='120' height='40' rx='4'/%3E%3Ctext x='60' y='25' fill='%23FFF' font-family='Arial,sans-serif' font-size='14' font-weight='bold' text-anchor='middle'%3EHero%3C/text%3E%3C/svg%3E" },
-];
 
 export default function HomePage() {
   return (
@@ -157,18 +63,6 @@ export default function HomePage() {
         {/* HERO SECTION - New Modern Design */}
         <HeroSection />
 
-        {/* Text Fill Animation */}
-        <StickyTextFill
-          texts={[
-            "Start Saving Now. No Installation. No Hassle.",
-            "Quick Setup. Easy Management. Big Savings.",
-          ]}
-          height="300vh"
-          backgroundColor="bg-gray-900"
-          textClassName="text-white"
-          fadeDirection="up"
-        />
-
         {/* STATS SECTION - New Animated Stats */}
         <StatsSection />
 
@@ -182,27 +76,7 @@ export default function HomePage() {
         <ProblemSolution />
 
         {/* TESTIMONIALS */}
-        <section className="py-24 bg-white relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gold/5 rounded-full blur-3xl" />
-          <div className="container mx-auto px-4 relative z-10">
-            <ScrollFade direction="up">
-              <div className="text-center mb-16">
-                <span className="inline-flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                  <Users className="w-4 h-4" />
-                  Customer Stories
-                </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
-                  What Our Users Say
-                </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Real savings from real people across India
-                </p>
-              </div>
-            </ScrollFade>
-
-            <TestimonialCarousel testimonials={testimonialData} />
-          </div>
-        </section>
+        <Testimonials />
 
         {/* UTILITY COMPATIBILITY */}
         <section className="py-24 bg-gradient-to-b from-white via-offwhite to-white relative">
@@ -220,14 +94,14 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative z-10">
             <ScrollFade direction="up">
               <div className="max-w-4xl mx-auto text-center">
-                <span className="inline-flex items-center gap-2 bg-gold/20 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-flex items-center gap-2 bg-gold/20 text-gold px-4 py-2 rounded-full text-sm font-semibold mb-6">
                   <Award className="w-4 h-4" />
                   Built for India
                 </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-4xl md:text-5xl font-heading font-bold mb-6">
                   Built for the Indian Energy Ecosystem
                 </h2>
-                <p className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
                   Compliant, secure, and designed for scale. Making clean energy accessible to everyone.
                 </p>
 
@@ -240,10 +114,10 @@ export default function HomePage() {
                   ].map((item, index) => (
                     <ScrollFade key={index} direction="up" delay={index * 0.1}>
                       <CardTilt maxTilt={8}>
-                        <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                        <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
                           <item.icon className="h-8 w-8 text-gold mx-auto mb-4" />
-                          <h3 className="font-semibold mb-2">{item.title}</h3>
-                          <p className="text-sm text-gray-200">{item.desc}</p>
+                          <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold mb-2">{item.title}</h3>
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-200">{item.desc}</p>
                         </div>
                       </CardTilt>
                     </ScrollFade>
@@ -260,13 +134,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative z-10">
             <ScrollFade direction="up">
               <div className="text-center mb-16">
-                <span className="inline-block bg-energy-blue/10 text-energy-blue px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-block bg-energy-blue/10 text-energy-blue px-4 py-2 rounded-full text-sm font-semibold mb-4">
                   Got Questions?
                 </span>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
+                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-4">
                   Frequently Asked Questions
                 </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl text-gray-600 max-w-2xl mx-auto">
                   Everything you need to know about Digital Solar
                 </p>
               </div>
@@ -282,13 +156,13 @@ export default function HomePage() {
 
         {/* FINAL CTA */}
         <section className="py-32 relative overflow-hidden">
-          <AuroraBackground className="absolute inset-0" />
+          <LightweightAuroraBackground className="absolute inset-0" />
           <div className="absolute inset-0 bg-gradient-to-b from-gold/90 via-gold to-gold-dark/90" />
 
           <div className="container mx-auto px-4 text-center relative z-10">
             <ScrollFade direction="up">
               <FloatingElement amplitude={5} duration={6}>
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-forest rounded-2xl mb-8 shadow-2xl">
+                <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="inline-flex items-center justify-center w-20 h-20 bg-forest rounded-2xl mb-8 shadow-2xl">
                   <Sun className="w-10 h-10 text-gold" />
                 </div>
               </FloatingElement>
@@ -300,7 +174,7 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 className="inline-flex items-center gap-2 bg-charcoal/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6"
               >
-                <span className="relative flex h-3 w-3">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-energy-green opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-energy-green"></span>
                 </span>
@@ -309,14 +183,14 @@ export default function HomePage() {
                 </span>
               </motion.div>
 
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-charcoal">
+              <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-charcoal">
                 Join 1,247 Families Who<br />Switched This Month
               </h2>
-              <p className="text-xl md:text-2xl text-charcoal/80 mb-10 max-w-2xl mx-auto">
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl md:text-2xl text-charcoal/80 mb-10 max-w-2xl mx-auto">
                 Most people finish setup during their coffee break. ☕
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="flex flex-col sm:flex-row gap-4 justify-center">
                 <MagneticButton strength={0.3}>
                   <Link href="/reserve">
                     <Button
@@ -342,7 +216,7 @@ export default function HomePage() {
                 </MagneticButton>
               </div>
 
-              <p className="mt-8 text-sm text-charcoal/60">
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-8 text-sm text-charcoal/60">
                 No credit card required • 5-minute setup • Cancel anytime
               </p>
             </ScrollFade>
