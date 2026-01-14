@@ -252,7 +252,6 @@ export function ScrollFade({
     </motion.div>
   );
 }
-<<<<<<< HEAD
 
 
 interface StickyTextFillProps {
@@ -458,5 +457,3 @@ export function StickyTextFill({
     </div>
   );
 }
-=======
->>>>>>> 72f521b586607afc840492d4153b257731309914

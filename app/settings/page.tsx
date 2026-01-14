@@ -23,6 +23,7 @@ import {
   AlertCircle,
   ChevronRight
 } from "lucide-react";
+import { KYCModal } from "@/components/features/kyc/KYCModal";
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +38,7 @@ export default function SettingsPage() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
 
   const [activeSection, setActiveSection] = useState("profile");
 
@@ -464,28 +466,49 @@ export default function SettingsPage() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100">
-                            <div className={`p-2 rounded-lg ${
-                              profile.kyc_status?.toLowerCase() === "verified" 
-                                ? "bg-green-50" 
-                                : "bg-amber-50"
-                            }`}>
-                              <BadgeCheck className={`h-4 w-4 ${
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${
                                 profile.kyc_status?.toLowerCase() === "verified" 
-                                  ? "text-green-600" 
-                                  : "text-amber-600"
-                              }`} />
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-500">KYC Status</p>
-                              <p className={`font-medium capitalize ${
-                                profile.kyc_status?.toLowerCase() === "verified" 
-                                  ? "text-green-600" 
-                                  : "text-amber-600"
+                                  ? "bg-green-50" 
+                                  : profile.kyc_status?.toLowerCase() === "submitted"
+                                  ? "bg-blue-50"
+                                  : "bg-amber-50"
                               }`}>
-                                {profile.kyc_status || "Pending"}
-                              </p>
+                                <BadgeCheck className={`h-4 w-4 ${
+                                  profile.kyc_status?.toLowerCase() === "verified" 
+                                    ? "text-green-600" 
+                                    : profile.kyc_status?.toLowerCase() === "submitted"
+                                    ? "text-blue-600"
+                                    : "text-amber-600"
+                                }`} />
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500">KYC Status</p>
+                                <p className={`font-medium capitalize ${
+                                  profile.kyc_status?.toLowerCase() === "verified" 
+                                    ? "text-green-600" 
+                                    : profile.kyc_status?.toLowerCase() === "submitted"
+                                    ? "text-blue-600"
+                                    : "text-amber-600"
+                                }`}>
+                                  {profile.kyc_status || "Pending"}
+                                </p>
+                              </div>
                             </div>
+                            {(profile.kyc_status?.toLowerCase() === "pending" || 
+                              profile.kyc_status?.toLowerCase() === "rejected" || 
+                              !profile.kyc_status) && (
+                              <Button
+                                onClick={() => setIsKYCModalOpen(true)}
+                                variant="primary"
+                                size="sm"
+                                className="rounded-lg"
+                              >
+                                <BadgeCheck className="h-4 w-4 mr-2" />
+                                Complete KYC
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -498,6 +521,30 @@ export default function SettingsPage() {
         </div>
       </main>
       <Footer />
+      
+      {/* KYC Modal */}
+      <KYCModal
+        isOpen={isKYCModalOpen}
+        onClose={() => setIsKYCModalOpen(false)}
+        onSuccess={() => {
+          // Refresh profile data
+          const fetchProfile = async () => {
+            try {
+              const response = await fetch("/api/user/profile", { credentials: "include" });
+              if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                  setProfile(result.data);
+                }
+              }
+            } catch (error) {
+              console.error("Error fetching profile:", error);
+            }
+          };
+          fetchProfile();
+        }}
+        currentStatus={profile?.kyc_status}
+      />
     </div>
   );
 }

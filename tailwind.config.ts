@@ -8,25 +8,54 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // New "Clean Sky × Fresh Energy" Palette
+        primary: {
+          DEFAULT: "#2F80ED", // Sky Blue
+          soft: "#EAF2FF",    // Sky Mist
+          deep: "#1C5ED5",    // Royal Blue
+        },
+        solar: {
+          DEFAULT: "#F2C94C", // Sun Yellow
+          soft: "#FFF4CC",    // Light Sun
+        },
+        eco: {
+          DEFAULT: "#27AE60", // Mint Green
+          soft: "#EAFBF1",    // Mint Wash
+        },
+        slate: {
+          DEFAULT: "#1F2937", // Primary Text
+          black: "#1F2937",   // Primary Text
+          gray: "#6B7280",    // Secondary Text
+        },
+        cloud: {
+          white: "#F9FAFB",   // App Background
+          pure: "#FFFFFF",    // Card Surface
+        },
+        border: "#E5E7EB",    // Soft Gray
+
+        // System Status Colors
+        success: "#22C55E",   // Fresh Green
+        warning: "#F59E0B",   // Amber
+        error: "#EF4444",     // Soft Red
+        info: "#38BDF8",      // Sky Blue
+
+        // Legacy support (for gradual migration)
         forest: {
-          DEFAULT: "#0D2818",
-          light: "#1B5E3E",
-          dark: "#0A1F12",
+          DEFAULT: "#1F2937",
+          light: "#27AE60",
+          dark: "#1C5ED5",
         },
         gold: {
-          DEFAULT: "#FFB800",
-          light: "#FFD54F",
-          dark: "#F57C00",
+          DEFAULT: "#F2C94C",
+          light: "#FFF4CC",
+          dark: "#F59E0B",
         },
-        charcoal: "#1A1A1A",
-        offwhite: "#FAFAF8",
+        charcoal: "#1F2937",
+        offwhite: "#F9FAFB",
         energy: {
-          blue: "#00BCD4",
-          green: "#4CAF50",
+          blue: "#38BDF8",
+          green: "#27AE60",
         },
-        success: "#4CAF50",
-        warning: "#FF9800",
-        error: "#F44336",
       },
       fontFamily: {
         heading: ["Space Grotesk", "Inter", "sans-serif"],

@@ -132,7 +132,7 @@ const FloatingElement = dynamic(
 );
 
 const AuroraBackground = dynamic(
-  () => import("@/components/ui/animations").then(mod => ({ default: mod.AuroraBackground })),
+  () => import("@/components/ui/animations").then(mod => ({ default: mod.LightweightAuroraBackground })),
   { ssr: false }
 );
 
@@ -273,7 +273,7 @@ export default function HomePage() {
 
         <Header />
 
-        <main id="main-content" className="flex-1" tabIndex={-1}>
+        <main id="main-content" className="flex-1 relative" tabIndex={-1}>
           {/* HERO SECTION - Critical Path */}
           <HeroSection />
 
@@ -336,8 +336,6 @@ export default function HomePage() {
                   <UtilityCompatibilityChecker />
                 </ScrollFade>
               </Suspense>
-            </div>
-          </section>
             </div>
           </section>
 

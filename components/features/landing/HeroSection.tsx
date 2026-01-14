@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, memo, useCallback } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import {
   ArrowRight,
   Play,
@@ -23,22 +24,19 @@ import { cn } from "@/lib/utils";
 import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
 import React from "react";
 
-<<<<<<< HEAD
 // Dynamically import Enhanced Three.js canvas with 3D solar visualization
 // Using EnhancedHero3DScene with solar panels, energy particles, houses, and network nodes
 const Hero3DScene = dynamic(() => import("./EnhancedHero3DScene"), {
   ssr: false,
-  loading: () => <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
+  loading: () => <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-soft to-primary-deep" />
 });
 
-=======
->>>>>>> 72f521b586607afc840492d4153b257731309914
 // Stats data
 const heroStats = [
-  // { icon: Users, value: "1,247+", label: "Families Saving", color: "text-gold" },
-  // { icon: TrendingUp, value: "₹1.8Cr", label: "Saved This Month", color: "text-energy-green" },
-  { icon: Leaf, value: "Environment", label: "Friendly", color: "text-energy-blue" },
-  { icon: Shield, value: "75%", label: "Savings", color: "text-purple-400" },
+  // { icon: Users, value: "1,247+", label: "Families Saving", color: "text-solar" },
+  // { icon: TrendingUp, value: "₹1.8Cr", label: "Saved This Month", color: "text-eco" },
+  { icon: Leaf, value: "Environment", label: "Friendly", color: "text-eco" },
+  { icon: Shield, value: "75%", label: "Savings", color: "text-primary" },
 ];
 
 
@@ -139,7 +137,7 @@ const MagneticButton = memo(function MagneticButton({
 // ============================================
 // PULSE RING ANIMATION
 // ============================================
-function PulseRing({ className, color = "#FFB800" }: { className?: string; color?: string }) {
+function PulseRing({ className, color = "#2F80ED" }: { className?: string; color?: string }) {
   // Memoize the animation variants to prevent recalculation
   const variants = useMemo(() => ({
     initial: { scale: 1, opacity: 0.5 },
@@ -178,7 +176,7 @@ function PulseRing({ className, color = "#FFB800" }: { className?: string; color
 function GradientBorder({ children, className }: { children: React.ReactNode; className?: string }) {
   // Memoize gradient style
   const gradientStyle = useMemo(() => ({
-    background: "linear-gradient(90deg, #FFB800, #4CAF50, #00BCD4, #FFB800)",
+    background: "linear-gradient(90deg, #2F80ED, #27AE60, #F2C94C, #2F80ED)",
     backgroundSize: "300% 100%",
     willChange: 'background-position' // Optimize for background animation
   }), []);
@@ -196,7 +194,7 @@ function GradientBorder({ children, className }: { children: React.ReactNode; cl
           repeatType: "loop"
         }}
       />
-      <div className="relative bg-forest-dark rounded-2xl">
+      <div className="relative bg-slate-black rounded-2xl">
         {children}
       </div>
     </div>
@@ -211,7 +209,7 @@ function ShimmeringText({ text, className }: { text: string; className?: string 
     <motion.span
       className={cn("relative inline-block bg-clip-text text-transparent", className)}
       style={{
-        backgroundImage: "linear-gradient(90deg, #FFB800 0%, #FFF 50%, #FFB800 100%)",
+        backgroundImage: "linear-gradient(90deg, #F2C94C 0%, #FFF 50%, #F2C94C 100%)",
         backgroundSize: "200% 100%",
       }}
       animate={{ backgroundPosition: ["100% 0%", "-100% 0%"] }}
@@ -241,7 +239,7 @@ function AnimatedCheckList({ items, delay = 0 }: { items: string[]; delay?: numb
             animate={{ scale: 1 }}
             transition={{ delay: delay + i * 0.15 + 0.2, type: "spring" }}
           >
-            <CheckCircle2 className="w-5 h-5 text-energy-green" />
+            <CheckCircle2 className="w-5 h-5 text-eco" />
           </motion.div>
           <span>{item}</span>
         </motion.li>
@@ -270,7 +268,7 @@ function MouseSpotlight() {
 
   // Memoize spotlight style
   const spotlightStyle = useMemo(() => ({
-    background: "radial-gradient(circle, rgba(255,184,0,0.08) 0%, transparent 60%)",
+    background: "radial-gradient(circle, rgba(47,128,237,0.08) 0%, transparent 60%)",
     filter: "blur(40px)",
   }), []);
 
@@ -409,7 +407,7 @@ function InteractiveSavingsCard() {
       <div
         className="absolute -inset-1 rounded-2xl opacity-40 pointer-events-none"
         style={{
-          background: "linear-gradient(135deg, rgba(255,184,0,0.3) 0%, rgba(76,175,80,0.3) 100%)",
+          background: "linear-gradient(135deg, rgba(47,128,237,0.25) 0%, rgba(39,174,96,0.25) 100%)",
           filter: "blur(20px)",
         }}
       />
@@ -438,19 +436,19 @@ function InteractiveSavingsCard() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
                 <Sun className="w-5 h-5 text-white" />
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-energy-green rounded-full border-2 border-forest-dark" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-eco rounded-full border-2 border-slate-black" />
             </div>
             <div>
               <p className="text-white font-bold text-sm">Vedvyas</p>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-gold font-medium">100 kW</span>
-                <span className="text-[8px] px-1.5 py-0.5 rounded bg-energy-green/20 text-energy-green font-medium">LIVE</span>
+                <span className="text-[10px] text-solar font-medium">100 kW</span>
+                <span className="text-[8px] px-1.5 py-0.5 rounded bg-eco/20 text-eco font-medium">LIVE</span>
               </div>
             </div>
           </div>
           <div className="text-right bg-white/5 rounded-lg px-2.5 py-1.5">
             <p className="text-[8px] text-white/40 uppercase tracking-wide">Credit Rate</p>
-            <p className="text-gold font-bold text-sm">₹7<span className="text-[9px] text-white/40">/unit</span></p>
+            <p className="text-solar font-bold text-sm">₹7<span className="text-[9px] text-white/40">/unit</span></p>
           </div>
         </div>
 
@@ -465,11 +463,11 @@ function InteractiveSavingsCard() {
             <div className={cn(
               "relative flex items-center rounded-xl border-2 transition-all duration-200 overflow-hidden",
               isBillFocused
-                ? "border-gold/60 bg-gradient-to-r from-gold/10 to-transparent shadow-lg shadow-gold/10"
+                ? "border-solar/60 bg-gradient-to-r from-solar/10 to-transparent shadow-lg shadow-solar/10"
                 : "border-white/15 bg-white/5 hover:border-white/25"
             )}>
               <div className="pl-3.5 pr-1 py-3 flex items-center">
-                <span className="text-gold font-bold text-lg">₹</span>
+                <span className="text-solar font-bold text-lg">₹</span>
               </div>
               <input
                 type="number"
@@ -492,7 +490,7 @@ function InteractiveSavingsCard() {
                   className={cn(
                     "flex-1 py-1 px-2 text-[10px] font-medium rounded-md transition-all",
                     avgBill === preset
-                      ? "bg-gold/20 text-gold border border-gold/30"
+                      ? "bg-solar/20 text-solar border border-solar/30"
                       : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70"
                   )}
                 >
@@ -509,15 +507,15 @@ function InteractiveSavingsCard() {
                 <TrendingUp className="w-3 h-3" />
                 Target Savings
               </label>
-              <div className="flex items-center gap-1.5 bg-energy-green/20 rounded-full px-2.5 py-1">
-                <span className="text-energy-green font-bold text-sm">{savingsPercent}%</span>
+              <div className="flex items-center gap-1.5 bg-eco/20 rounded-full px-2.5 py-1">
+                <span className="text-eco font-bold text-sm">{savingsPercent}%</span>
               </div>
             </div>
             <div className="relative pt-1 pb-2">
               {/* Track background with gradient */}
               <div className="absolute top-1 left-0 right-0 h-2 bg-white/10 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-energy-green via-energy-blue to-gold rounded-full transition-all duration-150"
+                  className="h-full bg-gradient-to-r from-eco via-primary to-solar rounded-full transition-all duration-150"
                   style={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
                 />
               </div>
@@ -531,9 +529,9 @@ function InteractiveSavingsCard() {
                 className="relative w-full h-2 bg-transparent rounded-full appearance-none cursor-pointer z-10
                            [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
-                           [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-energy-green/40
+                           [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-eco/40
                            [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2
-                           [&::-webkit-slider-thumb]:border-energy-green [&::-webkit-slider-thumb]:transition-transform
+                           [&::-webkit-slider-thumb]:border-eco [&::-webkit-slider-thumb]:transition-transform
                            [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-95"
               />
               {/* Tick marks */}
@@ -543,7 +541,7 @@ function InteractiveSavingsCard() {
                     key={tick}
                     className={cn(
                       "text-[8px] transition-colors",
-                      savingsPercent >= tick ? "text-energy-green" : "text-white/30"
+                      savingsPercent >= tick ? "text-eco" : "text-white/30"
                     )}
                   >
                     {tick}%
@@ -555,17 +553,17 @@ function InteractiveSavingsCard() {
         </div>
 
         {/* Main Savings - Prominent */}
-        <div className="p-3 rounded-xl bg-gradient-to-br from-forest-dark/60 to-forest/40 border border-gold/20 mb-3">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-slate-black/60 to-primary-deep/40 border border-solar/20 mb-3">
           <div className="flex items-center gap-1.5 mb-1">
-            <Zap className="w-3.5 h-3.5 text-gold" />
+            <Zap className="w-3.5 h-3.5 text-solar" />
             <span className="text-white/60 text-[10px]">Monthly Savings</span>
           </div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-2xl font-heading font-bold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+            <span className="text-2xl font-heading font-bold bg-gradient-to-r from-solar via-solar-soft to-solar bg-clip-text text-transparent">
               {formatCurrency(calculations.monthlySavings)}
             </span>
           </div>
-          <p className="text-energy-green text-[10px] flex items-center gap-1">
+          <p className="text-eco text-[10px] flex items-center gap-1">
             <TrendingUp className="w-3 h-3" />
             {formatCurrency(calculations.annualSavings)}/year
           </p>
@@ -574,24 +572,24 @@ function InteractiveSavingsCard() {
         {/* Stats Grid - Compact */}
         <div className="grid grid-cols-3 gap-2 mb-3">
           <div className="p-2 rounded-lg bg-white/5 text-center">
-            <Sun className="w-3 h-3 text-gold mx-auto mb-0.5" />
+            <Sun className="w-3 h-3 text-solar mx-auto mb-0.5" />
             <p className="text-white font-bold text-xs">{(calculations.reservedSolarWatts / 1000).toFixed(1)}kW</p>
             <p className="text-white/40 text-[9px]">Solar</p>
           </div>
           <div className="p-2 rounded-lg bg-white/5 text-center">
-            <Bolt className="w-3 h-3 text-energy-blue mx-auto mb-0.5" />
+            <Bolt className="w-3 h-3 text-primary mx-auto mb-0.5" />
             <p className="text-white font-bold text-xs">{calculations.energyProducedKwh.toFixed(0)}</p>
             <p className="text-white/40 text-[9px]">kWh/mo</p>
           </div>
           <div className="p-2 rounded-lg bg-white/5 text-center">
-            <Leaf className="w-3 h-3 text-energy-green mx-auto mb-0.5" />
+            <Leaf className="w-3 h-3 text-eco mx-auto mb-0.5" />
             <p className="text-white font-bold text-xs">{calculations.co2OffsetTonnes.toFixed(1)}T</p>
             <p className="text-white/40 text-[9px]">CO₂/yr</p>
           </div>
         </div>
 
         {/* Reservation Fee & CTA - Compact */}
-        <div className="p-3 rounded-xl bg-gradient-to-r from-forest-dark/60 to-forest/40 border border-white/10">
+        <div className="p-3 rounded-xl bg-gradient-to-r from-slate-black/60 to-primary-deep/40 border border-white/10">
           <div className="flex items-center justify-between mb-2">
             <div>
               <p className="text-white/50 text-[9px]">One-time Fee</p>
@@ -599,15 +597,15 @@ function InteractiveSavingsCard() {
             </div>
             <div className="text-right">
               <p className="text-white/50 text-[9px]">Payback</p>
-              <p className="text-energy-green font-bold text-sm">{calculations.roiYears}y</p>
+              <p className="text-eco font-bold text-sm">{calculations.roiYears}y</p>
             </div>
           </div>
           <Link href={`/reserve?capacity=${calculations.reservedSolarKw}&project=vedvyas`} className="block">
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-energy-green to-energy-green/90 text-white font-bold text-sm rounded-lg
-                         shadow-md shadow-energy-green/20 flex items-center justify-center gap-1.5 group"
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-eco to-eco/90 text-white font-bold text-sm rounded-lg
+                         shadow-md shadow-eco/20 flex items-center justify-center gap-1.5 group"
             >
               Get Started Free
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -659,7 +657,7 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen bg-[#195638] text-white flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen bg-gradient-to-br from-primary via-primary-deep to-slate-black text-white flex items-center justify-center overflow-hidden"
     >
       {/* Mouse spotlight */}
       <MouseSpotlight />
@@ -711,7 +709,7 @@ export function HeroSection() {
               className="text-xl md:text-2xl text-gray-300 mb-4 max-w-lg"
               style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
-              Go Solar in <span className="text-gold font-semibold">60 Seconds</span>.
+              Go Solar in <span className="text-solar font-semibold">60 Seconds</span>.
               <br className="hidden md:block" />
               No Roof Required. No Installation.
             </motion.p>
@@ -724,8 +722,8 @@ export function HeroSection() {
               style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               The average family saves{" "}
-              <span className="text-gold font-medium">
-                ₹<NumberTicker value={24000} className="text-gold font-medium" />
+              <span className="text-solar font-medium">
+                ₹<NumberTicker value={24000} className="text-solar font-medium" />
               </span>{" "}
               per year with Digital Solar.
             </motion.p>
@@ -779,7 +777,7 @@ export function HeroSection() {
                     <Button
                       variant="secondary"
                       size="lg"
-                      className="relative w-full sm:w-auto text-lg px-8 py-6 bg-gradient-to-r from-gold to-gold-light hover:from-gold-light hover:to-gold text-charcoal font-bold shadow-2xl shadow-gold/30 group overflow-hidden"
+                      className="relative w-full sm:w-auto text-lg px-8 py-6 bg-gradient-to-r from-solar to-solar-soft hover:from-solar-soft hover:to-solar text-slate-black font-bold shadow-2xl shadow-solar/30 group overflow-hidden"
                       style={{ fontFamily: "'Open Sans', sans-serif" }}
                     >
                       {/* Button shine effect */}
@@ -852,7 +850,7 @@ export function HeroSection() {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <PulseRing className="w-10 h-10 absolute -top-2" color="rgba(255,184,0,0.5)" />
+          <PulseRing className="w-10 h-10 absolute -top-2" color="rgba(47,128,237,0.5)" />
           <span className="text-sm font-medium">Scroll to explore</span>
           <ChevronDown className="w-5 h-5" />
         </motion.button>

@@ -23,8 +23,10 @@ import {
   Zap,
   TrendingDown,
   CheckCircle,
-  Gift
+  Gift,
+  BadgeCheck
 } from "lucide-react";
+import { KYCModal } from "@/components/features/kyc/KYCModal";
 
 function SignupContent() {
   const router = useRouter();
@@ -35,6 +37,8 @@ function SignupContent() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showKYCModal, setShowKYCModal] = useState(false);
+  const [skipKYC, setSkipKYC] = useState(false);
   const supabase = createClient();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -73,10 +77,16 @@ function SignupContent() {
     if (data.user) {
       // Wait for cookie to be set
       await new Promise((r) => setTimeout(r, 500));
-      // Redirect to reserve page or specified redirect
-      const redirect = searchParams.get("redirect") || "/reserve";
-      router.push(redirect);
-      router.refresh();
+      
+      // Show KYC modal if not skipped
+      if (!skipKYC) {
+        setShowKYCModal(true);
+      } else {
+        // Redirect to reserve page or specified redirect
+        const redirect = searchParams.get("redirect") || "/reserve";
+        router.push(redirect);
+        router.refresh();
+      }
     }
   };
 
@@ -349,6 +359,60 @@ function SignupContent() {
                     <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
 
+                  {/* KYC Option */}
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
+                    <div className="flex items-start gap-3">
+                      <div className="p-1.5 rounded-lg bg-amber-100">
+                        <BadgeCheck className="h-4 w-4 text-amber-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-charcoal mb-1">
+                          Complete KYC Now
+                        </p>
+                        <p className="text-xs text-gray-600 mb-3">
+                          Verify your identity to unlock all features and faster processing
+                        </p>
+                        <div className="flex gap-2">
+                          <label className="flex-1">
+                            <input
+                              type="radio"
+                              name="kyc-option"
+                              value="complete"
+                              checked={!skipKYC}
+                              onChange={() => setSkipKYC(false)}
+                              className="sr-only"
+                            />
+                            <div className={`w-full h-9 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
+                              !skipKYC 
+                                ? "border-forest bg-forest/5 text-forest" 
+                                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                            }`}>
+                              <BadgeCheck className="h-3.5 w-3.5 mr-1.5" />
+                              <span className="text-xs font-medium">Complete KYC</span>
+                            </div>
+                          </label>
+                          <label className="flex-1">
+                            <input
+                              type="radio"
+                              name="kyc-option"
+                              value="later"
+                              checked={skipKYC}
+                              onChange={() => setSkipKYC(true)}
+                              className="sr-only"
+                            />
+                            <div className={`w-full h-9 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
+                              skipKYC 
+                                ? "border-forest bg-forest/5 text-forest" 
+                                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                            }`}>
+                              <span className="text-xs font-medium">Do it later</span>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <p className="text-xs text-center text-gray-400">
                     By creating an account, you agree to our{" "}
                     <Link href="/terms" className="text-forest hover:underline">Terms</Link>
@@ -389,6 +453,26 @@ function SignupContent() {
         </div>
       </main>
       <Footer />
+      
+      {/* KYC Modal */}
+      <KYCModal
+        isOpen={showKYCModal}
+        onClose={() => {
+          setShowKYCModal(false);
+          // Redirect after closing modal
+          const redirect = searchParams.get("redirect") || "/reserve";
+          router.push(redirect);
+          router.refresh();
+        }}
+        onSuccess={() => {
+          setShowKYCModal(false);
+          // Redirect after successful KYC submission
+          const redirect = searchParams.get("redirect") || "/reserve";
+          router.push(redirect);
+          router.refresh();
+        }}
+        currentStatus="PENDING"
+      />
     </div>
   );
 }

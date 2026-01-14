@@ -30,38 +30,14 @@ export function CursorFollower() {
 
     const enter = (e: Event) => {
       const target = e.target;
-<<<<<<< HEAD
       if (target instanceof Element && target.closest("[data-cursor-hover]")) {
-=======
-
-      if (
-        !target ||
-        typeof (target as Element).closest !== "function"
-      ) {
-        return;
-      }
-
-      if ((target as Element).closest("[data-cursor-hover]")) {
->>>>>>> 72f521b586607afc840492d4153b257731309914
         setIsHovering(true);
       }
     };
 
     const leave = (e: Event) => {
       const target = e.target;
-<<<<<<< HEAD
       if (target instanceof Element && target.closest("[data-cursor-hover]")) {
-=======
-
-      if (
-        !target ||
-        typeof (target as Element).closest !== "function"
-      ) {
-        return;
-      }
-
-      if ((target as Element).closest("[data-cursor-hover]")) {
->>>>>>> 72f521b586607afc840492d4153b257731309914
         setIsHovering(false);
       }
     };

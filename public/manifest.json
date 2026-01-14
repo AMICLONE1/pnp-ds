@@ -1,0 +1,21 @@
+{
+  "name": "PowerNet Pro - Digital Solar",
+  "short_name": "PowerNet Pro",
+  "description": "Access clean solar energy without installing panels. Reserve capacity from community solar projects and save on your electricity bills.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D2818",
+  "theme_color": "#FFB800",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
