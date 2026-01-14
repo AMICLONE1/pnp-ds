@@ -3,47 +3,6 @@
 import { useRef, useState, useEffect, ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, MotionValue } from "framer-motion";
 
-interface ParallaxSectionProps {
-  children: ReactNode;
-  className?: string;
-  speed?: number;
-  direction?: "up" | "down";
-}
-
-export function ParallaxSection({
-  children,
-  className = "",
-  speed = 0.5,
-  direction = "up",
-}: ParallaxSectionProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-    layoutEffect: false,
-  });
-
-  const multiplier = direction === "up" ? -1 : 1;
-  const y = useTransform(scrollYProgress, [0, 1], [100 * speed * multiplier, -100 * speed * multiplier]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <motion.div style={{ y }}>
-        {children}
-      </motion.div>
-    </div>
-  );
-}
 
 interface StickyScrollItem {
   title: string;
@@ -293,6 +252,7 @@ export function ScrollFade({
     </motion.div>
   );
 }
+<<<<<<< HEAD
 
 
 interface StickyTextFillProps {
@@ -498,3 +458,5 @@ export function StickyTextFill({
     </div>
   );
 }
+=======
+>>>>>>> 72f521b586607afc840492d4153b257731309914

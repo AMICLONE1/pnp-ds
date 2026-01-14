@@ -1,9 +1,8 @@
 "use client";
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring, useInView } from "framer-motion";
-import { useRef, useState, useEffect, Suspense, useMemo, memo, useCallback } from "react";
+import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
+import { useRef, useState, useEffect, useMemo, memo, useCallback } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import {
   ArrowRight,
   Play,
@@ -14,7 +13,6 @@ import {
   ChevronDown,
   Zap,
   Sun,
-  Battery,
   Bolt,
   CircleDollarSign,
   CheckCircle2,
@@ -25,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
 import React from "react";
 
+<<<<<<< HEAD
 // Dynamically import Enhanced Three.js canvas with 3D solar visualization
 // Using EnhancedHero3DScene with solar panels, energy particles, houses, and network nodes
 const Hero3DScene = dynamic(() => import("./EnhancedHero3DScene"), {
@@ -32,187 +31,16 @@ const Hero3DScene = dynamic(() => import("./EnhancedHero3DScene"), {
   loading: () => <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
 });
 
+=======
+>>>>>>> 72f521b586607afc840492d4153b257731309914
 // Stats data
 const heroStats = [
-  { icon: Users, value: "1,247+", label: "Families Saving", color: "text-gold" },
-  { icon: TrendingUp, value: "₹1.8Cr", label: "Saved This Month", color: "text-energy-green" },
-  { icon: Leaf, value: "500 MT", label: "CO₂ Offset", color: "text-energy-blue" },
-  { icon: Shield, value: "75%", label: "Guaranteed", color: "text-purple-400" },
+  // { icon: Users, value: "1,247+", label: "Families Saving", color: "text-gold" },
+  // { icon: TrendingUp, value: "₹1.8Cr", label: "Saved This Month", color: "text-energy-green" },
+  { icon: Leaf, value: "Environment", label: "Friendly", color: "text-energy-blue" },
+  { icon: Shield, value: "75%", label: "Savings", color: "text-purple-400" },
 ];
 
-// ============================================
-// ENERGY WAVE ANIMATION (Optimized with CSS transform)
-// ============================================
-function EnergyWaves() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(3)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute left-1/2 top-1/2 w-[100px] h-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold/20 will-change-transform"
-          initial={{ scale: 1, opacity: 0.4 }}
-          animate={{
-            scale: 8,
-            opacity: 0,
-          }}
-          transition={{
-            duration: 4,
-            delay: i * 1.3,
-            repeat: Infinity,
-            ease: "easeOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ============================================
-// FLOATING ICONS ANIMATION (Optimized with CSS animations)
-// ============================================
-const floatingIconsData = [
-  { Icon: Sun, color: "#FFB800", x: "10%", y: "20%", delay: 0, size: 40 },
-  { Icon: Bolt, color: "#4CAF50", x: "85%", y: "15%", delay: 0.5, size: 45 },
-  { Icon: Battery, color: "#00BCD4", x: "75%", y: "70%", delay: 1, size: 50 },
-  { Icon: Leaf, color: "#4CAF50", x: "15%", y: "75%", delay: 1.5, size: 55 },
-  { Icon: Zap, color: "#FFB800", x: "90%", y: "45%", delay: 2, size: 60 },
-  { Icon: CircleDollarSign, color: "#4CAF50", x: "5%", y: "50%", delay: 2.5, size: 65 },
-];
-
-function FloatingIcons() {
-  return (
-    <>
-      <style jsx global>{`
-        @keyframes floatIcon {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          25% { transform: translateY(-15px) rotate(8deg); }
-          75% { transform: translateY(-5px) rotate(-8deg); }
-        }
-      `}</style>
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {floatingIconsData.map(({ Icon, color, x, y, delay, size }, i) => (
-          <motion.div
-            key={i}
-            className="absolute will-change-transform"
-            style={{
-              left: x,
-              top: y,
-              animation: `floatIcon ${6 + i}s ease-in-out infinite`,
-              animationDelay: `${2 + delay}s`,
-            }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 0.15, scale: 1 }}
-            transition={{ delay: 2 + delay, duration: 0.5 }}
-          >
-            <Icon size={size} color={color} strokeWidth={1} />
-          </motion.div>
-        ))}
-      </div>
-    </>
-  );
-}
-
-// ============================================
-// MORPHING BLOB ANIMATION
-// ============================================
-const MorphingBlob = memo(function MorphingBlob({
-  className,
-  color = "#FFB800",
-}: {
-  className?: string;
-  color?: string;
-}) {
-  return (
-    <motion.div
-      className={`absolute rounded-full blur-2xl ${className}`}
-      style={{
-        background: color,
-        willChange: "transform",
-      }}
-      animate={{
-        scale: [1, 1.15, 1],
-        rotate: [0, 180, 360],
-      }}
-      transition={{
-        duration: 10,
-        repeat: Infinity,
-        ease: "linear",
-      }}
-    />
-  );
-});
-
-// ============================================
-// TYPEWRITER EFFECT
-// ============================================
-function TypewriterText({
-  texts,
-  className,
-  typingSpeed = 100,
-  deletingSpeed = 50,
-  pauseDuration = 2000,
-}: {
-  texts: string[];
-  className?: string;
-  typingSpeed?: number;
-  deletingSpeed?: number;
-  pauseDuration?: number;
-}) {
-  const [text, setText] = useState("");
-
-  const indexRef = useRef(0);
-  const charRef = useRef(0);
-  const deletingRef = useRef(false);
-  const timeoutRef = useRef<number>();
-
-  useEffect(() => {
-    function tick() {
-      const current = texts[indexRef.current];
-
-      if (!deletingRef.current) {
-        charRef.current++;
-        setText(current.slice(0, charRef.current));
-
-        if (charRef.current === current.length) {
-          timeoutRef.current = window.setTimeout(
-            () => (deletingRef.current = true),
-            pauseDuration
-          );
-          return;
-        }
-      } else {
-        charRef.current--;
-        setText(current.slice(0, charRef.current));
-
-        if (charRef.current === 0) {
-          deletingRef.current = false;
-          indexRef.current = (indexRef.current + 1) % texts.length;
-        }
-      }
-
-      timeoutRef.current = window.setTimeout(
-        tick,
-        deletingRef.current ? deletingSpeed : typingSpeed
-      );
-    }
-
-    tick();
-
-    return () => clearTimeout(timeoutRef.current);
-  }, [texts, typingSpeed, deletingSpeed, pauseDuration]);
-
-  return (
-    <span className={className}>
-      {text}
-      <motion.span
-        aria-hidden
-        animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.6, repeat: Infinity }}
-        className="inline-block w-[2px] h-[1em] bg-gold ml-1 align-middle"
-      />
-    </span>
-  );
-}
 
 // ============================================
 // ANIMATED NUMBER TICKER
@@ -422,185 +250,8 @@ function AnimatedCheckList({ items, delay = 0 }: { items: string[]; delay?: numb
   );
 }
 
-// ============================================
-// STAR RATING ANIMATION
-// ============================================
-function StarRating({ rating = 5, delay = 0 }: { rating?: number; delay?: number }) {
-  // Memoize animation variants
-  const getVariants = useCallback((i: number) => ({
-    initial: { opacity: 0, scale: 0, rotate: -180 },
-    animate: {
-      opacity: i < rating ? 1 : 0.3,
-      scale: 1,
-      rotate: 0
-    }
-  }), [rating]);
 
-  // Memoize transition
-  const getTransition = useCallback((i: number) => ({
-    delay: delay + i * 0.1,
-    type: "spring"
-  }), [delay]);
 
-  return (
-    <div className="flex gap-1">
-      {[0, 1, 2, 3, 4].map((i) => {
-        const isActive = i < rating;
-        return (
-          <motion.div
-            key={i}
-            initial={getVariants(i).initial}
-            animate={getVariants(i).animate}
-            transition={getTransition(i)}
-            style={{ willChange: 'transform, opacity' }}
-          >
-            <Star
-              className={`w-5 h-5 ${isActive ? "text-yellow-500 fill-yellow-500" : "text-gray-500"}`}
-            />
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ============================================
-// OPTIMIZED FLOATING PARTICLES
-// ============================================
-function FloatingParticles() {
-  // Memoize particles array - only create once
-  const particles = useMemo(() =>
-    Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      size: Math.random() * 4 + 2,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      duration: Math.random() * 20 + 15,
-      delay: Math.random() * 5,
-      xOffset: Math.random() * 50 - 25,
-    })), []
-  );
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute rounded-full bg-yellow-500/20"
-          style={{
-            width: particle.size,
-            height: particle.size,
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            willChange: 'transform, opacity'
-          }}
-          animate={{
-            y: [0, -100, 0],
-            x: [0, particle.xOffset, 0],
-            opacity: [0, 0.6, 0],
-            scale: [0, 1, 0],
-          }}
-          transition={{
-            duration: particle.duration,
-            delay: particle.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-            repeatType: "loop"
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// Animated background with gradient mesh
-function AnimatedBackground() {
-  // Memoize static styles that don't change
-  const gridStyle = useMemo(() => ({
-    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                     linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-    backgroundSize: '60px 60px',
-  }), []);
-
-  const noiseStyle = useMemo(() => ({
-    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-  }), []);
-
-  // Memoize orb configurations
-  const orbs = useMemo(() => [
-    {
-      className: "absolute -top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full",
-      style: {
-        background: "radial-gradient(circle, rgba(255,184,0,0.15) 0%, transparent 60%)",
-        filter: "blur(80px)",
-        willChange: "transform"
-      },
-      animate: {
-        x: [0, 100, 0],
-        y: [0, 50, 0],
-        scale: [1, 1.2, 1],
-      },
-      transition: { duration: 20, repeat: Infinity, ease: "easeInOut", repeatType: "loop" as const }
-    },
-    {
-      className: "absolute -bottom-1/4 -right-1/4 w-[700px] h-[700px] rounded-full",
-      style: {
-        background: "radial-gradient(circle, rgba(76,175,80,0.15) 0%, transparent 60%)",
-        filter: "blur(80px)",
-        willChange: "transform"
-      },
-      animate: {
-        x: [0, -80, 0],
-        y: [0, -60, 0],
-        scale: [1.2, 1, 1.2],
-      },
-      transition: { duration: 18, repeat: Infinity, ease: "easeInOut", repeatType: "loop" as const }
-    },
-    {
-      className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full",
-      style: {
-        background: "radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 60%)",
-        filter: "blur(80px)",
-        willChange: "transform"
-      },
-      animate: {
-        scale: [1, 1.3, 1],
-        rotate: [0, 180, 360],
-      },
-      transition: { duration: 25, repeat: Infinity, ease: "easeInOut", repeatType: "loop" as const }
-    }
-  ], []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a1f14] via-[#0D2818] to-[#061610]" />
-
-      {/* Animated gradient orbs */}
-      {orbs.map((orb, index) => (
-        <motion.div
-          key={index}
-          className={orb.className}
-          style={orb.style}
-          animate={orb.animate}
-          transition={orb.transition}
-        />
-      ))}
-
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={gridStyle}
-      />
-
-      {/* Noise texture */}
-      <div
-        className="absolute inset-0 opacity-[0.02] mix-blend-overlay"
-        style={noiseStyle}
-      />
-    </div>
-  );
-}
 
 // Mouse follower spotlight
 function MouseSpotlight() {
@@ -656,76 +307,6 @@ function MouseSpotlight() {
         className="w-[500px] h-[500px] rounded-full"
         style={spotlightStyle}
       />
-    </motion.div>
-  );
-}
-
-// ============================================
-// OPTIMIZED GLOWING BADGE
-// ============================================
-function GlowingBadge() {
-  // Memoize animation variants
-  const badgeVariants = useMemo(() => ({
-    initial: { opacity: 0, y: -30, scale: 0.9 },
-    animate: { opacity: 1, y: 0, scale: 1 }
-  }), []);
-
-  const badgeTransition = useMemo(() => ({
-    delay: 0.2,
-    duration: 0.8,
-    type: "spring"
-  }), []);
-
-  const sunRotateTransition = useMemo(() => ({
-    duration: 8,
-    repeat: Infinity,
-    ease: "linear",
-    repeatType: "loop" as const
-  }), []);
-
-  const sunPulseTransition = useMemo(() => ({
-    duration: 2,
-    repeat: Infinity,
-    repeatType: "loop" as const
-  }), []);
-
-  return (
-    <motion.div
-      initial={badgeVariants.initial}
-      animate={badgeVariants.animate}
-      transition={badgeTransition}
-      className="inline-block mb-8"
-    >
-      <motion.div
-        className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-full"
-        whileHover={{ scale: 1.02 }}
-      >
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-green-500/20 to-yellow-500/20 rounded-full blur-xl" />
-
-        <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={sunRotateTransition}
-            className="relative"
-            style={{ willChange: "transform" }}
-          >
-            <Sun className="w-5 h-5 text-yellow-500" />
-            <motion.div
-              className="absolute inset-0"
-              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-              transition={sunPulseTransition}
-              style={{ willChange: "transform, opacity" }}
-            >
-              <Sun className="w-5 h-5 text-yellow-500" />
-            </motion.div>
-          </motion.div>
-          <span className="text-sm font-medium text-white">India&apos;s #1 Digital Solar Platform</span>
-          <span className="px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-full shadow-lg shadow-yellow-500/20">
-            NEW
-          </span>
-        </div>
-      </motion.div>
     </motion.div>
   );
 }
@@ -1071,15 +652,6 @@ function StatPill({
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-    layoutEffect: false,
-  });
-
-  // Reduced parallax effects for better UX
-  // const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.7], [0, 50]);
 
   // Rotating words for dynamic headline
   const benefitWords = ["cleaner", "cheaper", "smarter", "better"];
@@ -1087,63 +659,21 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen bg-[#195638] text-white flex items-center justify-center overflow-hidden"
     >
-      {/* Three.js Background */}
-      <div className="absolute inset-0 z-0">
-        <Suspense fallback={<AnimatedBackground />}>
-          <Hero3DScene />
-        </Suspense>
-      </div>
-
-      {/* Gradient overlay */}
-      <AnimatedBackground />
-
-      {/* Floating particles */}
-      <FloatingParticles />
-
-      {/* Energy Waves */}
-      <EnergyWaves />
-
-      {/* Floating Icons */}
-      <FloatingIcons />
-
-      {/* Morphing Blobs */}
-      <MorphingBlob
-        className="w-96 h-96 -top-20 -left-20 opacity-20"
-        color="rgba(255, 184, 0, 0.3)"
-      />
-      <MorphingBlob
-        className="w-80 h-80 -bottom-20 -right-20 opacity-15"
-        color="rgba(76, 175, 80, 0.3)"
-      />
-
       {/* Mouse spotlight */}
       <MouseSpotlight />
 
       <motion.div
-        style={{ y }}
-        className="relative z-10 container mx-auto px-4 lg:px-8 py-24 md:py-32"
+        className="relative z-10 container mx-auto px-4 lg:px-8 py-24"
       >
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
           <div className="text-white">
-            <GlowingBadge />
-
-            {/* Trust Badge with Star Rating */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="flex items-center gap-3 mb-4"
-            >
-              <StarRating rating={5} delay={0.5} />
-              <span className="text-white/60 text-sm">Trusted by 1,200+ families</span>
-            </motion.div>
 
             {/* Main Headline with Enhanced Animations */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-[1.05] tracking-tight mb-6">
-              <div className="overflow-hidden">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-[1.05] tracking-tight mb-6" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              <div>
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1152,7 +682,7 @@ export function HeroSection() {
                   Stop Paying
                 </motion.div>
               </div>
-              <div className="overflow-hidden">
+              <div className="mt-3">
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1162,7 +692,7 @@ export function HeroSection() {
                   <ShimmeringText text="Full Price" className="font-bold" />
                 </motion.div>
               </div>
-              <div className="overflow-hidden">
+              <div className="mt-1">
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1179,33 +709,19 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
               className="text-xl md:text-2xl text-gray-300 mb-4 max-w-lg"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               Go Solar in <span className="text-gold font-semibold">60 Seconds</span>.
               <br className="hidden md:block" />
               No Roof Required. No Installation.
             </motion.p>
 
-            {/* Typewriter Effect */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="mb-6"
-            >
-              <span className="text-lg text-gray-400">
-                Make your energy{" "}
-                <TypewriterText
-                  texts={benefitWords}
-                  className="text-energy-green font-semibold"
-                />
-              </span>
-            </motion.div>
-
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
-              className="text-base text-gray-400 mb-6 max-w-lg"
+              className="text-base text-gray-400 mb-4 max-w-lg"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               The average family saves{" "}
               <span className="text-gold font-medium">
@@ -1219,13 +735,14 @@ export function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4 }}
-              className="mb-8"
+              className="mb-7"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               <AnimatedCheckList
                 items={[
                   "No rooftop required",
                   "Zero maintenance costs",
-                  "75% guaranteed savings"
+                  "Upto 75% savings"
                 ]}
                 delay={1.5}
               />
@@ -1236,7 +753,8 @@ export function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.8 }}
-              className="flex flex-wrap gap-3 mb-8"
+              className="flex flex-wrap gap-3 mb-5"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               {heroStats.map((stat, index) => (
                 <StatPill
@@ -1253,6 +771,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.2, duration: 0.5 }}
               className="flex flex-col sm:flex-row gap-4"
+              style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
               <MagneticButton>
                 <Link href="/reserve">
@@ -1261,6 +780,7 @@ export function HeroSection() {
                       variant="secondary"
                       size="lg"
                       className="relative w-full sm:w-auto text-lg px-8 py-6 bg-gradient-to-r from-gold to-gold-light hover:from-gold-light hover:to-gold text-charcoal font-bold shadow-2xl shadow-gold/30 group overflow-hidden"
+                      style={{ fontFamily: "'Open Sans', sans-serif" }}
                     >
                       {/* Button shine effect */}
                       <motion.div
@@ -1285,6 +805,7 @@ export function HeroSection() {
                       variant="outline"
                       size="lg"
                       className="w-full sm:w-auto text-lg px-8 py-6 border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold group"
+                      style={{ fontFamily: "'Open Sans', sans-serif" }}
                     >
                       <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                       See How It Works

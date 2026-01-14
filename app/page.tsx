@@ -338,6 +338,8 @@ export default function HomePage() {
               </Suspense>
             </div>
           </section>
+            </div>
+          </section>
 
           {/* TRUST SECTION */}
           <section className="py-24 bg-gradient-to-br from-forest via-forest to-forest-dark text-white relative overflow-hidden">
