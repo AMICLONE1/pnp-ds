@@ -25,8 +25,9 @@ import { cn } from "@/lib/utils";
 import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
 import React from "react";
 
-// Dynamically import Three.js canvas to prevent SSR issues
-const Hero3DScene = dynamic(() => import("./Hero3DScene"), {
+// Dynamically import Enhanced Three.js canvas with 3D solar visualization
+// Using EnhancedHero3DScene with solar panels, energy particles, houses, and network nodes
+const Hero3DScene = dynamic(() => import("./EnhancedHero3DScene"), {
   ssr: false,
   loading: () => <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
 });
