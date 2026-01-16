@@ -93,7 +93,7 @@ export default function ConnectPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex flex-col bg-offwhite">
+      <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <main className="flex-1 flex items-center justify-center container mx-auto px-4 pt-28 pb-12">
           <motion.div
@@ -109,13 +109,13 @@ export default function ConnectPage() {
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
                   className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4"
                 >
-                  <CheckCircle className="h-12 w-12 text-white" />
+                  <CheckCircle className="h-12 w-12 text-black" />
                 </motion.div>
                 <motion.h2 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-2xl font-heading font-bold text-white"
+                  className="text-2xl font-heading font-bold text-black"
                 >
                   Utility Connected!
                 </motion.h2>
@@ -126,12 +126,12 @@ export default function ConnectPage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-black mb-4">
                     Your utility provider has been linked successfully. Credits will
                     now be applied to your bills automatically.
                   </p>
-                  <div className="flex items-center justify-center gap-2 text-sm text-forest">
-                    <div className="w-2 h-2 rounded-full bg-energy-green animate-pulse" />
+                  <div className="flex items-center justify-center gap-2 text-sm text-black">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                     Redirecting to dashboard...
                   </div>
                 </motion.div>
@@ -145,7 +145,7 @@ export default function ConnectPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-offwhite">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         <div className="max-w-5xl mx-auto">
@@ -156,14 +156,14 @@ export default function ConnectPage() {
             transition={{ duration: 0.5 }}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-forest/10 text-forest text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-black text-sm font-medium mb-4">
               <Zap className="h-4 w-4" />
               Quick Setup • Takes 2 minutes
             </div>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-3 text-charcoal">
-              Connect Your <span className="text-forest">Utility</span>
+            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-3 text-black">
+              Connect Your <span className="text-black">Utility</span>
             </h1>
-            <p className="text-gray-600 max-w-xl mx-auto">
+            <p className="text-black max-w-xl mx-auto">
               Link your electricity provider to start receiving solar credits on your bills automatically
             </p>
           </motion.div>
@@ -176,7 +176,7 @@ export default function ConnectPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="lg:col-span-2 space-y-4"
             >
-              <div className="bg-gradient-to-br from-forest via-forest to-forest-light rounded-2xl p-6 text-white">
+              <div className="bg-gradient-to-br from-white via-white to-white-light rounded-2xl p-6 text-black">
                 <h3 className="font-heading font-bold text-lg mb-4 flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-gold" />
                   Why Connect?
@@ -200,7 +200,7 @@ export default function ConnectPage() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-sm">{benefit.title}</h4>
-                        <p className="text-white/70 text-xs">{benefit.desc}</p>
+                        <p className="text-black/70 text-xs">{benefit.desc}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -219,7 +219,7 @@ export default function ConnectPage() {
                     <Shield className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-charcoal text-sm">BBPS Certified</p>
+                    <p className="font-semibold text-black text-sm">BBPS Certified</p>
                     <p className="text-xs text-gray-500">Authorized bill payment partner</p>
                   </div>
                 </div>
@@ -234,10 +234,10 @@ export default function ConnectPage() {
               className="lg:col-span-3"
             >
               <Card className="overflow-hidden">
-                <CardHeader className="bg-gray-50 border-b border-gray-100">
+                <CardHeader className="bg-white border-b border-gray-100">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-forest/10">
-                      <Building2 className="h-5 w-5 text-forest" />
+                    <div className="p-2 rounded-lg bg-white/10">
+                      <Building2 className="h-5 w-5 text-black" />
                     </div>
                     <div>
                       <CardTitle>Utility Information</CardTitle>
@@ -259,14 +259,14 @@ export default function ConnectPage() {
                         <div key={step.num} className="flex items-center flex-1">
                           <div className={`flex items-center gap-2 ${step.active ? 'opacity-100' : 'opacity-40'}`}>
                             <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all ${
-                              step.complete ? 'bg-energy-green text-white' : step.active ? 'bg-forest text-white' : 'bg-gray-200 text-gray-500'
+                              step.complete ? 'bg-white text-white' : step.active ? 'bg-white text-white' : 'bg-gray-200 text-gray-500'
                             }`}>
                               {step.complete ? <CheckCircle className="h-4 w-4" /> : step.num}
                             </div>
-                            <span className="text-xs font-medium text-charcoal hidden sm:block">{step.label}</span>
+                            <span className="text-xs font-medium text-black hidden sm:block">{step.label}</span>
                           </div>
                           {index < 2 && (
-                            <div className={`flex-1 h-0.5 mx-2 rounded ${step.complete ? 'bg-energy-green' : 'bg-gray-200'}`} />
+                            <div className={`flex-1 h-0.5 mx-2 rounded ${step.complete ? 'bg-white' : 'bg-gray-200'}`} />
                           )}
                         </div>
                       ))}
@@ -275,14 +275,14 @@ export default function ConnectPage() {
                     <div className="space-y-5">
                       {/* State Field */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                          <MapPin className="h-4 w-4 text-forest" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                          <MapPin className="h-4 w-4 text-black" />
                           State
                         </label>
                         <select
                           value={state}
                           onChange={(e) => setState(e.target.value)}
-                          className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent transition-all hover:border-forest/50"
+                          className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent transition-all hover:border-gray-200/50"
                           required
                           disabled={loading}
                         >
@@ -297,14 +297,14 @@ export default function ConnectPage() {
 
                       {/* DISCOM Field */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                          <Building2 className="h-4 w-4 text-forest" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                          <Building2 className="h-4 w-4 text-black" />
                           DISCOM (Distribution Company)
                         </label>
                         <select
                           value={discom}
                           onChange={(e) => setDiscom(e.target.value)}
-                          className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:border-forest/50"
+                          className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:border-gray-200/50"
                           required
                           disabled={loading || !state}
                         >
@@ -327,8 +327,8 @@ export default function ConnectPage() {
 
                       {/* Consumer Number Field */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                          <CreditCard className="h-4 w-4 text-forest" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                          <CreditCard className="h-4 w-4 text-black" />
                           Consumer Number
                         </label>
                         <Input

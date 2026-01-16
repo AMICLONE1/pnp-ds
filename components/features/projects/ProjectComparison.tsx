@@ -40,10 +40,10 @@ export function ProjectComparison({ projects }: ProjectComparisonProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-2xl font-heading font-bold mb-4 text-charcoal">
+        <h3 className="text-2xl font-heading font-bold mb-4 text-black">
           Compare Projects
         </h3>
-        <p className="text-gray-600 mb-6">
+        <p className="text-black mb-6">
           Select up to 3 projects to compare side-by-side
         </p>
 
@@ -53,7 +53,7 @@ export function ProjectComparison({ projects }: ProjectComparisonProps) {
               key={project.id}
               className={`cursor-pointer transition-all ${
                 selectedProjects.includes(project.id)
-                  ? "ring-2 ring-forest border-forest"
+                  ? "ring-2 ring-forest border-gray-200"
                   : "hover:shadow-lg"
               }`}
               onClick={() => toggleProject(project.id)}
@@ -61,22 +61,22 @@ export function ProjectComparison({ projects }: ProjectComparisonProps) {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-charcoal">{project.name}</h4>
-                    <p className="text-sm text-gray-600 flex items-center mt-1">
+                    <h4 className="font-semibold text-black">{project.name}</h4>
+                    <p className="text-sm text-black flex items-center mt-1">
                       <MapPin className="h-3 w-3 mr-1" />
                       {project.location}
                     </p>
                   </div>
                   {selectedProjects.includes(project.id) && (
-                    <CheckCircle className="h-5 w-5 text-forest flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-black flex-shrink-0" />
                   )}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-black">
                   <div className="flex items-center gap-1">
                     <Zap className="h-4 w-4" />
                     {Number(project.available_capacity_kw).toLocaleString()} kW available
                   </div>
-                  <div className="mt-1 font-semibold text-forest">
+                  <div className="mt-1 font-semibold text-black">
                     ₹{project.price_per_kw}/kW/month
                   </div>
                 </div>
@@ -90,14 +90,14 @@ export function ProjectComparison({ projects }: ProjectComparisonProps) {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-forest/10">
-                <th className="border border-gray-300 p-4 text-left font-semibold text-charcoal">
+              <tr className="bg-white/10">
+                <th className="border border-gray-300 p-4 text-left font-semibold text-black">
                   Feature
                 </th>
                 {selectedProjectsData.map((project) => (
                   <th
                     key={project.id}
-                    className="border border-gray-300 p-4 text-center font-semibold text-charcoal"
+                    className="border border-gray-300 p-4 text-center font-semibold text-black"
                   >
                     {project.name}
                   </th>

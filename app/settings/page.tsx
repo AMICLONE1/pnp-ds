@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { profileUpdateSchema } from "@/lib/validations";
+import { SettingsSkeleton } from "@/components/ui/skeletons/SettingsSkeleton";
 import { 
   User, 
   Bell, 
@@ -27,7 +28,8 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default function SettingsPage() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -43,6 +45,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        setLoading(true);
         const response = await fetch("/api/user/profile", { credentials: "include" });
         
         if (!response.ok) {
@@ -67,6 +70,11 @@ export default function SettingsPage() {
       } catch (error) {
         console.error("Error fetching profile:", error);
         // Don't leave page blank - show error state
+      } finally {
+        // Show skeleton for minimum 10 seconds
+        setTimeout(() => {
+          setLoading(false);
+        }, 10000);
       }
     };
     fetchProfile();
@@ -74,7 +82,7 @@ export default function SettingsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError("");
     setSuccess("");
 
@@ -101,12 +109,23 @@ export default function SettingsPage() {
         setError(err.message || "Failed to update profile");
       }
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white">
+        <Header />
+        <main className="flex-1 pt-20">
+          <SettingsSkeleton />
+        </main>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-offwhite">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         <div className="max-w-5xl mx-auto">
@@ -118,14 +137,14 @@ export default function SettingsPage() {
             className="mb-8"
           >
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-xl bg-forest/10">
-                <Settings className="h-6 w-6 text-forest" />
+              <div className="p-2 rounded-xl bg-white/10">
+                <Settings className="h-6 w-6 text-black" />
               </div>
-              <h1 className="text-4xl font-heading font-bold text-charcoal">
+              <h1 className="text-4xl font-heading font-bold text-black">
                 Settings
               </h1>
             </div>
-            <p className="text-gray-600 ml-14">
+            <p className="text-black ml-14">
               Manage your account settings and preferences
             </p>
           </motion.div>
@@ -139,14 +158,14 @@ export default function SettingsPage() {
               className="md:col-span-1"
             >
               <Card className="sticky top-28 overflow-hidden">
-                <div className="bg-gradient-to-br from-forest to-forest-light p-4">
+                <div className="bg-gradient-to-br from-white to-white-light p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                      <User className="h-6 w-6 text-white" />
+                      <User className="h-6 w-6 text-black" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-semibold text-white truncate">{formData.name || "User"}</p>
-                      <p className="text-xs text-white/70 truncate">{profile?.email}</p>
+                      <p className="font-semibold text-black truncate">{formData.name || "User"}</p>
+                      <p className="text-xs text-black/70 truncate">{profile?.email}</p>
                     </div>
                   </div>
                 </div>
@@ -163,13 +182,13 @@ export default function SettingsPage() {
                         onClick={() => setActiveSection(item.id)}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                           activeSection === item.id
-                            ? "bg-forest/10 text-forest"
-                            : "text-gray-600 hover:bg-gray-50"
+                            ? "bg-white/10 text-black"
+                            : "text-black hover:bg-white"
                         }`}
                       >
-                        <item.icon className={`h-5 w-5 ${activeSection === item.id ? "text-forest" : "text-gray-400 group-hover:text-forest"}`} />
+                        <item.icon className={`h-5 w-5 ${activeSection === item.id ? "text-black" : "text-gray-400 group-hover:text-black"}`} />
                         <span className="font-medium">{item.label}</span>
-                        <ChevronRight className={`h-4 w-4 ml-auto transition-transform ${activeSection === item.id ? "text-forest" : "text-gray-300"}`} />
+                        <ChevronRight className={`h-4 w-4 ml-auto transition-transform ${activeSection === item.id ? "text-black" : "text-gray-300"}`} />
                       </a>
                     ))}
                   </nav>
@@ -186,10 +205,10 @@ export default function SettingsPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Card id="profile" className="overflow-hidden">
-                  <CardHeader className="bg-gray-50 border-b border-gray-100">
+                  <CardHeader className="bg-white border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-forest/10">
-                        <User className="h-5 w-5 text-forest" />
+                      <div className="p-2 rounded-lg bg-white/10">
+                        <User className="h-5 w-5 text-black" />
                       </div>
                       <div>
                         <CardTitle>Profile Information</CardTitle>
@@ -203,8 +222,8 @@ export default function SettingsPage() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                            <User className="h-4 w-4 text-forest" />
+                          <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                            <User className="h-4 w-4 text-black" />
                             Full Name
                           </label>
                           <Input
@@ -218,8 +237,8 @@ export default function SettingsPage() {
                           />
                         </div>
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                            <Phone className="h-4 w-4 text-forest" />
+                          <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                            <Phone className="h-4 w-4 text-black" />
                             Phone Number
                           </label>
                           <Input
@@ -236,8 +255,8 @@ export default function SettingsPage() {
                       </div>
                       
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                          <Mail className="h-4 w-4 text-forest" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                          <Mail className="h-4 w-4 text-black" />
                           Email Address
                         </label>
                         <div className="relative">
@@ -245,7 +264,7 @@ export default function SettingsPage() {
                             type="email"
                             value={profile?.email || ""}
                             disabled
-                            className="flex h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-500 cursor-not-allowed pr-24"
+                            className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 cursor-not-allowed pr-24"
                           />
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-1 rounded-md bg-gray-200 text-xs text-gray-500">
                             <Lock className="h-3 w-3" />
@@ -287,7 +306,7 @@ export default function SettingsPage() {
                         type="submit"
                         variant="primary"
                         size="lg"
-                        isLoading={loading}
+                        isLoading={saving}
                         className="h-12 rounded-xl"
                       >
                         <CheckCircle className="h-4 w-4 mr-2" />
@@ -305,10 +324,10 @@ export default function SettingsPage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
                 <Card id="notifications" className="overflow-hidden">
-                  <CardHeader className="bg-gray-50 border-b border-gray-100">
+                  <CardHeader className="bg-white border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-forest/10">
-                        <Bell className="h-5 w-5 text-forest" />
+                      <div className="p-2 rounded-lg bg-white/10">
+                        <Bell className="h-5 w-5 text-black" />
                       </div>
                       <div>
                         <CardTitle>Notification Preferences</CardTitle>
@@ -321,13 +340,13 @@ export default function SettingsPage() {
                   <CardContent className="p-6">
                     <form onSubmit={handleSubmit} className="space-y-4">
                       {/* Email Notifications Toggle */}
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-forest/30 hover:bg-forest/5 transition-all group">
+                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-gray-200/30 hover:bg-white/5 transition-all group">
                         <div className="flex items-center gap-4">
-                          <div className="p-2 rounded-lg bg-forest/10 group-hover:bg-forest/20 transition-colors">
-                            <Mail className="h-5 w-5 text-forest" />
+                          <div className="p-2 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
+                            <Mail className="h-5 w-5 text-black" />
                           </div>
                           <div>
-                            <label className="font-medium text-charcoal">
+                            <label className="font-medium text-black">
                               Email Notifications
                             </label>
                             <p className="text-sm text-gray-500">
@@ -347,18 +366,18 @@ export default function SettingsPage() {
                             }
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-forest/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-forest"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-forest/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white"></div>
                         </label>
                       </div>
                       
                       {/* SMS Notifications Toggle */}
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-forest/30 hover:bg-forest/5 transition-all group">
+                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-gray-200/30 hover:bg-white/5 transition-all group">
                         <div className="flex items-center gap-4">
-                          <div className="p-2 rounded-lg bg-forest/10 group-hover:bg-forest/20 transition-colors">
-                            <Smartphone className="h-5 w-5 text-forest" />
+                          <div className="p-2 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
+                            <Smartphone className="h-5 w-5 text-black" />
                           </div>
                           <div>
-                            <label className="font-medium text-charcoal">
+                            <label className="font-medium text-black">
                               SMS Notifications
                             </label>
                             <p className="text-sm text-gray-500">
@@ -378,7 +397,7 @@ export default function SettingsPage() {
                             }
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-forest/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-forest"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-forest/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white"></div>
                         </label>
                       </div>
 
@@ -386,7 +405,7 @@ export default function SettingsPage() {
                         type="submit"
                         variant="primary"
                         size="lg"
-                        isLoading={loading}
+                        isLoading={saving}
                         className="h-12 rounded-xl"
                       >
                         <CheckCircle className="h-4 w-4 mr-2" />
@@ -404,10 +423,10 @@ export default function SettingsPage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
                 <Card id="security" className="overflow-hidden">
-                  <CardHeader className="bg-gray-50 border-b border-gray-100">
+                  <CardHeader className="bg-white border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-forest/10">
-                        <Shield className="h-5 w-5 text-forest" />
+                      <div className="p-2 rounded-lg bg-white/10">
+                        <Shield className="h-5 w-5 text-black" />
                       </div>
                       <div>
                         <CardTitle>Security</CardTitle>
@@ -419,13 +438,13 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="p-6 space-y-4">
                     {/* Change Password */}
-                    <div className="p-5 border border-gray-200 rounded-xl hover:border-forest/30 transition-colors">
+                    <div className="p-5 border border-gray-200 rounded-xl hover:border-gray-200/30 transition-colors">
                       <div className="flex items-start gap-4">
                         <div className="p-2 rounded-lg bg-amber-50">
                           <Lock className="h-5 w-5 text-amber-600" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-charcoal mb-1">
+                          <h3 className="font-semibold text-black mb-1">
                             Change Password
                           </h3>
                           <p className="text-sm text-gray-500 mb-4">
@@ -441,21 +460,21 @@ export default function SettingsPage() {
 
                     {/* Account Information */}
                     {profile && (
-                      <div className="p-5 border border-gray-200 rounded-xl bg-gray-50/50">
+                      <div className="p-5 border border-gray-200 rounded-xl bg-white/50">
                         <div className="flex items-center gap-2 mb-4">
-                          <BadgeCheck className="h-5 w-5 text-forest" />
-                          <h3 className="font-semibold text-charcoal">
+                          <BadgeCheck className="h-5 w-5 text-black" />
+                          <h3 className="font-semibold text-black">
                             Account Information
                           </h3>
                         </div>
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100">
-                            <div className="p-2 rounded-lg bg-forest/10">
-                              <Calendar className="h-4 w-4 text-forest" />
+                            <div className="p-2 rounded-lg bg-white/10">
+                              <Calendar className="h-4 w-4 text-black" />
                             </div>
                             <div>
                               <p className="text-xs text-gray-500">Member since</p>
-                              <p className="font-medium text-charcoal">
+                              <p className="font-medium text-black">
                                 {new Date(profile.created_at).toLocaleDateString("en-IN", {
                                   day: "numeric",
                                   month: "short",

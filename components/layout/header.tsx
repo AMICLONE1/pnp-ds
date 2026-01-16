@@ -37,7 +37,7 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<any>(null);
 
   // Pages with dark hero sections that need transparent header with white text
   const darkHeroPages = ['/', '/reserve'];
@@ -59,6 +59,19 @@ export function Header() {
   });
 
   useEffect(() => {
+    // Initialize Supabase client
+    try {
+      const client = createClient();
+      setSupabase(client);
+    } catch (error) {
+      console.warn("Supabase not configured:", error);
+      return;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -77,6 +90,12 @@ export function Header() {
   }, [supabase]);
 
   const handleLogout = async () => {
+    if (!supabase) {
+      setUser(null);
+      router.push("/");
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -118,7 +137,7 @@ export function Header() {
               <motion.div
                 className={cn(
                   "relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-300",
-                  needsSolidHeader ? "bg-forest" : "bg-white/10 backdrop-blur-md"
+                  needsSolidHeader ? "bg-white" : "bg-white/10 backdrop-blur-md"
                 )}
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
@@ -133,7 +152,7 @@ export function Header() {
               </motion.div>
               <span className={cn(
                 "text-xl font-heading font-bold transition-colors duration-300",
-                needsSolidHeader ? "text-forest" : "text-white"
+                "text-black"
               )}>
                 PowerNet<span className="text-gold">Pro</span>
               </span>
@@ -152,10 +171,8 @@ export function Header() {
                     href={item.href}
                     className={cn(
                       "flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
-                      needsSolidHeader 
-                        ? "text-charcoal hover:text-forest hover:bg-forest/5" 
-                        : "text-white/90 hover:text-white hover:bg-white/10",
-                      pathname === item.href && (needsSolidHeader ? "bg-forest/10 text-forest" : "bg-white/10")
+                      "text-black hover:text-gold hover:bg-gray-100",
+                      pathname === item.href && "bg-gray-100 text-gold"
                     )}
                     data-cursor-hover
                   >
@@ -187,11 +204,11 @@ export function Header() {
                               data-cursor-hover
                             >
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-forest/10 flex items-center justify-center group-hover:bg-forest group-hover:text-white transition-colors">
-                                  <Zap className="w-5 h-5 text-forest group-hover:text-white" />
+                                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                                  <Zap className="w-5 h-5 text-black group-hover:text-black" />
                                 </div>
                                 <div>
-                                  <div className="font-medium text-charcoal group-hover:text-forest transition-colors">
+                                  <div className="font-medium text-black group-hover:text-black transition-colors">
                                     {child.label}
                                   </div>
                                   {child.description && (
@@ -218,18 +235,16 @@ export function Header() {
                   <NotificationBell />
                   <div className={cn(
                     "hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm",
-                    needsSolidHeader ? "bg-gray-100 text-gray-600" : "bg-white/10 text-white/80"
+                    "bg-gray-100 text-black"
                   )}>
-                    <div className="w-2 h-2 rounded-full bg-energy-green animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                     <span className="max-w-32 truncate">{user.email}</span>
                   </div>
                   <Button 
                     variant={needsSolidHeader ? "outline" : "ghost"} 
                     size="sm" 
                     onClick={handleLogout}
-                    className={cn(
-                      !needsSolidHeader && "text-white border-white/30 hover:bg-white/10"
-                    )}
+                    className="text-black border-gray-300 hover:bg-gray-100"
                   >
                     Logout
                   </Button>
@@ -240,10 +255,7 @@ export function Header() {
                     <Button 
                       variant="ghost" 
                       size="sm"
-                      className={cn(
-                        "hidden sm:inline-flex",
-                        !needsSolidHeader && "text-white hover:bg-white/10"
-                      )}
+                      className="hidden sm:inline-flex text-black hover:bg-gray-100"
                     >
                       Login
                     </Button>
@@ -256,7 +268,7 @@ export function Header() {
                       <Button 
                         variant="secondary" 
                         size="sm"
-                        className="bg-gold hover:bg-gold-light text-charcoal font-semibold shadow-lg shadow-gold/20 group"
+                        className="bg-gold hover:bg-gold-light text-black font-semibold shadow-lg shadow-gold/20 group"
                         data-cursor-hover
                       >
                         Start Saving
@@ -273,7 +285,7 @@ export function Header() {
                 className={cn(
                   "lg:hidden p-2 rounded-lg transition-colors",
                   needsSolidHeader 
-                    ? "text-charcoal hover:bg-gray-100" 
+                    ? "text-black hover:bg-gray-100" 
                     : "text-white hover:bg-white/10"
                 )}
                 aria-label="Toggle menu"
@@ -333,7 +345,7 @@ export function Header() {
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
                   <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
                     <Sun className="h-6 w-6 text-gold" />
-                    <span className="text-xl font-heading font-bold text-forest">
+                    <span className="text-xl font-heading font-bold text-black">
                       PowerNet<span className="text-gold">Pro</span>
                     </span>
                   </Link>
@@ -341,7 +353,7 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    <X className="h-6 w-6 text-charcoal" />
+                    <X className="h-6 w-6 text-black" />
                   </button>
                 </div>
 
@@ -360,8 +372,8 @@ export function Header() {
                         className={cn(
                           "flex items-center justify-between py-4 px-4 rounded-xl text-lg font-medium transition-colors",
                           pathname === item.href
-                            ? "bg-forest/10 text-forest"
-                            : "text-charcoal hover:bg-gray-50"
+                            ? "bg-white/10 text-black"
+                            : "text-black hover:bg-gray-50"
                         )}
                       >
                         {item.label}
@@ -374,7 +386,7 @@ export function Header() {
                               key={child.href}
                               href={child.href}
                               onClick={() => setMobileMenuOpen(false)}
-                              className="block py-2 px-4 text-gray-600 hover:text-forest transition-colors"
+                              className="block py-2 px-4 text-black hover:text-black transition-colors"
                             >
                               {child.label}
                             </Link>
@@ -389,8 +401,8 @@ export function Header() {
                 <div className="p-6 border-t border-gray-100 space-y-3">
                   {user ? (
                     <>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-                        <div className="w-2 h-2 rounded-full bg-energy-green" />
+                      <div className="flex items-center gap-2 text-sm text-black mb-4">
+                        <div className="w-2 h-2 rounded-full bg-white" />
                         {user.email}
                       </div>
                       <Button 
@@ -409,7 +421,7 @@ export function Header() {
                         </Button>
                       </Link>
                       <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="secondary" className="w-full bg-gold hover:bg-gold-light text-charcoal">
+                        <Button variant="secondary" className="w-full bg-gold hover:bg-gold-light text-black">
                           Start Saving Free
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>

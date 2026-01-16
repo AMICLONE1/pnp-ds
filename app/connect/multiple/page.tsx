@@ -128,7 +128,7 @@ export default function MultipleUtilitiesPage() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
           </div>
         </main>
       </div>
@@ -136,15 +136,15 @@ export default function MultipleUtilitiesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-offwhite">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-2 text-charcoal">
+            <h1 className="text-4xl font-heading font-bold mb-2 text-black">
               Multiple Utility Accounts
             </h1>
-            <p className="text-gray-600">
+            <p className="text-black">
               Link multiple electricity providers to offset bills for different locations
             </p>
           </div>
@@ -160,10 +160,10 @@ export default function MultipleUtilitiesPage() {
               {utilities.map((utility, index) => (
                 <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-3">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-charcoal">
+                    <h3 className="font-semibold text-black">
                       {utility.nickname || `Utility ${index + 1}`}
                       {utility.is_primary && (
-                        <span className="ml-2 text-xs bg-forest text-white px-2 py-1 rounded">
+                        <span className="ml-2 text-xs bg-white text-black px-2 py-1 rounded">
                           Primary
                         </span>
                       )}
@@ -181,7 +181,7 @@ export default function MultipleUtilitiesPage() {
 
                   <div className="grid md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1">
+                      <label className="block text-sm font-medium text-black mb-1">
                         State
                       </label>
                       <select
@@ -199,7 +199,7 @@ export default function MultipleUtilitiesPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1">
+                      <label className="block text-sm font-medium text-black mb-1">
                         DISCOM
                       </label>
                       <select
@@ -219,7 +219,7 @@ export default function MultipleUtilitiesPage() {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-charcoal mb-1">
+                      <label className="block text-sm font-medium text-black mb-1">
                         Consumer Number
                       </label>
                       <Input
@@ -232,7 +232,7 @@ export default function MultipleUtilitiesPage() {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-charcoal mb-1">
+                      <label className="block text-sm font-medium text-black mb-1">
                         Nickname (optional)
                       </label>
                       <Input

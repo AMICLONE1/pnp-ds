@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import {
   Zap,
   Home,
@@ -58,8 +58,8 @@ const benefitCategories = [
     tagline: "More money. Every month.",
     subtitle: "Real savings on every electricity bill.",
     description: "The average family saves ₹2,000 monthly. That's an extra vacation every year, just from switching to digital solar.",
-    color: "from-energy-green via-emerald-500 to-teal-500",
-    accentColor: "energy-green",
+    color: "from-gray-200 via-gray-300 to-gray-400",
+    accentColor: "gray-300",
     features: [
       {
         icon: TrendingUp,
@@ -110,8 +110,8 @@ const benefitCategories = [
     tagline: "Power that gives back.",
     subtitle: "Real environmental impact, measured.",
     description: "You'll offset 7.5 tons of CO₂ annually—equivalent to planting 340 trees. Make a measurable difference while saving money.",
-    color: "from-forest via-emerald-600 to-green-600",
-    accentColor: "forest",
+    color: "from-gray-200 via-gray-300 to-gray-500",
+    accentColor: "gray-400",
     features: [
       {
         icon: Leaf,
@@ -142,20 +142,30 @@ function CategoryNav({
   onSelect: (index: number) => void;
 }) {
   return (
-    <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-12 md:mb-16">
+    <motion.div 
+      className="flex flex-wrap justify-center gap-2 md:gap-4 mb-10 md:mb-12"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
       {categories.map((category, index) => (
         <motion.button
           key={category.id}
           onClick={() => onSelect(index)}
           className={cn(
-            "relative px-4 py-2.5 md:px-6 md:py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300",
+            "relative px-4 py-2.5 md:px-6 md:py-3 rounded-full text-sm md:text-base font-medium transition-all duration-500",
             "flex items-center gap-2",
             activeIndex === index
-              ? "text-white shadow-lg"
-              : "text-charcoal/70 bg-white/80 hover:bg-white hover:text-charcoal border border-gray-200/50"
+              ? "text-black shadow-lg z-10"
+              : "text-gray-700 bg-white/60 hover:bg-white/80 hover:text-black border border-gray-200/40"
           )}
-          whileHover={{ scale: activeIndex === index ? 1 : 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: activeIndex === index ? 1 : 1.04 }}
+          whileTap={{ scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.05, duration: 0.3 }}
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           {/* Active background */}
@@ -163,20 +173,25 @@ function CategoryNav({
             <motion.div
               layoutId="activeCategory"
               className={cn("absolute inset-0 rounded-full bg-gradient-to-r", category.color)}
-              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 400, 
+                damping: 30,
+                mass: 1
+              }}
             />
           )}
 
           <span className={cn(
-            "relative z-10 font-bold",
-            activeIndex === index ? "text-white/90" : "text-charcoal/50"
+            "relative z-10 font-bold transition-colors duration-300",
+            activeIndex === index ? "text-black/90" : "text-gray-600"
           )}>
             {category.number}
           </span>
           <span className="relative z-10">{category.title}</span>
         </motion.button>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
@@ -191,10 +206,13 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
         <motion.div
           ref={ref}
           key={category.id}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5 }}
+          transition={{ 
+            duration: 0.5, 
+            ease: [0.4, 0, 0.2, 1]
+          }}
           className="mb-12"
         >
           {/* Category header */}
@@ -202,14 +220,14 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1 }}
+              transition={{ delay: 0.1, duration: 0.4, ease: "easeOut" }}
               className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-4",
                 `bg-${category.accentColor}/10 text-${category.accentColor}`
               )}
               style={{
-                backgroundColor: `var(--${category.accentColor}, #f59e0b)20`,
-                color: `var(--${category.accentColor}, #f59e0b)`
+                backgroundColor: `rgba(255, 184, 0, 0.2)`,
+                color: `#FFB800`
               }}
             >
               <Sparkles className="w-4 h-4" />
@@ -219,8 +237,8 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
             <motion.h3
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+              transition={{ delay: 0.15, duration: 0.5, ease: "easeOut" }}
+              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-black mb-4"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               {category.tagline.split('.')[0]}
@@ -235,8 +253,8 @@ function CategoryHero({ category, isActive }: { category: typeof benefitCategori
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
+              transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
+              className="text-lg md:text-xl text-black/80 max-w-2xl mx-auto"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               {category.description}
@@ -267,66 +285,102 @@ function FeatureCard({
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
-      transition={{ duration: 0.5, delay: index * 0.15 }}
+      initial={{ opacity: 0, y: 40, scale: 0.9, rotateY: -10 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1, rotateY: 0 } : { opacity: 0, y: 40, scale: 0.9, rotateY: -10 }}
+      transition={{ 
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        delay: isActive ? index * 0.08 : 0,
+        mass: 0.8
+      }}
       onHoverStart={() => setIsExpanded(true)}
       onHoverEnd={() => setIsExpanded(false)}
       onClick={() => setIsExpanded(!isExpanded)}
+      style={{ perspective: 1000 }}
       className={cn(
         "group relative cursor-pointer",
-        "bg-white rounded-2xl md:rounded-3xl",
-        "border border-gray-100/80",
+        "bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-md rounded-2xl md:rounded-3xl",
+        "border border-white/40 shadow-lg shadow-black/5",
         "transition-all duration-500 ease-out",
-        "hover:shadow-2xl hover:shadow-black/10",
+        "hover:shadow-2xl hover:shadow-blue-500/10 hover:from-white hover:to-blue-50/50 hover:border-blue-200/50",
         "overflow-hidden"
       )}
     >
-      {/* Gradient border on hover */}
-      <div className={cn(
-        "absolute inset-0 rounded-2xl md:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-        "bg-gradient-to-br p-[1px]",
-        categoryColor
-      )}>
-        <div className="w-full h-full bg-white rounded-2xl md:rounded-3xl" />
-      </div>
+      {/* Enhanced gradient border on hover */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className={cn(
+          "absolute inset-0 rounded-2xl md:rounded-3xl",
+          "bg-gradient-to-br p-[1.5px]",
+          categoryColor
+        )}>
+        <div className="w-full h-full bg-white/95 rounded-2xl md:rounded-3xl" />
+      </motion.div>
 
       {/* Content container */}
       <div className="relative p-6 md:p-8">
         {/* Icon and number */}
-        <div className="flex items-start justify-between mb-6">
-          <div className={cn(
-            "w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center",
-            "bg-gradient-to-br shadow-lg transition-transform duration-500 group-hover:scale-110",
-            categoryColor
-          )}>
-            <feature.icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
-          </div>
+        <motion.div 
+          className="flex items-start justify-between mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1, duration: 0.4 }}
+        >
+          <motion.div
+            className={cn(
+              "w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center",
+              "bg-gradient-to-br shadow-lg",
+              categoryColor
+            )}
+            whileHover={{ scale: 1.15, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            <feature.icon className="w-7 h-7 md:w-8 md:h-8 text-black" />
+          </motion.div>
 
           <motion.span
-            className="text-5xl md:text-6xl font-heading font-bold text-gray-100 group-hover:text-gray-200 transition-colors"
+            className="text-5xl md:text-6xl font-heading font-bold text-black/15 group-hover:text-blue-600/20 transition-colors"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
             animate={{
-              scale: isExpanded ? 1.1 : 1,
-              x: isExpanded ? -10 : 0
+              scale: isExpanded ? 1.2 : 1,
+              x: isExpanded ? -15 : 0,
+              opacity: isExpanded ? 0.8 : 0.3
             }}
-            transition={{ duration: 0.3 }}
+            transition={{ type: "spring", stiffness: 150, damping: 20 }}
           >
             0{index + 1}
           </motion.span>
-        </div>
+        </motion.div>
 
         {/* Title and subtitle */}
-        <div className="mb-4">
-          <h4 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-1 group-hover:text-forest transition-colors" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <motion.div 
+          className="mb-4"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.15, duration: 0.4 }}
+        >
+          <h4 className="text-xl md:text-2xl font-heading font-bold text-black mb-1 group-hover:text-blue-600 transition-colors duration-300" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             {feature.title}
           </h4>
-          <p className="text-sm text-gray-500" style={{ fontFamily: "'Montserrat', sans-serif" }}>{feature.subtitle}</p>
-        </div>
+          <p className="text-sm text-black/60 group-hover:text-black/70 transition-colors duration-300" style={{ fontFamily: "'Montserrat', sans-serif" }}>{feature.subtitle}</p>
+        </motion.div>
 
         {/* Description */}
-        <p className="text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <motion.p 
+          className="text-black/75 leading-relaxed mb-4 group-hover:text-black/85 transition-colors duration-300" 
+          style={{ fontFamily: "'Montserrat', sans-serif" }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
           {feature.description}
-        </p>
+        </motion.p>
 
         {/* Benefits list - animated expansion */}
         <motion.div
@@ -352,9 +406,9 @@ function FeatureCard({
                   "bg-gradient-to-br",
                   categoryColor
                 )}>
-                  <CheckCircle className="w-3 h-3 text-white" />
+                  <CheckCircle className="w-3 h-3 text-black" />
                 </div>
-                <span className="text-gray-700">{benefit}</span>
+                <span className="text-black">{benefit}</span>
               </motion.div>
             ))}
           </div>
@@ -362,7 +416,7 @@ function FeatureCard({
 
         {/* Expand indicator */}
         <motion.div
-          className="flex items-center gap-2 mt-4 text-sm font-medium text-gray-400 group-hover:text-forest transition-colors"
+          className="flex items-center gap-2 mt-4 text-sm font-medium text-black/50 group-hover:text-gold transition-colors"
           animate={{ x: isExpanded ? 5 : 0 }}
         >
           <span>{isExpanded ? "Less details" : "More details"}</span>
@@ -391,53 +445,124 @@ function FeatureCard({
 // Stats banner
 function StatsBanner() {
   const stats = [
-    { value: "5", suffix: "min", label: "Setup Time" },
-    { value: "75", suffix: "%", label: "Guaranteed" },
-    { value: "24K", suffix: "+", label: "Annual Savings" },
-    { value: "340", suffix: "", label: "Trees Equivalent" },
+    { value: "5", suffix: "min", label: "Setup Time", icon: Clock },
+    { value: "75", suffix: "%", label: "Guaranteed", icon: Shield },
+    { value: "24K", suffix: "+", label: "Annual Savings", icon: TrendingUp },
+    { value: "340", suffix: "", label: "Trees Equivalent", icon: Leaf },
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="mt-16 md:mt-20"
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="mt-16 md:mt-24"
     >
-      <div className="bg-gradient-to-r from-forest via-forest to-energy-green rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-10 overflow-hidden relative">
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold rounded-full blur-3xl" />
+      {/* Main container with light elegant gradient */}
+      <div className="relative bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 lg:p-14 overflow-hidden border border-gray-200 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_70px_-15px_rgba(0,0,0,0.15)] transition-all duration-500">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Animated gradient orbs */}
+          <motion.div
+            className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-gold/20 to-amber-500/10 rounded-full blur-[100px]"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.5, 0.3],
+              x: [0, 20, 0],
+              y: [0, -20, 0],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-gradient-to-tl from-gold/10 to-gray-100/50 rounded-full blur-[120px]"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.2, 0.4, 0.2],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-gray-100/30 to-transparent rounded-full blur-[80px]"
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {/* Subtle grid pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+          {/* Top highlight line */}
+          <div className="absolute top-0 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
         </div>
 
-        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="text-center"
+              transition={{ delay: index * 0.12, duration: 0.6, ease: "easeOut" }}
+              whileHover={{ 
+                y: -10, 
+                transition: { duration: 0.3, ease: "easeOut" } 
+              }}
+              className="group relative text-center"
             >
-              <div className="flex items-baseline justify-center gap-1 mb-1">
-                <span className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white"
+              {/* Card with glass morphism on light */}
+              <div className="relative bg-white backdrop-blur-md rounded-2xl p-6 md:p-7 border border-gray-200 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,184,0,0.1)] group-hover:bg-gray-50 group-hover:border-gold/50 group-hover:shadow-[0_20px_50px_-10px_rgba(255,184,0,0.3),inset_0_1px_0_0_rgba(255,184,0,0.2)] transition-all duration-500">
+                {/* Icon container */}
+                <motion.div 
+                  className="w-14 h-14 mx-auto mb-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center group-hover:from-gold/20 group-hover:to-amber-100 transition-all duration-400 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,184,0,0.1)] border border-gray-200 group-hover:border-gold/40"
+                  whileHover={{ rotate: [0, -8, 8, 0], scale: 1.05, transition: { duration: 0.5 } }}
+                >
+                  <stat.icon className="w-7 h-7 text-gray-600 group-hover:text-gold transition-colors duration-300" />
+                </motion.div>
+
+                {/* Value */}
+                <div className="flex items-baseline justify-center gap-1 mb-3">
+                  <motion.span 
+                    className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black drop-shadow-[0_2px_10px_rgba(0,0,0,0.05)]"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.12 + 0.2, duration: 0.5 }}
+                  >
+                    {stat.value}
+                  </motion.span>
+                  <span 
+                    className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gold to-amber-500 bg-clip-text text-transparent"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {stat.suffix}
+                  </span>
+                </div>
+
+                {/* Label */}
+                <p 
+                  className="text-sm md:text-base text-gray-600 font-medium tracking-wide uppercase group-hover:text-gray-700 transition-colors duration-300" 
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  {stat.value}
-                </span>
-                <span className="text-xl md:text-2xl font-bold text-gold"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {stat.suffix}
-                </span>
+                  {stat.label}
+                </p>
+
+                {/* Bottom accent line */}
+                <motion.div 
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-gold via-amber-400 to-gold group-hover:w-3/4 transition-all duration-500 rounded-full"
+                />
+                
+                {/* Corner accents */}
+                <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-transparent group-hover:border-gold/40 rounded-tl-xl transition-all duration-500" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-transparent group-hover:border-gold/40 rounded-br-xl transition-all duration-500" />
               </div>
-              <p className="text-sm md:text-base text-white/80" style={{ fontFamily: "'Montserrat', sans-serif" }}>{stat.label}</p>
             </motion.div>
           ))}
         </div>
+
+        {/* Bottom decorative element */}
+        <div className="absolute bottom-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
     </motion.div>
   );
@@ -446,20 +571,29 @@ function StatsBanner() {
 // Progress indicator
 function ProgressIndicator({ total, current }: { total: number; current: number }) {
   return (
-    <div className="hidden md:flex items-center justify-center gap-2 mt-8">
-      {Array.from({ length: total }).map((_, i) => (
-        <motion.div
-          key={i}
-          className={cn(
-            "h-1.5 rounded-full transition-all duration-300",
-            i === current ? "w-8 bg-forest" : "w-2 bg-gray-300"
-          )}
-          animate={{
-            scale: i === current ? 1 : 0.8,
-            opacity: i === current ? 1 : 0.5
-          }}
-        />
-      ))}
+    <div className="flex items-center justify-center gap-3 mt-10">
+      <div className="flex items-center gap-3 bg-gradient-to-r from-gray-100 via-white to-gray-100 backdrop-blur-sm px-6 py-3 rounded-full shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15),inset_0_1px_0_0_rgba(255,255,255,0.8)] border border-gray-200/80">
+        {Array.from({ length: total }).map((_, i) => (
+          <motion.div
+            key={i}
+            className={cn(
+              "rounded-full transition-all duration-500 ease-out cursor-pointer",
+              i === current 
+                ? "w-10 h-3 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.4)]" 
+                : "w-3 h-3 bg-gray-300 hover:bg-gray-400 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]"
+            )}
+            animate={{
+              scale: i === current ? 1 : 0.9,
+              opacity: i === current ? 1 : 0.6
+            }}
+            transition={{
+              duration: 0.4,
+              ease: "easeOut"
+            }}
+            whileHover={{ scale: 1.15, opacity: 0.9 }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -471,78 +605,100 @@ export function BenefitsSection() {
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
 
-  // Auto-cycle through categories
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveCategory((prev) => (prev + 1) % benefitCategories.length);
-    }, 9000);
-
-    return () => clearInterval(interval);
-  }, [benefitCategories.length]);
-
+  // No auto-cycling - user clicks to change categories
   const currentCategory = benefitCategories[activeCategory];
 
   return (
     <section
       ref={sectionRef}
       id="benefits"
-      className="relative py-20 md:py-28 lg:py-32 bg-gradient-to-b from-offwhite via-white to-offwhite overflow-hidden"
+      className="relative py-14 md:py-18 lg:py-24 overflow-hidden"
+      style={{ 
+        background: "linear-gradient(180deg, #f0f6f0 0%, #fafbfa 50%, #ffffff 100%)"
+      }}
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Top gradient accent */}
         <motion.div
-          className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl"
+          className="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-b from-gold/15 to-transparent rounded-full blur-3xl"
           animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3]
+            scale: [1, 1.15, 1],
+            opacity: [0.4, 0.6, 0.4],
           }}
-          transition={{ duration: 8, repeat: Infinity }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
+        
+        {/* Bottom gradient accent */}
         <motion.div
-          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-energy-green/5 rounded-full blur-3xl"
+          className="absolute -bottom-40 right-0 w-[600px] h-[600px] bg-gradient-to-tl from-green-100/20 to-transparent rounded-full blur-3xl"
           animate={{
             scale: [1.1, 1, 1.1],
-            opacity: [0.4, 0.6, 0.4]
+            opacity: [0.3, 0.5, 0.3],
           }}
-          transition={{ duration: 10, repeat: Infinity }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        {/* Left accent */}
+        <motion.div
+          className="absolute top-1/2 -left-40 w-80 h-80 bg-gradient-to-r from-emerald-100/10 to-transparent rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Main section header */}
         <motion.div
           ref={headerRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center mb-8 md:mb-10"
         >
-          <motion.span
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={isHeaderInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-semibold mb-4"
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold/20 to-amber-100/20 text-gold rounded-full text-sm font-semibold mb-4 shadow-sm border border-gold/10"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             <Sun className="w-4 h-4" />
             Why Digital Solar
-          </motion.span>
+          </motion.div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+          <motion.h2 
+            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-3 md:mb-4"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
           >
             Benefits That{" "}
-            <span className="bg-gradient-to-r from-gold via-energy-green to-forest bg-clip-text text-transparent" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <span className="bg-gradient-to-r from-gold via-amber-500 to-gold bg-clip-text text-transparent">
               Actually Matter
             </span>
-          </h2>
+          </motion.h2>
 
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <motion.p 
+            className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed" 
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
             Traditional solar has barriers. We removed them all. Here&apos;s why thousands of Indian families are choosing Digital Solar.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Category navigation */}
@@ -558,8 +714,14 @@ export function BenefitsSection() {
           isActive={true}
         />
 
-        {/* Feature cards grid */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+        {/* Feature cards grid with unique styling */}
+        <motion.div 
+          className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+        >
           {currentCategory.features.map((feature, index) => (
             <FeatureCard
               key={`${currentCategory.id}-${index}`}
@@ -569,7 +731,7 @@ export function BenefitsSection() {
               isActive={true}
             />
           ))}
-        </div>
+        </motion.div>
 
         {/* Progress indicator */}
         <ProgressIndicator
@@ -580,30 +742,55 @@ export function BenefitsSection() {
         {/* Stats banner */}
         <StatsBanner />
 
-        {/* Bottom CTA */}
+        {/* Bottom CTA with smooth styling */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-12 md:mt-16 text-center"
+          transition={{ delay: 0.2, duration: 0.7 }}
+          className="mt-16 md:mt-24 text-center"
         >
-          <p className="text-gray-600 mb-6" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <motion.p 
+            className="text-lg text-gray-600 mb-10 tracking-wide" 
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
             Ready to experience these benefits yourself?
-          </p>
+          </motion.p>
           <Link href="/reserve">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.04, y: -4 }}
+              whileTap={{ scale: 0.96 }}
               className="inline-block"
             >
               <Button
                 variant="primary"
                 size="lg"
-                className="bg-forest hover:bg-forest-light text-white font-semibold px-8 py-6 text-lg group shadow-lg shadow-forest/25" style={{ fontFamily: "'Montserrat', sans-serif" }}
+                className="relative overflow-hidden bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-gray-900 font-semibold px-12 py-7 text-lg group shadow-[0_15px_50px_-12px_rgba(255,184,0,0.5)] hover:shadow-[0_20px_60px_-12px_rgba(255,184,0,0.6)] transition-all duration-400 rounded-2xl border border-gold/20 hover:border-gold/40" 
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                Start Your Solar Journey
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                {/* Shine effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "100%" }}
+                  transition={{ duration: 0.7 }}
+                />
+                {/* Top highlight */}
+                <div className="absolute top-0 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="relative z-10 flex items-center gap-3">
+                  Start Your Solar Journey
+                  <motion.span
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 group-hover:bg-white/30 transition-all duration-300"
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-4 h-4 text-gray-900 group-hover:translate-x-0.5 transition-all duration-300" />
+                  </motion.span>
+                </span>
               </Button>
             </motion.div>
           </Link>

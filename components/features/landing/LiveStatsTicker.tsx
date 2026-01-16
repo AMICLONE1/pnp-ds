@@ -70,14 +70,14 @@ export function LiveStatsTicker() {
     <div className="absolute bottom-0 left-0 right-0 bg-black/30 backdrop-blur-sm border-t border-white/20 py-3">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm md:text-base">
-          <div className="flex items-center gap-2 text-white">
+          <div className="flex items-center gap-2 text-black">
             <Zap className="h-4 w-4 text-gold animate-pulse" />
             <span className="font-semibold">
               ₹{formatCurrency(stats.savedToday)} saved today
             </span>
           </div>
           <div className="hidden md:block w-px h-6 bg-white/30" />
-          <div className="flex items-center gap-2 text-white">
+          <div className="flex items-center gap-2 text-black">
             <TrendingUp className="h-4 w-4 text-gold animate-pulse" />
             <span className="font-semibold">
               {formatNumber(stats.generatedToday)} kWh generated

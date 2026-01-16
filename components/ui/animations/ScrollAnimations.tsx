@@ -57,7 +57,7 @@ export function StickyScroll({
         <div className={className}>
           <div className="text-center">
             <h3 className="text-2xl font-bold">{content[0].title}</h3>
-            <p className="text-gray-600">{content[0].description}</p>
+            <p className="text-black">{content[0].description}</p>
           </div>
         </div>
       );
@@ -80,10 +80,10 @@ export function StickyScroll({
                   transition={{ duration: 0.5 }}
                   className={`transition-all ${activeIndex === index ? 'scale-100' : 'scale-95'}`}
                 >
-                  <h3 className="text-2xl md:text-3xl font-bold text-charcoal mb-2">
+                  <h3 className="text-2xl md:text-3xl font-bold text-black mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-black text-lg">
                     {item.description}
                   </p>
                 </motion.div>

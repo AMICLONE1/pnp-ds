@@ -42,7 +42,7 @@ export function SavingsCalculator({
       <CardContent className="space-y-6">
         {/* Step 1: Enter Average Bill */}
         <div>
-          <label className="block text-sm font-medium text-charcoal mb-2">
+          <label className="block text-sm font-medium text-black mb-2">
             Step 1: Enter average power bill (₹)
           </label>
           <Input
@@ -57,7 +57,7 @@ export function SavingsCalculator({
 
         {/* Step 2: Choose Savings Range */}
         <div>
-          <label className="block text-sm font-medium text-charcoal mb-2">
+          <label className="block text-sm font-medium text-black mb-2">
             Step 2: Choose savings range (%)
           </label>
           <div className="space-y-3">
@@ -89,25 +89,25 @@ export function SavingsCalculator({
         {/* Results */}
         {billAmount > 0 && (
           <div className="pt-6 border-t space-y-4">
-            <h3 className="text-xl font-semibold text-charcoal mb-4">Results</h3>
+            <h3 className="text-xl font-semibold text-black mb-4">Results</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="p-4 bg-white rounded-lg border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="h-5 w-5 text-green-600" />
+                  <TrendingUp className="h-5 w-5 text-black" />
                   <span className="text-sm font-medium text-green-700">Monthly Savings</span>
                 </div>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-black">
                   {formatCurrency(monthlySavings)}
                 </p>
               </div>
 
-              <div className="p-4 bg-forest/5 rounded-lg border border-forest/20">
+              <div className="p-4 bg-white/5 rounded-lg border border-gray-200/20">
                 <div className="flex items-center gap-2 mb-2">
-                  <Zap className="h-5 w-5 text-forest" />
-                  <span className="text-sm font-medium text-charcoal">Reserved Solar</span>
+                  <Zap className="h-5 w-5 text-black" />
+                  <span className="text-sm font-medium text-black">Reserved Solar</span>
                 </div>
-                <p className="text-2xl font-bold text-forest">
+                <p className="text-2xl font-bold text-black">
                   {reservedSolar} kW
                 </p>
               </div>
@@ -125,7 +125,7 @@ export function SavingsCalculator({
               <div className="p-4 bg-gold/10 rounded-lg border border-gold/20">
                 <div className="flex items-center gap-2 mb-2">
                   <Calendar className="h-5 w-5 text-gold" />
-                  <span className="text-sm font-medium text-charcoal">Annual Savings</span>
+                  <span className="text-sm font-medium text-black">Annual Savings</span>
                 </div>
                 <p className="text-2xl font-bold text-gold">
                   {formatCurrency(annualSavings)}
@@ -133,15 +133,15 @@ export function SavingsCalculator({
               </div>
             </div>
 
-            <div className="p-4 bg-gradient-to-br from-forest/10 to-gold/10 rounded-lg border border-forest/20">
+            <div className="p-4 bg-gradient-to-br from-white/10 to-gold/10 rounded-lg border border-gray-200/20">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <IndianRupee className="h-5 w-5 text-forest" />
-                  <span className="text-sm font-medium text-charcoal">
+                  <IndianRupee className="h-5 w-5 text-black" />
+                  <span className="text-sm font-medium text-black">
                     {yearsToCalculate} Yr Savings
                   </span>
                 </div>
-                <p className="text-2xl font-bold text-forest">
+                <p className="text-2xl font-bold text-black">
                   {formatCurrency(totalSavings)}
                 </p>
               </div>
@@ -149,8 +149,8 @@ export function SavingsCalculator({
 
             <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600">One-time Reservation Fee</span>
-                <p className="text-xl font-bold text-charcoal">
+                <span className="text-sm font-medium text-black">One-time Reservation Fee</span>
+                <p className="text-xl font-bold text-black">
                   {formatCurrency(oneTimeFee)}
                 </p>
               </div>

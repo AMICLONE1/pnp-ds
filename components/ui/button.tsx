@@ -22,17 +22,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
-    
+      "inline-flex items-center justify-center rounded-full font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent";
+
+    const hoverMix = "hover:bg-[linear-gradient(90deg,_#fff_60%,_#d1fae5_80%,_#fffbe6_100%)] hover:text-black";
+
     const variants = {
       primary:
-        "bg-forest text-white hover:bg-forest-light focus:ring-forest",
+        `bg-gold text-black ${hoverMix} focus:ring-gold`,
       secondary:
-        "bg-gold text-charcoal hover:bg-gold-light focus:ring-gold",
+        `bg-gold text-black ${hoverMix} focus:ring-gold`,
       outline:
-        "border-2 border-forest text-forest hover:bg-forest hover:text-white focus:ring-forest",
+        `border-gray-300 text-black hover:bg-gray-100 hover:text-black focus:ring-gold`,
       ghost:
-        "text-forest hover:bg-forest/10 focus:ring-forest",
+        `text-black hover:bg-gray-100 focus:ring-gold`,
     };
 
     const sizes = {

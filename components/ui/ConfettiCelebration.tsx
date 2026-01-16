@@ -205,9 +205,9 @@ export function SuccessCelebration({
               >
                 🎉
               </motion.div>
-              <h3 className="text-2xl font-bold text-charcoal mb-2">{message}</h3>
+              <h3 className="text-2xl font-bold text-black mb-2">{message}</h3>
               {subMessage && (
-                <p className="text-gray-600">{subMessage}</p>
+                <p className="text-black">{subMessage}</p>
               )}
             </motion.div>
           </motion.div>

@@ -443,7 +443,7 @@ export function FloatingNavDots({
           onClick={() => onNavigate(section.id)}
           className="group relative flex items-center"
         >
-          <span className="absolute right-8 px-3 py-1 bg-charcoal text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <span className="absolute right-8 px-3 py-1 bg-charcoal text-black text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             {section.label}
           </span>
           <motion.div
@@ -563,9 +563,9 @@ export function FeaturePill({
   className?: string;
 }) {
   const variants = {
-    default: "bg-white/10 border-white/20 text-white",
+    default: "bg-white/10 border-white/20 text-black",
     gold: "bg-gold/10 border-gold/30 text-gold",
-    green: "bg-energy-green/10 border-energy-green/30 text-energy-green",
+    green: "bg-gray-100 border-gray-300 text-black",
     blue: "bg-energy-blue/10 border-energy-blue/30 text-energy-blue",
   };
 
@@ -642,7 +642,7 @@ export function HoverRevealCard({
       {/* Content */}
       <div className="absolute inset-0 p-6 flex flex-col justify-end">
         <motion.h3
-          className="text-2xl font-heading font-bold text-white mb-2"
+          className="text-2xl font-heading font-bold text-black mb-2"
           animate={{ y: isHovered ? -10 : 0 }}
         >
           {title}

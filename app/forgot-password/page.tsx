@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 flex items-center justify-center bg-offwhite py-12 px-4">
+        <main className="flex-1 flex items-center justify-center bg-white py-12 px-4">
           <Card className="w-full max-w-md">
             <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
@@ -64,10 +64,10 @@ export default function ForgotPasswordPage() {
                   <CheckCircle className="h-12 w-12 text-green-600" />
                 </div>
               </div>
-              <h1 className="text-2xl font-heading font-bold mb-4 text-charcoal">
+              <h1 className="text-2xl font-heading font-bold mb-4 text-black">
                 Check Your Email
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-black mb-6">
                 We&apos;ve sent a password reset link to <strong>{email}</strong>.
                 Please check your inbox and follow the instructions.
               </p>
@@ -91,7 +91,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 flex items-center justify-center bg-offwhite py-12 px-4">
+      <main className="flex-1 flex items-center justify-center bg-white py-12 px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
@@ -128,9 +128,9 @@ export default function ForgotPasswordPage() {
                 Send Reset Link
               </Button>
             </form>
-            <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="mt-6 text-center text-sm text-black">
               Remember your password?{" "}
-              <Link href="/login" className="text-forest hover:underline font-medium">
+              <Link href="/login" className="text-black hover:underline font-medium">
                 Sign in
               </Link>
             </div>

@@ -34,7 +34,7 @@ const features = [
     subtitle: "Faster than your coffee break",
     description: "Most users complete signup during their morning coffee. Choose capacity, make payment, and start generating solar credits immediately. It's that simple.",
     icon: Clock,
-    color: "from-energy-green to-green-600",
+    color: "from-white to-gray-600",
     benefits: ["Instant activation", "No paperwork", "Start saving today"],
     image: "/features/quick-setup.svg"
   },
@@ -74,7 +74,7 @@ const features = [
     subtitle: "Real environmental impact",
     description: "You'll offset 7.5 tons of CO₂ annually—that's equivalent to planting 340 trees. Make a real, measurable impact on the environment while saving money.",
     icon: Leaf,
-    color: "from-forest to-forest-light",
+    color: "from-white to-gray-50",
     benefits: ["Track your impact", "Carbon certificates", "Green credentials"],
     image: "/features/environment.svg"
   },
@@ -114,7 +114,7 @@ function FeatureCard({
       <div className={cn(
         "absolute -top-4 -left-4 w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg transition-all duration-300",
         isActive 
-          ? `bg-gradient-to-br ${feature.color} text-white shadow-lg` 
+          ? `bg-gradient-to-br ${feature.color} text-black shadow-lg` 
           : "bg-gray-100 text-gray-400"
       )}>
         {feature.number}
@@ -124,7 +124,7 @@ function FeatureCard({
       <div className="pt-4">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-xl md:text-2xl font-heading font-bold text-charcoal mb-1">
+            <h3 className="text-xl md:text-2xl font-heading font-bold text-black mb-1">
               {feature.title}
             </h3>
             <p className="text-sm text-gray-500">{feature.subtitle}</p>
@@ -132,14 +132,14 @@ function FeatureCard({
           <div className={cn(
             "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300",
             isActive 
-              ? `bg-gradient-to-br ${feature.color} text-white` 
+              ? `bg-gradient-to-br ${feature.color} text-black` 
               : "bg-gray-100 text-gray-400 group-hover:bg-gray-200"
           )}>
             <feature.icon className="w-6 h-6" />
           </div>
         </div>
         
-        <p className="text-gray-600 mb-4 leading-relaxed">
+        <p className="text-black mb-4 leading-relaxed">
           {feature.description}
         </p>
         
@@ -160,9 +160,9 @@ function FeatureCard({
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-2 text-sm text-gray-600"
+                className="flex items-center gap-2 text-sm text-black"
               >
-                <CheckCircle className="w-4 h-4 text-energy-green" />
+                <CheckCircle className="w-4 h-4 text-black" />
                 {benefit}
               </motion.div>
             ))}
@@ -172,7 +172,7 @@ function FeatureCard({
         {/* Expand indicator */}
         <div className={cn(
           "flex items-center gap-1 mt-4 text-sm font-medium transition-colors",
-          isActive ? "text-forest" : "text-gray-400"
+          isActive ? "text-black" : "text-gray-400"
         )}>
           {isActive ? "Less details" : "More details"}
           <ChevronRight className={cn(
@@ -202,19 +202,19 @@ function SectionHeader() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
         transition={{ delay: 0.2 }}
-        className="inline-block px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-semibold mb-4"
+        className="inline-block px-4 py-2 bg-white/10 text-black rounded-full text-sm font-semibold mb-4"
       >
         Why Digital Solar
       </motion.span>
       
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-black mb-4">
         Benefits That{" "}
-        <span className="bg-gradient-to-r from-gold to-energy-green bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-gold to-white bg-clip-text text-transparent">
           Actually Matter
         </span>
       </h2>
       
-      <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+      <p className="text-lg text-black max-w-2xl mx-auto">
         Traditional solar has barriers. We removed them all. Here&apos;s why thousands of Indian families are choosing Digital Solar.
       </p>
     </motion.div>
@@ -228,12 +228,12 @@ export function FeaturesSection() {
   return (
     <section 
       id="benefits" 
-      className="relative py-24 md:py-32 bg-gradient-to-b from-offwhite to-white overflow-hidden"
+      className="relative py-24 md:py-32 bg-gradient-to-b from-white to-white overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-energy-green/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl" />
       </div>
       
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
@@ -259,7 +259,7 @@ export function FeaturesSection() {
           transition={{ delay: 0.4 }}
           className="mt-16 text-center"
         >
-          <p className="text-gray-600 mb-6">
+          <p className="text-black mb-6">
             Ready to experience these benefits yourself?
           </p>
           <Link href="/reserve">
@@ -271,7 +271,7 @@ export function FeaturesSection() {
               <Button
                 variant="primary"
                 size="lg"
-                className="bg-forest hover:bg-forest-light text-white font-semibold px-8 py-6 text-lg group"
+                className="bg-white hover:bg-white text-black font-semibold px-8 py-6 text-lg group"
               >
                 Start Your Solar Journey
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

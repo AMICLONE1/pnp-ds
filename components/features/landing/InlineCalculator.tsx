@@ -111,7 +111,7 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
             <div className="flex-1 w-full">
               <label 
                 htmlFor="bill-input"
-                className="block text-sm font-medium text-white/90 mb-2"
+                className="block text-sm font-medium text-black/90 mb-2"
               >
                 Enter your monthly bill (₹)
               </label>
@@ -122,12 +122,12 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                 onChange={(e) => setBillAmount(e.target.value)}
                 placeholder="2000"
                 min="0"
-                className="text-lg bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:bg-white/30 focus:border-white/50 focus-visible-ring"
+                className="text-lg bg-white/20 border-white/30 text-black placeholder:text-black/60 focus:bg-white/30 focus:border-white/50 focus-visible-ring"
                 aria-label="Monthly electricity bill amount"
               />
             </div>
             <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-white/90 mb-2">
+              <label className="block text-sm font-medium text-black/90 mb-2">
                 You&apos;ll save
               </label>
               <motion.div
@@ -146,7 +146,7 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0 }}
-                      className="absolute -top-2 -right-2 bg-energy-green text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1"
+                      className="absolute -top-2 -right-2 bg-white text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1"
                     >
                       <Sparkles className="w-3 h-3" />
                       Great!
@@ -166,13 +166,13 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="flex items-center gap-3 bg-gradient-to-r from-gold/20 to-energy-green/20 rounded-xl p-4 border border-gold/30">
+                <div className="flex items-center gap-3 bg-gradient-to-r from-gold/20 to-white/20 rounded-xl p-4 border border-gold/30">
                   <PartyPopper className="w-6 h-6 text-gold flex-shrink-0" />
                   <div>
-                    <p className="text-white font-semibold">
+                    <p className="text-black font-semibold">
                       🎉 That&apos;s like getting {Math.round(annualSavings / (bill * 12) * 12)} months of FREE power every year!
                     </p>
-                    <p className="text-white/70 text-sm">You&apos;re in the top 10% of savers</p>
+                    <p className="text-black/70 text-sm">You&apos;re in the top 10% of savers</p>
                   </div>
                 </div>
               </motion.div>
@@ -190,14 +190,14 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-gold to-gold-light flex items-center justify-end pr-2"
                 >
                   {progressWidth > 15 && (
-                    <span className="text-sm font-semibold text-charcoal">
+                    <span className="text-sm font-semibold text-black">
                       Saved: ₹{displaySavings}
                     </span>
                   )}
                 </motion.div>
                 {progressWidth < 85 && (
                   <div className="absolute inset-y-0 right-0 flex items-center pl-2">
-                    <span className="text-sm font-medium text-white/70">
+                    <span className="text-sm font-medium text-black/70">
                       Remaining: ₹{Math.round(remaining)}
                     </span>
                   </div>
@@ -214,8 +214,8 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                   <DollarSign className="h-5 w-5 text-gold" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/70">Annual Savings</p>
-                  <p className="text-lg font-bold text-white">
+                  <p className="text-xs text-black/70">Annual Savings</p>
+                  <p className="text-lg font-bold text-black">
                     ₹{formatNumber(annualSavings)}
                   </p>
                 </div>
@@ -225,8 +225,8 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                   <Leaf className="h-5 w-5 text-success" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/70">CO₂ Offset</p>
-                  <p className="text-lg font-bold text-white">
+                  <p className="text-xs text-black/70">CO₂ Offset</p>
+                  <p className="text-lg font-bold text-black">
                     {co2Offset.toFixed(1)} tons/year
                   </p>
                 </div>
@@ -236,14 +236,14 @@ export function InlineCalculator({ onCalculate }: InlineCalculatorProps) {
                   <TrendingUp className="h-5 w-5 text-[#00BCD4]" />
                 </div>
                 <div>
-                  <p className="text-xs text-white/70">Savings Rate</p>
-                  <p className="text-lg font-bold text-white">{savingsPercent}%</p>
+                  <p className="text-xs text-black/70">Savings Rate</p>
+                  <p className="text-lg font-bold text-black">{savingsPercent}%</p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="text-sm text-white/80 text-center pt-2">
+          <div className="text-sm text-black/80 text-center pt-2">
             *Based on {savingsPercent}% savings with Digital Solar
           </div>
         </div>

@@ -22,7 +22,7 @@ import {
   Calendar,
   CreditCard
 } from "lucide-react";
-import { BillPayment } from "@/components/features/bills/BillPayment";
+import { BillsSkeleton } from "@/components/ui/skeletons/BillsSkeleton";
 
 export const dynamic = 'force-dynamic';
 
@@ -57,7 +57,10 @@ export default function BillsPage() {
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     } finally {
-      setLoading(false);
+      // Show skeleton for minimum 10 seconds
+      setTimeout(() => {
+        setLoading(false);
+      }, 10000);
     }
   };
 
@@ -130,7 +133,7 @@ export default function BillsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-offwhite">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         <div className="max-w-4xl mx-auto">
@@ -143,14 +146,14 @@ export default function BillsPage() {
           >
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-xl bg-forest/10">
-                  <Receipt className="h-6 w-6 text-forest" />
+                <div className="p-2 rounded-xl bg-white/10">
+                  <Receipt className="h-6 w-6 text-black" />
                 </div>
-                <h1 className="text-4xl font-heading font-bold text-charcoal">
+                <h1 className="text-4xl font-heading font-bold text-black">
                   Your Bills
                 </h1>
               </div>
-              <p className="text-gray-600">
+              <p className="text-black">
                 View your electricity bills and applied solar credits
               </p>
             </div>
@@ -189,7 +192,7 @@ export default function BillsPage() {
                 <form onSubmit={handleManualSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                      <label className="block text-sm font-medium text-black mb-1.5">
                         Bill Number *
                       </label>
                       <input
@@ -198,13 +201,13 @@ export default function BillsPage() {
                         onChange={(e) =>
                           setManualFormData({ ...manualFormData, bill_number: e.target.value })
                         }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
+                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
                         required
                         placeholder="Enter bill number"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                      <label className="block text-sm font-medium text-black mb-1.5">
                         Amount (₹) *
                       </label>
                       <input
@@ -214,14 +217,14 @@ export default function BillsPage() {
                         onChange={(e) =>
                           setManualFormData({ ...manualFormData, amount: e.target.value })
                         }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
+                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
                         required
                         placeholder="0.00"
                         min="0"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                      <label className="block text-sm font-medium text-black mb-1.5">
                         Due Date *
                       </label>
                       <input
@@ -230,12 +233,12 @@ export default function BillsPage() {
                         onChange={(e) =>
                           setManualFormData({ ...manualFormData, due_date: e.target.value })
                         }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
+                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                      <label className="block text-sm font-medium text-black mb-1.5">
                         DISCOM *
                       </label>
                       <input
@@ -244,13 +247,13 @@ export default function BillsPage() {
                         onChange={(e) =>
                           setManualFormData({ ...manualFormData, discom: e.target.value })
                         }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
+                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
                         required
                         placeholder="e.g., BSES Rajdhani"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                      <label className="block text-sm font-medium text-black mb-1.5">
                         Bill Month
                       </label>
                       <input
@@ -264,11 +267,11 @@ export default function BillsPage() {
                             bill_month: parseInt(e.target.value),
                           })
                         }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
+                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-1.5">
+                      <label className="block text-sm font-medium text-black mb-1.5">
                         Bill Year
                       </label>
                       <input
@@ -282,7 +285,7 @@ export default function BillsPage() {
                             bill_year: parseInt(e.target.value),
                           })
                         }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
+                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -324,19 +327,7 @@ export default function BillsPage() {
           )}
 
           {loading ? (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-16"
-            >
-              <div className="relative inline-flex">
-                <div className="w-16 h-16 rounded-full border-4 border-forest/20 border-t-forest animate-spin" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Receipt className="h-6 w-6 text-forest/60" />
-                </div>
-              </div>
-              <p className="mt-4 text-gray-500 font-medium">Loading your bills...</p>
-            </motion.div>
+            <BillsSkeleton />
           ) : bills.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -346,10 +337,10 @@ export default function BillsPage() {
               <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   {/* Decorative Header */}
-                  <div className="relative bg-gradient-to-br from-forest via-forest to-forest-light p-8 text-center">
+                  <div className="relative bg-gradient-to-br from-white via-white to-white-light p-8 text-center">
                     <div className="absolute inset-0 overflow-hidden">
                       <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/10 rounded-full blur-3xl" />
-                      <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-energy-green/10 rounded-full blur-2xl" />
+                      <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
                     </div>
                     <motion.div
                       initial={{ scale: 0 }}
@@ -357,19 +348,19 @@ export default function BillsPage() {
                       transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
                       className="relative inline-flex p-4 rounded-2xl bg-white/10 backdrop-blur-sm mb-4"
                     >
-                      <FileText className="h-10 w-10 text-white" />
+                      <FileText className="h-10 w-10 text-black" />
                       <motion.div
                         animate={{ rotate: [0, 10, -10, 0] }}
                         transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                         className="absolute -top-1 -right-1 p-1 rounded-full bg-gold"
                       >
-                        <Sparkles className="h-3 w-3 text-charcoal" />
+                        <Sparkles className="h-3 w-3 text-black" />
                       </motion.div>
                     </motion.div>
-                    <h3 className="text-2xl font-heading font-bold text-white mb-2">
+                    <h3 className="text-2xl font-heading font-bold text-black mb-2">
                       No Bills Yet
                     </h3>
-                    <p className="text-white/80 max-w-md mx-auto">
+                    <p className="text-black/80 max-w-md mx-auto">
                       Connect your utility to automatically track bills and apply solar credits
                     </p>
                   </div>
@@ -387,12 +378,12 @@ export default function BillsPage() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.4 + index * 0.1 }}
-                          className="p-4 rounded-xl bg-gray-50 border border-gray-100 text-center group hover:bg-forest/5 hover:border-forest/20 transition-all duration-300"
+                          className="p-4 rounded-xl bg-white border border-gray-100 text-center group hover:bg-white/5 hover:border-gray-200/20 transition-all duration-300"
                         >
-                          <div className="inline-flex p-2 rounded-lg bg-forest/10 mb-3 group-hover:bg-forest/20 transition-colors">
-                            <feature.icon className="h-5 w-5 text-forest" />
+                          <div className="inline-flex p-2 rounded-lg bg-white/10 mb-3 group-hover:bg-white/20 transition-colors">
+                            <feature.icon className="h-5 w-5 text-black" />
                           </div>
-                          <h4 className="font-semibold text-charcoal text-sm mb-1">{feature.title}</h4>
+                          <h4 className="font-semibold text-black text-sm mb-1">{feature.title}</h4>
                           <p className="text-xs text-gray-500">{feature.desc}</p>
                         </motion.div>
                       ))}
@@ -445,7 +436,7 @@ export default function BillsPage() {
                       <stat.icon className={`h-4 w-4 ${stat.isGreen ? 'text-energy-green' : 'text-gray-400'}`} />
                       <span className="text-xs text-gray-500">{stat.label}</span>
                     </div>
-                    <p className={`text-xl font-bold ${stat.isGreen ? 'text-energy-green' : 'text-charcoal'}`}>
+                    <p className={`text-xl font-bold ${stat.isGreen ? 'text-energy-green' : 'text-black'}`}>
                       {stat.value}
                     </p>
                   </motion.div>
@@ -487,7 +478,7 @@ export default function BillsPage() {
                             }`} />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-charcoal">{bill.bill_number}</h3>
+                            <h3 className="font-semibold text-black">{bill.bill_number}</h3>
                             <p className="text-xs text-gray-500">
                               {bill.bill_month && bill.bill_year
                                 ? new Date(bill.bill_year, bill.bill_month - 1).toLocaleDateString(
@@ -534,7 +525,7 @@ export default function BillsPage() {
                         
                         <div className="space-y-3">
                           <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Bill Amount</span>
+                            <span className="text-black">Bill Amount</span>
                             <span className="font-medium">{formatCurrency(Number(bill.amount))}</span>
                           </div>
                           {Number(bill.credits_applied || 0) > 0 && (
@@ -553,8 +544,8 @@ export default function BillsPage() {
                             </motion.div>
                           )}
                           <div className="pt-3 border-t border-dashed flex justify-between items-center">
-                            <span className="font-semibold text-charcoal">Final Amount</span>
-                            <span className="font-bold text-2xl text-charcoal">
+                            <span className="font-semibold text-black">Final Amount</span>
+                            <span className="font-bold text-2xl text-black">
                               {formatCurrency(
                                 Number(bill.final_amount || bill.amount) -
                                   Number(bill.credits_applied || 0)

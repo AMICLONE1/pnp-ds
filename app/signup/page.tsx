@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Header } from "@/components/layout/header";
+import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import { 
   Sun, 
@@ -92,14 +92,14 @@ function SignupContent() {
     
     if (strength <= 2) return { level: strength, text: "Weak", color: "bg-red-500" };
     if (strength <= 3) return { level: strength, text: "Medium", color: "bg-amber-500" };
-    return { level: strength, text: "Strong", color: "bg-energy-green" };
+    return { level: strength, text: "Strong", color: "bg-white" };
   };
 
   const passwordStrength = getPasswordStrength(password);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <LandingHeader />
       <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-offwhite via-white to-gold/5 pt-28 pb-12 px-4">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
           {/* Left Side - Benefits */}
@@ -120,21 +120,21 @@ function SignupContent() {
                   <Gift className="h-4 w-4" />
                   Free to join • No credit card required
                 </motion.div>
-                <h1 className="text-4xl font-heading font-bold text-charcoal mb-3">
+                <h1 className="text-4xl font-heading font-bold text-black mb-3">
                   Start your <span className="text-gold">solar savings</span> journey
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-black">
                   Join 10,000+ families already saving on their electricity bills with PowerNetPro's digital solar platform.
                 </p>
               </div>
 
               {/* What you get */}
               <div className="space-y-3">
-                <p className="text-sm font-semibold text-charcoal">What you'll get:</p>
+                <p className="text-sm font-semibold text-black">What you'll get:</p>
                 {[
                   { icon: TrendingDown, text: "Save up to 30% on electricity bills", color: "text-energy-green" },
                   { icon: Zap, text: "Instant solar credits without installation", color: "text-gold" },
-                  { icon: Shield, text: "No rooftop needed, no maintenance hassle", color: "text-forest" },
+                  { icon: Shield, text: "No rooftop needed, no maintenance hassle", color: "text-black" },
                   { icon: CheckCircle, text: "Real-time dashboard to track savings", color: "text-blue-500" },
                 ].map((item, index) => (
                   <motion.div
@@ -147,7 +147,7 @@ function SignupContent() {
                     <div className={`p-1 rounded-full bg-gray-100`}>
                       <item.icon className={`h-4 w-4 ${item.color}`} />
                     </div>
-                    <span className="text-gray-700">{item.text}</span>
+                    <span className="text-black">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -160,7 +160,7 @@ function SignupContent() {
                 className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-forest to-forest-light flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-white to-white-light flex items-center justify-center text-black font-bold text-lg">
                     R
                   </div>
                   <div className="flex-1">
@@ -171,10 +171,10 @@ function SignupContent() {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-gray-600 text-sm italic mb-2">
+                    <p className="text-black text-sm italic mb-2">
                       "Saved ₹2,400 in just the first month! The signup was quick and I started seeing credits on my bill immediately."
                     </p>
-                    <p className="text-charcoal font-semibold text-sm">Rahul M.</p>
+                    <p className="text-black font-semibold text-sm">Rahul M.</p>
                     <p className="text-gray-400 text-xs">Bangalore</p>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ function SignupContent() {
               <div className="bg-gradient-to-br from-gold via-gold to-gold-light p-8 text-center relative overflow-hidden">
                 <div className="absolute inset-0 overflow-hidden">
                   <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-forest/10 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
                 </div>
                 <motion.div
                   initial={{ scale: 0 }}
@@ -201,13 +201,13 @@ function SignupContent() {
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
                   className="relative inline-flex p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-4"
                 >
-                  <Sun className="h-10 w-10 text-charcoal" />
+                  <Sun className="h-10 w-10 text-black" />
                 </motion.div>
                 <motion.h2
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="relative text-2xl font-heading font-bold text-charcoal"
+                  className="relative text-2xl font-heading font-bold text-black"
                 >
                   Create Account
                 </motion.h2>
@@ -215,7 +215,7 @@ function SignupContent() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="relative text-charcoal/70 text-sm mt-1"
+                  className="relative text-black/70 text-sm mt-1"
                 >
                   Join PowerNetPro and start saving today
                 </motion.p>
@@ -224,8 +224,8 @@ function SignupContent() {
               <CardContent className="p-6">
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                      <User className="h-4 w-4 text-forest" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                      <User className="h-4 w-4 text-black" />
                       Full Name
                     </label>
                     <Input
@@ -241,8 +241,8 @@ function SignupContent() {
                     />
                   </div>
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                      <Mail className="h-4 w-4 text-forest" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                      <Mail className="h-4 w-4 text-black" />
                       Email Address
                     </label>
                     <Input
@@ -257,8 +257,8 @@ function SignupContent() {
                     />
                   </div>
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                      <Lock className="h-4 w-4 text-forest" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                      <Lock className="h-4 w-4 text-black" />
                       Password
                     </label>
                     <Input
@@ -292,8 +292,8 @@ function SignupContent() {
                     )}
                   </div>
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                      <Lock className="h-4 w-4 text-forest" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                      <Lock className="h-4 w-4 text-black" />
                       Confirm Password
                     </label>
                     <Input
@@ -351,16 +351,16 @@ function SignupContent() {
 
                   <p className="text-xs text-center text-gray-400">
                     By creating an account, you agree to our{" "}
-                    <Link href="/terms" className="text-forest hover:underline">Terms</Link>
+                    <Link href="/terms" className="text-black hover:underline">Terms</Link>
                     {" "}and{" "}
-                    <Link href="/privacy" className="text-forest hover:underline">Privacy Policy</Link>
+                    <Link href="/privacy" className="text-black hover:underline">Privacy Policy</Link>
                   </p>
                 </form>
 
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <p className="text-center text-sm text-gray-600">
+                  <p className="text-center text-sm text-black">
                     Already have an account?{" "}
-                    <Link href="/login" className="text-forest hover:underline font-semibold">
+                    <Link href="/login" className="text-black hover:underline font-semibold">
                       Sign in
                     </Link>
                   </p>
@@ -376,7 +376,7 @@ function SignupContent() {
               className="lg:hidden flex items-center justify-center gap-4 mt-6 text-xs text-gray-500"
             >
               <div className="flex items-center gap-1">
-                <Shield className="h-3.5 w-3.5 text-forest" />
+                <Shield className="h-3.5 w-3.5 text-black" />
                 Free Forever
               </div>
               <div className="w-1 h-1 rounded-full bg-gray-300" />
@@ -399,10 +399,10 @@ export default function SignupPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex flex-col">
-        <Header />
+        <LandingHeader />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
           </div>
         </main>
       </div>

@@ -209,12 +209,13 @@ export function StatsSection() {
     <section
       id="stats-section"
       ref={ref}
-      className="relative py-24 md:py-32 bg-gradient-to-b from-offwhite to-white overflow-hidden"
+      className="relative py-14 md:py-18 overflow-hidden"
+      style={{ backgroundColor: "#f0f6f0" }}
     >
       {/* Background patterns */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.02]">
+        <div className="absolute inset-0 opacity-[0.03]">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="stats-grid" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -225,63 +226,20 @@ export function StatsSection() {
           </svg>
         </div>
 
-        {/* Decorative blurs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-energy-green/5 rounded-full blur-3xl" />
+        {/* Decorative blurs with adjusted colors for the new background */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/20 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        {/* Header */}
+        {/* Top CTA banner */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="mb-12 max-w-4xl mx-auto"
         >
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <motion.span
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-              transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-2 bg-energy-green/10 text-energy-green rounded-full text-sm font-semibold"
-            >
-              Real Impact
-            </motion.span>
-            <LiveIndicator />
-          </div>
-
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-          >
-            Trusted by{" "}
-            <span className="bg-gradient-to-r from-forest to-energy-green bg-clip-text text-transparent">
-              Thousands
-            </span>
-          </h2>
-
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-
-          >
-            Join India&apos;s fastest-growing solar community. Real numbers, real impact, real savings.
-          </p>
-        </motion.div>
-
-        {/* Stats Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {stats.map((stat, index) => (
-            <StatCard key={stat.label} stat={stat} index={index} />
-          ))}
-        </div>
-
-        {/* Bottom banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ delay: 0.6 }}
-          className="mt-16 max-w-4xl mx-auto"
-        >
-          <div className="relative p-6 md:p-8 rounded-2xl bg-gradient-to-r from-forest to-forest-light overflow-hidden">
+          <div className="relative p-5 md:p-6 rounded-2xl bg-gradient-to-r from-forest to-forest-light overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10">
               <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -317,6 +275,49 @@ export function StatsSection() {
             </div>
           </div>
         </motion.div>
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-center mb-16"
+        >
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+              transition={{ delay: 0.4 }}
+              className="inline-block px-4 py-2 bg-energy-green/10 text-energy-green rounded-full text-sm font-semibold"
+            >
+              Real Impact
+            </motion.span>
+            <LiveIndicator />
+          </div>
+
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
+            Trusted by{" "}
+            <span className="bg-gradient-to-r from-forest to-energy-green bg-clip-text text-transparent">
+              Thousands
+            </span>
+          </h2>
+
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+
+          >
+            Join India&apos;s fastest-growing solar community. Real numbers, real impact, real savings.
+          </p>
+        </motion.div>
+
+        {/* Stats Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {stats.map((stat, index) => (
+            <StatCard key={stat.label} stat={stat} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );

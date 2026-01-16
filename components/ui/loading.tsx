@@ -6,7 +6,7 @@ export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   };
 
   return (
-    <div className={`inline-block animate-spin rounded-full border-b-2 border-forest ${sizes[size]}`} />
+    <div className={`inline-block animate-spin rounded-full border-b-2 border-gray-200 ${sizes[size]}`} />
   );
 }
 
@@ -14,8 +14,8 @@ export function LoadingPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-offwhite">
       <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-forest mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-200 mb-4"></div>
+        <p className="text-black">Loading...</p>
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable instrumentation for global error suppression
+  experimental: {
+    instrumentationHook: true,
+  },
   images: {
     domains: ['kmwinrwqavqvclnevyxp.supabase.co'],
     formats: ['image/avif', 'image/webp'],

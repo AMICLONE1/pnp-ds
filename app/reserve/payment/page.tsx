@@ -199,7 +199,7 @@ function PaymentContent() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
           </div>
         </main>
       </div>
@@ -213,7 +213,7 @@ function PaymentContent() {
         <div className="max-w-2xl mx-auto">
           <Link
             href="/reserve"
-            className="inline-flex items-center text-forest hover:underline mb-6"
+            className="inline-flex items-center text-black hover:underline mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Projects
@@ -229,28 +229,28 @@ function PaymentContent() {
             <CardContent className="space-y-6">
               {/* Order Summary */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg text-charcoal">Order Summary</h3>
-                <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-semibold text-lg text-black">Order Summary</h3>
+                <div className="space-y-3 p-4 bg-white rounded-lg">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Project</span>
+                    <span className="text-black">Project</span>
                     <span className="font-medium">{project.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Location</span>
+                    <span className="text-black">Location</span>
                     <span className="font-medium">{project.location}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Capacity</span>
+                    <span className="text-black">Capacity</span>
                     <span className="font-medium">{capacity} kW</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Monthly Fee</span>
+                    <span className="text-black">Monthly Fee</span>
                     <span className="font-medium">{formatCurrency(amount)}</span>
                   </div>
                   <div className="pt-3 border-t">
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span className="text-forest">{formatCurrency(amount)}</span>
+                      <span className="text-black">{formatCurrency(amount)}</span>
                     </div>
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function PaymentPage() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
           </div>
         </main>
       </div>
