@@ -9,7 +9,6 @@ import { useState } from "react";
 const footerLinks = {
   product: [
     { label: "How It Works", href: "/#how-it-works" },
-    { label: "Pricing", href: "/reserve#pricing" },
     { label: "Solar Projects", href: "/reserve" },
     { label: "Dashboard", href: "/dashboard" },
     { label: "Bills & Payments", href: "/bills" },
@@ -19,7 +18,6 @@ const footerLinks = {
     { label: "Help Center", href: "/help" },
     { label: "Contact", href: "/contact" },
     { label: "Refund Policy", href: "/refund" },
-    { label: "Careers", href: "/careers", badge: "Hiring" },
   ],
   resources: [
     { label: "Solar Calculator", href: "/reserve" },
@@ -141,19 +139,19 @@ export function Footer() {
 
             {/* Contact Info */}
             <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3 mb-6">
-              <a href="mailto:hello@powernetpro.in" className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-sm group">
+              <a href="mailto:omkarkolhe912@gmail.com" className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-sm group">
                 <Mail className="w-4 h-4 text-gold" />
-                hello@powernetpro.in
+                omkarkolhe912@gmail.com
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <a href="tel:+918001234567" className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-sm group">
+              <a href="tel:+918180861415" className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-sm group">
                 <Phone className="w-4 h-4 text-gold" />
-                +91 800 123 4567
+                +91 8180861415
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <div className="flex items-start gap-3 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 text-gold mt-0.5" />
-                <span>Bangalore, Karnataka, India</span>
+                <span>Kothrud, Pune, Maharashtra, Bharat</span>
               </div>
             </div>
 
@@ -234,7 +232,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal Links */}
+          {/* Legal Links - Always visible to everyone (public, no authentication required) */}
           <div>
             <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Legal</h3>
             <ul style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3">

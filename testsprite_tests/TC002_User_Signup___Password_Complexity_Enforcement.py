@@ -86,7 +86,7 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # -> Clear and re-enter Full Name field with 'John Doe' to resolve validation error, then submit the form again to test password validation error.
+        # -> Clear and re-enter Full Name field with 'Enter your name' to resolve validation error, then submit the form again to test password validation error.
         frame = context.pages[-1]
         # Clear Full Name field to remove validation error
         elem = frame.locator('xpath=html/body/div/main/div/div[2]/form/div/input').nth(0)
@@ -96,7 +96,7 @@ async def run_test():
         frame = context.pages[-1]
         # Re-enter Full Name to fix validation error
         elem = frame.locator('xpath=html/body/div/main/div/div[2]/form/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('John Doe')
+        await page.wait_for_timeout(3000); await elem.fill('Enter your name')
         
 
         frame = context.pages[-1]

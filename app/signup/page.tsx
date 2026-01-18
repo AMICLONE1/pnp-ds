@@ -142,7 +142,7 @@ function SignupContent() {
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-charcoal">What you'll get:</p>
                 {[
-                  { icon: TrendingDown, text: "Save up to 30% on electricity bills", color: "text-energy-green" },
+                  { icon: TrendingDown, text: "Save up to 100% on electricity bills", color: "text-energy-green" },
                   { icon: Zap, text: "Instant solar credits without installation", color: "text-gold" },
                   { icon: Shield, text: "No rooftop needed, no maintenance hassle", color: "text-forest" },
                   { icon: CheckCircle, text: "Real-time dashboard to track savings", color: "text-blue-500" },
@@ -240,7 +240,7 @@ function SignupContent() {
                     </label>
                     <Input
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="Enter your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
@@ -347,33 +347,38 @@ function SignupContent() {
                     )}
                   </AnimatePresence>
 
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    className="w-full h-12 rounded-xl group"
-                    isLoading={loading}
+                  {/* Premium KYC Option - Moved Above Button */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="p-5 rounded-2xl bg-gradient-to-br from-amber-50 via-amber-50/80 to-yellow-50 border-2 border-amber-200/60 shadow-lg shadow-amber-100/50 relative overflow-hidden"
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Create Account
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-
-                  {/* KYC Option */}
-                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
-                    <div className="flex items-start gap-3">
-                      <div className="p-1.5 rounded-lg bg-amber-100">
-                        <BadgeCheck className="h-4 w-4 text-amber-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-charcoal mb-1">
-                          Complete KYC Now
+                    {/* Decorative background elements */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100/30 rounded-full blur-3xl -mr-16 -mt-16" />
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-100/30 rounded-full blur-2xl -ml-12 -mb-12" />
+                    
+                    <div className="relative flex items-start gap-4">
+                      <motion.div
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className="p-2.5 rounded-xl bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-300/50 shadow-md shrink-0"
+                      >
+                        <BadgeCheck className="h-5 w-5 text-amber-700" />
+                      </motion.div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <h3 className="text-base font-bold text-charcoal">
+                            Complete KYC Verification
+                          </h3>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-200/60 text-amber-800 text-[10px] font-semibold uppercase tracking-wide">
+                            Recommended
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-700 mb-4 leading-relaxed">
+                          Verify your identity now to unlock all features, faster processing, and enhanced account security.
                         </p>
-                        <p className="text-xs text-gray-600 mb-3">
-                          Verify your identity to unlock all features and faster processing
-                        </p>
-                        <div className="flex gap-2">
-                          <label className="flex-1">
+                        <div className="flex gap-2.5">
+                          <label className="flex-1 group cursor-pointer">
                             <input
                               type="radio"
                               name="kyc-option"
@@ -382,16 +387,20 @@ function SignupContent() {
                               onChange={() => setSkipKYC(false)}
                               className="sr-only"
                             />
-                            <div className={`w-full h-9 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
-                              !skipKYC 
-                                ? "border-forest bg-forest/5 text-forest" 
-                                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                            }`}>
-                              <BadgeCheck className="h-3.5 w-3.5 mr-1.5" />
-                              <span className="text-xs font-medium">Complete KYC</span>
-                            </div>
+                            <motion.div
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              className={`w-full h-11 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                                !skipKYC 
+                                  ? "border-forest bg-gradient-to-r from-forest to-forest-light text-white shadow-md shadow-forest/30" 
+                                  : "border-gray-300 bg-white text-gray-700 hover:border-forest/50 hover:bg-forest/5"
+                              }`}
+                            >
+                              <BadgeCheck className={`h-4 w-4 mr-2 ${!skipKYC ? "text-white" : "text-forest"}`} />
+                              <span className="text-sm font-semibold">Complete KYC</span>
+                            </motion.div>
                           </label>
-                          <label className="flex-1">
+                          <label className="flex-1 group cursor-pointer">
                             <input
                               type="radio"
                               name="kyc-option"
@@ -400,18 +409,48 @@ function SignupContent() {
                               onChange={() => setSkipKYC(true)}
                               className="sr-only"
                             />
-                            <div className={`w-full h-9 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
-                              skipKYC 
-                                ? "border-forest bg-forest/5 text-forest" 
-                                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                            }`}>
-                              <span className="text-xs font-medium">Do it later</span>
-                            </div>
+                            <motion.div
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              className={`w-full h-11 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                                skipKYC 
+                                  ? "border-forest bg-gradient-to-r from-forest to-forest-light text-white shadow-md shadow-forest/30" 
+                                  : "border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50"
+                              }`}
+                            >
+                              <span className="text-sm font-semibold">Do it later</span>
+                            </motion.div>
                           </label>
                         </div>
+                        {!skipKYC && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="mt-3 pt-3 border-t border-amber-200/60"
+                          >
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="h-3.5 w-3.5 text-forest mt-0.5 shrink-0" />
+                              <p className="text-xs text-gray-600 leading-relaxed">
+                                <span className="font-semibold text-charcoal">Benefits:</span> Instant account activation, priority support, higher transaction limits, and access to exclusive features.
+                              </p>
+                            </div>
+                          </motion.div>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="w-full h-12 rounded-xl group mt-1"
+                    isLoading={loading}
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Create Account
+                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
 
                   <p className="text-xs text-center text-gray-400">
                     By creating an account, you agree to our{" "}

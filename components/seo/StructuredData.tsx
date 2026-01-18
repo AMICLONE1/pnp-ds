@@ -8,8 +8,13 @@ export function StructuredData() {
     description: 'Digital solar platform enabling community solar participation across India',
     address: {
       '@type': 'PostalAddress',
+      streetAddress: 'Kothrud',
+      addressLocality: 'Pune',
+      addressRegion: 'Maharashtra',
       addressCountry: 'IN',
     },
+    email: 'omkarkolhe912@gmail.com',
+    telephone: '+918180861415',
     sameAs: [
       'https://twitter.com/powernetpro',
       'https://linkedin.com/company/powernetpro',
@@ -18,6 +23,8 @@ export function StructuredData() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
+      email: 'omkarkolhe912@gmail.com',
+      telephone: '+918180861415',
       areaServed: 'IN',
       availableLanguage: ['English', 'Hindi'],
     },

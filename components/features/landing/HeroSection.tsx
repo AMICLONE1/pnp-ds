@@ -317,8 +317,10 @@ function InteractiveSavingsCard() {
   const [isBillFocused, setIsBillFocused] = useState(false);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
+  const [billInputValue, setBillInputValue] = useState("2500");
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Memoize currency formatter (expensive to create)
   const currencyFormatter = useMemo(() =>
@@ -396,18 +398,45 @@ function InteractiveSavingsCard() {
     setRotateY(0);
   }, []);
 
+  // Handle bill input change - fix the "0100" issue
+  const handleBillChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Allow empty string for better UX
+    if (value === "") {
+      setBillInputValue("");
+      setAvgBill(0);
+      return;
+    }
+    
+    // Remove leading zeros and parse
+    const numValue = parseInt(value.replace(/^0+/, "") || "0", 10);
+    if (!isNaN(numValue) && numValue >= 0 && numValue <= 100000) {
+      setBillInputValue(numValue.toString());
+      setAvgBill(numValue);
+    }
+  }, []);
+
+  // Handle bill input blur - ensure valid value
+  const handleBillBlur = useCallback(() => {
+    setIsBillFocused(false);
+    if (avgBill === 0 || billInputValue === "") {
+      setBillInputValue("2500");
+      setAvgBill(2500);
+    }
+  }, [avgBill, billInputValue]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1, duration: 0.6, ease: "easeOut" }}
-      className="relative max-w-sm mx-auto"
+      className="relative w-full max-w-[420px]"
     >
-      {/* Subtle glow */}
+      {/* Premium dark glow effect */}
       <div
-        className="absolute -inset-1 rounded-2xl opacity-40 pointer-events-none"
+        className="absolute -inset-0.5 rounded-2xl opacity-60 pointer-events-none"
         style={{
-          background: "linear-gradient(135deg, rgba(47,128,237,0.25) 0%, rgba(39,174,96,0.25) 100%)",
+          background: "linear-gradient(135deg, rgba(242,201,76,0.2) 0%, rgba(39,174,96,0.2) 50%, rgba(47,128,237,0.2) 100%)",
           filter: "blur(20px)",
         }}
       />
@@ -417,81 +446,94 @@ function InteractiveSavingsCard() {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
-          transform: `perspective(1000px) rotateX(${rotateX * 0.3}deg) rotateY(${rotateY * 0.3}deg)`,
+          transform: `perspective(1000px) rotateX(${rotateX * 0.1}deg) rotateY(${rotateY * 0.1}deg)`,
         }}
-        className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl border border-white/20 p-5 overflow-hidden transition-transform duration-150"
+        className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-4 overflow-hidden transition-all duration-300 shadow-2xl"
       >
-        {/* Card shine effect */}
+        {/* Premium dark card shine effect */}
         <div
-          className="absolute inset-0 opacity-20 pointer-events-none"
+          className="absolute inset-0 opacity-20 pointer-events-none transition-opacity duration-300"
           style={{
-            background: `radial-gradient(circle at ${50 + rotateY * 3}% ${50 - rotateX * 3}%, rgba(255,255,255,0.15) 0%, transparent 60%)`,
+            background: `radial-gradient(circle at ${50 + rotateY * 2}% ${50 - rotateX * 2}%, rgba(242,201,76,0.15) 0%, transparent 70%)`,
           }}
         />
+        
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-energy-green/10 pointer-events-none" />
 
-        {/* Project Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2.5">
+        {/* Premium Dark Project Header */}
+        <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-700/50 relative z-10">
+          <div className="flex items-center gap-2">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-                <Sun className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-gold via-gold-light to-amber-500 flex items-center justify-center shadow-lg shadow-gold/40">
+                <Sun className="w-4.5 h-4.5 text-white" />
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-eco rounded-full border-2 border-slate-black" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-energy-green rounded-full border-2 border-slate-900 shadow-md" />
             </div>
             <div>
               <p className="text-white font-bold text-sm">Vedvyas</p>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-solar font-medium">100 kW</span>
-                <span className="text-[8px] px-1.5 py-0.5 rounded bg-eco/20 text-eco font-medium">LIVE</span>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-[10px] text-gold font-semibold">100 kW</span>
+                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-energy-green/30 text-energy-green font-medium border border-energy-green/40">LIVE</span>
               </div>
             </div>
           </div>
-          <div className="text-right bg-white/5 rounded-lg px-2.5 py-1.5">
-            <p className="text-[8px] text-white/40 uppercase tracking-wide">Credit Rate</p>
-            <p className="text-solar font-bold text-sm">₹7<span className="text-[9px] text-white/40">/unit</span></p>
+          <div className="text-right bg-slate-800/60 backdrop-blur-sm rounded-lg px-2.5 py-1.5 border border-slate-700/50">
+            <p className="text-[8px] text-slate-400 uppercase tracking-wider font-medium mb-0.5">Credit Rate</p>
+            <p className="text-gold font-bold text-sm">₹7<span className="text-[10px] text-slate-400 font-normal">/unit</span></p>
           </div>
         </div>
 
-        {/* Enhanced Inputs */}
-        <div className="space-y-4 mb-4">
-          {/* Bill Input - Enhanced */}
+        {/* Premium Dark Enhanced Inputs */}
+        <div className="space-y-3.5 mb-3.5 relative z-10">
+          {/* Bill Input - Dark Premium Design */}
           <div>
-            <label className="text-[10px] text-white/60 font-medium mb-1.5 flex items-center gap-1.5">
-              <CircleDollarSign className="w-3 h-3" />
+            <label className="text-[10px] text-slate-300 font-semibold mb-1.5 flex items-center gap-1.5">
+              <CircleDollarSign className="w-3.5 h-3.5 text-gold" />
               Monthly Electricity Bill
             </label>
             <div className={cn(
-              "relative flex items-center rounded-xl border-2 transition-all duration-200 overflow-hidden",
+              "relative flex items-center rounded-xl border transition-all duration-300 overflow-hidden backdrop-blur-sm",
               isBillFocused
-                ? "border-solar/60 bg-gradient-to-r from-solar/10 to-transparent shadow-lg shadow-solar/10"
-                : "border-white/15 bg-white/5 hover:border-white/25"
+                ? "border-gold/60 bg-gradient-to-r from-gold/20 via-gold/15 to-slate-800/50 shadow-lg shadow-gold/30"
+                : "border-slate-700/50 bg-slate-800/50 hover:border-slate-600/50 hover:bg-slate-800/70"
             )}>
-              <div className="pl-3.5 pr-1 py-3 flex items-center">
-                <span className="text-solar font-bold text-lg">₹</span>
+              <div className="pl-3 pr-1.5 py-2.5 flex items-center">
+                <span className="text-gold font-bold text-lg">₹</span>
               </div>
               <input
-                type="number"
-                value={avgBill}
-                onChange={(e) => setAvgBill(Math.max(0, Math.min(100000, Number(e.target.value) || 0)))}
-                onFocus={() => setIsBillFocused(true)}
-                onBlur={() => setIsBillFocused(false)}
+                ref={inputRef}
+                type="text"
+                inputMode="numeric"
+                value={billInputValue}
+                onChange={handleBillChange}
+                onFocus={() => {
+                  setIsBillFocused(true);
+                  if (inputRef.current) {
+                    inputRef.current.select();
+                  }
+                }}
+                onBlur={handleBillBlur}
                 placeholder="2500"
-                className="flex-1 bg-transparent text-white font-bold text-xl py-2.5 outline-none 
-                           [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="flex-1 bg-transparent text-white font-bold text-xl py-2 outline-none 
+                           placeholder:text-slate-500"
               />
-              <div className="pr-3 text-white/30 text-[10px]">/month</div>
+              <div className="pr-3 text-slate-400 text-[10px] font-medium">/month</div>
             </div>
-            {/* Quick presets */}
+            {/* Dark Quick presets */}
             <div className="flex gap-1.5 mt-2">
               {[1000, 2500, 5000, 10000].map((preset) => (
                 <button
                   key={preset}
-                  onClick={() => setAvgBill(preset)}
+                  onClick={() => {
+                    setAvgBill(preset);
+                    setBillInputValue(preset.toString());
+                  }}
                   className={cn(
-                    "flex-1 py-1 px-2 text-[10px] font-medium rounded-md transition-all",
+                    "flex-1 py-1.5 px-2 text-[10px] font-semibold rounded-lg transition-all duration-200",
                     avgBill === preset
-                      ? "bg-solar/20 text-solar border border-solar/30"
-                      : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70"
+                      ? "bg-gold/30 text-gold border border-gold/50 shadow-md shadow-gold/30"
+                      : "bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300 border border-slate-700/50 hover:border-slate-600/50"
                   )}
                 >
                   ₹{(preset / 1000).toFixed(preset >= 1000 ? 0 : 1)}k
@@ -500,25 +542,29 @@ function InteractiveSavingsCard() {
             </div>
           </div>
 
-          {/* Savings Slider - Enhanced */}
+          {/* Dark Premium Savings Slider */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-[10px] text-white/60 font-medium flex items-center gap-1.5">
-                <TrendingUp className="w-3 h-3" />
+              <label className="text-[10px] text-slate-300 font-semibold flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-energy-green" />
                 Target Savings
               </label>
-              <div className="flex items-center gap-1.5 bg-eco/20 rounded-full px-2.5 py-1">
-                <span className="text-eco font-bold text-sm">{savingsPercent}%</span>
+              <div className="flex items-center gap-1.5 bg-energy-green/25 backdrop-blur-sm rounded-full px-2.5 py-1 border border-energy-green/40">
+                <span className="text-energy-green font-bold text-sm">{savingsPercent}%</span>
               </div>
             </div>
-            <div className="relative pt-1 pb-2">
-              {/* Track background with gradient */}
-              <div className="absolute top-1 left-0 right-0 h-2 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-eco via-primary to-solar rounded-full transition-all duration-150"
-                  style={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
+            <div className="relative pt-1.5 pb-3">
+              {/* Dark Track background */}
+              <div className="absolute top-1.5 left-0 right-0 h-2.5 bg-slate-800/80 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-energy-green via-primary to-gold rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
                 />
               </div>
+              
+              {/* Dark Premium Slider */}
               <input
                 type="range"
                 min="10"
@@ -526,89 +572,114 @@ function InteractiveSavingsCard() {
                 step="5"
                 value={savingsPercent}
                 onChange={(e) => setSavingsPercent(Number(e.target.value))}
-                className="relative w-full h-2 bg-transparent rounded-full appearance-none cursor-pointer z-10
-                           [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
-                           [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
-                           [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-eco/40
-                           [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2
-                           [&::-webkit-slider-thumb]:border-eco [&::-webkit-slider-thumb]:transition-transform
-                           [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-95"
+                className="relative w-full h-2.5 bg-transparent rounded-full appearance-none cursor-pointer z-10
+                           [&::-webkit-slider-thumb]:appearance-none 
+                           [&::-webkit-slider-thumb]:w-5 
+                           [&::-webkit-slider-thumb]:h-5
+                           [&::-webkit-slider-thumb]:rounded-full 
+                           [&::-webkit-slider-thumb]:bg-white
+                           [&::-webkit-slider-thumb]:shadow-xl 
+                           [&::-webkit-slider-thumb]:shadow-energy-green/60
+                           [&::-webkit-slider-thumb]:cursor-pointer 
+                           [&::-webkit-slider-thumb]:border-2
+                           [&::-webkit-slider-thumb]:border-energy-green
+                           [&::-webkit-slider-thumb]:transition-all
+                           [&::-webkit-slider-thumb]:duration-200
+                           [&::-webkit-slider-thumb]:hover:scale-110
+                           [&::-webkit-slider-thumb]:hover:shadow-energy-green/80
+                           [&::-webkit-slider-thumb]:active:scale-105
+                           [&::-moz-range-thumb]:w-5
+                           [&::-moz-range-thumb]:h-5
+                           [&::-moz-range-thumb]:rounded-full
+                           [&::-moz-range-thumb]:bg-white
+                           [&::-moz-range-thumb]:border-2
+                           [&::-moz-range-thumb]:border-energy-green
+                           [&::-moz-range-thumb]:cursor-pointer
+                           [&::-moz-range-thumb]:shadow-xl
+                           [&::-moz-range-thumb]:shadow-energy-green/60
+                           [&::-moz-range-thumb]:transition-all"
               />
-              {/* Tick marks */}
-              <div className="flex justify-between mt-1 px-0.5">
+              
+              {/* Dark Tick marks */}
+              <div className="flex justify-between mt-1.5 px-0.5">
                 {[10, 25, 50, 75, 100].map((tick) => (
-                  <span
+                  <motion.span
                     key={tick}
                     className={cn(
-                      "text-[8px] transition-colors",
-                      savingsPercent >= tick ? "text-eco" : "text-white/30"
+                      "text-[8px] font-medium transition-all duration-200",
+                      savingsPercent >= tick ? "text-energy-green" : "text-slate-500"
                     )}
+                    animate={{
+                      scale: savingsPercent >= tick ? 1.15 : 1,
+                    }}
                   >
                     {tick}%
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main Savings - Prominent */}
-        <div className="p-3 rounded-xl bg-gradient-to-br from-slate-black/60 to-primary-deep/40 border border-solar/20 mb-3">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Zap className="w-3.5 h-3.5 text-solar" />
-            <span className="text-white/60 text-[10px]">Monthly Savings</span>
+        {/* Dark Premium Main Savings Display */}
+        <div className="p-3.5 rounded-xl bg-gradient-to-br from-gold/20 via-gold/15 to-slate-800/50 border border-gold/40 mb-3 backdrop-blur-sm relative z-10 shadow-lg shadow-gold/30">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-gold/30 flex items-center justify-center border border-gold/40">
+              <Zap className="w-4 h-4 text-gold" />
+            </div>
+            <span className="text-slate-200 text-[10px] font-semibold uppercase tracking-wider">Monthly Savings</span>
           </div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-2xl font-heading font-bold bg-gradient-to-r from-solar via-solar-soft to-solar bg-clip-text text-transparent">
+          <div className="flex items-baseline gap-2 mb-1.5">
+            <span className="text-3xl font-heading font-bold text-gold">
               {formatCurrency(calculations.monthlySavings)}
             </span>
           </div>
-          <p className="text-eco text-[10px] flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />
+          <p className="text-energy-green text-xs flex items-center gap-1.5 font-semibold">
+            <TrendingUp className="w-3.5 h-3.5" />
             {formatCurrency(calculations.annualSavings)}/year
           </p>
         </div>
 
-        {/* Stats Grid - Compact */}
-        <div className="grid grid-cols-3 gap-2 mb-3">
-          <div className="p-2 rounded-lg bg-white/5 text-center">
-            <Sun className="w-3 h-3 text-solar mx-auto mb-0.5" />
-            <p className="text-white font-bold text-xs">{(calculations.reservedSolarWatts / 1000).toFixed(1)}kW</p>
-            <p className="text-white/40 text-[9px]">Solar</p>
+        {/* Dark Premium Stats Grid */}
+        <div className="grid grid-cols-3 gap-2 mb-3 relative z-10">
+          <div className="p-2.5 rounded-lg bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 text-center hover:bg-slate-700/60 hover:border-gold/30 transition-all duration-200">
+            <Sun className="w-4 h-4 text-gold mx-auto mb-1" />
+            <p className="text-white font-bold text-xs mb-0.5">{(calculations.reservedSolarWatts / 1000).toFixed(1)}kW</p>
+            <p className="text-slate-400 text-[9px] font-medium">Solar</p>
           </div>
-          <div className="p-2 rounded-lg bg-white/5 text-center">
-            <Bolt className="w-3 h-3 text-primary mx-auto mb-0.5" />
-            <p className="text-white font-bold text-xs">{calculations.energyProducedKwh.toFixed(0)}</p>
-            <p className="text-white/40 text-[9px]">kWh/mo</p>
+          <div className="p-2.5 rounded-lg bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 text-center hover:bg-slate-700/60 hover:border-primary/30 transition-all duration-200">
+            <Bolt className="w-4 h-4 text-primary mx-auto mb-1" />
+            <p className="text-white font-bold text-xs mb-0.5">{calculations.energyProducedKwh.toFixed(0)}</p>
+            <p className="text-slate-400 text-[9px] font-medium">kWh/mo</p>
           </div>
-          <div className="p-2 rounded-lg bg-white/5 text-center">
-            <Leaf className="w-3 h-3 text-eco mx-auto mb-0.5" />
-            <p className="text-white font-bold text-xs">{calculations.co2OffsetTonnes.toFixed(1)}T</p>
-            <p className="text-white/40 text-[9px]">CO₂/yr</p>
+          <div className="p-2.5 rounded-lg bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 text-center hover:bg-slate-700/60 hover:border-energy-green/30 transition-all duration-200">
+            <Leaf className="w-4 h-4 text-energy-green mx-auto mb-1" />
+            <p className="text-white font-bold text-xs mb-0.5">{calculations.co2OffsetTonnes.toFixed(1)}T</p>
+            <p className="text-slate-400 text-[9px] font-medium">CO₂/yr</p>
           </div>
         </div>
 
-        {/* Reservation Fee & CTA - Compact */}
-        <div className="p-3 rounded-xl bg-gradient-to-r from-slate-black/60 to-primary-deep/40 border border-white/10">
-          <div className="flex items-center justify-between mb-2">
+        {/* Dark Premium Reservation Fee & CTA */}
+        <div className="p-3.5 rounded-xl bg-gradient-to-br from-slate-800/60 to-slate-800/40 backdrop-blur-sm border border-slate-700/50 relative z-10">
+          <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-700/50">
             <div>
-              <p className="text-white/50 text-[9px]">One-time Fee</p>
+              <p className="text-slate-400 text-[10px] font-medium mb-0.5">One-time Investment</p>
               <p className="text-white font-bold text-sm">{formatCurrency(calculations.reservationFee)}</p>
             </div>
             <div className="text-right">
-              <p className="text-white/50 text-[9px]">Payback</p>
-              <p className="text-eco font-bold text-sm">{calculations.roiYears}y</p>
+              <p className="text-slate-400 text-[10px] font-medium mb-0.5">ROI Period</p>
+              <p className="text-energy-green font-bold text-sm">{calculations.roiYears.toFixed(1)}y</p>
             </div>
           </div>
           <Link href={`/reserve?capacity=${calculations.reservedSolarKw}&project=vedvyas`} className="block">
             <motion.button
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-eco to-eco/90 text-white font-bold text-sm rounded-lg
-                         shadow-md shadow-eco/20 flex items-center justify-center gap-1.5 group"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-3 px-4 bg-gradient-to-r from-energy-green via-energy-green to-emerald-500 hover:from-emerald-500 hover:via-energy-green hover:to-energy-green text-white font-bold text-xs rounded-lg
+                         shadow-lg shadow-energy-green/40 flex items-center justify-center gap-2 group transition-all duration-300"
             >
-              Get Started Free
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              Reserve Your Capacity
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </motion.button>
           </Link>
         </div>

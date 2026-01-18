@@ -47,6 +47,11 @@ export async function updateSession(request: NextRequest) {
     "/reset-password",
     "/help",
     "/contact",
+    "/terms",
+    "/privacy",
+    "/cookies",
+    "/refund",
+    "/about",
   ];
   const isPublicPath =
     publicPaths.includes(request.nextUrl.pathname) ||
