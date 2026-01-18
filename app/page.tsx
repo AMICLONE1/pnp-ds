@@ -22,6 +22,9 @@ import { BenefitsSection } from "@/components/features/landing/BenefitsSection";
 import { HowItWorksSection } from "@/components/features/landing/HowItWorksSection";
 import { CalculatorSection } from "@/components/features/landing/CalculatorSection";
 
+// Import client-only components - they handle SSR internally
+import { SmoothScrollProgress, CursorFollower } from "@/components/ui/modern-animations";
+
 // Import existing components that still work well
 import { UtilityCompatibilityChecker } from "@/components/features/landing/UtilityCompatibilityChecker";
 import { ProblemSolution } from "@/components/features/landing/ProblemSolution";
@@ -40,19 +43,15 @@ import {
 import { faqData } from "../lib/utils/data.js"
 import { Testimonials } from "@/components/ui/Testimonials";
 
-// Temporarily disabled to debug webpack issue
-// import SmoothScrollProgress from "@/components/ui/SmoothScrollProgress";
-// import CursorFollower from "@/components/ui/CursorFollower";
-
 
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* Smooth Scroll Progress Indicator - Temporarily disabled */}
-      {/* <SmoothScrollProgress /> */}
+      {/* Smooth Scroll Progress Indicator */}
+      <SmoothScrollProgress />
 
-      {/* Custom Cursor (desktop only) - Temporarily disabled */}
-      {/* <CursorFollower /> */}
+      {/* Custom Cursor (desktop only) */}
+      <CursorFollower />
 
       {/* Skip to main content link for accessibility */}
       <a
