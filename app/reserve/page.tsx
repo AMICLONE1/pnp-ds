@@ -3,7 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Header } from "@/components/layout/header";
+import { motion, AnimatePresence } from "framer-motion";
+import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ import {
   Building2,
   BadgeCheck
 } from "lucide-react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { ProjectListSkeleton } from "@/components/ui/skeletons/ProjectListSkeleton";
 
 interface Project {
   id: string;
@@ -50,11 +51,11 @@ export const dynamic = 'force-dynamic';
 // Hero section for the page
 function PageHero() {
   return (
-    <section className="relative bg-gradient-to-br from-forest via-forest to-forest-dark overflow-hidden">
+    <section className="relative bg-gradient-to-br from-white via-white to-white-dark overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gold/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-energy-green/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
 
@@ -77,7 +78,7 @@ function PageHero() {
               Solar Projects Available
             </motion.span>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6"
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-6"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
 
             >
@@ -150,8 +151,8 @@ function ProjectCard({
         "relative cursor-pointer rounded-2xl border-2 transition-all duration-300",
         "bg-white overflow-hidden group",
         isSelected
-          ? "border-forest shadow-xl shadow-forest/10 ring-4 ring-forest/10"
-          : "border-gray-200 hover:border-forest/50 hover:shadow-lg"
+          ? "border-gray-200 shadow-xl shadow-forest/10 ring-4 ring-forest/10"
+          : "border-gray-200 hover:border-gray-200/50 hover:shadow-lg"
       )}
     >
       {/* Selected indicator */}
@@ -160,9 +161,9 @@ function ProjectCard({
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="w-8 h-8 rounded-full bg-forest flex items-center justify-center"
+            className="w-8 h-8 rounded-full bg-white flex items-center justify-center"
           >
-            <CheckCircle className="w-5 h-5 text-white" />
+            <CheckCircle className="w-5 h-5 text-black" />
           </motion.div>
         </div>
       )}
@@ -171,8 +172,8 @@ function ProjectCard({
       <div className={cn(
         "h-2 w-full transition-all duration-300",
         isSelected
-          ? "bg-gradient-to-r from-forest via-energy-green to-forest"
-          : "bg-gradient-to-r from-gray-200 to-gray-300 group-hover:from-forest/50 group-hover:to-energy-green/50"
+          ? "bg-gradient-to-r from-white via-energy-green to-white"
+          : "bg-gradient-to-r from-gray-200 to-gray-300 group-hover:from-white/50 group-hover:to-energy-green/50"
       )} />
 
       <div className="p-6">
@@ -182,12 +183,12 @@ function ProjectCard({
             <div className="flex items-center gap-2 mb-2">
               <div className={cn(
                 "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                isSelected ? "bg-forest text-white" : "bg-gray-100 text-gray-600 group-hover:bg-forest/10 group-hover:text-forest"
+                isSelected ? "bg-white text-white" : "bg-gray-100 text-black group-hover:bg-white/10 group-hover:text-black"
               )}>
                 <Sun className="w-5 h-5" />
               </div>
               <div>
-                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold text-charcoal">
+                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold text-black">
                   {project.name}
                 </h3>
                 <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-500 flex items-center gap-1">
@@ -200,7 +201,7 @@ function ProjectCard({
 
           {/* Price */}
           <div className="text-right">
-            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl font-bold text-forest">
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl font-bold text-black">
               ₹{project.price_per_kw}
             </div>
             <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-500">per kW/month</div>
@@ -208,17 +209,17 @@ function ProjectCard({
         </div>
 
         {/* Description */}
-        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black text-sm mb-4 line-clamp-2">
           {project.description}
         </p>
 
         {/* Features */}
         <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-2 mb-4">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+            <div key={index} className="flex items-center gap-2 text-sm text-black">
               <feature.icon className={cn(
                 "w-4 h-4",
-                isSelected ? "text-forest" : "text-gray-400"
+                isSelected ? "text-black" : "text-gray-400"
               )} />
               <span>{feature.label}</span>
             </div>
@@ -229,7 +230,7 @@ function ProjectCard({
         {project.rate_per_kwh && (
           <div style={{ fontFamily: "'Montserrat', sans-serif" }} className={cn(
             "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
-            isSelected ? "bg-forest/10 text-forest" : "bg-gray-100 text-gray-700"
+            isSelected ? "bg-white/10 text-black" : "bg-gray-100 text-black"
           )}>
             <TrendingUp className="w-4 h-4" />
             ₹{project.rate_per_kwh}/unit credit value
@@ -299,7 +300,7 @@ function CapacitySelector({
     >
       <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-forest to-forest-dark p-6 text-white">
+        <div className="bg-gradient-to-r from-white to-white-dark p-6 text-black">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
               <Battery className="w-5 h-5" />
@@ -307,7 +308,7 @@ function CapacitySelector({
             <div>
               <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold">Reserve Capacity</h3>
 
-              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-white/70">Choose your solar allocation</p>
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-black/70">Choose your solar allocation</p>
             </div>
           </div>
         </div>
@@ -316,14 +317,14 @@ function CapacitySelector({
           {selectedProject ? (
             <>
               {/* Selected project indicator */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-forest/5 rounded-lg mb-6">
-                <CheckCircle className="w-4 h-4 text-forest" />
-                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-medium text-forest">{selectedProject.name}</span>
+              <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg mb-6">
+                <CheckCircle className="w-4 h-4 text-black" />
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-medium text-black">{selectedProject.name}</span>
               </div>
 
               {/* Capacity display */}
               <div className="text-center mb-6">
-                <div className="text-5xl font-bold text-charcoal mb-1">
+                <div className="text-5xl font-bold text-black mb-1">
                   {capacity}
                   <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl text-gray-400 ml-1">kW</span>
                 </div>
@@ -339,8 +340,8 @@ function CapacitySelector({
                     className={cn(
                       "py-2 px-3 rounded-lg text-sm font-medium transition-all",
                       capacity === preset
-                        ? "bg-forest text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-white text-white"
+                        : "bg-gray-100 text-black hover:bg-gray-200"
                     )}
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
@@ -369,13 +370,13 @@ function CapacitySelector({
               {/* Cost breakdown */}
               <div className="space-y-3 py-4 border-y border-gray-100">
                 <div className="flex justify-between items-center">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600">One-time Reservation</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-charcoal">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black">One-time Reservation</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-black">
                     {formatINR(reservationFee)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 flex items-center gap-1">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black flex items-center gap-1">
                     <TrendingUp className="w-4 h-4 text-energy-green" />
                     Est. Monthly Savings
                   </span>
@@ -391,7 +392,7 @@ function CapacitySelector({
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500">ROI Period</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-medium text-forest">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-medium text-black">
                     ~{roiYears} years
                   </span>
                 </div>
@@ -404,14 +405,14 @@ function CapacitySelector({
               </div>
 
               {/* Environmental impact */}
-              <div className="mt-4 p-4 bg-gradient-to-r from-energy-green/10 to-forest/10 rounded-xl">
+              <div className="mt-4 p-4 bg-gradient-to-r from-energy-green/10 to-white/10 rounded-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <Leaf className="w-4 h-4 text-forest" />
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-medium text-forest">Environmental Impact</span>
+                  <Leaf className="w-4 h-4 text-black" />
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-medium text-black">Environmental Impact</span>
                 </div>
-                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-600">
-                  You&apos;ll offset <span className="font-semibold text-forest">{savings.co2OffsetTonnes.toFixed(1)} tons</span> of CO₂/year,
-                  equivalent to planting <span className="font-semibold text-forest">{savings.treesEquivalent} trees</span>
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-black">
+                  You&apos;ll offset <span className="font-semibold text-black">{savings.co2OffsetTonnes.toFixed(1)} tons</span> of CO₂/year,
+                  equivalent to planting <span className="font-semibold text-black">{savings.treesEquivalent} trees</span>
                 </p>
               </div>
 
@@ -421,7 +422,7 @@ function CapacitySelector({
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                   variant="primary"
                   size="lg"
-                  className="w-full bg-forest hover:bg-forest-dark text-white font-semibold py-4 text-lg group shadow-lg shadow-forest/20"
+                  className="w-full bg-white hover:bg-white text-black font-semibold py-4 text-lg group shadow-lg shadow-forest/20"
                   onClick={onReserve}
                 >
                   {isLoggedIn ? "Reserve Now" : "Sign Up to Reserve"}
@@ -431,7 +432,7 @@ function CapacitySelector({
                 {!isLoggedIn && (
                   <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-center text-xs text-gray-500 mt-3">
                     Already have an account?{" "}
-                    <Link style={{ fontFamily: "'Montserrat', sans-serif" }} href="/login?redirect=/reserve" className="text-forest hover:underline">
+                    <Link style={{ fontFamily: "'Montserrat', sans-serif" }} href="/login?redirect=/reserve" className="text-black hover:underline">
                       Log in
                     </Link>
                   </p>
@@ -457,7 +458,7 @@ function CapacitySelector({
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
                 <Sun style={{ fontFamily: "'Montserrat', sans-serif" }} className="w-8 h-8 text-gray-400" />
               </div>
-              <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-charcoal mb-2">
+              <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-black mb-2">
                 Select a Project
               </h4>
               <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-500">
@@ -492,11 +493,11 @@ function BenefitsBar() {
               transition={{ delay: index * 0.1 }}
               className="flex items-center gap-3"
             >
-              <div className="w-12 h-12 rounded-xl bg-forest/10 flex items-center justify-center flex-shrink-0">
-                <benefit.icon className="w-6 h-6 text-forest" />
+              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                <benefit.icon className="w-6 h-6 text-black" />
               </div>
               <div>
-                <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-charcoal">{benefit.label}</div>
+                <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-black">{benefit.label}</div>
                 <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-500">{benefit.description}</div>
               </div>
             </motion.div>
@@ -573,7 +574,10 @@ export default function ReservePage() {
           setSelectedProject(result.data[0]);
         }
       }
-      setLoading(false);
+      // Show skeleton for minimum 10 seconds
+      setTimeout(() => {
+        setLoading(false);
+      }, 10000);
     };
 
     const getUser = async () => {
@@ -618,7 +622,7 @@ export default function ReservePage() {
   const estimatedSavings = savings.monthlySavings;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
       {/* Hero */}
@@ -631,7 +635,7 @@ export default function ReservePage() {
       <main className="flex-1 py-12 md:py-16">
         <div className="container mx-auto px-4 lg:px-8">
           {loading ? (
-            <LoadingSkeleton />
+            <ProjectListSkeleton />
           ) : (
             <>
               {/* Section header */}
@@ -640,10 +644,10 @@ export default function ReservePage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8"
               >
-                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl md:text-3xl font-heading font-bold text-charcoal mb-2">
+                <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl md:text-3xl font-heading font-bold text-black mb-2">
                   Available Projects
                 </h2>
-                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600">
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black">
                   {projects.length} verified solar project{projects.length !== 1 ? 's' : ''} available for reservation
                 </p>
               </motion.div>
@@ -668,7 +672,7 @@ export default function ReservePage() {
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
                         <Sun className="w-8 h-8 text-gray-400" />
                       </div>
-                      <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-semibold text-charcoal mb-2">
+                      <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-semibold text-black mb-2">
                         No Projects Available
                       </h3>
                       <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500 max-w-md mx-auto">
@@ -699,8 +703,8 @@ export default function ReservePage() {
                 viewport={{ once: true }}
                 className="mt-16 bg-white rounded-2xl border border-gray-200 p-8"
               >
-                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold text-charcoal mb-6 flex items-center gap-2">
-                  <Info className="w-5 h-5 text-forest" />
+                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold text-black mb-6 flex items-center gap-2">
+                  <Info className="w-5 h-5 text-black" />
                   Frequently Asked Questions
                 </h3>
 
@@ -723,9 +727,9 @@ export default function ReservePage() {
                       a: "Yes, you can upgrade or downgrade your capacity anytime without any penalties."
                     }
                   ].map((faq, index) => (
-                    <div key={index} className="p-4 bg-gray-50 rounded-xl">
-                      <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-charcoal mb-2">{faq.q}</h4>
-                      <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600">{faq.a}</p>
+                    <div key={index} className="p-4 bg-white rounded-xl">
+                      <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-black mb-2">{faq.q}</h4>
+                      <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-black">{faq.a}</p>
                     </div>
                   ))}
                 </div>
@@ -734,7 +738,7 @@ export default function ReservePage() {
                   <Link
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                     href="/help"
-                    className="inline-flex items-center gap-1 text-forest font-medium hover:underline"
+                    className="inline-flex items-center gap-1 text-black font-medium hover:underline"
                   >
                     View all FAQs
                     <ChevronRight className="w-4 h-4" />

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LoadingProvider } from "@/components/providers/LoadingProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -51,9 +52,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <LoadingProvider>
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </LoadingProvider>
       </body>
     </html>
   );

@@ -43,21 +43,21 @@ function SuccessContent() {
                 <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
             </div>
-            <h1 className="text-3xl font-heading font-bold mb-4 text-charcoal">
+            <h1 className="text-3xl font-heading font-bold mb-4 text-black">
               Reservation Successful! 🎉
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-black mb-8">
               Your solar capacity has been reserved successfully. You&apos;re now
               part of the clean energy revolution!
             </p>
 
             {project && (
-              <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+              <div className="bg-white rounded-lg p-6 mb-8 text-left">
                 <div className="flex items-center mb-4">
                   <Zap className="h-5 w-5 text-gold mr-2" />
                   <h3 className="font-semibold text-lg">{project.name}</h3>
                 </div>
-                <p className="text-gray-600">{project.location}</p>
+                <p className="text-black">{project.location}</p>
               </div>
             )}
 
@@ -96,7 +96,7 @@ export default function SuccessPage() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
           </div>
         </main>
       </div>

@@ -54,7 +54,7 @@ export function NotificationBell() {
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-black text-xs rounded-full flex items-center justify-center">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -63,7 +63,7 @@ export function NotificationBell() {
       {showDropdown && (
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
           <div className="p-4 border-b border-gray-200">
-            <h3 className="font-semibold text-charcoal">Notifications</h3>
+            <h3 className="font-semibold text-black">Notifications</h3>
           </div>
           <div className="divide-y divide-gray-200">
             {notifications.length === 0 ? (
@@ -81,10 +81,10 @@ export function NotificationBell() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="font-medium text-sm text-charcoal">
+                      <p className="font-medium text-sm text-black">
                         {notification.title}
                       </p>
-                      <p className="text-xs text-gray-600 mt-1">
+                      <p className="text-xs text-black mt-1">
                         {notification.message}
                       </p>
                       <p className="text-xs text-gray-400 mt-1">

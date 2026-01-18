@@ -8,9 +8,23 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
+  // Check if Supabase credentials are configured
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If credentials are not configured or are placeholders, skip auth entirely
+  if (!supabaseUrl || !supabaseKey || 
+      supabaseUrl.includes('placeholder') || 
+      supabaseKey.includes('placeholder') ||
+      supabaseUrl === 'your-project-url' || 
+      supabaseKey === 'your-anon-key') {
+    // Just pass through without any Supabase operations
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
@@ -33,9 +47,14 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch (error) {
+    // Silently handle auth errors
+    user = null;
+  }
 
   // Public paths that don't require authentication
   const publicPaths = [

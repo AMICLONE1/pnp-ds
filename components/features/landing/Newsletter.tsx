@@ -34,7 +34,7 @@ export function Newsletter() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-forest to-forest-dark text-white">
+    <section className="py-16 bg-gradient-to-br from-white to-gray-100 text-black">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
@@ -57,7 +57,7 @@ export function Newsletter() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="flex-1 bg-white text-charcoal"
+                className="flex-1 bg-white text-black"
               />
               <Button
                 type="submit"

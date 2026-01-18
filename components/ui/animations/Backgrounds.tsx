@@ -24,7 +24,7 @@ export function LightweightAuroraBackground({
   return (
     <div className={cn("relative overflow-hidden", className)}>
       {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest-light to-forest-dark" />
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-white-light to-white-dark" />
 
       {/* CSS-only animated blobs (no Framer Motion) */}
       <div className="absolute inset-0" style={{ opacity: opacityMap[intensity] }}>

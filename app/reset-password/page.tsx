@@ -78,9 +78,9 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 flex items-center justify-center bg-offwhite">
+        <main className="flex-1 flex items-center justify-center bg-white">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-forest"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
           </div>
         </main>
         <Footer />
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 flex items-center justify-center bg-offwhite py-12 px-4">
+        <main className="flex-1 flex items-center justify-center bg-white py-12 px-4">
           <Card className="w-full max-w-md">
             <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
@@ -100,10 +100,10 @@ export default function ResetPasswordPage() {
                   <CheckCircle className="h-12 w-12 text-green-600" />
                 </div>
               </div>
-              <h1 className="text-2xl font-heading font-bold mb-4 text-charcoal">
+              <h1 className="text-2xl font-heading font-bold mb-4 text-black">
                 Password Reset Successful
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="text-black mb-6">
                 Your password has been updated successfully. You will be redirected to the login page.
               </p>
               <Link href="/login">
@@ -122,7 +122,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 flex items-center justify-center bg-offwhite py-12 px-4">
+      <main className="flex-1 flex items-center justify-center bg-white py-12 px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
@@ -173,9 +173,9 @@ export default function ResetPasswordPage() {
                 Reset Password
               </Button>
             </form>
-            <div className="mt-6 text-center text-sm text-gray-600">
+            <div className="mt-6 text-center text-sm text-black">
               Remember your password?{" "}
-              <Link href="/login" className="text-forest hover:underline font-medium">
+              <Link href="/login" className="text-black hover:underline font-medium">
                 Sign in
               </Link>
             </div>

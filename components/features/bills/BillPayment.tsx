@@ -76,8 +76,8 @@ export function BillPayment({ bill, onPaymentComplete }: BillPaymentProps) {
       <Card>
         <CardContent className="p-6 text-center">
           <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-charcoal mb-2">Payment Successful!</h3>
-          <p className="text-gray-600">
+          <h3 className="text-xl font-semibold text-black mb-2">Payment Successful!</h3>
+          <p className="text-black">
             {bill.final_amount === 0
               ? "Bill paid fully using credits!"
               : "Payment processed successfully."}
@@ -98,12 +98,12 @@ export function BillPayment({ bill, onPaymentComplete }: BillPaymentProps) {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Bill Amount</span>
+            <span className="text-black">Bill Amount</span>
             <span className="font-medium">{formatCurrency(bill.amount)}</span>
           </div>
           {bill.credits_applied > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600 text-green-600">Credits Applied</span>
+              <span className="text-black text-green-600">Credits Applied</span>
               <span className="font-medium text-green-600">
                 -{formatCurrency(bill.credits_applied)}
               </span>
@@ -111,7 +111,7 @@ export function BillPayment({ bill, onPaymentComplete }: BillPaymentProps) {
           )}
           <div className="pt-2 border-t flex justify-between font-semibold">
             <span>Amount to Pay</span>
-            <span className="text-forest">{formatCurrency(bill.final_amount)}</span>
+            <span className="text-black">{formatCurrency(bill.final_amount)}</span>
           </div>
         </div>
 

@@ -100,7 +100,7 @@ export function TestimonialCarousel({
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Main testimonial */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-forest to-forest-dark p-8 md:p-12 min-h-[400px] shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white to-white-dark p-8 md:p-12 min-h-[400px] shadow-2xl">
         <Quote className="absolute top-6 right-6 h-16 w-16 text-gold/20" />
         
         <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -121,7 +121,7 @@ export function TestimonialCarousel({
                   <Star
                     key={i}
                     className={`h-5 w-5 ${
-                      i < current.rating! ? "text-gold fill-gold" : "text-gray-600"
+                      i < current.rating! ? "text-gold fill-gold" : "text-black"
                     }`}
                   />
                 ))}
@@ -129,7 +129,7 @@ export function TestimonialCarousel({
             )}
 
             {/* Quote */}
-            <p className="text-xl md:text-2xl lg:text-3xl text-white leading-relaxed mb-8 font-light">
+            <p className="text-xl md:text-2xl lg:text-3xl text-black leading-relaxed mb-8 font-light">
               &ldquo;{current.quote}&rdquo;
             </p>
 
@@ -143,12 +143,12 @@ export function TestimonialCarousel({
                     className="w-14 h-14 rounded-full object-cover border-2 border-gold/30"
                   />
                 ) : (
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-charcoal font-bold text-xl">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-black font-bold text-xl">
                     {current.author.charAt(0)}
                   </div>
                 )}
                 <div>
-                  <p className="font-semibold text-white text-lg">{current.author}</p>
+                  <p className="font-semibold text-black text-lg">{current.author}</p>
                   <p className="text-gray-400 text-sm">
                     {current.role && `${current.role}`}
                     {current.location && ` • ${current.location}`}
@@ -173,7 +173,7 @@ export function TestimonialCarousel({
             onClick={prev}
             className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
           >
-            <ChevronLeft className="h-5 w-5 text-white" />
+            <ChevronLeft className="h-5 w-5 text-black" />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -181,7 +181,7 @@ export function TestimonialCarousel({
             onClick={next}
             className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
           >
-            <ChevronRight className="h-5 w-5 text-white" />
+            <ChevronRight className="h-5 w-5 text-black" />
           </motion.button>
         </div>
       </div>
@@ -348,7 +348,7 @@ export function StatCard({
       >
         {prefix}{displayValue.toLocaleString('en-IN')}{suffix}
       </div>
-      <div className="text-gray-600 text-sm font-medium">{label}</div>
+      <div className="text-black text-sm font-medium">{label}</div>
     </motion.div>
   );
 }

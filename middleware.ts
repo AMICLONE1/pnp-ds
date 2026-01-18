@@ -3,8 +3,18 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { checkRateLimit } from "@/lib/security/rateLimiter";
 
 export async function middleware(request: NextRequest) {
+  // Skip middleware for static files and Next.js internals
+  const pathname = request.nextUrl.pathname;
+  if (
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|js|css|woff|woff2|ttf|eot|ico)$/)
+  ) {
+    return NextResponse.next();
+  }
+
   // Rate limiting for API routes
-  if (request.nextUrl.pathname.startsWith("/api/")) {
+  if (pathname.startsWith("/api/")) {
     const identifier = request.ip || request.headers.get("x-forwarded-for") || "unknown";
     const path = request.nextUrl.pathname;
 

@@ -1,3 +1,11 @@
+/* Custom cursor styles for brand experience */
+.cursor-gold {
+  cursor: pointer;
+}
+.cursor-pointer-gold {
+  cursor: pointer;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=TASA+Explorer:wght@400..800&display=swap');
@@ -16,7 +24,7 @@
   }
 
   body {
-    @apply bg-offwhite text-charcoal font-body antialiased;
+    @apply bg-white text-black font-body antialiased;
     overflow-x: hidden;
   }
 
@@ -79,7 +87,7 @@
 
   /* Gradient text - Enhanced */
   .gradient-text {
-    background: linear-gradient(135deg, #FFB800 0%, #FFD54F 50%, #4CAF50 100%);
+    background: linear-gradient(135deg, #FFB800 0%, #FFD54F 50%, #FFA500 100%);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -88,7 +96,7 @@
   }
 
   .gradient-text-forest {
-    background: linear-gradient(135deg, #0D2818 0%, #1B5E3E 50%, #4CAF50 100%);
+    background: linear-gradient(135deg, #333333 0%, #666666 50%, #999999 100%);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -145,7 +153,7 @@
     position: absolute;
     inset: -2px;
     border-radius: inherit;
-    background: linear-gradient(135deg, #FFB800, #4CAF50);
+    background: linear-gradient(135deg, #FFB800, #FFA500);
     opacity: 0;
     z-index: -1;
     filter: blur(15px);
@@ -166,7 +174,7 @@
 
   /* Animated gradient background */
   .gradient-mesh {
-    background: linear-gradient(135deg, #0D2818 0%, #1B5E3E 25%, #FFB800 50%, #4CAF50 75%, #00BCD4 100%);
+    background: linear-gradient(135deg, #333333 0%, #666666 25%, #FFB800 50%, #FFA500 75%, #00BCD4 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
   }
@@ -272,6 +280,16 @@
 
   .ray {
     animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* Shimmer animation for skeleton loading */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
 
   /* GPU acceleration helpers */
@@ -422,7 +440,7 @@
     position: absolute;
     inset: -2px;
     border-radius: inherit;
-    background: linear-gradient(135deg, #FFB800, #4CAF50, #00BCD4);
+    background: linear-gradient(135deg, #FFB800, #FFA500, #00BCD4);
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -439,7 +457,7 @@
   .gradient-border-animated::before {
     background: linear-gradient(135deg,
         #FFB800,
-        #4CAF50,
+        #FFA500,
         #00BCD4,
         #FFB800);
     background-size: 300% 300%;
@@ -526,7 +544,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, #FFB800, #4CAF50);
+    background: linear-gradient(90deg, #FFB800, #FFA500);
     transition: width 0.3s ease;
   }
 

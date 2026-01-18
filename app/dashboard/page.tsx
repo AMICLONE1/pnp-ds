@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
 import { 
   Zap, 
   TrendingUp, 
@@ -25,8 +26,7 @@ import {
   Award
 } from "lucide-react";
 import Link from "next/link";
-import { CreditHistoryChart } from "@/components/features/dashboard/CreditHistoryChart";
-import { RealTimeMonitoring } from "@/components/features/dashboard/RealTimeMonitoring";
+import { DashboardSkeleton } from "@/components/ui/skeletons/DashboardSkeleton";
 
 export const dynamic = 'force-dynamic';
 
@@ -118,7 +118,7 @@ function StatCard({
         <CardContent className="relative p-6">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
+              <p className="text-sm text-black mb-1 flex items-center gap-2">
                 {label}
                 {trend !== undefined && (
                   <span className={`text-xs px-1.5 py-0.5 rounded-full ${
@@ -173,18 +173,18 @@ function QuickActionButton({
     >
       <Link href={href}>
         <motion.div 
-          className="group flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-white hover:border-forest/30 hover:shadow-lg transition-all cursor-pointer"
+          className="group flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-white hover:border-gray-200/30 hover:shadow-lg transition-all cursor-pointer"
           whileHover={{ x: 4 }}
           whileTap={{ scale: 0.98 }}
         >
           <div className={`w-12 h-12 rounded-xl ${color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-black" />
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-charcoal group-hover:text-forest transition-colors">{label}</p>
+            <p className="font-semibold text-black group-hover:text-black transition-colors">{label}</p>
             <p className="text-sm text-gray-500">{description}</p>
           </div>
-          <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-forest group-hover:translate-x-1 transition-all" />
+          <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all" />
         </motion.div>
       </Link>
     </motion.div>
@@ -212,20 +212,20 @@ function EmptyState({
       className="text-center py-12"
     >
       <motion.div 
-        className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-forest/10 to-gold/10 flex items-center justify-center"
+        className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-white/10 to-gold/10 flex items-center justify-center"
         animate={{ 
           scale: [1, 1.05, 1],
           rotate: [0, 5, -5, 0]
         }}
         transition={{ duration: 4, repeat: Infinity }}
       >
-        <Icon className="h-10 w-10 text-forest" />
+        <Icon className="h-10 w-10 text-black" />
       </motion.div>
-      <h3 className="text-lg font-semibold text-charcoal mb-2">{title}</h3>
+      <h3 className="text-lg font-semibold text-black mb-2">{title}</h3>
       <p className="text-gray-500 mb-6 max-w-xs mx-auto">{description}</p>
       <Link href={actionHref}>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button variant="primary" className="bg-gradient-to-r from-forest to-forest-light">
+          <Button variant="primary" className="bg-gradient-to-r from-white to-white-light">
             <Sparkles className="h-4 w-4 mr-2" />
             {actionLabel}
           </Button>
@@ -243,15 +243,15 @@ function AllocationCard({ allocation, index }: { allocation: any; index: number 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
-      className="p-4 bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 hover:border-forest/30 hover:shadow-md transition-all"
+      className="p-4 bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 hover:border-gray-200/30 hover:shadow-md transition-all"
     >
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold to-orange-500 flex items-center justify-center">
-            <Sun className="h-5 w-5 text-white" />
+            <Sun className="h-5 w-5 text-black" />
           </div>
           <div>
-            <h4 className="font-semibold text-charcoal">
+            <h4 className="font-semibold text-black">
               {allocation.project?.name || "Solar Project"}
             </h4>
             <p className="text-sm text-gray-500">
@@ -273,7 +273,7 @@ function AllocationCard({ allocation, index }: { allocation: any; index: number 
         <div className="flex items-center gap-4">
           <div className="text-center">
             <p className="text-xs text-gray-500">Monthly</p>
-            <p className="font-semibold text-forest">{formatCurrency(allocation.monthly_fee || 0)}</p>
+            <p className="font-semibold text-black">{formatCurrency(allocation.monthly_fee || 0)}</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500">Savings</p>
@@ -281,7 +281,7 @@ function AllocationCard({ allocation, index }: { allocation: any; index: number 
           </div>
         </div>
         <Link href={`/reserve?project=${allocation.project_id}`}>
-          <Button variant="ghost" size="sm" className="text-forest hover:bg-forest/10">
+          <Button variant="ghost" size="sm" className="text-black hover:bg-white/10">
             Details
             <ArrowRight className="h-4 w-4 ml-1" />
           </Button>
@@ -300,11 +300,11 @@ function WelcomeBanner() {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-forest via-forest-light to-forest p-8 mb-8"
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-white via-white-light to-white p-8 mb-8"
     >
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-energy-green/10 rounded-full blur-2xl" />
+      <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
       
       {/* Animated sun */}
       <motion.div 
@@ -321,11 +321,11 @@ function WelcomeBanner() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <p className="text-white/70 text-sm font-medium mb-1">{greeting}! 👋</p>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">
+          <p className="text-black/70 text-sm font-medium mb-1">{greeting}! 👋</p>
+          <h1 className="text-3xl md:text-4xl font-heading font-bold text-black mb-2">
             Welcome to Your Dashboard
           </h1>
-          <p className="text-white/80 max-w-xl">
+          <p className="text-black/80 max-w-xl">
             Track your solar energy production, savings, and environmental impact all in one place.
           </p>
         </motion.div>
@@ -337,11 +337,11 @@ function WelcomeBanner() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="flex items-center gap-2 text-white/90">
+          <div className="flex items-center gap-2 text-black/90">
             <Activity className="w-4 h-4 text-gold" />
             <span className="text-sm">System Online</span>
           </div>
-          <div className="flex items-center gap-2 text-white/90">
+          <div className="flex items-center gap-2 text-black/90">
             <Calendar className="w-4 h-4 text-gold" />
             <span className="text-sm">{new Date().toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
           </div>
@@ -352,6 +352,7 @@ function WelcomeBanner() {
 }
 
 export default function DashboardPage() {
+  const { showToast } = useToast();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [allocations, setAllocations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -366,6 +367,11 @@ export default function DashboardPage() {
 
         // Check if responses are ok
         if (!summaryRes.ok || !allocationsRes.ok) {
+          if (summaryRes.status === 401 || allocationsRes.status === 401) {
+            showToast("error", "Please log in to view your dashboard.");
+          } else {
+            showToast("error", "Failed to load dashboard data. Please try again.");
+          }
           throw new Error("Failed to fetch dashboard data");
         }
 
@@ -389,37 +395,27 @@ export default function DashboardPage() {
         });
         setAllocations([]);
       } finally {
+        // Hide loading immediately after data is fetched
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [showToast]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-offwhite">
+      <div className="min-h-screen flex flex-col bg-white">
         <Header />
-        <main className="flex-1 flex items-center justify-center pt-20">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <motion.div
-              className="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-forest/20 border-t-forest"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            />
-            <p className="text-gray-600">Loading your dashboard...</p>
-          </motion.div>
+        <main className="flex-1 pt-20">
+          <DashboardSkeleton />
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-offwhite via-white to-gray-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 container mx-auto px-4 pt-24 pb-8">
         <div className="max-w-7xl mx-auto">
@@ -433,8 +429,8 @@ export default function DashboardPage() {
               label="Total Capacity"
               value={summary?.totalCapacity || 0}
               suffix=" kW"
-              color="text-forest"
-              bgColor="bg-forest/10"
+              color="text-black"
+              bgColor="bg-white/10"
               delay={0.1}
               trend={12}
               trendLabel="Reserved solar capacity"
@@ -455,7 +451,7 @@ export default function DashboardPage() {
               label="CO₂ Offset"
               value={parseFloat(summary?.co2Offset || "0")}
               suffix=" tons"
-              color="text-forest"
+              color="text-black"
               bgColor="bg-emerald-100"
               delay={0.3}
               trendLabel="Environmental impact"
@@ -483,8 +479,8 @@ export default function DashboardPage() {
               <Card className="h-full">
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-forest to-forest-light flex items-center justify-center">
-                      <Target className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-white to-white-light flex items-center justify-center">
+                      <Target className="h-5 w-5 text-black" />
                     </div>
                     <div>
                       <CardTitle>Quick Actions</CardTitle>
@@ -498,7 +494,7 @@ export default function DashboardPage() {
                     icon={Plus}
                     label="Add More Capacity"
                     description="Expand your solar portfolio"
-                    color="bg-gradient-to-br from-forest to-forest-light"
+                    color="bg-gradient-to-br from-white to-white-light"
                     delay={0.6}
                   />
                   <QuickActionButton
@@ -532,7 +528,7 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold to-orange-500 flex items-center justify-center">
-                        <Sun className="h-5 w-5 text-white" />
+                        <Sun className="h-5 w-5 text-black" />
                       </div>
                       <div>
                         <CardTitle>Your Allocations</CardTitle>
@@ -541,7 +537,7 @@ export default function DashboardPage() {
                     </div>
                     {allocations.length > 0 && (
                       <Link href="/reserve">
-                        <Button variant="ghost" size="sm" className="text-forest">
+                        <Button variant="ghost" size="sm" className="text-black">
                           View All
                         </Button>
                       </Link>
@@ -596,7 +592,7 @@ export default function DashboardPage() {
                   <CardHeader>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                        <Award className="h-5 w-5 text-white" />
+                        <Award className="h-5 w-5 text-black" />
                       </div>
                       <div>
                         <CardTitle>Recent Activity</CardTitle>
@@ -619,10 +615,10 @@ export default function DashboardPage() {
                               <TrendingUp className="h-5 w-5 text-green-600" />
                             </div>
                             <div>
-                              <p className="font-medium text-charcoal">
+                              <p className="font-medium text-black">
                                 Credit Applied
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-black">
                                 {new Date(activity.created_at).toLocaleDateString('en-IN', {
                                   day: 'numeric',
                                   month: 'short',

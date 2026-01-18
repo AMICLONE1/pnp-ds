@@ -71,7 +71,7 @@ export function CreditHistoryChart() {
         <CardHeader className="bg-gradient-to-r from-green-50 to-transparent">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-              <BarChart3 className="h-5 w-5 text-white" />
+              <BarChart3 className="h-5 w-5 text-black" />
             </div>
             <div>
               <CardTitle>Credit History</CardTitle>
@@ -99,7 +99,7 @@ export function CreditHistoryChart() {
         <CardHeader className="bg-gradient-to-r from-green-50 to-transparent">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-              <BarChart3 className="h-5 w-5 text-white" />
+              <BarChart3 className="h-5 w-5 text-black" />
             </div>
             <div>
               <CardTitle>Credit History</CardTitle>
@@ -134,7 +134,7 @@ export function CreditHistoryChart() {
               <Clock className="h-8 w-8 text-green-600" />
             </motion.div>
             
-            <h3 className="text-lg font-semibold text-charcoal mb-2">No Credits Yet</h3>
+            <h3 className="text-lg font-semibold text-black mb-2">No Credits Yet</h3>
             <p className="text-gray-500 mb-6 max-w-sm mx-auto">
               Your solar credits will appear here once you reserve capacity and start generating energy.
             </p>
@@ -177,16 +177,16 @@ export function CreditHistoryChart() {
             return (
               <div key={index} className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">
+                  <span className="text-black">
                     {monthName} {credit.year}
                   </span>
-                  <span className="font-semibold text-charcoal">
+                  <span className="font-semibold text-black">
                     {formatCurrency(credit.amount)}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-forest to-forest-light h-2 rounded-full transition-all"
+                    className="bg-gradient-to-r from-white to-white-light h-2 rounded-full transition-all"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>

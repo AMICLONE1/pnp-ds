@@ -45,10 +45,10 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="mb-6 flex justify-center">
               <AlertCircle className="h-16 w-16 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-charcoal mb-4">
+            <h1 className="text-2xl font-bold text-black mb-4">
               Something went wrong
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-black mb-6">
               We encountered an unexpected error. Please try refreshing the page or return to the homepage.
             </p>
             {process.env.NODE_ENV === "development" && this.state.error && (

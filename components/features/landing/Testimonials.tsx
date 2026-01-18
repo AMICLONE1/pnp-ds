@@ -86,7 +86,7 @@ export function Testimonials() {
   };
 
   return (
-    <section className="py-24 bg-gradient-to-b from-white to-offwhite relative" aria-label="Customer testimonials">
+    <section className="py-24 bg-gradient-to-b from-white to-white relative" aria-label="Customer testimonials">
       <div className="container mx-auto px-4">
         <motion.div
           ref={headerRef}
@@ -94,10 +94,10 @@ export function Testimonials() {
           initial="hidden"
           className="text-center mb-16"
         >
-          <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-charcoal">
+          <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 text-black">
             Trusted by Real People
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-black max-w-2xl mx-auto">
             Join 1,000+ homeowners saving ₹50,000+ annually
           </p>
         </motion.div>
@@ -115,15 +115,15 @@ export function Testimonials() {
               >
                 <GlassCard className="p-8 md:p-12">
                   <div className="absolute top-4 right-4">
-                    <Quote className="h-12 w-12 text-forest/20" aria-hidden="true" />
+                    <Quote className="h-12 w-12 text-black/20" aria-hidden="true" />
                   </div>
-                  <p className="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed relative z-10">
+                  <p className="text-xl md:text-2xl text-black mb-8 leading-relaxed relative z-10">
                     &quot;{testimonials[currentIndex].quote}&quot;
                   </p>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-6 border-t border-white/20 gap-4">
                     <div>
                       <div className="flex items-center gap-3 mb-2">
-                        <p className="font-bold text-xl text-charcoal">{testimonials[currentIndex].author}</p>
+                        <p className="font-bold text-xl text-black">{testimonials[currentIndex].author}</p>
                         {testimonials[currentIndex].verified && (
                           <div className="flex items-center gap-1 text-success">
                             <CheckCircle className="h-5 w-5" aria-label="Verified customer" />
@@ -131,7 +131,7 @@ export function Testimonials() {
                           </div>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-black">
                         {testimonials[currentIndex].role} since {testimonials[currentIndex].since}
                         {testimonials[currentIndex].location && ` • ${testimonials[currentIndex].location}`}
                       </p>
@@ -152,14 +152,14 @@ export function Testimonials() {
               className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all focus-visible-ring"
               aria-label="Previous testimonial"
             >
-              <ChevronLeft className="h-6 w-6 text-charcoal" />
+              <ChevronLeft className="h-6 w-6 text-black" />
             </button>
             <button
               onClick={nextTestimonial}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all focus-visible-ring"
               aria-label="Next testimonial"
             >
-              <ChevronRight className="h-6 w-6 text-charcoal" />
+              <ChevronRight className="h-6 w-6 text-black" />
             </button>
 
             {/* Indicators */}
@@ -174,7 +174,7 @@ export function Testimonials() {
                   }}
                   className={`h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? "w-8 bg-forest"
+                      ? "w-8 bg-white"
                       : "w-2 bg-gray-300 hover:bg-gray-400"
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}

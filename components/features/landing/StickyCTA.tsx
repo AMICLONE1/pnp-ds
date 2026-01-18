@@ -15,7 +15,7 @@ export function StickyCTA() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || typeof window === "undefined") return;
     
     const handleScroll = () => {
       // Show CTA after scrolling past hero section
@@ -40,7 +40,7 @@ export function StickyCTA() {
         >
           <Link href="/reserve" className="block w-full">
             <Button
-              className="w-full bg-gold hover:bg-gold-light text-charcoal font-bold py-6 text-lg glow-button focus-visible-ring"
+              className="w-full bg-gold hover:bg-gold-light text-black font-bold py-6 text-lg glow-button focus-visible-ring"
               aria-label="Start saving now"
             >
               Start Saving Now

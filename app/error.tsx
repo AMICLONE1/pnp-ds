@@ -18,7 +18,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-offwhite px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <Card className="max-w-md w-full">
         <CardContent className="p-8 text-center">
           <div className="flex justify-center mb-6">
@@ -26,10 +26,10 @@ export default function Error({
               <AlertCircle className="h-12 w-12 text-red-600" />
             </div>
           </div>
-          <h1 className="text-2xl font-heading font-bold mb-4 text-charcoal">
+          <h1 className="text-2xl font-heading font-bold mb-4 text-black">
             Something went wrong!
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-black mb-6">
             {error.message || "An unexpected error occurred. Please try again."}
           </p>
           <div className="flex gap-4 justify-center">

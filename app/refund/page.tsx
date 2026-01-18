@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function RefundPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-offwhite">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
@@ -21,10 +21,10 @@ export default function RefundPage() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4 text-charcoal">
+            <h1 className="text-4xl font-heading font-bold mb-4 text-black">
               Refund Policy
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-black">
               Exit anytime and get a refund based on your reservation tenure
             </p>
           </div>
@@ -40,11 +40,11 @@ export default function RefundPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-gray-700">
+              <p className="text-black">
                 Unlike traditional rooftop solar which is fixed to your property, Digital Solar
                 allows you to exit your reservation at any time. This flexibility is perfect for:
               </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
+              <ul className="list-disc list-inside space-y-2 text-black ml-4">
                 <li>Relocating to a different city or state</li>
                 <li>Moving to an area not serviceable by us</li>
                 <li>Changing financial circumstances</li>
@@ -56,29 +56,29 @@ export default function RefundPage() {
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <IndianRupee className="h-6 w-6 text-forest" />
+                <IndianRupee className="h-6 w-6 text-black" />
                 Refund Calculation
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-gray-700">
+              <p className="text-black">
                 Your refund is calculated based on:
               </p>
-              <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+              <div className="bg-white p-4 rounded-lg space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Original Reservation Fee:</span>
+                  <span className="text-black">Original Reservation Fee:</span>
                   <span className="font-semibold">₹X,XXX</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Credits Generated (Used):</span>
+                  <span className="text-black">Credits Generated (Used):</span>
                   <span className="font-semibold text-green-600">-₹X,XXX</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Pro-rated Refund:</span>
-                  <span className="font-semibold text-forest">₹X,XXX</span>
+                  <span className="text-black">Pro-rated Refund:</span>
+                  <span className="font-semibold text-black">₹X,XXX</span>
                 </div>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-black">
                 The refund amount ensures you keep all the gains from credits generated thus far,
                 with the same XIRR (time-weighted returns) as if you had held the reservation
                 for the full term.
@@ -94,7 +94,7 @@ export default function RefundPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ol className="list-decimal list-inside space-y-3 text-gray-700">
+              <ol className="list-decimal list-inside space-y-3 text-black">
                 <li>
                   Request exit from your dashboard or contact support
                 </li>

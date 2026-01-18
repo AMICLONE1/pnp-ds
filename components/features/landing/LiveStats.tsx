@@ -52,7 +52,7 @@ export function LiveStats() {
   // Return a placeholder during SSR to prevent hydration mismatch
   if (!mounted) {
     return (
-      <section className="py-20 bg-gradient-to-br from-forest to-forest-dark text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-white to-gray-100 text-black relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
@@ -75,7 +75,7 @@ export function LiveStats() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gradient-to-br from-forest to-forest-dark text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-white to-gray-100 text-black relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
@@ -97,7 +97,7 @@ export function LiveStats() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-forest to-forest-dark text-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-white to-gray-100 text-black relative overflow-hidden">
       <div className="absolute inset-0 opacity-10">
         <div
           className="absolute top-0 left-0 w-full h-full"

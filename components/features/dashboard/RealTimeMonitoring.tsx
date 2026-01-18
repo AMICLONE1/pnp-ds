@@ -70,7 +70,7 @@ function StatBox({
           >
             <Icon className={`h-4 w-4 ${iconColor}`} />
           </motion.div>
-          <span className="text-xs text-gray-600 font-medium">{label}</span>
+          <span className="text-xs text-black font-medium">{label}</span>
         </div>
         <motion.p 
           className={`text-2xl font-bold ${textColor}`}
@@ -97,11 +97,11 @@ function EfficiencyGauge({ efficiency }: { efficiency: number }) {
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-forest" />
-          <span className="text-sm font-medium text-gray-700">System Efficiency</span>
+          <Gauge className="h-4 w-4 text-black" />
+          <span className="text-sm font-medium text-black">System Efficiency</span>
         </div>
         <motion.span 
-          className="text-lg font-bold text-forest"
+          className="text-lg font-bold text-black"
           key={efficiency}
           initial={{ scale: 1.2 }}
           animate={{ scale: 1 }}
@@ -205,7 +205,7 @@ export function RealTimeMonitoring() {
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center">
             <motion.div
-              className="w-12 h-12 rounded-full border-4 border-forest/20 border-t-forest"
+              className="w-12 h-12 rounded-full border-4 border-gray-200/20 border-t-forest"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             />
@@ -223,15 +223,15 @@ export function RealTimeMonitoring() {
   return (
     <Card className="overflow-hidden">
       {/* Header with gradient */}
-      <CardHeader className="relative bg-gradient-to-r from-forest/5 to-transparent">
+      <CardHeader className="relative bg-gradient-to-r from-white/5 to-transparent">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <motion.div 
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest to-forest-light flex items-center justify-center"
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-white to-white-light flex items-center justify-center"
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 4, repeat: Infinity }}
             >
-              <Activity className="h-5 w-5 text-white" />
+              <Activity className="h-5 w-5 text-black" />
             </motion.div>
             <div>
               <CardTitle className="flex items-center gap-2">
@@ -274,10 +274,10 @@ export function RealTimeMonitoring() {
             label="Current Generation"
             value={data.currentGeneration}
             suffix=" kW"
-            bgColor="bg-gradient-to-br from-forest/10 to-forest/5"
-            borderColor="border-forest/20"
-            textColor="text-forest"
-            iconColor="text-forest"
+            bgColor="bg-gradient-to-br from-white/10 to-white/5"
+            borderColor="border-gray-200/20"
+            textColor="text-black"
+            iconColor="text-black"
             subLabel="Right now"
             delay={0.1}
             pulse={data.currentGeneration > 0}

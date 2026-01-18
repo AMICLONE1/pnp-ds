@@ -107,10 +107,10 @@ export function ComparisonSlider({
       </div>
 
       {/* Labels */}
-      <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+      <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full text-sm font-medium text-black">
         {beforeLabel}
       </div>
-      <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+      <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full text-sm font-medium text-black">
         {afterLabel}
       </div>
     </div>
@@ -161,8 +161,8 @@ export function BeforeAfterCard({
           onClick={() => setActiveTab("after")}
           className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${
             activeTab === "after"
-              ? "bg-green-500/20 text-green-400"
-              : "text-gray-400 hover:text-white"
+              ? "bg-gold/20 text-gold"
+              : "text-gray-400 hover:text-black"
           }`}
         >
           {afterTitle}
@@ -194,7 +194,7 @@ export function BeforeAfterCard({
               <span className={item.positive !== false ? "text-green-400" : "text-red-400"}>
                 {item.positive !== false ? "✓" : "✗"}
               </span>
-              <span className="text-white">{item.text}</span>
+              <span className="text-black">{item.text}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -268,7 +268,7 @@ export function FeatureComparison({
             index !== features.length - 1 ? "border-b border-white/10" : ""
           }`}
         >
-          <div className="p-4 text-white">{feature.name}</div>
+          <div className="p-4 text-black">{feature.name}</div>
           <div className="p-4 text-center border-x border-white/10">
             {typeof feature.digital === "boolean" ? (
               <span className={feature.digital ? "text-green-400" : "text-red-400"}>

@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Header } from "@/components/layout/header";
+import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import { 
   Sun, 
@@ -80,8 +80,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-offwhite via-white to-forest/5 pt-28 pb-12 px-4">
+      <LandingHeader />
+      <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-offwhite via-white to-white/5 pt-28 pb-12 px-4">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
           {/* Left Side - Benefits */}
           <motion.div
@@ -96,15 +96,15 @@ export default function LoginPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-forest/10 text-forest text-sm font-medium mb-4"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-black text-sm font-medium mb-4"
                 >
                   <Sparkles className="h-4 w-4" />
                   Welcome back to PowerNetPro
                 </motion.div>
-                <h1 className="text-4xl font-heading font-bold text-charcoal mb-3">
-                  Sign in to manage your <span className="text-forest">solar savings</span>
+                <h1 className="text-4xl font-heading font-bold text-black mb-3">
+                  Sign in to manage your <span className="text-black">solar savings</span>
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-black">
                   Access your dashboard, track credits, and manage your electricity bills all in one place.
                 </p>
               </div>
@@ -112,9 +112,9 @@ export default function LoginPage() {
               {/* Feature Cards */}
               <div className="space-y-3">
                 {[
-                  { icon: TrendingDown, title: "Track Savings", desc: "Monitor your monthly solar credits in real-time", color: "text-energy-green", bg: "bg-energy-green/10" },
+                  { icon: TrendingDown, title: "Track Savings", desc: "Monitor your monthly solar credits in real-time", color: "text-energy-green", bg: "bg-white/10" },
                   { icon: Zap, title: "Instant Updates", desc: "Get notified when credits are applied to your bills", color: "text-gold", bg: "bg-gold/10" },
-                  { icon: Shield, title: "Secure Access", desc: "Your data is protected with enterprise-grade security", color: "text-forest", bg: "bg-forest/10" },
+                  { icon: Shield, title: "Secure Access", desc: "Your data is protected with enterprise-grade security", color: "text-black", bg: "bg-white/10" },
                 ].map((feature, index) => (
                   <motion.div
                     key={feature.title}
@@ -127,7 +127,7 @@ export default function LoginPage() {
                       <feature.icon className={`h-5 w-5 ${feature.color}`} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-charcoal">{feature.title}</h3>
+                      <h3 className="font-semibold text-black">{feature.title}</h3>
                       <p className="text-sm text-gray-500">{feature.desc}</p>
                     </div>
                   </motion.div>
@@ -142,17 +142,17 @@ export default function LoginPage() {
                 className="flex items-center gap-6 pt-4"
               >
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-forest">10,000+</p>
+                  <p className="text-2xl font-bold text-black">10,000+</p>
                   <p className="text-xs text-gray-500">Active Users</p>
                 </div>
                 <div className="w-px h-10 bg-gray-200" />
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-forest">₹2Cr+</p>
+                  <p className="text-2xl font-bold text-black">₹2Cr+</p>
                   <p className="text-xs text-gray-500">Saved Monthly</p>
                 </div>
                 <div className="w-px h-10 bg-gray-200" />
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-forest">4.9★</p>
+                  <p className="text-2xl font-bold text-black">4.9★</p>
                   <p className="text-xs text-gray-500">User Rating</p>
                 </div>
               </motion.div>
@@ -167,10 +167,10 @@ export default function LoginPage() {
           >
             <Card className="w-full max-w-md mx-auto overflow-hidden shadow-xl shadow-forest/5 border-0">
               {/* Card Header with Gradient */}
-              <div className="bg-gradient-to-br from-forest via-forest to-forest-light p-8 text-center relative overflow-hidden">
+              <div className="bg-gradient-to-br from-white via-white to-white-light p-8 text-center relative overflow-hidden">
                 <div className="absolute inset-0 overflow-hidden">
                   <div className="absolute -top-12 -right-12 w-32 h-32 bg-gold/10 rounded-full blur-2xl" />
-                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-energy-green/10 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
                 </div>
                 <motion.div
                   initial={{ scale: 0 }}
@@ -184,7 +184,7 @@ export default function LoginPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="relative text-2xl font-heading font-bold text-white"
+                  className="relative text-2xl font-heading font-bold text-black"
                 >
                   Welcome Back
                 </motion.h2>
@@ -192,7 +192,7 @@ export default function LoginPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="relative text-white/70 text-sm mt-1"
+                  className="relative text-black/70 text-sm mt-1"
                 >
                   Sign in to your PowerNetPro account
                 </motion.p>
@@ -201,8 +201,8 @@ export default function LoginPage() {
               <CardContent className="p-6">
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                      <Mail className="h-4 w-4 text-forest" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                      <Mail className="h-4 w-4 text-black" />
                       Email Address
                     </label>
                     <Input
@@ -218,8 +218,8 @@ export default function LoginPage() {
                     />
                   </div>
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-charcoal mb-2">
-                      <Lock className="h-4 w-4 text-forest" />
+                    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+                      <Lock className="h-4 w-4 text-black" />
                       Password
                     </label>
                     <Input
@@ -236,12 +236,12 @@ export default function LoginPage() {
 
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-forest focus:ring-forest" />
-                      <span className="text-sm text-gray-600">Remember me</span>
+                      <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-black focus:ring-forest" />
+                      <span className="text-sm text-black">Remember me</span>
                     </label>
                     <Link
                       href="/forgot-password"
-                      className="text-sm text-forest hover:underline font-medium"
+                      className="text-sm text-black hover:underline font-medium"
                     >
                       Forgot password?
                     </Link>
@@ -274,9 +274,9 @@ export default function LoginPage() {
                 </form>
 
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <p className="text-center text-sm text-gray-600">
+                  <p className="text-center text-sm text-black">
                     Don&apos;t have an account?{" "}
-                    <Link href="/signup" className="text-forest hover:underline font-semibold">
+                    <Link href="/signup" className="text-black hover:underline font-semibold">
                       Sign up free
                     </Link>
                   </p>
@@ -292,7 +292,7 @@ export default function LoginPage() {
               className="lg:hidden flex items-center justify-center gap-4 mt-6 text-xs text-gray-500"
             >
               <div className="flex items-center gap-1">
-                <Shield className="h-3.5 w-3.5 text-forest" />
+                <Shield className="h-3.5 w-3.5 text-black" />
                 Secure Login
               </div>
               <div className="w-1 h-1 rounded-full bg-gray-300" />

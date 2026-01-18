@@ -114,11 +114,11 @@ export default function HelpPage() {
       <Header />
       <main className="flex-1 pt-28 pb-16">
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-forest via-forest to-forest-light py-16 mb-12">
+        <div className="relative overflow-hidden bg-gradient-to-br from-white via-white to-white-light py-16 mb-12">
           {/* Background decorations */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-gold/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-energy-green/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
             <div className="absolute inset-0 opacity-5" style={{
               backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 1px)`,
               backgroundSize: '32px 32px',
@@ -136,16 +136,16 @@ export default function HelpPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/90 text-sm font-medium mb-6"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-black/90 text-sm font-medium mb-6"
               >
                 <HelpCircle className="h-4 w-4" />
                 We're here to help
               </motion.div>
               
-              <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-white">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-black">
                 Help Center
               </h1>
-              <p className="text-lg text-white/70 mb-8">
+              <p className="text-lg text-black/70 mb-8">
                 Find answers to common questions and learn how to use PowerNetPro
               </p>
 
@@ -222,20 +222,20 @@ export default function HelpPage() {
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
                         <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color} shadow-lg`}>
-                          <item.icon className="h-6 w-6 text-white" />
+                          <item.icon className="h-6 w-6 text-black" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold text-charcoal group-hover:text-forest transition-colors">
+                            <h3 className="font-semibold text-black group-hover:text-black transition-colors">
                               {item.title}
                             </h3>
                             <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
                               {item.badge}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600">{item.desc}</p>
+                          <p className="text-sm text-black">{item.desc}</p>
                         </div>
-                        <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-forest group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all" />
                       </div>
                     </CardContent>
                   </Card>
@@ -261,7 +261,7 @@ export default function HelpPage() {
                     className={`transition-all duration-200 ${
                       selectedCategory === category 
                         ? "shadow-lg shadow-forest/20" 
-                        : "hover:bg-forest/5"
+                        : "hover:bg-white/5"
                     }`}
                   >
                     <Icon className="h-4 w-4 mr-1.5" />
@@ -293,7 +293,7 @@ export default function HelpPage() {
                     }`}>
                       <CardContent className="p-0">
                         <button
-                          className="w-full flex items-center justify-between text-left p-5 hover:bg-gray-50/50 transition-colors"
+                          className="w-full flex items-center justify-between text-left p-5 hover:bg-white/50 transition-colors"
                           onClick={() =>
                             setExpandedFAQ(expandedFAQ === index ? null : index)
                           }
@@ -301,8 +301,8 @@ export default function HelpPage() {
                           <div className="flex items-center gap-4 flex-1">
                             <div className={`p-2 rounded-lg transition-colors ${
                               expandedFAQ === index 
-                                ? "bg-forest text-white" 
-                                : "bg-forest/10 text-forest"
+                                ? "bg-white text-white" 
+                                : "bg-white/10 text-black"
                             }`}>
                               {faq.category === "General" && <HelpCircle className="h-4 w-4" />}
                               {faq.category === "Reserving Solar" && <Sun className="h-4 w-4" />}
@@ -316,14 +316,14 @@ export default function HelpPage() {
                               }`}>
                                 {faq.category}
                               </span>
-                              <h3 className="text-base font-semibold text-charcoal">{faq.question}</h3>
+                              <h3 className="text-base font-semibold text-black">{faq.question}</h3>
                             </div>
                           </div>
                           <motion.div
                             animate={{ rotate: expandedFAQ === index ? 180 : 0 }}
                             transition={{ duration: 0.2 }}
                             className={`ml-4 p-1 rounded-full ${
-                              expandedFAQ === index ? "bg-forest text-white" : "bg-gray-100 text-gray-400"
+                              expandedFAQ === index ? "bg-white text-white" : "bg-gray-100 text-gray-400"
                             }`}
                           >
                             <ChevronDown className="h-5 w-5" />
@@ -339,12 +339,12 @@ export default function HelpPage() {
                               className="overflow-hidden"
                             >
                               <div className="px-5 pb-5 pt-0 ml-14">
-                                <div className="p-4 bg-gray-50 rounded-xl">
-                                  <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                                <div className="p-4 bg-white rounded-xl">
+                                  <p className="text-black leading-relaxed">{faq.answer}</p>
                                 </div>
                                 <div className="flex items-center gap-4 mt-4 text-sm">
                                   <span className="text-gray-400">Was this helpful?</span>
-                                  <button className="text-forest hover:underline font-medium">Yes</button>
+                                  <button className="text-black hover:underline font-medium">Yes</button>
                                   <button className="text-gray-500 hover:underline">No</button>
                                 </div>
                               </div>
@@ -368,8 +368,8 @@ export default function HelpPage() {
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
                       <Search className="h-8 w-8 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-charcoal mb-2">No results found</h3>
-                    <p className="text-gray-600 mb-4">Try a different search term or browse by category</p>
+                    <h3 className="text-lg font-semibold text-black mb-2">No results found</h3>
+                    <p className="text-black mb-4">Try a different search term or browse by category</p>
                     <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}>
                       Clear filters
                     </Button>
@@ -385,29 +385,29 @@ export default function HelpPage() {
               transition={{ delay: 0.8 }}
               className="mt-16"
             >
-              <Card className="border-0 bg-gradient-to-br from-forest via-forest to-forest-light text-white overflow-hidden">
+              <Card className="border-0 bg-gradient-to-br from-white via-white to-white-light text-black overflow-hidden">
                 <CardContent className="p-8 md:p-12 relative">
                   {/* Background decorations */}
                   <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
-                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-energy-green/10 rounded-full blur-3xl" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
                   
                   <div className="relative grid md:grid-cols-2 gap-8 items-center">
                     <div>
                       <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4">
                         Still have questions?
                       </h2>
-                      <p className="text-white/70 mb-6">
+                      <p className="text-black/70 mb-6">
                         Can't find what you're looking for? Our support team is ready to help you with any questions.
                       </p>
                       <div className="flex flex-wrap gap-3">
                         <a href="/contact">
-                          <Button className="bg-gold hover:bg-gold-light text-charcoal font-semibold">
+                          <Button className="bg-gold hover:bg-gold-light text-black font-semibold">
                             <MessageCircle className="h-4 w-4 mr-2" />
                             Contact Support
                           </Button>
                         </a>
                         <a href="mailto:help@powernetpro.in">
-                          <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                          <Button variant="outline" className="border-white/30 text-black hover:bg-white/10">
                             <Mail className="h-4 w-4 mr-2" />
                             Email Us
                           </Button>
@@ -418,14 +418,14 @@ export default function HelpPage() {
                       <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
                         <Phone className="h-6 w-6 text-gold mb-3" />
                         <h3 className="font-semibold mb-1">Call Us</h3>
-                        <p className="text-sm text-white/70">+91 800 123 4567</p>
-                        <p className="text-xs text-white/50 mt-1">Mon-Fri, 9AM-6PM IST</p>
+                        <p className="text-sm text-black/70">+91 800 123 4567</p>
+                        <p className="text-xs text-black/50 mt-1">Mon-Fri, 9AM-6PM IST</p>
                       </div>
                       <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
                         <Zap className="h-6 w-6 text-gold mb-3" />
                         <h3 className="font-semibold mb-1">Quick Response</h3>
-                        <p className="text-sm text-white/70">Under 2 hours</p>
-                        <p className="text-xs text-white/50 mt-1">Average response time</p>
+                        <p className="text-sm text-black/70">Under 2 hours</p>
+                        <p className="text-xs text-black/50 mt-1">Average response time</p>
                       </div>
                     </div>
                   </div>

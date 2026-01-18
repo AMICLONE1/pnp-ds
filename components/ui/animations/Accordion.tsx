@@ -76,26 +76,26 @@ export function FAQAccordion({
   // Theme-based styles
   const styles = {
     light: {
-      searchBg: "bg-gray-50 border-gray-200 focus:border-forest focus:ring-forest/20",
-      searchText: "text-charcoal placeholder:text-gray-400",
+      searchBg: "bg-gray-50 border-gray-200 focus:border-gray-200 focus:ring-forest/20",
+      searchText: "text-black placeholder:text-gray-400",
       searchIcon: "text-gray-400",
-      categoryBg: "bg-gray-100 border-gray-200 text-gray-600 hover:bg-forest/10 hover:text-forest hover:border-forest/30",
-      categoryActive: "bg-forest text-white border-forest",
-      itemBg: "bg-white border-gray-200 hover:border-forest/30 hover:shadow-md",
-      itemBgOpen: "bg-forest/5 border-forest/30 shadow-lg shadow-forest/5",
-      questionText: "text-charcoal",
-      answerText: "text-gray-600",
-      chevronColor: "text-forest",
-      highlightBg: "bg-gold/20 text-charcoal",
+      categoryBg: "bg-gray-100 border-gray-200 text-black hover:bg-white/10 hover:text-black hover:border-gray-200/30",
+      categoryActive: "bg-gold text-black border-gold",
+      itemBg: "bg-white border-gray-200 hover:border-gray-200/30 hover:shadow-md",
+      itemBgOpen: "bg-white/5 border-gray-200/30 shadow-lg shadow-forest/5",
+      questionText: "text-black",
+      answerText: "text-black",
+      chevronColor: "text-black",
+      highlightBg: "bg-gold/20 text-black",
       emptyText: "text-gray-400",
-      numberBg: "bg-forest/10 text-forest",
+      numberBg: "bg-white/10 text-black",
     },
     dark: {
       searchBg: "bg-white/5 border-white/10 focus:border-gold/50 focus:ring-gold/20",
       searchText: "text-white placeholder:text-gray-400",
       searchIcon: "text-gray-400",
       categoryBg: "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:border-gold/30",
-      categoryActive: "bg-gold text-charcoal border-gold",
+      categoryActive: "bg-gold text-black border-gold",
       itemBg: "bg-white/[0.02] border-white/10 hover:bg-white/5",
       itemBgOpen: "bg-white/5 border-gold/30",
       questionText: "text-white",
@@ -117,10 +117,18 @@ export function FAQAccordion({
     <div className={className}>
       {/* Search Bar - Enhanced */}
       {searchable && (
-        <div className="relative mb-6">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-forest/10 flex items-center justify-center">
-            <Search className={`h-5 w-5 ${variant === "light" ? "text-forest" : "text-gold"}`} />
-          </div>
+        <motion.div 
+          className="relative mb-6"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <motion.div 
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shadow-sm"
+            whileHover={{ scale: 1.05 }}
+          >
+            <Search className={`h-5 w-5 ${variant === "light" ? "text-gold" : "text-gold"}`} />
+          </motion.div>
           <input
             type="text"
             placeholder="Search for a question..."
@@ -129,54 +137,71 @@ export function FAQAccordion({
               setSearchQuery(e.target.value);
               setActiveCategory(null);
             }}
-            className={`w-full pl-16 pr-4 py-4 border-2 rounded-2xl transition-all duration-300 focus:outline-none focus:ring-4 ${s.searchBg} ${s.searchText}`}
+            className={`w-full pl-16 pr-4 py-4 border-2 rounded-2xl transition-all duration-300 focus:outline-none focus:ring-4 shadow-sm hover:shadow-md ${s.searchBg} ${s.searchText}`}
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           />
           {searchQuery && (
-            <button
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
               onClick={() => setSearchQuery("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gold transition-colors px-3 py-1.5 rounded-lg hover:bg-gold/10"
             >
-              <span className="text-sm">Clear</span>
-            </button>
+              <span className="text-sm font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>Clear</span>
+            </motion.button>
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Category Pills - Enhanced */}
       {showCategories && categories.length > 0 && (
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className={`w-4 h-4 ${variant === "light" ? "text-forest" : "text-gold"}`} />
-            <span className={`text-sm font-medium ${variant === "light" ? "text-gray-500" : "text-gray-400"}`}>
+        <motion.div 
+          className="mb-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className={`w-4 h-4 ${variant === "light" ? "text-gold" : "text-gold"}`} />
+            <span className={`text-sm font-semibold ${variant === "light" ? "text-gray-700" : "text-gray-400"}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Filter by topic
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
             <motion.button
-              whileHover={{ scale: 1.02 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.15 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveCategory(null)}
-              className={`px-4 py-2.5 border rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`px-5 py-2.5 border-2 rounded-xl text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow-md ${
                 !activeCategory ? s.categoryActive : s.categoryBg
               }`}
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               All Questions
             </motion.button>
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <motion.button
                 key={category}
-                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.15 + (index + 1) * 0.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleCategoryClick(category || "")}
-                className={`px-4 py-2.5 border rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`px-5 py-2.5 border-2 rounded-xl text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow-md ${
                   activeCategory === category ? s.categoryActive : s.categoryBg
                 }`}
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 {category}
               </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Results count */}
@@ -192,16 +217,22 @@ export function FAQAccordion({
       )}
 
       {/* Accordion items - Enhanced */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <AnimatePresence mode="popLayout">
           {filteredItems.map((item, index) => (
             <motion.div
               key={item.id}
               layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: index * 0.03, duration: 0.3 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ 
+                delay: index * 0.05, 
+                duration: 0.4,
+                type: "spring",
+                stiffness: 100,
+                damping: 20
+              }}
               className="overflow-hidden"
             >
               <motion.div
@@ -209,22 +240,32 @@ export function FAQAccordion({
                   openItems.includes(item.id) ? s.itemBgOpen : s.itemBg
                 }`}
                 layout
+                whileHover={{ 
+                  boxShadow: openItems.includes(item.id) 
+                    ? "0 20px 40px -10px rgba(0,0,0,0.15)" 
+                    : "0 8px 24px -6px rgba(0,0,0,0.08)"
+                }}
               >
                 <button
                   onClick={() => toggleItem(item.id)}
-                  className="w-full flex items-center gap-4 p-5 text-left group"
+                  className="w-full flex items-center gap-4 p-6 text-left group"
                 >
                   {/* Question Number */}
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-semibold text-sm transition-all duration-300 ${
-                    openItems.includes(item.id) 
-                      ? (variant === "light" ? "bg-forest text-white" : "bg-gold text-charcoal")
-                      : s.numberBg
-                  }`}>
+                  <motion.div 
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-base transition-all duration-300 shadow-sm ${
+                      openItems.includes(item.id) 
+                        ? (variant === "light" ? "bg-gold text-black shadow-gold/20" : "bg-gold text-black")
+                        : s.numberBg
+                    }`}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
                     {String(index + 1).padStart(2, '0')}
-                  </div>
+                  </motion.div>
                   
                   {/* Question Text */}
-                  <span className={`flex-1 text-lg font-medium ${s.questionText} pr-4 group-hover:${variant === "light" ? "text-forest" : "text-gold"} transition-colors`}>
+                  <span className={`flex-1 text-lg font-semibold ${s.questionText} pr-4 group-hover:${variant === "light" ? "text-gold" : "text-gold"} transition-colors`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
                     {highlightText(item.question, searchQuery, s.highlightBg)}
                   </span>
                   
@@ -234,10 +275,11 @@ export function FAQAccordion({
                       rotate: openItems.includes(item.id) ? 180 : 0,
                     }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                    whileHover={{ scale: 1.1 }}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 shadow-sm ${
                       openItems.includes(item.id)
-                        ? (variant === "light" ? "bg-forest text-white" : "bg-gold text-charcoal")
-                        : (variant === "light" ? "bg-gray-100 text-gray-400 group-hover:bg-forest/10 group-hover:text-forest" : "bg-white/10 text-gray-400 group-hover:bg-gold/20 group-hover:text-gold")
+                        ? (variant === "light" ? "bg-gold text-black shadow-gold/20" : "bg-gold text-black")
+                        : (variant === "light" ? "bg-gray-100 text-gray-500 group-hover:bg-gold/20 group-hover:text-gold" : "bg-white/10 text-gray-400 group-hover:bg-gold/20 group-hover:text-gold")
                     }`}
                   >
                     <ChevronDown className="h-5 w-5" />
@@ -250,22 +292,33 @@ export function FAQAccordion({
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <div className={`px-5 pb-5 ml-14 ${s.answerText} leading-relaxed text-base`}>
-                        <div className={`p-4 rounded-xl ${variant === "light" ? "bg-gray-50" : "bg-white/5"}`}>
+                      <motion.div 
+                        className={`px-6 pb-6 ml-16 ${s.answerText} leading-relaxed text-base`}
+                        initial={{ y: -10 }}
+                        animate={{ y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      >
+                        <div className={`p-5 rounded-xl border ${variant === "light" ? "bg-gray-50/80 border-gray-100" : "bg-white/5 border-white/5"}`}>
                           {typeof item.answer === "string"
                             ? highlightText(item.answer, searchQuery, s.highlightBg)
                             : item.answer}
                         </div>
                         {item.category && (
-                          <div className="mt-3 flex items-center gap-2">
-                            <span className={`text-xs px-2 py-1 rounded-full ${variant === "light" ? "bg-forest/10 text-forest" : "bg-gold/20 text-gold"}`}>
+                          <motion.div 
+                            className="mt-4 flex items-center gap-2"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.2 }}
+                          >
+                            <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${variant === "light" ? "bg-gold/20 text-gold border border-gold/20" : "bg-gold/20 text-gold"}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
                               {item.category}
                             </span>
-                          </div>
+                          </motion.div>
                         )}
-                      </div>
+                      </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -285,14 +338,14 @@ export function FAQAccordion({
           <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${variant === "light" ? "bg-gray-100" : "bg-white/10"}`}>
             <HelpCircle className={`w-8 h-8 ${s.emptyText}`} />
           </div>
-          <p className={`text-lg font-medium ${variant === "light" ? "text-charcoal" : "text-white"} mb-2`}>
+          <p className={`text-lg font-medium ${variant === "light" ? "text-black" : "text-white"} mb-2`}>
             No questions found
           </p>
           <p className={s.emptyText}>
             Try searching for something else or{" "}
             <button 
               onClick={() => { setSearchQuery(""); setActiveCategory(null); }}
-              className={`font-medium ${variant === "light" ? "text-forest hover:underline" : "text-gold hover:underline"}`}
+              className={`font-medium ${variant === "light" ? "text-black hover:underline" : "text-gold hover:underline"}`}
             >
               view all questions
             </button>
@@ -305,27 +358,37 @@ export function FAQAccordion({
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className={`mt-8 p-6 rounded-2xl border-2 border-dashed ${variant === "light" ? "border-gray-200 bg-gray-50/50" : "border-white/10 bg-white/5"}`}
+        transition={{ delay: 0.2 }}
+        className={`mt-10 p-6 rounded-2xl border-2 border-dashed ${variant === "light" ? "border-gray-200 bg-gradient-to-br from-gray-50 to-white shadow-sm" : "border-white/10 bg-white/5"}`}
       >
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${variant === "light" ? "bg-forest/10" : "bg-gold/20"}`}>
-            <MessageCircle className={`w-6 h-6 ${variant === "light" ? "text-forest" : "text-gold"}`} />
-          </div>
+        <div className="flex items-center gap-5">
+          <motion.div 
+            className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-sm ${variant === "light" ? "bg-gold/20" : "bg-gold/20"}`}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            <MessageCircle className={`w-7 h-7 ${variant === "light" ? "text-gold" : "text-gold"}`} />
+          </motion.div>
           <div className="flex-1">
-            <p className={`font-semibold ${variant === "light" ? "text-charcoal" : "text-white"}`}>
+            <p className={`font-bold text-base mb-1 ${variant === "light" ? "text-black" : "text-white"}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Still have questions?
             </p>
-            <p className={`text-sm ${variant === "light" ? "text-gray-500" : "text-gray-400"}`}>
+            <p className={`text-sm ${variant === "light" ? "text-gray-600" : "text-gray-400"}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Can&apos;t find what you&apos;re looking for? Our team is here to help.
             </p>
           </div>
-          <button className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-300 ${
-            variant === "light" 
-              ? "bg-forest text-white hover:bg-forest-light" 
-              : "bg-gold text-charcoal hover:bg-gold-light"
-          }`}>
+          <motion.button 
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${
+              variant === "light" 
+                ? "bg-gold text-black hover:bg-amber-500" 
+                : "bg-gold text-black hover:bg-gold-light"
+            }`}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             Contact Us
-          </button>
+          </motion.button>
         </div>
       </motion.div>
     </div>
