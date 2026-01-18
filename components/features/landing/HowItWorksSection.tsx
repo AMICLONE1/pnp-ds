@@ -461,6 +461,7 @@ export function HowItWorksSection() {
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
+    layoutEffect: false,
   });
 
   // Track scroll progress and reveal steps sequentially

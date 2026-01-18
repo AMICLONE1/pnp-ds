@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { DashboardSkeleton } from "@/components/ui/skeletons/DashboardSkeleton";
+import { RealTimeMonitoring } from "@/components/features/dashboard/RealTimeMonitoring";
+import { CreditHistoryChart } from "@/components/features/dashboard/CreditHistoryChart";
 
 export const dynamic = 'force-dynamic';
 
