@@ -110,9 +110,9 @@ function FeatureCard({
           : "bg-white/50 hover:bg-white hover:shadow-xl"
       )}
     >
-      {/* Number indicator */}
+      {/* Number indicator - positioned inside card */}
       <div className={cn(
-        "absolute -top-4 -left-4 w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg transition-all duration-300",
+        "absolute top-4 left-4 w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg transition-all duration-300 z-10 shadow-md",
         isActive 
           ? `bg-gradient-to-br ${feature.color} text-black shadow-lg` 
           : "bg-gray-100 text-gray-400"

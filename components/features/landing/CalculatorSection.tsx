@@ -15,7 +15,7 @@ import {
   Calculator
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
+import { SOLAR_CONSTANTS, calculateSetupCost } from "@/lib/solar-constants";
 
 function formatCurrency(amount: number): string {
   return `₹${amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
@@ -23,20 +23,48 @@ function formatCurrency(amount: number): string {
 
 export function CalculatorSection() {
   const [avgBill, setAvgBill] = useState(2500);
+  const [billInput, setBillInput] = useState("2500");
   const [savingsPercent, setSavingsPercent] = useState(75);
   const [isBillFocused, setIsBillFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Calculations
+  // Step 1: Calculate target monthly savings
+  const monthlySavings = (avgBill * savingsPercent) / 100;
+  
+  // Step 2: Calculate energy needed (kWh/month) to achieve this savings
+  // Monthly savings = Energy needed × Credit rate per unit
+  const energyNeededKwhPerMonth = monthlySavings / SOLAR_CONSTANTS.creditRatePerUnit;
+  
+  // Step 3: Calculate capacity needed (kW)
+  // 1kW generates 4.5 units per day = 4.5 × 30 = 135 units per month
+  const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; // 135 kWh/month per kW
+  const reservedSolarKw = energyNeededKwhPerMonth / monthlyGenerationPerKw;
+  const reservedSolarWatts = reservedSolarKw * 1000;
+  
+  // Step 4: Calculate actual energy produced
+  const energyProducedKwh = reservedSolarKw * SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth;
+  
+  // Step 5: Calculate CO2 offset
+  const co2OffsetTonnes = (energyProducedKwh * 12 * SOLAR_CONSTANTS.co2PerKwh) / 1000;
+  
+  // Step 6: Calculate setup cost with bulk discount
+  const setupCost = calculateSetupCost(reservedSolarKw);
+  
+  // Step 7: Calculate annual savings and ROI
+  const annualSavings = monthlySavings * 12;
+  const roiYears = annualSavings > 0 ? (setupCost / annualSavings).toFixed(1) : '0';
+  
   const calculations = {
-    monthlySavings: (avgBill * savingsPercent) / 100,
-    annualSavings: ((avgBill * savingsPercent) / 100) * 12,
-    reservedSolarWatts: ((avgBill * savingsPercent) / 100 / SOLAR_CONSTANTS.creditRatePerUnit) * 1000,
-    get reservedSolarKw() { return this.reservedSolarWatts / 1000; },
-    get energyProducedKwh() { return this.reservedSolarKw * SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; },
-    get co2OffsetTonnes() { return this.energyProducedKwh * 12 * SOLAR_CONSTANTS.co2PerKwh / 1000; },
-    get reservationFee() { return this.reservedSolarWatts * SOLAR_CONSTANTS.reservationFeePerWatt; },
-    get roiYears() { return this.reservationFee && this.annualSavings > 0 ? (this.reservationFee / this.annualSavings).toFixed(1) : '0'; },
+    monthlySavings: Math.round(monthlySavings * 100) / 100,
+    annualSavings: Math.round(annualSavings * 100) / 100,
+    reservedSolarKw: Math.round(reservedSolarKw * 100) / 100,
+    reservedSolarWatts: Math.round(reservedSolarWatts),
+    energyProducedKwh: Math.round(energyProducedKwh * 100) / 100,
+    co2OffsetTonnes: Math.round(co2OffsetTonnes * 100) / 100,
+    reservationFee: setupCost,
+    setupCost: setupCost,
+    roiYears: roiYears,
   };
 
   return (
@@ -153,11 +181,38 @@ export function CalculatorSection() {
                         <span className="text-gold font-bold text-2xl">₹</span>
                       </div>
                       <input
-                        type="number"
-                        value={avgBill}
-                        onChange={(e) => setAvgBill(Math.max(0, Math.min(100000, Number(e.target.value) || 0)))}
-                        onFocus={() => setIsBillFocused(true)}
-                        onBlur={() => setIsBillFocused(false)}
+                        type="text"
+                        inputMode="numeric"
+                        value={billInput}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Allow empty string, numbers, and prevent leading zeros
+                          if (value === "" || value === "0") {
+                            setBillInput(value);
+                            setAvgBill(0);
+                          } else if (/^\d+$/.test(value)) {
+                            const numValue = parseInt(value, 10);
+                            if (numValue >= 0 && numValue <= 100000) {
+                              setBillInput(value);
+                              setAvgBill(numValue);
+                            }
+                          }
+                        }}
+                        onFocus={() => {
+                          setIsBillFocused(true);
+                          // Select all text on focus for easy replacement
+                          if (billInput === "2500" || billInput === "0") {
+                            setBillInput("");
+                          }
+                        }}
+                        onBlur={() => {
+                          setIsBillFocused(false);
+                          // If empty on blur, set to default
+                          if (billInput === "" || billInput === "0") {
+                            setBillInput("2500");
+                            setAvgBill(2500);
+                          }
+                        }}
                         placeholder="2500"
                         className="flex-1 bg-transparent text-black font-bold text-3xl py-4 outline-none 
                                    [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -171,7 +226,10 @@ export function CalculatorSection() {
                       {[1000, 2500, 5000, 10000].map((preset) => (
                         <button
                           key={preset}
-                          onClick={() => setAvgBill(preset)}
+                          onClick={() => {
+                            setAvgBill(preset);
+                            setBillInput(preset.toString());
+                          }}
                           className={cn(
                             "flex-1 py-2.5 px-3 text-sm font-semibold rounded-xl transition-all",
                             avgBill === preset
@@ -210,9 +268,9 @@ export function CalculatorSection() {
                         </span>
                       </div>
                     </div>
-                    <div className="relative pt-2 pb-3">
-                      {/* Track background with gradient */}
-                      <div className="absolute top-2 left-0 right-0 h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="relative py-6">
+                      {/* Track background with gradient - Behind the thumb */}
+                      <div className="absolute top-1/2 left-0 right-0 h-3 -translate-y-1/2 bg-gray-200 rounded-full overflow-visible z-[5]">
                         <motion.div
                           className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-gold rounded-full"
                           initial={{ width: 0 }}
@@ -220,6 +278,7 @@ export function CalculatorSection() {
                           transition={{ duration: 0.5, ease: "easeOut" }}
                         />
                       </div>
+                      {/* Range input - Thumb on top */}
                       <input
                         type="range"
                         min="10"
@@ -227,16 +286,65 @@ export function CalculatorSection() {
                         step="5"
                         value={savingsPercent}
                         onChange={(e) => setSavingsPercent(Number(e.target.value))}
-                        className="relative w-full h-3 bg-transparent rounded-full appearance-none cursor-pointer z-10
-                                   [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6
-                                   [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
-                                   [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-gray-400/50
-                                   [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-3
-                                   [&::-webkit-slider-thumb]:border-gold [&::-webkit-slider-thumb]:transition-transform
-                                   [&::-webkit-slider-thumb]:hover:scale-125 [&::-webkit-slider-thumb]:active:scale-110"
+                        className="relative w-full bg-transparent rounded-full appearance-none cursor-pointer z-[15] slider-thumb-centered
+                                   [&::-webkit-slider-runnable-track]:h-3
+                                   [&::-webkit-slider-runnable-track]:bg-transparent
+                                   [&::-webkit-slider-runnable-track]:rounded-full
+                                   [&::-webkit-slider-thumb]:appearance-none 
+                                   [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-10
+                                   [&::-webkit-slider-thumb]:rounded-md 
+                                   [&::-webkit-slider-thumb]:bg-white
+                                   [&::-webkit-slider-thumb]:shadow-xl 
+                                   [&::-webkit-slider-thumb]:shadow-gold/40
+                                   [&::-webkit-slider-thumb]:border-[3px] 
+                                   [&::-webkit-slider-thumb]:border-gold
+                                   [&::-webkit-slider-thumb]:cursor-pointer 
+                                   [&::-webkit-slider-thumb]:transition-all
+                                   [&::-webkit-slider-thumb]:duration-200
+                                   [&::-webkit-slider-thumb]:hover:scale-110
+                                   [&::-webkit-slider-thumb]:hover:shadow-2xl
+                                   [&::-webkit-slider-thumb]:hover:shadow-gold/60
+                                   [&::-webkit-slider-thumb]:active:scale-105
+                                   [&::-moz-range-track]:h-3
+                                   [&::-moz-range-track]:bg-transparent
+                                   [&::-moz-range-track]:border-none
+                                   [&::-moz-range-track]:rounded-full
+                                   [&::-moz-range-thumb]:appearance-none
+                                   [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-10
+                                   [&::-moz-range-thumb]:rounded-md
+                                   [&::-moz-range-thumb]:bg-white
+                                   [&::-moz-range-thumb]:border-[3px]
+                                   [&::-moz-range-thumb]:border-gold
+                                   [&::-moz-range-thumb]:cursor-pointer
+                                   [&::-moz-range-thumb]:shadow-xl
+                                   [&::-moz-range-thumb]:shadow-gold/40
+                                   [&::-moz-range-thumb]:transition-all
+                                   [&::-moz-range-thumb]:duration-200
+                                   [&::-moz-range-thumb]:hover:scale-110
+                                   [&::-moz-range-thumb]:hover:shadow-2xl
+                                   [&::-moz-range-thumb]:hover:shadow-gold/60
+                                   [&::-ms-track]:h-3
+                                   [&::-ms-track]:bg-transparent
+                                   [&::-ms-track]:border-none
+                                   [&::-ms-track]:rounded-full
+                                   [&::-ms-thumb]:appearance-none
+                                   [&::-ms-thumb]:w-4 [&::-ms-thumb]:h-10
+                                   [&::-ms-thumb]:rounded-md
+                                   [&::-ms-thumb]:bg-white
+                                   [&::-ms-thumb]:border-[3px]
+                                   [&::-ms-thumb]:border-gold
+                                   [&::-ms-thumb]:cursor-pointer
+                                   [&::-ms-thumb]:shadow-xl
+                                   [&::-ms-thumb]:shadow-gold/40"
+                        style={{
+                          background: 'transparent',
+                          height: '40px',
+                          margin: 0,
+                          padding: 0,
+                        }}
                       />
                       {/* Tick marks */}
-                      <div className="flex justify-between mt-2 px-1">
+                      <div className="flex justify-between mt-5 px-1">
                         {[10, 25, 50, 75, 100].map((tick) => (
                           <span
                             key={tick}

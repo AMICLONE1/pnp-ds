@@ -181,9 +181,29 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
               initial={{ scale: 0, rotate: -180 }}
               animate={isInView ? { scale: 1, rotate: 0 } : {}}
               transition={{ type: "spring", stiffness: 200, delay: 0.5 }}
-              className="w-16 h-16 bg-gradient-to-br from-charcoal to-gray-800 rounded-full flex items-center justify-center shadow-2xl"
+              className="relative w-16 h-16 rounded-full flex items-center justify-center shadow-2xl group"
             >
-              <span className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>VS</span>
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gold via-amber-500 to-gold rounded-full blur-md opacity-60 group-hover:opacity-80 transition-opacity" />
+              
+              {/* Main badge */}
+              <div className="relative w-full h-full bg-gradient-to-br from-gold via-amber-500 to-gold rounded-full flex items-center justify-center border-2 border-white/20 shadow-[0_10px_40px_-5px_rgba(255,184,0,0.5)]">
+                <span className="text-black font-bold text-lg drop-shadow-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>VS</span>
+              </div>
+              
+              {/* Animated ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-gold/50"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
             </motion.div>
           </div>
 

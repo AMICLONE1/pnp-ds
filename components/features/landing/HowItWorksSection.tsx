@@ -126,10 +126,7 @@ function StepCard({
         ease: [0.25, 0.46, 0.45, 0.94],
         delay: 0.1
       }}
-      className={cn(
-        "relative",
-        index % 2 === 0 ? "md:pr-16 lg:pr-20" : "md:pl-16 lg:pl-20"
-      )}
+      className="relative"
     >
       {/* Card with enhanced styling */}
       <motion.div 
@@ -168,12 +165,11 @@ function StepCard({
           </motion.div>
         )}
 
-        {/* Number badge */}
+        {/* Number badge - positioned inside card, consistently on top-right */}
         <motion.div 
           className={cn(
-            "absolute -top-5 w-14 h-14 rounded-xl flex items-center justify-center font-heading font-bold text-xl text-white shadow-[0_10px_30px_-5px_rgba(0,0,0,0.3)]",
-            colorScheme.bg,
-            index % 2 === 0 ? "-right-5" : "-left-5",
+            "absolute top-4 right-4 w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg z-10",
+            colorScheme.bg
           )}
           initial={{ scale: 0, rotate: -180 }}
           animate={isRevealed ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}

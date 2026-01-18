@@ -372,6 +372,89 @@
     box-shadow: 0 4px 12px rgba(255, 184, 0, 0.5);
   }
 
+  /* Improved Range Input Styling - Thumb Over Track */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    z-index: 20;
+  }
+
+  /* Webkit (Chrome, Safari, Edge) */
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 12px;
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -14px !important; /* Centers thumb on track: (thumb height 40px / 2) - (track height 12px / 2) = 20 - 6 = 14px */
+    position: relative;
+    z-index: 30;
+    transform: translateY(0);
+    box-sizing: border-box;
+  }
+
+  /* Specific class for centered thumb */
+  .slider-thumb-centered::-webkit-slider-thumb {
+    margin-top: -14px !important; /* Centers vertical rectangle thumb: (40px / 2) - (12px / 2) = 14px */
+    position: relative;
+    z-index: 30;
+  }
+
+  /* Firefox */
+  input[type="range"]::-moz-range-track {
+    height: 12px;
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    position: relative;
+    z-index: 30;
+    transform: translateY(-14px);
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .slider-thumb-centered::-moz-range-thumb {
+    transform: translateY(-14px) !important; /* Centers vertical rectangle thumb: (40px / 2) - (12px / 2) = 14px */
+    position: relative;
+    z-index: 30;
+  }
+
+  /* IE/Edge */
+  input[type="range"]::-ms-track {
+    height: 12px;
+    background: transparent;
+    border: none;
+    color: transparent;
+    margin: 0;
+    padding: 0;
+  }
+
+  input[type="range"]::-ms-thumb {
+    position: relative;
+    z-index: 30;
+    transform: translateY(-14px);
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .slider-thumb-centered::-ms-thumb {
+    transform: translateY(-14px) !important; /* Centers vertical rectangle thumb: (40px / 2) - (12px / 2) = 14px */
+    position: relative;
+    z-index: 30;
+  }
+
   /* New utilities for redesign */
 
   /* Perspective for 3D effects */

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { LandingHeader } from "@/components/layout/LandingHeader";
+import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -623,7 +624,7 @@ export default function ReservePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Header />
+      <LandingHeader />
 
       {/* Hero */}
       <PageHero />

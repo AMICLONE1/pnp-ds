@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
+import { SOLAR_CONSTANTS, calculateSetupCost } from "@/lib/solar-constants";
 import React from "react";
 
 // Stats data
@@ -340,8 +340,9 @@ function InteractiveSavingsCard() {
     // Energy needed to generate these savings (kWh)
     const energyNeededKwh = monthlySavings / SOLAR_CONSTANTS.creditRatePerUnit;
 
-    // Solar capacity needed (in Watts)
-    const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth;
+    // Solar capacity needed (in kW)
+    // 1kW generates 4.5 units per day = 135 units per month
+    const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; // 135 kWh/month per kW
     const capacityNeededKw = energyNeededKwh / monthlyGenerationPerKw;
     const capacityNeededWatts = Math.round(capacityNeededKw * 1000);
 
@@ -349,8 +350,8 @@ function InteractiveSavingsCard() {
     const annualSavings = monthlySavings * 12;
     const lifetimeSavings = annualSavings * SOLAR_CONSTANTS.projectLifespan;
 
-    // One-time reservation fee
-    const reservationFee = capacityNeededWatts * SOLAR_CONSTANTS.reservationFeePerWatt;
+    // One-time setup cost with bulk discount (₹35,000 per kW base, with discounts for larger capacity)
+    const reservationFee = calculateSetupCost(capacityNeededKw);
 
     // CO2 offset per year (in tonnes)
     const annualEnergyKwh = energyNeededKwh * 12;
