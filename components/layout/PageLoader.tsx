@@ -60,7 +60,7 @@ export function PageLoader() {
           className="text-center"
         >
           <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-black leading-tight mb-4">
-            Go Solar in 60 Seconds.
+            Go Solar in 5 mins.
           </p>
           <p className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gold">
             No Roof Required. No Installation.

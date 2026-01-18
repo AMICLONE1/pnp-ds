@@ -10,6 +10,7 @@ export function createClient() {
     );
   }
 
+  // createBrowserClient automatically handles cookies and session management
   return createBrowserClient(supabaseUrl, supabaseKey);
 }
 

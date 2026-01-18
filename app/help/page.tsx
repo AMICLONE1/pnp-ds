@@ -406,7 +406,7 @@ export default function HelpPage() {
                             Contact Support
                           </Button>
                         </a>
-                        <a href="mailto:help@powernetpro.in">
+                        <a href="mailto:omkarkolhe912@gmail.com">
                           <Button variant="outline" className="border-white/30 text-black hover:bg-white/10">
                             <Mail className="h-4 w-4 mr-2" />
                             Email Us
@@ -418,7 +418,7 @@ export default function HelpPage() {
                       <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
                         <Phone className="h-6 w-6 text-gold mb-3" />
                         <h3 className="font-semibold mb-1">Call Us</h3>
-                        <p className="text-sm text-black/70">+91 800 123 4567</p>
+                        <p className="text-sm text-black/70">+91 8180 861 415</p>
                         <p className="text-xs text-black/50 mt-1">Mon-Fri, 9AM-6PM IST</p>
                       </div>
                       <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">

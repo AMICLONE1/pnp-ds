@@ -77,7 +77,7 @@ export default function ContactPage() {
                                   </div>
                                   <div>
                                     <h3 className="font-semibold text-black mb-1">Email</h3>
-                                    <a href="mailto:support@powernetpro.com" className="text-black hover:underline">support@powernetpro.com</a>
+                                    <a href="mailto:omkarkolhe912@gmail.com" className="text-black hover:underline">omkarkolhe912@gmail.com</a>
                                   </div>
                                 </div>
                                 <div className="flex items-start gap-4">
@@ -86,7 +86,7 @@ export default function ContactPage() {
                                   </div>
                                   <div>
                                     <h3 className="font-semibold text-black mb-1">Phone</h3>
-                                    <a href="tel:+9118001234567" className="text-black hover:underline">+91 1800 123 4567</a>
+                                    <a href="tel:+918180861415" className="text-black hover:underline">+91 8180 861 415</a>
                                     <p className="text-sm text-gray-600 mt-1">Mon - Fri, 9:00 AM - 6:00 PM IST</p>
                                   </div>
                                 </div>
@@ -96,7 +96,7 @@ export default function ContactPage() {
                                   </div>
                                   <div>
                                     <h3 className="font-semibold text-black mb-1">Address</h3>
-                                    <p className="text-black">PowerNetPro Headquarters<br />Bangalore, Karnataka<br />India</p>
+                                    <p className="text-black">Kothrud, Pune<br />Maharashtra<br />Bharat</p>
                                   </div>
                                 </div>
                               </CardContent>

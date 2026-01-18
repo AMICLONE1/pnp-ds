@@ -39,20 +39,40 @@ export async function updateSession(request: NextRequest) {
               headers: request.headers,
             },
           });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
+          // Use the options provided by Supabase SSR - it handles httpOnly, secure, sameSite correctly
+          cookiesToSet.forEach(({ name, value, options }) => {
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              // Ensure path is set for session cookies
+              path: options?.path || '/',
+            });
+          });
         },
       },
     }
   );
 
+  // IMPORTANT: Call getSession() to refresh the session if needed
+  // This ensures expired tokens are automatically refreshed by Supabase SSR
+  // getSession() will automatically refresh the access token if it's expired
   let user = null;
   try {
-    const result = await supabase.auth.getUser();
-    user = result.data.user;
+    // getSession() automatically refreshes expired tokens
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (!sessionError && session?.user) {
+      user = session.user;
+    } else {
+      // Fallback: try getUser() if getSession() fails
+      // This might happen if refresh token is also expired
+      const { data: { user: userData }, error: userError } = await supabase.auth.getUser();
+      if (!userError && userData) {
+        user = userData;
+      }
+    }
   } catch (error) {
-    // Silently handle auth errors
+    // Silently handle auth errors - don't break the request
+    // This allows public routes to still work
     user = null;
   }
 
@@ -66,6 +86,9 @@ export async function updateSession(request: NextRequest) {
     "/reset-password",
     "/help",
     "/contact",
+    "/privacy",
+    "/terms",
+    "/cookies",
   ];
   const isPublicPath =
     publicPaths.includes(request.nextUrl.pathname) ||

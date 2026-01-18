@@ -470,7 +470,7 @@ export function CalculatorSection() {
                     </motion.button>
                   </Link>
                   <p className="text-center text-gray-500 text-xs mt-3" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    No installation required • Start saving in 60 seconds
+                    No installation required • Start saving in 5 mins
                   </p>
                 </motion.div>
               </div>

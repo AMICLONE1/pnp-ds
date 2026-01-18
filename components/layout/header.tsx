@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/features/notifications/NotificationBell";
-import { Sun, Menu, X, ChevronDown, ArrowRight, Zap } from "lucide-react";
+import { Sun, Menu, X, ChevronDown, ArrowRight, Zap, Mail } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -233,13 +233,36 @@ export function Header() {
               {user ? (
                 <>
                   <NotificationBell />
-                  <div className={cn(
-                    "hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm",
-                    "bg-gray-100 text-black"
-                  )}>
-                    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                    <span className="max-w-32 truncate">{user.email}</span>
-                  </div>
+                  <motion.div 
+                    className={cn(
+                      "hidden md:flex items-center gap-2.5 px-4 py-2 rounded-full text-sm",
+                      "bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10",
+                      "border border-gold/20 shadow-sm",
+                      "hover:shadow-md hover:border-gold/40 hover:from-gold/15 hover:to-gold/15",
+                      "transition-all duration-300 group cursor-default"
+                    )}
+                    whileHover={{ scale: 1.05 }}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    title={user.email}
+                  >
+                    {/* Enhanced status indicator */}
+                    <div className="relative flex items-center justify-center">
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-sm shadow-green-500/50" />
+                      <motion.div
+                        className="absolute inset-0 rounded-full bg-green-500"
+                        animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    </div>
+                    {/* Email icon */}
+                    <Mail className="w-3.5 h-3.5 text-gold opacity-70 group-hover:opacity-100 transition-opacity" />
+                    {/* Email text */}
+                    <span className="max-w-36 truncate font-medium text-black group-hover:text-gold transition-colors">
+                      {user.email}
+                    </span>
+                  </motion.div>
                   <Button 
                     variant={needsSolidHeader ? "outline" : "ghost"} 
                     size="sm" 

@@ -137,181 +137,291 @@ export default function BillsPage() {
       <Header />
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         <div className="max-w-4xl mx-auto">
-          {/* Page Header */}
+          {/* Enhanced Page Header */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-8"
           >
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-xl bg-white/10">
-                  <Receipt className="h-6 w-6 text-black" />
-                </div>
-                <h1 className="text-4xl font-heading font-bold text-black">
-                  Your Bills
-                </h1>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-gold/5 to-amber-50/30 p-6 md:p-8 border border-gold/20 shadow-lg shadow-gold/5">
+              {/* Background decorative elements */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-100/20 rounded-full blur-2xl" />
               </div>
-              <p className="text-black">
-                View your electricity bills and applied solar credits
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowManualForm(!showManualForm)}
-                className="flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Add Manually
-              </Button>
-              <Button
-                variant="primary"
-                onClick={fetchBillFromBBPS}
-                isLoading={fetching}
-                disabled={fetching}
-                className="flex items-center gap-2"
-              >
-                <RefreshCw className={`h-4 w-4 ${fetching ? "animate-spin" : ""}`} />
-                Fetch Latest Bill
-              </Button>
+              
+              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                <div>
+                  <motion.div 
+                    className="flex items-center gap-3 mb-3"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <motion.div 
+                      className="p-3 rounded-xl bg-gradient-to-br from-gold/20 to-amber-100/30 border border-gold/30 shadow-md"
+                      whileHover={{ scale: 1.05, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <Receipt className="h-6 w-6 text-gold" />
+                    </motion.div>
+                    <h1 className="text-4xl md:text-5xl font-heading font-bold text-black">
+                      Your Bills
+                    </h1>
+                  </motion.div>
+                  <motion.p 
+                    className="text-gray-700 text-base md:text-lg font-medium"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    View your electricity bills and applied solar credits
+                  </motion.p>
+                </div>
+                <motion.div 
+                  className="flex flex-wrap gap-3"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowManualForm(!showManualForm)}
+                    className="flex items-center gap-2 border-2 hover:border-gold/50 transition-all"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Manually
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={fetchBillFromBBPS}
+                    isLoading={fetching}
+                    disabled={fetching}
+                    className="flex items-center gap-2 shadow-lg shadow-gold/20 hover:shadow-gold/30 transition-all"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${fetching ? "animate-spin" : ""}`} />
+                    Fetch Latest Bill
+                  </Button>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
 
           <AnimatePresence mode="wait">
           {showManualForm && (
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Add Bill Manually</CardTitle>
-                <CardDescription>
-                  Enter your bill details manually (useful while waiting for BBPS approval)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleManualSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Card className="mb-6 border-2 border-gold/20 shadow-xl overflow-hidden">
+                {/* Enhanced Header */}
+                <div className="relative bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10 p-6 border-b border-gold/20">
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-2xl" />
+                  </div>
+                  <div className="relative z-10 flex items-center gap-4">
+                    <motion.div
+                      className="p-3 rounded-xl bg-gradient-to-br from-gold/20 to-amber-100/30 border border-gold/30 shadow-md"
+                      whileHover={{ scale: 1.05, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <FileText className="h-6 w-6 text-gold" />
+                    </motion.div>
                     <div>
-                      <label className="block text-sm font-medium text-black mb-1.5">
-                        Bill Number *
-                      </label>
-                      <input
-                        type="text"
-                        value={manualFormData.bill_number}
-                        onChange={(e) =>
-                          setManualFormData({ ...manualFormData, bill_number: e.target.value })
-                        }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
-                        required
-                        placeholder="Enter bill number"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1.5">
-                        Amount (₹) *
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={manualFormData.amount}
-                        onChange={(e) =>
-                          setManualFormData({ ...manualFormData, amount: e.target.value })
-                        }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
-                        required
-                        placeholder="0.00"
-                        min="0"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1.5">
-                        Due Date *
-                      </label>
-                      <input
-                        type="date"
-                        value={manualFormData.due_date}
-                        onChange={(e) =>
-                          setManualFormData({ ...manualFormData, due_date: e.target.value })
-                        }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1.5">
-                        DISCOM *
-                      </label>
-                      <input
-                        type="text"
-                        value={manualFormData.discom}
-                        onChange={(e) =>
-                          setManualFormData({ ...manualFormData, discom: e.target.value })
-                        }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
-                        required
-                        placeholder="e.g., BSES Rajdhani"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1.5">
-                        Bill Month
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="12"
-                        value={manualFormData.bill_month}
-                        onChange={(e) =>
-                          setManualFormData({
-                            ...manualFormData,
-                            bill_month: parseInt(e.target.value),
-                          })
-                        }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1.5">
-                        Bill Year
-                      </label>
-                      <input
-                        type="number"
-                        min="2020"
-                        max={new Date().getFullYear() + 1}
-                        value={manualFormData.bill_year}
-                        onChange={(e) =>
-                          setManualFormData({
-                            ...manualFormData,
-                            bill_year: parseInt(e.target.value),
-                          })
-                        }
-                        className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent"
-                      />
+                      <CardTitle className="text-2xl mb-1">Add Bill Manually</CardTitle>
+                      <CardDescription className="text-base">
+                        Enter your bill details manually (useful while waiting for BBPS approval)
+                      </CardDescription>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      isLoading={submitting}
-                      disabled={submitting}
+                </div>
+                
+                <CardContent className="p-6 pt-6">
+                  <form onSubmit={handleManualSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {/* Bill Number */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
+                          <Receipt className="h-4 w-4 text-gold" />
+                          Bill Number *
+                        </label>
+                        <input
+                          type="text"
+                          value={manualFormData.bill_number}
+                          onChange={(e) =>
+                            setManualFormData({ ...manualFormData, bill_number: e.target.value })
+                          }
+                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
+                          required
+                          placeholder="Enter bill number"
+                        />
+                      </motion.div>
+
+                      {/* Amount */}
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.15 }}
+                      >
+                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
+                          <CreditCard className="h-4 w-4 text-gold" />
+                          Amount (₹) *
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={manualFormData.amount}
+                            onChange={(e) =>
+                              setManualFormData({ ...manualFormData, amount: e.target.value })
+                            }
+                            className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white pl-8 pr-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
+                            required
+                            placeholder="0.00"
+                            min="0"
+                          />
+                        </div>
+                      </motion.div>
+
+                      {/* Due Date */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
+                          <Calendar className="h-4 w-4 text-gold" />
+                          Due Date *
+                        </label>
+                        <input
+                          type="date"
+                          value={manualFormData.due_date}
+                          onChange={(e) =>
+                            setManualFormData({ ...manualFormData, due_date: e.target.value })
+                          }
+                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
+                          required
+                        />
+                      </motion.div>
+
+                      {/* DISCOM */}
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.25 }}
+                      >
+                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
+                          <Zap className="h-4 w-4 text-gold" />
+                          DISCOM *
+                        </label>
+                        <input
+                          type="text"
+                          value={manualFormData.discom}
+                          onChange={(e) =>
+                            setManualFormData({ ...manualFormData, discom: e.target.value })
+                          }
+                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
+                          required
+                          placeholder="e.g., BSES Rajdhani"
+                        />
+                      </motion.div>
+
+                      {/* Bill Month */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
+                          <Calendar className="h-4 w-4 text-gold" />
+                          Bill Month
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="12"
+                          value={manualFormData.bill_month}
+                          onChange={(e) =>
+                            setManualFormData({
+                              ...manualFormData,
+                              bill_month: parseInt(e.target.value),
+                            })
+                          }
+                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
+                        />
+                      </motion.div>
+
+                      {/* Bill Year */}
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.35 }}
+                      >
+                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
+                          <Calendar className="h-4 w-4 text-gold" />
+                          Bill Year
+                        </label>
+                        <input
+                          type="number"
+                          min="2020"
+                          max={new Date().getFullYear() + 1}
+                          value={manualFormData.bill_year}
+                          onChange={(e) =>
+                            setManualFormData({
+                              ...manualFormData,
+                              bill_year: parseInt(e.target.value),
+                            })
+                          }
+                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
+                        />
+                      </motion.div>
+                    </div>
+                    
+                    {/* Enhanced Buttons */}
+                    <motion.div 
+                      className="flex flex-col sm:flex-row gap-3 pt-4"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
                     >
-                      Add Bill
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        setShowManualForm(false);
-                        setError(null);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          isLoading={submitting}
+                          disabled={submitting}
+                          className="w-full sm:w-auto px-6 py-3 text-base font-semibold shadow-lg shadow-gold/20 hover:shadow-gold/30"
+                        >
+                          <Plus className="h-5 w-5 mr-2" />
+                          Add Bill
+                        </Button>
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setShowManualForm(false);
+                            setError(null);
+                          }}
+                          className="w-full sm:w-auto px-6 py-3 text-base font-semibold border-2 hover:border-gray-400"
+                        >
+                          Cancel
+                        </Button>
+                      </motion.div>
+                    </motion.div>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
 
           {successMessage && (
@@ -330,83 +440,132 @@ export default function BillsPage() {
             <BillsSkeleton />
           ) : bills.length === 0 ? (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden border-2 border-gold/20 shadow-xl">
                 <CardContent className="p-0">
-                  {/* Decorative Header */}
-                  <div className="relative bg-gradient-to-br from-white via-white to-white-light p-8 text-center">
+                  {/* Enhanced Decorative Header */}
+                  <div className="relative bg-gradient-to-br from-white via-gold/10 to-amber-50/40 p-10 md:p-12 text-center overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
-                      <div className="absolute -top-24 -right-24 w-48 h-48 bg-gold/10 rounded-full blur-3xl" />
-                      <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                      <motion.div 
+                        className="absolute -top-24 -right-24 w-64 h-64 bg-gold/20 rounded-full blur-3xl"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.3, 0.5, 0.3]
+                        }}
+                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      <motion.div 
+                        className="absolute -bottom-12 -left-12 w-48 h-48 bg-amber-100/30 rounded-full blur-2xl"
+                        animate={{ 
+                          scale: [1, 1.3, 1],
+                          opacity: [0.2, 0.4, 0.2]
+                        }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
                     </div>
+                    
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
-                      className="relative inline-flex p-4 rounded-2xl bg-white/10 backdrop-blur-sm mb-4"
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.3 }}
+                      className="relative inline-flex p-5 rounded-3xl bg-gradient-to-br from-gold/20 via-amber-100/30 to-gold/20 border-2 border-gold/30 shadow-lg mb-6 backdrop-blur-sm"
                     >
-                      <FileText className="h-10 w-10 text-black" />
+                      <FileText className="h-12 w-12 text-gold" />
                       <motion.div
-                        animate={{ rotate: [0, 10, -10, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                        className="absolute -top-1 -right-1 p-1 rounded-full bg-gold"
+                        animate={{ 
+                          rotate: [0, 15, -15, 0],
+                          scale: [1, 1.2, 1]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+                        className="absolute -top-2 -right-2 p-2 rounded-full bg-gradient-to-br from-gold to-amber-500 shadow-lg"
                       >
-                        <Sparkles className="h-3 w-3 text-black" />
+                        <Sparkles className="h-4 w-4 text-black" />
                       </motion.div>
                     </motion.div>
-                    <h3 className="text-2xl font-heading font-bold text-black mb-2">
+                    
+                    <motion.h3 
+                      className="text-3xl md:text-4xl font-heading font-bold text-black mb-3"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
                       No Bills Yet
-                    </h3>
-                    <p className="text-black/80 max-w-md mx-auto">
+                    </motion.h3>
+                    <motion.p 
+                      className="text-gray-700 max-w-lg mx-auto text-base md:text-lg font-medium"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                    >
                       Connect your utility to automatically track bills and apply solar credits
-                    </p>
+                    </motion.p>
                   </div>
                   
-                  {/* Features Grid */}
-                  <div className="p-8">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  {/* Enhanced Features Grid */}
+                  <div className="p-8 md:p-10 bg-white">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                       {[
-                        { icon: Zap, title: "Auto-fetch Bills", desc: "Automatic BBPS integration" },
-                        { icon: TrendingDown, title: "Track Savings", desc: "See credits applied instantly" },
-                        { icon: CreditCard, title: "Easy Payments", desc: "Pay bills in one click" },
+                        { icon: Zap, title: "Auto-fetch Bills", desc: "Automatic BBPS integration", color: "from-blue-100 to-blue-50", iconColor: "text-blue-600", borderColor: "border-blue-200" },
+                        { icon: TrendingDown, title: "Track Savings", desc: "See credits applied instantly", color: "from-green-100 to-green-50", iconColor: "text-green-600", borderColor: "border-green-200" },
+                        { icon: CreditCard, title: "Easy Payments", desc: "Pay bills in one click", color: "from-amber-100 to-amber-50", iconColor: "text-amber-600", borderColor: "border-amber-200" },
                       ].map((feature, index) => (
                         <motion.div
                           key={feature.title}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.4 + index * 0.1 }}
-                          className="p-4 rounded-xl bg-white border border-gray-100 text-center group hover:bg-white/5 hover:border-gray-200/20 transition-all duration-300"
+                          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ delay: 0.6 + index * 0.1, type: "spring", stiffness: 200 }}
+                          whileHover={{ y: -5, scale: 1.02 }}
+                          className="relative p-6 rounded-2xl bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 text-center group hover:border-gold/50 hover:shadow-lg transition-all duration-300 overflow-hidden"
                         >
-                          <div className="inline-flex p-2 rounded-lg bg-white/10 mb-3 group-hover:bg-white/20 transition-colors">
-                            <feature.icon className="h-5 w-5 text-black" />
+                          {/* Hover gradient effect */}
+                          <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                          
+                          <div className="relative z-10">
+                            <motion.div 
+                              className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.color} border ${feature.borderColor} mb-4 group-hover:scale-110 transition-transform duration-300`}
+                              whileHover={{ rotate: 5 }}
+                            >
+                              <feature.icon className={`h-6 w-6 ${feature.iconColor}`} />
+                            </motion.div>
+                            <h4 className="font-bold text-black text-base mb-2">{feature.title}</h4>
+                            <p className="text-sm text-gray-600">{feature.desc}</p>
                           </div>
-                          <h4 className="font-semibold text-black text-sm mb-1">{feature.title}</h4>
-                          <p className="text-xs text-gray-500">{feature.desc}</p>
                         </motion.div>
                       ))}
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    {/* Enhanced CTA Buttons */}
+                    <motion.div 
+                      className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.9 }}
+                    >
                       <Link href="/connect">
-                        <Button variant="primary" className="group">
-                          <Zap className="h-4 w-4 mr-2" />
-                          Connect Utility
-                          <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Button>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Button variant="primary" className="group shadow-lg shadow-gold/20 hover:shadow-gold/30 px-6 py-3 text-base font-semibold">
+                            <Zap className="h-5 w-5 mr-2 group-hover:rotate-12 transition-transform" />
+                            Connect Utility
+                            <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                          </Button>
+                        </motion.div>
                       </Link>
-                      <span className="text-gray-400 text-sm">or</span>
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowManualForm(true)}
-                        className="group"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Bill Manually
-                      </Button>
-                    </div>
+                      <span className="text-gray-400 text-sm font-medium">or</span>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowManualForm(true)}
+                          className="group border-2 hover:border-gold/50 px-6 py-3 text-base font-semibold"
+                        >
+                          <Plus className="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform" />
+                          Add Bill Manually
+                        </Button>
+                      </motion.div>
+                    </motion.div>
                   </div>
                 </CardContent>
               </Card>

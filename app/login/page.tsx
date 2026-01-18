@@ -67,11 +67,20 @@ export default function LoginPage() {
     }
 
     if (data.session) {
-      // Wait for cookie to be set
-      await new Promise((r) => setTimeout(r, 500));
-      // Redirect to dashboard
-      router.push("/dashboard");
-      router.refresh();
+      // Ensure session is properly established
+      // Wait a bit for cookies to be set and session to be synced
+      await new Promise((r) => setTimeout(r, 300));
+      
+      // Verify session is still valid before redirecting
+      const { data: { session: verifiedSession } } = await supabase.auth.getSession();
+      if (verifiedSession) {
+        // Redirect to dashboard
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        setError("Session could not be established. Please try again.");
+        setLoading(false);
+      }
     } else {
       setError("Login failed. Please try again.");
       setLoading(false);

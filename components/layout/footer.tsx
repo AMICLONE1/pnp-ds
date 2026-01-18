@@ -141,19 +141,19 @@ export function Footer() {
 
             {/* Contact Info */}
             <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-2.5 mb-5">
-              <a href="mailto:hello@powernetpro.in" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
+              <a href="mailto:omkarkolhe912@gmail.com" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
                 <Mail className="w-4 h-4 text-gold" />
-                hello@powernetpro.in
+                omkarkolhe912@gmail.com
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <a href="tel:+918001234567" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
+              <a href="tel:+918180861415" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
                 <Phone className="w-4 h-4 text-gold" />
-                +91 800 123 4567
+                +91 8180 861 415
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <div className="flex items-start gap-2.5 text-gray-600 text-sm">
                 <MapPin className="w-4 h-4 text-gold mt-0.5" />
-                <span>Bangalore, Karnataka, India</span>
+                <span>Kothrud, Pune, Maharashtra, Bharat</span>
               </div>
             </div>
 

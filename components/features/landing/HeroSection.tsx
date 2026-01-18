@@ -724,7 +724,7 @@ export function HeroSection() {
               className="text-xl md:text-2xl lg:text-[28px] text-black mb-4 max-w-3xl leading-relaxed"
               style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
-              Go Solar in <span className="text-gold font-bold">60 Seconds</span>.
+              Go Solar in <span className="text-gold font-bold">5 mins</span>.
               {" "}
               No Roof Required. No Installation.
             </motion.p>
