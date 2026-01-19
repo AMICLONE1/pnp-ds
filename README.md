@@ -161,6 +161,29 @@ Currently, the app uses simulated payments. To test the full flow:
 5. Connect your utility provider
 6. View your dashboard
 
+### Test Suites
+
+- **Playwright**: End-to-end tests in `tests/` directory
+- **TestSprite**: Automated comprehensive tests in `testsprite_tests/` directory
+- **Cypress**: Component tests (optional)
+
+Run tests:
+```bash
+npm run test          # Playwright tests
+npm run test:ui       # Playwright UI mode
+```
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+- **[Documentation Index](./docs/INDEX.md)** - Complete documentation navigation
+- **[Setup Guides](./docs/setup/)** - Installation and configuration
+- **[Technical Docs](./docs/technical/)** - Architecture and specifications
+- **[UI Updates](./docs/ui-updates/)** - Design changes and improvements
+- **[Changelog](./docs/changelog/)** - Change history and updates
+- **[Fixes](./docs/fixes/)** - Bug fixes and troubleshooting
+
 ## 📝 Notes
 
 - Payment flow is currently simulated for development

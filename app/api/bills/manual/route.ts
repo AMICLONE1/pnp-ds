@@ -62,18 +62,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create bill
+    // Create bill - only use fields that exist in schema
     const billInsert: any = {
       user_id: user.id,
-      bill_number,
+      bill_number: bill_number || null,
       amount: Number(amount),
       due_date,
       discom,
       status: "PENDING",
     };
 
-    if (bill_month) billInsert.bill_month = Number(bill_month);
-    if (bill_year) billInsert.bill_year = Number(bill_year);
+    // Note: bill_month and bill_year are not in the current schema
+    // If needed, they can be added to the schema or stored in metadata
 
     const { data: bill, error: billError } = await supabase
       .from("bills")
@@ -122,12 +122,17 @@ export async function POST(request: Request) {
           0
         );
 
+        // Calculate final amount (not stored in DB, calculated on the fly)
+        const finalAmount = Number(amount) - totalCreditsApplied;
+        const newStatus = totalCreditsApplied >= Number(amount) ? "PAID" : "PENDING";
+
         await supabase
           .from("bills")
           .update({
             credits_applied: totalCreditsApplied,
-            final_amount: Number(amount) - totalCreditsApplied,
-            status: totalCreditsApplied >= Number(amount) ? "PAID" : "PENDING",
+            status: newStatus,
+            // Note: final_amount is not in schema, calculate it when needed
+            // final_amount = amount - credits_applied
           })
           .eq("id", bill.id);
 

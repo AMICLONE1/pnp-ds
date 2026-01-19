@@ -56,9 +56,39 @@ export default function ConnectPage() {
       return;
     }
 
-    // Consumer number validation (basic - can be enhanced)
-    if (consumerNumber.length < 8) {
+    // Consumer number validation - enhanced with format checking
+    const trimmedConsumerNumber = consumerNumber.trim();
+    
+    if (!trimmedConsumerNumber) {
+      setError("Consumer number is required");
+      setLoading(false);
+      return;
+    }
+
+    if (trimmedConsumerNumber.length < 8) {
       setError("Consumer number must be at least 8 characters");
+      setLoading(false);
+      return;
+    }
+
+    if (trimmedConsumerNumber.length > 20) {
+      setError("Consumer number must be less than 20 characters");
+      setLoading(false);
+      return;
+    }
+
+    // Validate format: should be alphanumeric (letters and numbers only)
+    // Some DISCOMs allow special characters, but we'll validate basic format
+    const consumerNumberRegex = /^[A-Za-z0-9\-_]+$/;
+    if (!consumerNumberRegex.test(trimmedConsumerNumber)) {
+      setError("Consumer number contains invalid characters. Only letters, numbers, hyphens, and underscores are allowed.");
+      setLoading(false);
+      return;
+    }
+
+    // Check for common invalid patterns
+    if (/^[^A-Za-z0-9]/.test(trimmedConsumerNumber) || /[^A-Za-z0-9]$/.test(trimmedConsumerNumber)) {
+      setError("Consumer number cannot start or end with special characters");
       setLoading(false);
       return;
     }
@@ -82,7 +112,11 @@ export default function ConnectPage() {
           router.push("/dashboard");
         }, 2000);
       } else {
-        setError(result.error?.message || "Failed to connect utility");
+        // Show validation errors from API
+        const errorMessage = result.error?.message || "Failed to connect utility";
+        setError(errorMessage);
+        setLoading(false);
+        return;
       }
     } catch (err: any) {
       setError(err.message || "Something went wrong");

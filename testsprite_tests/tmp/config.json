@@ -6,13 +6,13 @@
   "loginUser": "omkarkolhe912@gmail.com",
   "loginPassword": "123456789",
   "executionArgs": {
-    "projectName": "digital-solar",
-    "projectPath": "D:\\PowerNetPro\\PNP-DS",
+    "projectName": "PNP-DS",
+    "projectPath": "D:\\PNP-DS",
     "testIds": [],
-    "additionalInstruction": "",
+    "additionalInstruction": "Test all edge cases comprehensively including: 1) Empty form fields validation (email, password, bill amount, consumer number, etc.), 2) Invalid input formats (invalid email, negative amounts, non-numeric values), 3) Boundary conditions (min/max capacity, min/max savings percentage, zero values), 4) Security vulnerabilities (XSS injection in all input fields, SQL injection attempts, CSRF protection), 5) Error handling (401, 403, 404, 500 errors, network failures, timeouts), 6) Session management (expired sessions, concurrent logins, logout behavior), 7) Empty states (no bills, no allocations, no projects), 8) Large data sets (very large amounts, many items), 9) Responsive design (mobile 320px, tablet 768px, desktop 1920px), 10) Concurrent operations (multiple form submissions, rapid navigation), 11) Payment edge cases (insufficient credits, payment cancellation, zero amounts), 12) Navigation edge cases (direct URL access, browser back button, deep linking), 13) Form validation edge cases (password mismatch, password too short, email already exists), 14) Calculator edge cases (empty input, negative values, very large numbers, rapid slider changes), 15) API error scenarios (unauthorized access, validation errors, server errors). Ensure comprehensive coverage of all validation, security, error handling, and edge case scenarios.",
     "envs": {
-      "API_KEY": "sk-user-833Cr6vL_yfQ2BBkT6dQnLz4fAi7FHX11YRndgSs-mlwEtpZH8rHXar5ENaZsHvKyZQBMyonQnd89N3sNQ_J9XSh90d8khJvcLJmVz3cMdrCqlO1LlSXv2b_aj4tTinfygY"
+      "API_KEY": "sk-user-faqbWfTdOHDUdAyGckNuAEMV-mYTxu01Gw0S0jsHUCrb0J7D0ICSJejqEmH7lplQOurq7m5wAZA5FzhZzE5-sdXuZphRwefxp60VCEyy5bPOPYC0KSSYkqoSb-lWV4dBq7Y"
     }
   },
-  "proxy": "http://1f6fd02a-99e0-4b33-9cca-1da1f5e674b8:ULyZPqsjRIkNSfensFbAWXE38E9QWUR6@tun.testsprite.com:8080"
+  "proxy": "http://98f22802-fcdf-4060-b320-9d8e8b661d99:YdO8yDs0VGz8s24ZTo9gJ9ilo8Ew6oeH@tun.testsprite.com:8080"
 }

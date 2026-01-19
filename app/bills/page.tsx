@@ -37,9 +37,9 @@ export default function BillsPage() {
     bill_number: "",
     amount: "",
     due_date: "",
-    bill_month: new Date().getMonth() + 1,
-    bill_year: new Date().getFullYear(),
     discom: "",
+    // Note: bill_month and bill_year are not in the current schema
+    // They can be derived from due_date if needed
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -113,8 +113,6 @@ export default function BillsPage() {
           bill_number: "",
           amount: "",
           due_date: "",
-          bill_month: new Date().getMonth() + 1,
-          bill_year: new Date().getFullYear(),
           discom: "",
         });
         await fetchBills();
@@ -334,55 +332,7 @@ export default function BillsPage() {
                         />
                       </motion.div>
 
-                      {/* Bill Month */}
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                      >
-                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
-                          <Calendar className="h-4 w-4 text-gold" />
-                          Bill Month
-                        </label>
-                        <input
-                          type="number"
-                          min="1"
-                          max="12"
-                          value={manualFormData.bill_month}
-                          onChange={(e) =>
-                            setManualFormData({
-                              ...manualFormData,
-                              bill_month: parseInt(e.target.value),
-                            })
-                          }
-                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
-                        />
-                      </motion.div>
-
-                      {/* Bill Year */}
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.35 }}
-                      >
-                        <label className="flex items-center gap-2 text-sm font-semibold text-black mb-2">
-                          <Calendar className="h-4 w-4 text-gold" />
-                          Bill Year
-                        </label>
-                        <input
-                          type="number"
-                          min="2020"
-                          max={new Date().getFullYear() + 1}
-                          value={manualFormData.bill_year}
-                          onChange={(e) =>
-                            setManualFormData({
-                              ...manualFormData,
-                              bill_year: parseInt(e.target.value),
-                            })
-                          }
-                          className="flex h-12 w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-2 text-sm text-black transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold hover:border-gray-300 shadow-sm hover:shadow-md"
-                        />
-                      </motion.div>
+                      {/* Note: Bill month and year are derived from due_date */}
                     </div>
                     
                     {/* Enhanced Buttons */}
@@ -637,13 +587,13 @@ export default function BillsPage() {
                             }`} />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-black">{bill.bill_number}</h3>
+                            <h3 className="font-semibold text-black">{bill.bill_number || "N/A"}</h3>
                             <p className="text-xs text-gray-500">
-                              {bill.bill_month && bill.bill_year
-                                ? new Date(bill.bill_year, bill.bill_month - 1).toLocaleDateString(
-                                    "en-IN",
-                                    { month: "long", year: "numeric" }
-                                  )
+                              {bill.due_date
+                                ? new Date(bill.due_date).toLocaleDateString("en-IN", {
+                                    month: "long",
+                                    year: "numeric",
+                                  })
                                 : bill.fetched_at
                                 ? new Date(bill.fetched_at).toLocaleDateString("en-IN", {
                                     month: "long",

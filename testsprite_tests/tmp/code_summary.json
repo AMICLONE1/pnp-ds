@@ -1,62 +1,45 @@
 {
   "tech_stack": [
     "TypeScript",
-    "Next.js 14.2.5",
-    "React 18.3.1",
+    "Next.js 14",
+    "React 18",
     "Tailwind CSS",
     "Supabase",
+    "PostgreSQL",
+    "Razorpay",
     "Framer Motion",
-    "React Three Fiber",
-    "Zod",
-    "Zustand"
+    "Lucide React"
   ],
   "features": [
     {
-      "name": "Landing Page",
-      "description": "Main homepage with hero section, animations, calculators, testimonials, and call-to-action sections",
-      "files": [
-        "app/page.tsx",
-        "components/features/landing/AnimatedHeadline.tsx",
-        "components/features/landing/AnimatedSVG.tsx",
-        "components/features/landing/GlassCard.tsx",
-        "components/features/landing/Hero3D.tsx",
-        "components/features/landing/InlineCalculator.tsx",
-        "components/features/landing/LiveStats.tsx",
-        "components/features/landing/LiveStatsTicker.tsx",
-        "components/features/landing/Newsletter.tsx",
-        "components/features/landing/ParticleSystem.tsx",
-        "components/features/landing/ProcessVisualization.tsx",
-        "components/features/landing/ScrollAnimation.tsx",
-        "components/features/landing/StickyCTA.tsx",
-        "components/features/landing/Testimonials.tsx",
-        "components/features/landing/UtilityCompatibilityChecker.tsx"
-      ]
-    },
-    {
-      "name": "User Authentication",
-      "description": "User signup, login, password reset, and session management with Supabase Auth",
+      "name": "Authentication",
+      "description": "User authentication with Supabase including signup, login, password reset, and session management",
       "files": [
         "app/login/page.tsx",
         "app/signup/page.tsx",
         "app/forgot-password/page.tsx",
+        "app/reset-password/page.tsx",
         "lib/supabase/client.ts",
         "lib/supabase/server.ts",
-        "lib/supabase/middleware.ts",
-        "middleware.ts"
+        "lib/supabase/middleware.ts"
       ]
     },
     {
-      "name": "Dashboard",
-      "description": "User dashboard showing capacity, savings, environmental impact, and real-time monitoring",
+      "name": "Landing Page",
+      "description": "Homepage with hero section, benefits, calculator, testimonials, and CTAs",
       "files": [
-        "app/dashboard/page.tsx",
-        "components/features/dashboard/RealTimeMonitoring.tsx",
-        "app/api/dashboard/route.ts"
+        "app/page.tsx",
+        "components/features/landing/HeroSection.tsx",
+        "components/features/landing/BenefitsSection.tsx",
+        "components/features/landing/CalculatorSection.tsx",
+        "components/features/landing/StatsSection.tsx",
+        "components/features/landing/HowItWorksSection.tsx",
+        "components/features/landing/Testimonials.tsx"
       ]
     },
     {
       "name": "Project Reservation",
-      "description": "Browse and reserve solar capacity from community projects with payment integration",
+      "description": "Browse solar projects, select capacity, and complete reservation with payment",
       "files": [
         "app/reserve/page.tsx",
         "app/reserve/payment/page.tsx",
@@ -66,102 +49,121 @@
       ]
     },
     {
-      "name": "Utility Connection",
-      "description": "Connect electricity provider accounts to receive automatic solar credits",
+      "name": "Dashboard",
+      "description": "User dashboard showing solar capacity, savings, credits, and real-time monitoring",
       "files": [
-        "app/connect/page.tsx",
-        "app/connect/multiple/page.tsx",
-        "lib/bbps/client.ts"
+        "app/dashboard/page.tsx",
+        "components/features/dashboard/RealTimeMonitoring.tsx",
+        "components/features/dashboard/CreditHistoryChart.tsx",
+        "app/api/dashboard/summary/route.ts"
       ]
     },
     {
       "name": "Bills Management",
-      "description": "View electricity bills with applied solar credits and payment functionality",
+      "description": "View electricity bills, apply solar credits, and make payments",
       "files": [
         "app/bills/page.tsx",
         "components/features/bills/BillPayment.tsx",
         "app/api/bills/route.ts",
+        "app/api/bills/fetch/route.ts",
+        "app/api/bills/manual/route.ts",
         "app/api/bills/pay/route.ts"
       ]
     },
     {
-      "name": "Payment Processing",
-      "description": "Payment integration with Razorpay for capacity reservations",
+      "name": "Utility Connection",
+      "description": "Connect electricity utility accounts and manage multiple connections",
       "files": [
-        "app/api/payments/route.ts",
+        "app/connect/page.tsx",
+        "app/connect/multiple/page.tsx",
+        "app/api/user/utility/route.ts"
+      ]
+    },
+    {
+      "name": "Settings",
+      "description": "User profile management, notification preferences, and security settings",
+      "files": [
+        "app/settings/page.tsx",
+        "app/api/user/profile/route.ts"
+      ]
+    },
+    {
+      "name": "Payment Processing",
+      "description": "Razorpay integration for payment orders and verification",
+      "files": [
+        "app/api/payments/create-order/route.ts",
         "app/api/payments/verify/route.ts"
       ]
     },
     {
-      "name": "API Routes",
-      "description": "Backend API endpoints for stats, credits, notifications, and user management",
+      "name": "Notifications",
+      "description": "User notification system with bell icon and notification management",
       "files": [
-        "app/api/stats/live/route.ts",
-        "app/api/credits/route.ts",
-        "app/api/notifications/route.ts",
-        "app/api/user/route.ts",
-        "app/api/user/profile/route.ts",
-        "app/api/monitoring/realtime/route.ts",
-        "app/api/newsletter/subscribe/route.ts"
+        "components/features/notifications/NotificationBell.tsx",
+        "app/api/notifications/route.ts"
       ]
     },
     {
       "name": "Layout Components",
-      "description": "Header and footer navigation components",
+      "description": "Header, footer, and navigation components for authenticated and public pages",
       "files": [
         "components/layout/header.tsx",
-        "components/layout/footer.tsx"
+        "components/layout/LandingHeader.tsx",
+        "components/layout/footer.tsx",
+        "components/layout/PageLoader.tsx"
       ]
     },
     {
       "name": "UI Components",
-      "description": "Reusable UI components like buttons, cards, inputs, and loading states",
+      "description": "Reusable UI components including buttons, cards, inputs, and animations",
       "files": [
         "components/ui/button.tsx",
         "components/ui/card.tsx",
         "components/ui/input.tsx",
-        "components/ui/loading.tsx",
-        "components/ui/skeleton.tsx"
+        "components/ui/toast.tsx",
+        "components/ui/skeleton.tsx",
+        "components/ui/animations/ScrollAnimations.tsx"
       ]
     },
     {
-      "name": "Custom Hooks",
-      "description": "React hooks for animations, scroll effects, parallax, gestures, and stats counting",
+      "name": "Solar Calculator",
+      "description": "Interactive calculator to estimate savings based on electricity bill and target savings percentage",
       "files": [
-        "hooks/useHeroAnimation.ts",
-        "hooks/useScrollAnimation.ts",
-        "hooks/useParallax.ts",
-        "hooks/useGesture.ts",
-        "hooks/useStatsCounter.ts"
+        "components/features/landing/CalculatorSection.tsx",
+        "lib/solar-constants.ts"
       ]
     },
     {
-      "name": "Utilities and Helpers",
-      "description": "Utility functions for formatting, validation, animations, and security",
+      "name": "Database Schema",
+      "description": "PostgreSQL schema with tables for users, projects, allocations, payments, bills, and credits",
       "files": [
-        "lib/utils.ts",
-        "lib/validations.ts",
-        "lib/animations.ts",
-        "lib/constants.ts",
-        "lib/security/inputSanitizer.ts",
-        "lib/security/xssProtection.ts",
-        "lib/security/csrfProtection.ts"
+        "supabase/schema.sql"
       ]
     },
     {
-      "name": "Settings and Help",
-      "description": "User settings page and help center with FAQs",
+      "name": "Middleware",
+      "description": "Next.js middleware for authentication, route protection, and session management",
       "files": [
-        "app/settings/page.tsx",
-        "app/help/page.tsx",
-        "app/contact/page.tsx"
+        "middleware.ts",
+        "lib/supabase/middleware.ts"
       ]
     },
     {
-      "name": "Refund Management",
-      "description": "Refund policy and exit feature for capacity reservations",
+      "name": "Error Handling",
+      "description": "Global error boundary and custom error pages",
       "files": [
-        "app/refund/page.tsx"
+        "app/error.tsx",
+        "app/not-found.tsx",
+        "components/ErrorBoundary.tsx"
+      ]
+    },
+    {
+      "name": "Legal Pages",
+      "description": "Privacy policy, terms of service, and cookie policy pages",
+      "files": [
+        "app/privacy/page.tsx",
+        "app/terms/page.tsx",
+        "app/cookies/page.tsx"
       ]
     }
   ]

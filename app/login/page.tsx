@@ -55,9 +55,14 @@ export default function LoginPage() {
       password,
     });
 
+    // CRITICAL: Always check for errors FIRST before checking for session
+    // This prevents security vulnerabilities where incorrect passwords might be accepted
     if (authError) {
       // Provide user-friendly error messages
-      if (authError.message.includes("Invalid login credentials")) {
+      if (authError.message.includes("Invalid login credentials") || 
+          authError.message.includes("Invalid login") ||
+          authError.message.includes("Email not confirmed") ||
+          authError.message.includes("User not found")) {
         setError("Invalid email or password. Please check your credentials and try again.");
       } else {
         setError(authError.message);
@@ -66,25 +71,29 @@ export default function LoginPage() {
       return;
     }
 
-    if (data.session) {
-      // Ensure session is properly established
-      // Wait a bit for cookies to be set and session to be synced
-      await new Promise((r) => setTimeout(r, 300));
-      
-      // Verify session is still valid before redirecting
-      const { data: { session: verifiedSession } } = await supabase.auth.getSession();
-      if (verifiedSession) {
-        // Redirect to dashboard
-        router.push("/dashboard");
-        router.refresh();
-      } else {
-        setError("Session could not be established. Please try again.");
-        setLoading(false);
-      }
-    } else {
+    // Only proceed if there's NO error AND a valid session exists
+    if (!data || !data.session) {
       setError("Login failed. Please try again.");
       setLoading(false);
+      return;
     }
+
+    // Ensure session is properly established
+    // Wait a bit for cookies to be set and session to be synced
+    await new Promise((r) => setTimeout(r, 300));
+    
+    // Verify session is still valid before redirecting
+    const { data: { session: verifiedSession }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !verifiedSession) {
+      setError("Session could not be established. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    // Only redirect if we have a verified session
+    router.push("/dashboard");
+    router.refresh();
   };
 
   return (

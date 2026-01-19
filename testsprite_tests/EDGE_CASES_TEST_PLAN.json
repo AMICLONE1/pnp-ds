@@ -1,0 +1,950 @@
+[
+  {
+    "id": "EC001",
+    "title": "Login - Empty Email Field",
+    "description": "Verify login form shows validation error when email field is empty",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Leave email field empty, enter password"
+      },
+      {
+        "type": "action",
+        "description": "Click Sign In button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify error message 'Email is required' is displayed"
+      }
+    ]
+  },
+  {
+    "id": "EC002",
+    "title": "Login - Empty Password Field",
+    "description": "Verify login form shows validation error when password field is empty",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter email, leave password field empty"
+      },
+      {
+        "type": "action",
+        "description": "Click Sign In button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify error message 'Password is required' is displayed"
+      }
+    ]
+  },
+  {
+    "id": "EC003",
+    "title": "Login - Invalid Email Format",
+    "description": "Verify login form rejects invalid email formats (no @, no domain, special characters)",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter invalid email formats: 'invalid', 'test@', '@domain.com', 'test@domain'"
+      },
+      {
+        "type": "action",
+        "description": "Enter password and attempt to submit"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify form validation prevents submission or shows appropriate error"
+      }
+    ]
+  },
+  {
+    "id": "EC004",
+    "title": "Login - XSS Injection Attempt",
+    "description": "Verify login form sanitizes XSS attempts in email and password fields",
+    "category": "security",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter XSS payload in email: '<script>alert(\"XSS\")</script>@test.com'"
+      },
+      {
+        "type": "action",
+        "description": "Enter XSS payload in password: '<script>alert(\"XSS\")</script>'"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no script execution occurs and input is sanitized"
+      }
+    ]
+  },
+  {
+    "id": "EC005",
+    "title": "Login - SQL Injection Attempt",
+    "description": "Verify login form prevents SQL injection attacks",
+    "category": "security",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter SQL injection payload: 'admin'-- OR '1'='1'"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify SQL injection is prevented and login fails with proper error"
+      }
+    ]
+  },
+  {
+    "id": "EC006",
+    "title": "Login - Email with Leading/Trailing Spaces",
+    "description": "Verify login handles email with spaces correctly (should trim)",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter email with spaces: '  omkarkolhe912@gmail.com  '"
+      },
+      {
+        "type": "action",
+        "description": "Enter correct password"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify email is trimmed and login succeeds"
+      }
+    ]
+  },
+  {
+    "id": "EC007",
+    "title": "Signup - Password Mismatch",
+    "description": "Verify signup form shows error when passwords don't match",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to signup page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid name and email"
+      },
+      {
+        "type": "action",
+        "description": "Enter password: 'password123'"
+      },
+      {
+        "type": "action",
+        "description": "Enter different confirm password: 'password456'"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify error message 'Passwords do not match' is displayed"
+      }
+    ]
+  },
+  {
+    "id": "EC008",
+    "title": "Signup - Password Too Short",
+    "description": "Verify signup form rejects passwords shorter than 6 characters",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to signup page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid name and email"
+      },
+      {
+        "type": "action",
+        "description": "Enter short password: '12345' (5 characters)"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify error message 'Password must be at least 6 characters' is displayed"
+      }
+    ]
+  },
+  {
+    "id": "EC009",
+    "title": "Signup - Email Already Exists",
+    "description": "Verify signup form shows error when email is already registered",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to signup page"
+      },
+      {
+        "type": "action",
+        "description": "Enter existing email: 'omkarkolhe912@gmail.com'"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid name and password"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate error message about email already existing"
+      }
+    ]
+  },
+  {
+    "id": "EC010",
+    "title": "Calculator - Empty Bill Amount",
+    "description": "Verify calculator handles empty bill amount input",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to calculator section"
+      },
+      {
+        "type": "action",
+        "description": "Clear bill amount input field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify calculator handles empty input gracefully (shows 0 or default value)"
+      }
+    ]
+  },
+  {
+    "id": "EC011",
+    "title": "Calculator - Negative Bill Amount",
+    "description": "Verify calculator prevents or handles negative bill amounts",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage calculator"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to enter negative value: '-1000'"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify negative values are prevented or handled appropriately"
+      }
+    ]
+  },
+  {
+    "id": "EC012",
+    "title": "Calculator - Very Large Bill Amount",
+    "description": "Verify calculator handles very large bill amounts (>1 crore)",
+    "category": "edge_case",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage calculator"
+      },
+      {
+        "type": "action",
+        "description": "Enter very large amount: '10000000' (1 crore)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify calculator handles large numbers correctly without breaking"
+      }
+    ]
+  },
+  {
+    "id": "EC013",
+    "title": "Calculator - Savings Slider at Minimum (10%)",
+    "description": "Verify calculator works correctly at minimum savings percentage",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage calculator"
+      },
+      {
+        "type": "action",
+        "description": "Set savings slider to minimum: 10%"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify calculations are correct at minimum value"
+      }
+    ]
+  },
+  {
+    "id": "EC014",
+    "title": "Calculator - Savings Slider at Maximum (100%)",
+    "description": "Verify calculator works correctly at maximum savings percentage",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage calculator"
+      },
+      {
+        "type": "action",
+        "description": "Set savings slider to maximum: 100%"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify calculations are correct at maximum value"
+      }
+    ]
+  },
+  {
+    "id": "EC015",
+    "title": "Bill Entry - Empty Bill Number",
+    "description": "Verify bill entry form validates empty bill number",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to bills page"
+      },
+      {
+        "type": "action",
+        "description": "Click 'Add Manually' button"
+      },
+      {
+        "type": "action",
+        "description": "Leave bill number empty, fill other fields"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation error prevents submission"
+      }
+    ]
+  },
+  {
+    "id": "EC016",
+    "title": "Bill Entry - Negative Amount",
+    "description": "Verify bill entry form prevents negative amounts",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to bills page and open manual entry form"
+      },
+      {
+        "type": "action",
+        "description": "Enter negative amount: '-1000'"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify negative amounts are prevented or validation error shown"
+      }
+    ]
+  },
+  {
+    "id": "EC017",
+    "title": "Bill Entry - Invalid Date Format",
+    "description": "Verify bill entry form validates date format",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to bills page and open manual entry form"
+      },
+      {
+        "type": "action",
+        "description": "Enter invalid date format or past date"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify date validation works correctly"
+      }
+    ]
+  },
+  {
+    "id": "EC018",
+    "title": "Utility Connection - No State Selected",
+    "description": "Verify utility connection form validates state selection",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to utility connection page"
+      },
+      {
+        "type": "action",
+        "description": "Leave state dropdown empty, select DISCOM and enter consumer number"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation error prevents submission"
+      }
+    ]
+  },
+  {
+    "id": "EC019",
+    "title": "Utility Connection - Empty Consumer Number",
+    "description": "Verify utility connection form validates consumer number",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to utility connection page"
+      },
+      {
+        "type": "action",
+        "description": "Select state and DISCOM, leave consumer number empty"
+      },
+      {
+        "type": "action",
+        "description": "Submit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation error prevents submission"
+      }
+    ]
+  },
+  {
+    "id": "EC020",
+    "title": "Capacity Reservation - Zero Capacity",
+    "description": "Verify capacity reservation prevents zero or negative capacity",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to reserve page"
+      },
+      {
+        "type": "action",
+        "description": "Select a project"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to set capacity to 0 or negative value"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify zero/negative capacity is prevented"
+      }
+    ]
+  },
+  {
+    "id": "EC021",
+    "title": "Capacity Reservation - Capacity Exceeding Available",
+    "description": "Verify capacity reservation prevents reserving more than available",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to reserve page"
+      },
+      {
+        "type": "action",
+        "description": "Select a project with limited available capacity"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to reserve more capacity than available"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system prevents over-reservation or shows appropriate error"
+      }
+    ]
+  },
+  {
+    "id": "EC022",
+    "title": "Navigation - Direct URL Access to Protected Route",
+    "description": "Verify protected routes redirect to login when accessed directly without authentication",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open browser in incognito/private mode"
+      },
+      {
+        "type": "action",
+        "description": "Navigate directly to '/dashboard' URL"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is redirected to login page"
+      }
+    ]
+  },
+  {
+    "id": "EC023",
+    "title": "Session - Expired Session Handling",
+    "description": "Verify application handles expired sessions gracefully",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login successfully"
+      },
+      {
+        "type": "action",
+        "description": "Manually expire session (clear cookies or wait for timeout)"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access protected page or perform action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is redirected to login with appropriate message"
+      }
+    ]
+  },
+  {
+    "id": "EC024",
+    "title": "Empty State - No Bills",
+    "description": "Verify bills page displays appropriate empty state when user has no bills",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login with new user account (no bills)"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to bills page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify empty state message and CTA buttons are displayed"
+      }
+    ]
+  },
+  {
+    "id": "EC025",
+    "title": "Empty State - No Allocations",
+    "description": "Verify dashboard displays appropriate empty state when user has no allocations",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login with new user account (no allocations)"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify empty state with 'Reserve Capacity' CTA is displayed"
+      }
+    ]
+  },
+  {
+    "id": "EC026",
+    "title": "API Error - 401 Unauthorized",
+    "description": "Verify application handles 401 errors gracefully",
+    "category": "error_handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Simulate 401 error (clear session or invalidate token)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is redirected to login with appropriate error message"
+      }
+    ]
+  },
+  {
+    "id": "EC027",
+    "title": "API Error - 500 Internal Server Error",
+    "description": "Verify application handles 500 errors gracefully",
+    "category": "error_handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to any page that makes API calls"
+      },
+      {
+        "type": "action",
+        "description": "Simulate 500 error (if possible via network throttling)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify error message is displayed and page doesn't crash"
+      }
+    ]
+  },
+  {
+    "id": "EC028",
+    "title": "Network Failure - Offline Mode",
+    "description": "Verify application handles network failures gracefully",
+    "category": "error_handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Enable offline mode in browser DevTools"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to perform actions requiring network (login, fetch data)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate error messages and graceful degradation"
+      }
+    ]
+  },
+  {
+    "id": "EC029",
+    "title": "Responsive - Mobile Viewport (320px)",
+    "description": "Verify application renders correctly on mobile viewport",
+    "category": "responsive",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Set viewport to 320px width (mobile)"
+      },
+      {
+        "type": "action",
+        "description": "Navigate through all major pages"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify layout is responsive, text is readable, buttons are clickable"
+      }
+    ]
+  },
+  {
+    "id": "EC030",
+    "title": "Responsive - Tablet Viewport (768px)",
+    "description": "Verify application renders correctly on tablet viewport",
+    "category": "responsive",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Set viewport to 768px width (tablet)"
+      },
+      {
+        "type": "action",
+        "description": "Navigate through all major pages"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify layout adapts appropriately for tablet size"
+      }
+    ]
+  },
+  {
+    "id": "EC031",
+    "title": "Concurrent Operations - Multiple Form Submissions",
+    "description": "Verify application prevents duplicate form submissions",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to any form (login, signup, bill entry)"
+      },
+      {
+        "type": "action",
+        "description": "Fill form and rapidly click submit button multiple times"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify only one submission is processed"
+      }
+    ]
+  },
+  {
+    "id": "EC032",
+    "title": "Payment - Insufficient Credits",
+    "description": "Verify payment flow handles insufficient credits scenario",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to bills page"
+      },
+      {
+        "type": "action",
+        "description": "Add bill with amount greater than available credits"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to pay bill"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system handles insufficient credits appropriately"
+      }
+    ]
+  },
+  {
+    "id": "EC033",
+    "title": "Payment - Payment Cancellation",
+    "description": "Verify payment cancellation is handled correctly",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to payment page"
+      },
+      {
+        "type": "action",
+        "description": "Initiate payment and cancel it"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user can return to previous page and no payment is processed"
+      }
+    ]
+  },
+  {
+    "id": "EC034",
+    "title": "Calculator - Non-Numeric Input",
+    "description": "Verify calculator prevents non-numeric input in bill amount field",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage calculator"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to enter non-numeric characters: 'abc', '!@#', etc."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify non-numeric input is prevented or handled"
+      }
+    ]
+  },
+  {
+    "id": "EC035",
+    "title": "Browser Back Button - After Logout",
+    "description": "Verify browser back button doesn't allow access to protected pages after logout",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Logout"
+      },
+      {
+        "type": "action",
+        "description": "Click browser back button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user cannot access dashboard and is redirected to login"
+      }
+    ]
+  },
+  {
+    "id": "EC036",
+    "title": "Rapid Navigation - Multiple Clicks",
+    "description": "Verify application handles rapid navigation clicks without breaking",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Rapidly click navigation links multiple times"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify navigation works correctly and no errors occur"
+      }
+    ]
+  },
+  {
+    "id": "EC037",
+    "title": "Form - Special Characters in Input",
+    "description": "Verify forms handle special characters correctly",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to signup or contact form"
+      },
+      {
+        "type": "action",
+        "description": "Enter special characters in name field: 'John O'Reilly', 'José', '测试'"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify special characters are handled correctly"
+      }
+    ]
+  },
+  {
+    "id": "EC038",
+    "title": "Calculator - Rapid Slider Changes",
+    "description": "Verify calculator handles rapid slider value changes",
+    "category": "edge_case",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to homepage calculator"
+      },
+      {
+        "type": "action",
+        "description": "Rapidly move savings slider back and forth"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify calculations update smoothly without lag or errors"
+      }
+    ]
+  },
+  {
+    "id": "EC039",
+    "title": "Settings - Notification Toggle States",
+    "description": "Verify notification preference toggles work correctly",
+    "category": "edge_case",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to settings page"
+      },
+      {
+        "type": "action",
+        "description": "Toggle email notifications on/off"
+      },
+      {
+        "type": "action",
+        "description": "Toggle SMS notifications on/off"
+      },
+      {
+        "type": "action",
+        "description": "Save preferences"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify preferences are saved and persist on page reload"
+      }
+    ]
+  },
+  {
+    "id": "EC040",
+    "title": "Project Selection - No Project Selected",
+    "description": "Verify capacity selector is disabled when no project is selected",
+    "category": "edge_case",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to reserve page"
+      },
+      {
+        "type": "action",
+        "description": "Verify capacity selector is disabled without project selection"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify capacity input/slider is disabled and shows appropriate message"
+      }
+    ]
+  }
+]

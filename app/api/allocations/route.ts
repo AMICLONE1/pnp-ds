@@ -22,26 +22,24 @@ export async function GET() {
       );
     }
 
-    // Get user's allocations
-    // Try with join first, fallback to separate queries if join fails
-    let allocations: any[] = [];
-    let error: any = null;
-
-    // First, try to get allocations with project join
+    // Get user's allocations with capacity block and project info
     const { data: allocationsData, error: allocationsError } = await supabase
       .from("allocations")
-      .select(
-        `
+      .select(`
         *,
-        project:projects(*)
-      `
-      )
+        capacity_block:capacity_blocks(
+          id,
+          kw,
+          project_id,
+          project:projects(*)
+        )
+      `)
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
     if (allocationsError) {
-      // If join fails (likely due to RLS or missing FK), try without join
-      console.error("Error with join, trying without:", allocationsError);
+      // Fallback: get allocations and fetch related data separately
+      console.error("Error with join, trying separate queries:", allocationsError);
       
       const { data: allocationsOnly, error: errorOnly } = await supabase
         .from("allocations")
@@ -50,66 +48,72 @@ export async function GET() {
         .order("created_at", { ascending: false });
 
       if (errorOnly) {
-        error = errorOnly;
-      } else {
-        // Fetch projects separately and merge
-        allocations = allocationsOnly || [];
-        
-        if (allocations.length > 0) {
-          const projectIds = allocations
-            .map((a: any) => a.project_id)
-            .filter((id: string) => id);
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "DB_ERROR",
+              message: errorOnly.message || "Failed to fetch allocations",
+            },
+          },
+          { status: 500 }
+        );
+      }
 
-          if (projectIds.length > 0) {
-            const { data: projects, error: projectsError } = await supabase
+      const allocations = allocationsOnly || [];
+      
+      // Fetch capacity blocks and projects separately
+      if (allocations.length > 0) {
+        const blockIds = allocations
+          .map((a: any) => a.capacity_block_id)
+          .filter((id: string) => id);
+
+        if (blockIds.length > 0) {
+          const adminClient = createAdminClient();
+          const { data: blocks } = await adminClient
+            .from("capacity_blocks")
+            .select("id, kw, project_id")
+            .in("id", blockIds);
+
+          if (blocks) {
+            const projectIds = [...new Set(blocks.map((b: any) => b.project_id))];
+            const { data: projects } = await supabase
               .from("projects")
               .select("*")
               .in("id", projectIds);
 
-            if (!projectsError && projects) {
-              // Merge project data into allocations
-              allocations = allocations.map((allocation: any) => ({
+            // Merge data
+            const enrichedAllocations = allocations.map((allocation: any) => {
+              const block = blocks.find((b: any) => b.id === allocation.capacity_block_id);
+              const project = projects?.find((p: any) => p.id === block?.project_id);
+              
+              return {
                 ...allocation,
-                project: projects.find((p: any) => p.id === allocation.project_id) || null,
-              }));
-            } else {
-              // If projects fetch fails, just add null project
-              allocations = allocations.map((allocation: any) => ({
-                ...allocation,
-                project: null,
-              }));
-            }
-          } else {
-            // No project IDs, add null project
-            allocations = allocations.map((allocation: any) => ({
-              ...allocation,
-              project: null,
-            }));
+                capacity_block: block ? {
+                  ...block,
+                  project: project || null,
+                } : null,
+              };
+            });
+
+            return NextResponse.json({ success: true, data: enrichedAllocations });
           }
         }
       }
-    } else {
-      // Join succeeded
-      allocations = allocationsData || [];
+
+      return NextResponse.json({ success: true, data: allocations });
     }
 
-    if (error) {
-      console.error("Allocations fetch error:", error);
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "DB_ERROR",
-            message: error.message || "Failed to fetch allocations",
-            details: process.env.NODE_ENV === "development" ? error : undefined,
-          },
-        },
-        { status: 500 }
-      );
-    }
+    // Transform the nested structure for easier frontend consumption
+    const transformedAllocations = (allocationsData || []).map((allocation: any) => ({
+      ...allocation,
+      project: allocation.capacity_block?.project || null,
+      block_kw: allocation.capacity_block?.kw || allocation.capacity_kw,
+    }));
 
-    return NextResponse.json({ success: true, data: allocations });
+    return NextResponse.json({ success: true, data: transformedAllocations });
   } catch (error: any) {
+    console.error("Allocations GET error:", error);
     return NextResponse.json(
       { success: false, error: { code: "SERVER_ERROR", message: error.message } },
       { status: 500 }
@@ -138,13 +142,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { project_id, capacity_kw, monthly_fee } = body;
+    const { project_id, capacity_kw } = body;
 
-    if (!project_id || !capacity_kw || !monthly_fee) {
+    if (!project_id || !capacity_kw) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "VALIDATION_ERROR", message: "Missing required fields" },
+          error: { code: "VALIDATION_ERROR", message: "Missing required fields: project_id and capacity_kw" },
         },
         { status: 400 }
       );
@@ -164,7 +168,7 @@ export async function POST(request: Request) {
     // Check if project exists and is active
     const { data: project, error: projectError } = await supabase
       .from("projects")
-      .select("id, total_kw, status")
+      .select("id, total_kw, status, rate_per_kwh")
       .eq("id", project_id)
       .single();
 
@@ -189,8 +193,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check available capacity from capacity_blocks
-    // Use admin client to ensure we can read all blocks regardless of RLS
+    // Use admin client to check and allocate capacity blocks
     let adminClient;
     try {
       adminClient = createAdminClient();
@@ -208,16 +211,16 @@ export async function POST(request: Request) {
       );
     }
     
+    // Get available capacity blocks for this project
     const { data: availableBlocks, error: blocksError } = await adminClient
       .from("capacity_blocks")
       .select("id, kw")
       .eq("project_id", project_id)
-      .eq("status", "AVAILABLE");
+      .eq("status", "AVAILABLE")
+      .order("created_at", { ascending: true });
 
     if (blocksError) {
       console.error("Error checking capacity blocks:", blocksError);
-      console.error("Project ID:", project_id);
-      console.error("Error details:", JSON.stringify(blocksError, null, 2));
       return NextResponse.json(
         {
           success: false,
@@ -246,27 +249,95 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create allocation
-    const { data: allocation, error } = await supabase
-      .from("allocations")
-      .insert({
-        user_id: user.id,
-        project_id,
-        capacity_kw,
-        monthly_fee,
-        status: "pending",
-      })
-      .select()
-      .single();
+    // Select blocks to allocate (greedy algorithm - take blocks until we have enough capacity)
+    let remainingCapacity = Number(capacity_kw);
+    const blocksToAllocate: Array<{ id: string; kw: number }> = [];
 
-    if (error) {
+    for (const block of availableBlocks || []) {
+      if (remainingCapacity <= 0) break;
+      
+      const blockKw = Number(block.kw || 0);
+      if (blockKw > 0) {
+        blocksToAllocate.push({ id: block.id, kw: blockKw });
+        remainingCapacity -= blockKw;
+      }
+    }
+
+    // For now, we'll create one allocation per block
+    // If you want to group multiple blocks into one allocation, you'll need to adjust the schema
+    // Since capacity_block_id is UNIQUE, each allocation can only reference one block
+    
+    // Create allocations for each block
+    const createdAllocations = [];
+    
+    for (const block of blocksToAllocate) {
+      // Mark the capacity block as ALLOCATED
+      const { error: updateBlockError } = await adminClient
+        .from("capacity_blocks")
+        .update({
+          status: "ALLOCATED",
+          allocated_at: new Date().toISOString(),
+        })
+        .eq("id", block.id);
+
+      if (updateBlockError) {
+        console.error(`Error updating block ${block.id}:`, updateBlockError);
+        // Continue with other blocks, but log the error
+        continue;
+      }
+
+      // Create allocation for this block
+      const { data: allocation, error: allocError } = await supabase
+        .from("allocations")
+        .insert({
+          user_id: user.id,
+          capacity_block_id: block.id,
+          capacity_kw: block.kw, // Store the block's capacity
+        })
+        .select()
+        .single();
+
+      if (allocError) {
+        console.error(`Error creating allocation for block ${block.id}:`, allocError);
+        // Rollback: mark block as available again
+        await adminClient
+          .from("capacity_blocks")
+          .update({
+            status: "AVAILABLE",
+            allocated_at: null,
+          })
+          .eq("id", block.id);
+        continue;
+      }
+
+      createdAllocations.push(allocation);
+      
+      // Stop if we've allocated enough capacity
+      const totalAllocated = createdAllocations.reduce((sum, a) => sum + Number(a.capacity_kw || 0), 0);
+      if (totalAllocated >= capacity_kw) {
+        break;
+      }
+    }
+
+    if (createdAllocations.length === 0) {
       return NextResponse.json(
-        { success: false, error: { code: "DB_ERROR", message: error.message } },
+        {
+          success: false,
+          error: { code: "ALLOCATION_FAILED", message: "Failed to create allocations" },
+        },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, data: allocation });
+    // Return the first allocation (or all if you prefer)
+    // Frontend can handle multiple allocations if needed
+    return NextResponse.json({ 
+      success: true, 
+      data: createdAllocations.length === 1 ? createdAllocations[0] : createdAllocations,
+      message: createdAllocations.length > 1 
+        ? `Created ${createdAllocations.length} allocations for ${capacity_kw} kW` 
+        : undefined
+    });
   } catch (error: any) {
     console.error("Unexpected error in POST /api/allocations:", error);
     console.error("Error stack:", error.stack);
@@ -283,4 +354,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

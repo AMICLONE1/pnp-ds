@@ -4,627 +4,685 @@
 ---
 
 ## 1️⃣ Document Metadata
-- **Project Name:** digital-solar
-- **Date:** 2026-01-09
+- **Project Name:** PNP-DS
+- **Date:** 2026-01-19
 - **Prepared by:** TestSprite AI Team
 
 ---
 
 ## 2️⃣ Requirement Validation Summary
 
-#### Test TC001
-- **Test Name:** User Signup - Successful Registration
-- **Test Code:** [TC001_User_Signup___Successful_Registration.py](./TC001_User_Signup___Successful_Registration.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/4932275e-165d-42dd-b0c5-2ec2868d7f5d
+#### Test TC001 User Signup with Valid Credentials
+- **Test Code:** [TC001_User_Signup_with_Valid_Credentials.py](./TC001_User_Signup_with_Valid_Credentials.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/bcb9397e-4641-44f3-8470-f6d2beaffee7
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC002
-- **Test Name:** User Signup - Password Complexity Enforcement
-- **Test Code:** [TC002_User_Signup___Password_Complexity_Enforcement.py](./TC002_User_Signup___Password_Complexity_Enforcement.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/6251f19b-8fb9-45a1-a2fe-72f02a9b3b19
+#### Test TC002 User Login with Correct Credentials
+- **Test Code:** [TC002_User_Login_with_Correct_Credentials.py](./TC002_User_Login_with_Correct_Credentials.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/93e477af-9fe8-4627-9b08-a69d291fa0b8
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC003
-- **Test Name:** User Login - Successful Authentication
-- **Test Code:** [TC003_User_Login___Successful_Authentication.py](./TC003_User_Login___Successful_Authentication.py)
-- **Test Error:** The user was able to log in successfully with valid credentials initially, but the authenticated session was not maintained as navigating to protected pages redirected back to an empty login page. The login page is currently empty with no input fields or buttons, preventing further login attempts. This indicates a critical issue with session persistence and login page rendering that needs to be addressed by the development team.
+#### Test TC003 Login Failure with Incorrect Password
+- **Test Code:** [TC003_Login_Failure_with_Incorrect_Password.py](./TC003_Login_Failure_with_Incorrect_Password.py)
+- **Test Error:** Login was not rejected when a valid email and incorrect password were entered. Instead, the user was logged in successfully and redirected to the dashboard without any error message. This is a critical security and functional issue that needs to be addressed.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A040B305FC030000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3fc099ca900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3fc099ca900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3fc099ca900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3fc099ca900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935249714 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/login:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935249714 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/dashboard:0:0)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:20.004564182958838%;top:22.521967726321602%" "left:67.76341796175545%;top:28.518595680372627%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/acbc7bcb-28f1-4c87-82d8-a74f1d975d35
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/527f671e-7e50-427a-902c-e9f59bc06554
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC004
-- **Test Name:** User Login - Invalid Credential Handling
-- **Test Code:** [TC004_User_Login___Invalid_Credential_Handling.py](./TC004_User_Login___Invalid_Credential_Handling.py)
-- **Test Error:** The system did not reject the login attempt with incorrect password and allowed login, which is a critical security issue. After logout, the login page became blank and inaccessible, preventing further testing of error message display. The test cannot be completed due to this blocker.
+#### Test TC004 Password Reset Flow
+- **Test Code:** [TC004_Password_Reset_Flow.py](./TC004_Password_Reset_Flow.py)
+- **Test Error:** The password reset process cannot be validated because the forgot-password page does not render the necessary form elements. The page shows unrelated homepage content instead of the email input field and reset form. This is a critical issue blocking the password reset functionality testing. Reporting this issue and stopping further testing until it is resolved.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A004DB00040B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb040a13ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb040a13ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb040a13ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb040a13ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935251179 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935253056 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935251179 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/login:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935251179 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/dashboard:0:0)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:36.51710393530574%;top:54.74139778427902%" "left:48.48890458565056%;top:65.40999081369598%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/forgot-password/page.js:0:0)
+[ERROR] Failed to fetch RSC payload for http://localhost:3000/forgot-password. Falling back to browser navigation. ChunkLoadError: Loading chunk app/forgot-password/page failed.
+(error: http://localhost:3000/_next/static/chunks/app/forgot-password/page.js)
+    at __webpack_require__.f.j (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:852:29)
+    at http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:155:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:154:67)
+    at fn.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:391:50)
+    at loadChunk (webpack-internal:///66344:251:30)
+    at preloadModule (webpack-internal:///66344:173:22)
+    at resolveModule (webpack-internal:///66344:1819:17)
+    at processFullRow (webpack-internal:///66344:1908:9)
+    at processBinaryChunk (webpack-internal:///66344:2078:7)
+    at progress (webpack-internal:///66344:2159:5) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/forgot-password/page.js:0:0)
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:83.58345116287353%;top:85.16519028307228%" "left:38.201119277217366%;top:88.68399771781668%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/d83c6031-c794-4c0d-ab20-fc32a859b0b3
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/forgot-password/page.js:0:0)
+[ERROR] Failed to fetch RSC payload for http://localhost:3000/forgot-password. Falling back to browser navigation. ChunkLoadError: Loading chunk app/forgot-password/page failed.
+(error: http://localhost:3000/_next/static/chunks/app/forgot-password/page.js)
+    at __webpack_require__.f.j (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769734474:852:29)
+    at http://localhost:3000/_next/static/chunks/webpack.js?v=1768769734474:155:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769734474:154:67)
+    at fn.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769734474:391:50)
+    at loadChunk (webpack-internal:///66344:251:30)
+    at preloadModule (webpack-internal:///66344:173:22)
+    at resolveModule (webpack-internal:///66344:1819:17)
+    at processFullRow (webpack-internal:///66344:1908:9)
+    at processBinaryChunk (webpack-internal:///66344:2078:7)
+    at progress (webpack-internal:///66344:2159:5) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/forgot-password/page.js:0:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/198465b4-b158-426c-8930-099cf9b87070
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC005
-- **Test Name:** Password Reset Flow
-- **Test Code:** [TC005_Password_Reset_Flow.py](./TC005_Password_Reset_Flow.py)
-- **Test Error:** Password reset request can be submitted with a registered email and confirmation is shown. However, the password reset process does not complete successfully as login with the new password fails with 'Invalid login credentials'. The password reset functionality is broken or incomplete. Test failed.
+#### Test TC005 Session Management and Auto Logout
+- **Test Code:** [TC005_Session_Management_and_Auto_Logout.py](./TC005_Session_Management_and_Auto_Logout.py)
+- **Test Error:** Reported issue: Login button does not open login form but redirects to benefits page. Cannot proceed with session handling verification. Stopping further actions.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0D83A0034240000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x24340779af80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x24340779af80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x24340779af80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x24340779af80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 400 () (at https://kmwinrwqavqvclnevyxp.supabase.co/auth/v1/token?grant_type=password:0:0)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/5d0f7b95-b719-40ab-a51b-b3b0a1b4ffde
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:6.2485499116812%;top:40.6679917107869%" "left:59.05939320521183%;top:66.39994675835182%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/8e9d4c28-f490-45d9-ab0a-dd950267c38b
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC006
-- **Test Name:** Landing Page - Animations and Calculators Load Correctly
-- **Test Code:** [TC006_Landing_Page___Animations_and_Calculators_Load_Correctly.py](./TC006_Landing_Page___Animations_and_Calculators_Load_Correctly.py)
-- **Test Error:** The landing page hero section animations, calculators, and call-to-action elements rendered and functioned properly on desktop initial load. However, on mobile view, the landing page is completely empty with no visible content or interactive elements, preventing verification of responsive behavior. This indicates a critical rendering issue on mobile devices. Further investigation is needed to resolve this issue.
+#### Test TC006 Project Browsing and Real-Time Data Display
+- **Test Code:** [TC006_Project_Browsing_and_Real_Time_Data_Display.py](./TC006_Project_Browsing_and_Real_Time_Data_Display.py)
+- **Test Error:** Testing stopped due to inability to access login page. Login button does not function as expected, preventing further test steps.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0808706BC0D0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xdbc09bc1580]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xdbc09bc1580]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xdbc09bc1580]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xdbc09bc1580]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:55.90766393610338%;top:29.944223971584137%" "left:28.455895101116766%;top:66.13264314175052%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/734087bc-3c85-42fc-878f-45411ec8a9b3
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/3b5d7588-e608-4916-b5fc-2b99faea8c2c
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC007
-- **Test Name:** Project Browsing - Real-Time Data Accuracy
-- **Test Code:** [TC007_Project_Browsing___Real_Time_Data_Accuracy.py](./TC007_Project_Browsing___Real_Time_Data_Accuracy.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/001e9f04-ad80-4214-9e8d-ff9efeb8889d
-- **Status:** ✅ Passed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC008
-- **Test Name:** Capacity Reservation - Slider Selection and Payment Flow
-- **Test Code:** [TC008_Capacity_Reservation___Slider_Selection_and_Payment_Flow.py](./TC008_Capacity_Reservation___Slider_Selection_and_Payment_Flow.py)
-- **Test Error:** Test cannot proceed because the login page is empty and login form elements are missing, preventing login and further steps. Please fix the login page issue to continue testing.
+#### Test TC007 Capacity Reservation with Slider Selection and Payment Initiation
+- **Test Code:** [TC007_Capacity_Reservation_with_Slider_Selection_and_Payment_Initiation.py](./TC007_Capacity_Reservation_with_Slider_Selection_and_Payment_Initiation.py)
+- **Test Error:** Stopped testing due to inability to select a community solar project on the reserve page, which is critical for continuing the task. Reported the issue for resolution.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0002F0854120000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x125409a9a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x125409a9a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x125409a9a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x125409a9a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/dashboard. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190164:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190164:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190164:371:21)
-    at eval (webpack-internal:///631:17:130)
-    at 631 (http://localhost:3000/_next/static/chunks/app/dashboard/page.js:39:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190164:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190164:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190164:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:87.89064341249141%;top:45.89183416295464%" "left:31.316980827181506%;top:83.09437341074626%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/305e580c-f862-423e-bbcc-828a3863554b
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/1343fddb-7fdd-4ad6-a3f7-7288fb30cdfd
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC009
-- **Test Name:** Capacity Reservation - Slider Boundary Conditions
-- **Test Code:** [TC009_Capacity_Reservation___Slider_Boundary_Conditions.py](./TC009_Capacity_Reservation___Slider_Boundary_Conditions.py)
-- **Test Error:** The capacity selection slider verification could not be completed because the login page was completely empty, preventing access to the project reservation page and the slider itself. The issue has been reported. Please resolve the login page issue to enable further testing.
+#### Test TC008 Payment Processing Success Simulation
+- **Test Code:** [TC008_Payment_Processing_Success_Simulation.py](./TC008_Payment_Processing_Success_Simulation.py)
+- **Test Error:** Testing stopped due to broken navigation preventing access to payment page and payment simulation. User cannot complete reservation confirmation and allocation update verification. Issue reported for developer fix.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0002104BC190000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x19bc09963600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x19bc09963600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x19bc09963600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x19bc09963600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[WARNING] [Fast Refresh] performing full reload
-
-Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
-You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
-Consider migrating the non-React component export to a separate file and importing it into both files.
-
-It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
-Fast Refresh requires at least one parent function component in your React tree. (at webpack-internal:///67550:112:24)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:34.71025637228276%;top:40.805640838230126%" "left:43.761405346919545%;top:48.52706593499132%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/59e69066-2bec-4c8c-af90-e004f59ef54c
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC010
-- **Test Name:** Utility Connection - Valid State and Provider Mapping
-- **Test Code:** [TC010_Utility_Connection___Valid_State_and_Provider_Mapping.py](./TC010_Utility_Connection___Valid_State_and_Provider_Mapping.py)
-- **Test Error:** The user successfully logged in and navigated to the utility connection page. They selected a valid state (Maharashtra) and a corresponding DISCOM provider (MSEDCL). However, the consumer number field was left empty, and the Connect Utility form was not submitted successfully. Therefore, the task to verify that users can map their utility accounts correctly by selecting valid state and DISCOM providers with validation is not fully completed. The form validation prevents submission without a consumer number, indicating proper validation is in place. Further testing is needed to input a valid consumer number and confirm successful form submission and confirmation message display.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A040520424280000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x282406b5ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x282406b5ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x282406b5ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x282406b5ef80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/2edef73c-4a4d-48b5-9da9-b1d32983b7f5
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC011
-- **Test Name:** Utility Connection - Invalid State and Provider Validation
-- **Test Code:** [TC011_Utility_Connection___Invalid_State_and_Provider_Validation.py](./TC011_Utility_Connection___Invalid_State_and_Provider_Validation.py)
-- **Test Error:** Login process is stuck on loading state, preventing access to the utility connection page. Cannot proceed with testing invalid state and DISCOM provider combinations. Task stopped due to this issue.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A000D404EC3B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3bec09a52f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3bec09a52f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3bec09a52f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x3bec09a52f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/dashboard. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190447:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190447:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190447:371:21)
-    at eval (webpack-internal:///631:17:130)
-    at 631 (http://localhost:3000/_next/static/chunks/app/dashboard/page.js:39:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190447:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190447:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935190447:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/5eaa7c2f-657b-4108-b70d-c2bdc6c23a71
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC012
-- **Test Name:** Dashboard - Real-Time Capacity and Savings Monitoring
-- **Test Code:** [TC012_Dashboard___Real_Time_Capacity_and_Savings_Monitoring.py](./TC012_Dashboard___Real_Time_Capacity_and_Savings_Monitoring.py)
-- **Test Error:** The capacity input section on the reserve capacity page does not enable after selecting a solar project, preventing reservation simulation. This blocks verification of live updates on the dashboard. Reporting this issue and stopping further actions as the task cannot be completed without this functionality.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0D83A008C320000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x328c09c96f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x328c09c96f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x328c09c96f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x328c09c96f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/2487fb49-e9a9-44c5-b77b-56c56b246928
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC013
-- **Test Name:** Bills Management - Display Bills with Solar Credits Applied
-- **Test Code:** [TC013_Bills_Management___Display_Bills_with_Solar_Credits_Applied.py](./TC013_Bills_Management___Display_Bills_with_Solar_Credits_Applied.py)
-- **Test Error:** The Settings page is blank after navigation, which prevents updating utility details. This blocks the ability to fetch and verify electricity bills with solar credits applied. The issue should be reported and fixed before further testing can continue.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0C03A05C4110000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x11c409a53c80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x11c409a53c80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x11c409a53c80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x11c409a53c80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935250957 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) (at http://localhost:3000/api/bills/fetch:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/settings. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191047:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191047:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191047:371:21)
-    at eval (webpack-internal:///738:14:74)
-    at 738 (http://localhost:3000/_next/static/chunks/app/settings/page.js:39:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191047:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191047:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191047:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/55fb534c-ccb3-4b62-9818-6416fc4030d6
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC014
-- **Test Name:** Bills Management - Payment Processing
-- **Test Code:** [TC014_Bills_Management___Payment_Processing.py](./TC014_Bills_Management___Payment_Processing.py)
-- **Test Error:** The test to verify users can make payments on outstanding bills using the simulated payment gateway could not be fully completed due to persistent authentication issues and UI problems after logout. The user was able to log in initially and navigate to the bills page, but fetching or adding bills failed due to 'Not authenticated' errors. After logout, the homepage became empty with no interactive elements visible, preventing further login attempts. This issue has been reported. Further testing requires resolution of these issues.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A098D800440B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb440962e900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb440962e900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb440962e900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xb440962e900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935251137 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) (at http://localhost:3000/api/bills/fetch:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) (at http://localhost:3000/api/bills/manual:0:0)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/118132e4-a44f-4b99-8bbf-524d1b35c351
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC015
-- **Test Name:** API Routes - Authorization and Error Handling
-- **Test Code:** [TC015_API_Routes___Authorization_and_Error_Handling.py](./TC015_API_Routes___Authorization_and_Error_Handling.py)
-- **Test Error:** Testing stopped due to critical website issues: protected API endpoint not found, broken navigation, and empty homepage. Cannot verify authorization enforcement or error responses. Please resolve these issues and retry.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0043B004C090000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x94c0a18a280]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x94c0a18a280]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x94c0a18a280]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x94c0a18a280]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/api/protected:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/api/protected?_rsc=1kfer:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/api/protected?_rsc=1kfer:0:0)
-[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/api/protected:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935308510:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935308510:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935308510:371:21)
-    at eval (webpack-internal:///43469:11:172)
-    at 43469 (http://localhost:3000/_next/static/chunks/app/page.js:28:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935308510:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935308510:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935308510:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/def4dc75-303e-48e7-bbf2-0cc8fa997206
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC016
-- **Test Name:** Session Management and Security
-- **Test Code:** [TC016_Session_Management_and_Security.py](./TC016_Session_Management_and_Security.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/90b216d1-12a3-433e-ab7f-5f371dc29fb7
-- **Status:** ✅ Passed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC017
-- **Test Name:** Input Validation and XSS Protection
-- **Test Code:** [TC017_Input_Validation_and_XSS_Protection.py](./TC017_Input_Validation_and_XSS_Protection.py)
-- **Test Error:** Completed testing of login, signup, and reservation forms for input sanitization and validation against XSS and injection attacks. All tested forms showed proper validation errors and prevented script execution. However, the utility connection form could not be tested due to navigation redirect to login page when attempting to access the dashboard. This issue blocks full coverage of input sanitization testing. Recommend fixing session or access control to allow navigation for complete testing.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0C0A20544180000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x18440946b600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x18440946b600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x18440946b600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x18440946b600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935250635 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/:0:0)
-[WARNING] The resource http://localhost:3000/_next/static/css/app/layout.css?v=1767935250635 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (at http://localhost:3000/:0:0)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/65f13657-7eeb-4919-8c5e-fd16d68af741
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC018
-- **Test Name:** Responsive UI - Cross Device Compatibility
-- **Test Code:** [TC018_Responsive_UI___Cross_Device_Compatibility.py](./TC018_Responsive_UI___Cross_Device_Compatibility.py)
-- **Test Error:** The landing page and reservation flow UI rendered correctly and functioned as expected on desktop screen initially. However, after login, the dashboard and landing page failed to render, showing empty pages with no UI elements. This critical rendering issue blocked further verification of the dashboard and prevented testing on mobile devices for responsiveness and touch interactions. The application requires investigation and fixing of these rendering issues to ensure full UI functionality across device sizes and orientations.
-Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A044D90034310000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x313403f86f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x313403f86f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x313403f86f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x313403f86f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
 [ERROR] Failed to load resource: the server responded with a status of 422 () (at https://kmwinrwqavqvclnevyxp.supabase.co/auth/v1/signup:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/dashboard. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191193:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191193:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191193:371:21)
-    at eval (webpack-internal:///631:17:130)
-    at 631 (http://localhost:3000/_next/static/chunks/app/dashboard/page.js:39:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191193:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191193:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191193:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/reserve/payment/page.js:0:0)
+[ERROR] Failed to fetch RSC payload for http://localhost:3000/reserve/payment?project=937982ea-a014-43dc-969d-da12803211a2&capacity=5&amount=166250. Falling back to browser navigation. ChunkLoadError: Loading chunk app/reserve/payment/page failed.
+(error: http://localhost:3000/_next/static/chunks/app/reserve/payment/page.js)
+    at __webpack_require__.f.j (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552810:852:29)
+    at http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552810:155:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552810:154:67)
+    at fn.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552810:391:50)
+    at loadChunk (webpack-internal:///66344:251:30)
+    at preloadModule (webpack-internal:///66344:173:22)
+    at resolveModule (webpack-internal:///66344:1819:17)
+    at processFullRow (webpack-internal:///66344:1908:9)
+    at processBinaryChunk (webpack-internal:///66344:2078:7)
+    at progress (webpack-internal:///66344:2159:5) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/reserve/payment/page.js:0:0)
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:22.06141017597727%;top:86.1950879505261%" "left:46.328815513376355%;top:28.9768741486526%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
-    at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
-
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/012c0f33-4b63-4b66-995e-9832ce8ccc5c
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/5eb2a50f-310d-4ed2-ac37-fcd58d6edfbd
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC019
-- **Test Name:** Refund Requests - Policy Compliance and Processing
-- **Test Code:** [TC019_Refund_Requests___Policy_Compliance_and_Processing.py](./TC019_Refund_Requests___Policy_Compliance_and_Processing.py)
-- **Test Error:** The refund management page cannot be accessed because clicking 'Settings' redirects to the login page again, indicating a session or permission issue. This blocks the ability to submit refund requests and verify refund policy enforcement. Task cannot be completed due to this critical issue.
+#### Test TC009 Capacity Reservation Payment Failure Handling
+- **Test Code:** [TC009_Capacity_Reservation_Payment_Failure_Handling.py](./TC009_Capacity_Reservation_Payment_Failure_Handling.py)
+- **Test Error:** Testing stopped due to inability to proceed past account creation step. The system does not allow existing users to continue to payment page, blocking validation of payment failure or cancellation scenarios. Reported this issue for resolution.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A0007B03CC210000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x21cc092a6f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x21cc092a6f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x21cc092a6f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0x21cc092a6f80]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/d961ba8a-b4de-47d2-bce8-666c31af2ddc
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:28.888818685306617%;top:11.499778384623461%" "left:82.53819532493118%;top:6.9488911498060135%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+[ERROR] Failed to load resource: the server responded with a status of 422 () (at https://kmwinrwqavqvclnevyxp.supabase.co/auth/v1/signup:0:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/029aa26e-561c-40a7-8270-b5bffebe29e7
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC020
-- **Test Name:** Help Center and FAQ Accessibility
-- **Test Code:** [TC020_Help_Center_and_FAQ_Accessibility.py](./TC020_Help_Center_and_FAQ_Accessibility.py)
-- **Test Error:** The help center and FAQ pages are not accessible or missing. The /help page is empty with no content or interactive elements. Therefore, it is not possible to verify the FAQ questions, answers, or accessibility features. The website needs maintenance to restore the help center content. Task stopped.
+#### Test TC010 Utility Account Connection with Valid State and Provider
+- **Test Code:** [TC010_Utility_Account_Connection_with_Valid_State_and_Provider.py](./TC010_Utility_Account_Connection_with_Valid_State_and_Provider.py)
+- **Test Error:** Testing stopped due to critical navigation issue preventing access to utility connection page. User login succeeded but further steps cannot be performed. Please fix navigation to proceed with testing.
 Browser Console Logs:
-[WARNING] [GroupMarkerNotSet(crbug.com/242999)!:A004DA00CC0E0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content. (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xecc0a15a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xecc0a15a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xecc0a15a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://localhost:3000/:0:0)
-[WARNING] [.WebGL-0xecc0a15a900]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://localhost:3000/:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/dashboard. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191722:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191722:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191722:371:21)
-    at eval (webpack-internal:///631:17:130)
-    at 631 (http://localhost:3000/_next/static/chunks/app/dashboard/page.js:39:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191722:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191722:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935191722:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
-
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:42.38035130274105%;top:34.49290351052201%" "left:83.53017371787858%;top:45.335177575184126%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/b307900d-f773-4bfd-b59a-57e8d2ba8cf2
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
 
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/help-center:0:0)
-[ERROR] Failed to fetch RSC payload for http://localhost:3000/help. Falling back to browser navigation. TypeError: Cannot read properties of undefined (reading 'call')
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935374467:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935374467:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935374467:371:21)
-    at eval (webpack-internal:///94:9:83)
-    at 94 (http://localhost:3000/_next/static/chunks/app/help/page.js:94:1)
-    at options.factory (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935374467:715:31)
-    at __webpack_require__ (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935374467:37:33)
-    at fn (http://localhost:3000/_next/static/chunks/runtime.js?v=1767935374467:371:21)
-    at requireAsyncModule (webpack-internal:///66344:134:17)
-    at eval (webpack-internal:///66344:189:16) (at webpack-internal:///67669:32:21)
-[ERROR] Warning: An error occurred during hydration. The server HTML was replaced with client content in <%s>. #document (at webpack-internal:///67669:32:21)
-[ERROR] The above error occurred in the <ServerRoot> component:
+#### Test TC011 Utility Account Connection Validation Failure
+- **Test Code:** [null](./null)
+- **Test Error:** Test execution timed out after 15 minutes
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/3fa9ba1a-fdc5-4685-96ee-a8d9ac032629
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
 
+#### Test TC012 Dashboard Real-Time Data Updates
+- **Test Code:** [TC012_Dashboard_Real_Time_Data_Updates.py](./TC012_Dashboard_Real_Time_Data_Updates.py)
+- **Test Error:** Login failed: The login process is stuck on the loading indicator and does not navigate to the user dashboard. Unable to verify real-time updates on reserved capacity, cost savings, CO2 reduction, and recent user activity. Please fix the login issue to proceed with testing.
+Browser Console Logs:
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:10.539592919895435%;top:25.82090757437463%" "left:28.041968638928093%;top:71.29216940549472%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
     at ServerRoot (webpack-internal:///67669:112:27)
-    at Root (webpack-internal:///67669:117:11)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/992e82c3-ffe7-426f-ac44-8c6041db37d7
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
 
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. (at webpack-internal:///67669:32:21)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/fb81a93c-e1b3-45cb-852e-5e575a47daec/d7f2851d-2a0c-4cd3-b387-4e39a204e428
+#### Test TC013 Bills Page Shows Electricity Bills with Applied Solar Credits
+- **Test Code:** [TC013_Bills_Page_Shows_Electricity_Bills_with_Applied_Solar_Credits.py](./TC013_Bills_Page_Shows_Electricity_Bills_with_Applied_Solar_Credits.py)
+- **Test Error:** Navigation to login page is broken. Cannot proceed with testing electricity bills and solar credits. Reporting issue and stopping further actions.
+Browser Console Logs:
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:59.2193159057663%;top:4.000010815463262%" "left:24.87196935788458%;top:93.11968133929354%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/d6672c1e-5a5c-41cd-97d1-857c2f580f71
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC014 Electricity Bill Payment Simulation
+- **Test Code:** [TC014_Electricity_Bill_Payment_Simulation.py](./TC014_Electricity_Bill_Payment_Simulation.py)
+- **Test Error:** Testing stopped due to critical issue: 'Bills & Payments' page is not loading properly, preventing further testing of payment simulation functionality.
+Browser Console Logs:
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:88.43335208587686%;top:30.797547240214264%" "left:77.62153880867338%;top:71.09467382958054%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/bills/page.js:0:0)
+[ERROR] Failed to fetch RSC payload for http://localhost:3000/bills. Falling back to browser navigation. ChunkLoadError: Loading chunk app/bills/page failed.
+(error: http://localhost:3000/_next/static/chunks/app/bills/page.js)
+    at __webpack_require__.f.j (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:852:29)
+    at http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:155:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:154:67)
+    at fn.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769553352:391:50)
+    at loadChunk (webpack-internal:///66344:251:30)
+    at preloadModule (webpack-internal:///66344:173:22)
+    at resolveModule (webpack-internal:///66344:1819:17)
+    at processFullRow (webpack-internal:///66344:1908:9)
+    at processBinaryChunk (webpack-internal:///66344:2078:7)
+    at progress (webpack-internal:///66344:2159:5) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/bills/page.js:0:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/d8f94f7c-3e32-4dc1-8676-0b425735afd7
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC015 API Endpoint Authorization and Error Handling
+- **Test Code:** [TC015_API_Endpoint_Authorization_and_Error_Handling.py](./TC015_API_Endpoint_Authorization_and_Error_Handling.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/c7c7a9cc-1cd1-435c-8a17-5abf09aa18a1
+- **Status:** ✅ Passed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC016 Landing Page Animations and Responsiveness
+- **Test Code:** [TC016_Landing_Page_Animations_and_Responsiveness.py](./TC016_Landing_Page_Animations_and_Responsiveness.py)
+- **Test Error:** Completed testing interactive elements on desktop including capacity slider and email subscription input validation. Found that valid email subscription clears input without confirmation message, which is unexpected and reported as a website issue. Stopping further testing as per user instruction.
+Browser Console Logs:
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:34.852664135282005%;top:58.71112794665532%" "left:39.3856529970015%;top:5.4020165086489325%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/fb38e759-9862-4ec8-9e24-f4b8587c23a8
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC017 Refund Request and Exit Policy Enforcement
+- **Test Code:** [TC017_Refund_Request_and_Exit_Policy_Enforcement.py](./TC017_Refund_Request_and_Exit_Policy_Enforcement.py)
+- **Test Error:** Testing stopped due to inaccessible refund request form. The 'Bills' page is blank and does not display any content related to refund requests or reservations. This blocks verification of refund request submission, validation, and confirmation as per the task requirements.
+Browser Console Logs:
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:14.11371234377048%;top:81.70411139269562%" "left:26.089018558038045%;top:65.930702640437%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/bills/page.js:0:0)
+[ERROR] Failed to fetch RSC payload for http://localhost:3000/bills. Falling back to browser navigation. ChunkLoadError: Loading chunk app/bills/page failed.
+(error: http://localhost:3000/_next/static/chunks/app/bills/page.js)
+    at __webpack_require__.f.j (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552809:852:29)
+    at http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552809:155:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552809:154:67)
+    at fn.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769552809:391:50)
+    at loadChunk (webpack-internal:///66344:251:30)
+    at preloadModule (webpack-internal:///66344:173:22)
+    at resolveModule (webpack-internal:///66344:1819:17)
+    at processFullRow (webpack-internal:///66344:1908:9)
+    at processBinaryChunk (webpack-internal:///66344:2078:7)
+    at progress (webpack-internal:///66344:2159:5) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/bills/page.js:0:0)
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:20.62353576923488%;top:5.83576343341059%" "left:67.64580854793665%;top:46.94972576375187%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/bills/page.js:0:0)
+[ERROR] Failed to fetch RSC payload for http://localhost:3000/bills. Falling back to browser navigation. ChunkLoadError: Loading chunk app/bills/page failed.
+(error: http://localhost:3000/_next/static/chunks/app/bills/page.js)
+    at __webpack_require__.f.j (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769896194:852:29)
+    at http://localhost:3000/_next/static/chunks/webpack.js?v=1768769896194:155:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769896194:154:67)
+    at fn.e (http://localhost:3000/_next/static/chunks/webpack.js?v=1768769896194:391:50)
+    at loadChunk (webpack-internal:///66344:251:30)
+    at preloadModule (webpack-internal:///66344:173:22)
+    at resolveModule (webpack-internal:///66344:1819:17)
+    at processFullRow (webpack-internal:///66344:1908:9)
+    at processBinaryChunk (webpack-internal:///66344:2078:7)
+    at progress (webpack-internal:///66344:2159:5) (at webpack-internal:///67669:32:21)
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/_next/static/chunks/app/bills/page.js:0:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/c10120b2-d8cc-4917-976f-782259770da4
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC018 Form Input Validation and XSS Protection
+- **Test Code:** [TC018_Form_Input_Validation_and_XSS_Protection.py](./TC018_Form_Input_Validation_and_XSS_Protection.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/65a7fdce-786a-460d-aa3d-a93abf0862b4
+- **Status:** ✅ Passed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC019 Role Level Security Enforcement
+- **Test Code:** [TC019_Role_Level_Security_Enforcement.py](./TC019_Role_Level_Security_Enforcement.py)
+- **Test Error:** Stopped testing due to inaccessible login functionality. Cannot proceed with RLS policy verification without user authentication. Reported the issue for resolution.
+Browser Console Logs:
+[ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "left:97.93660313458324%;top:96.405467670853%" "left:30.933420182291638%;top:5.735888731422389%" 
+    at div
+    at MotionComponent (webpack-internal:///86604:54:65)
+    at div
+    at div
+    at PageLoader
+    at LoadingProvider (webpack-internal:///27893:26:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///63725:74:9)
+    at RedirectBoundary (webpack-internal:///63725:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///78438:76:9)
+    at NotFoundBoundary (webpack-internal:///78438:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///47032:33:11)
+    at ReactDevOverlay (webpack-internal:///88373:87:9)
+    at HotReload (webpack-internal:///67550:321:11)
+    at Router (webpack-internal:///7679:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///56292:113:9)
+    at ErrorBoundary (webpack-internal:///56292:160:11)
+    at AppRouter (webpack-internal:///7679:585:13)
+    at ServerRoot (webpack-internal:///67669:112:27)
+    at Root (webpack-internal:///67669:117:11) (at webpack-internal:///67669:32:21)
+[WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (at webpack-internal:///16717:8:12)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/bd35dd27-b398-458c-9608-99c7109e603d
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC020 Settings and Help Center Access and Content Validation
+- **Test Code:** [TC020_Settings_and_Help_Center_Access_and_Content_Validation.py](./TC020_Settings_and_Help_Center_Access_and_Content_Validation.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/8300fec3-31c1-448e-8a8b-66a54ca44017
+- **Status:** ✅ Passed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
+#### Test TC021 Responsive UI Components Consistency Check
+- **Test Code:** [null](./null)
+- **Test Error:** Test execution timed out after 15 minutes
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/b1abc0c7-147b-4a3d-a8af-d3bf6a96843b/824cb1d2-0507-493b-8b2b-57da92d06460
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
@@ -632,7 +690,7 @@ Visit https://reactjs.org/link/error-boundaries to learn more about error bounda
 
 ## 3️⃣ Coverage & Matching Metrics
 
-- **20.00** of tests passed
+- **23.81** of tests passed
 
 | Requirement        | Total Tests | ✅ Passed | ❌ Failed  |
 |--------------------|-------------|-----------|------------|

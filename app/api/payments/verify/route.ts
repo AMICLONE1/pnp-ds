@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, allocation_id } = body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return NextResponse.json(
@@ -59,12 +59,23 @@ export async function POST(request: Request) {
       }
     }
 
+    // Get existing payment first to preserve metadata
+    const { data: existingPayment } = await supabase
+      .from("payments")
+      .select("metadata")
+      .eq("gateway_order_id", razorpay_order_id)
+      .eq("user_id", user.id)
+      .single();
+
     // Update payment record
     const { data: payment, error: paymentError } = await supabase
       .from("payments")
       .update({
-        razorpay_payment_id,
-        razorpay_signature,
+        gateway_payment_id: razorpay_payment_id,
+        metadata: {
+          ...(existingPayment?.metadata || {}),
+          razorpay_signature,
+        },
         status: "COMPLETED",
       })
       .eq("gateway_order_id", razorpay_order_id)
@@ -82,13 +93,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // If payment is for allocation, activate it and allocate capacity blocks
-    if (payment.allocation_id && payment.payment_type === "allocation") {
-      // Get allocation details
+    // If payment is for allocation and allocation_id is provided, link them
+    if (allocation_id && payment.type === "ALLOCATION") {
+      // Get allocation details with capacity block info
       const { data: allocation, error: allocationError } = await supabase
         .from("allocations")
-        .select("id, project_id, capacity_kw, status")
-        .eq("id", payment.allocation_id)
+        .select(`
+          id,
+          capacity_kw,
+          capacity_block_id,
+          capacity_block:capacity_blocks(
+            id,
+            project_id,
+            status
+          )
+        `)
+        .eq("id", allocation_id)
+        .eq("user_id", user.id)
         .single();
 
       if (allocationError || !allocation) {
@@ -102,130 +123,69 @@ export async function POST(request: Request) {
         );
       }
 
-      // Only allocate if allocation is still pending
-      if (allocation.status === "pending") {
-        // Get available capacity blocks for this project
-        // Use admin client to ensure we can read all blocks regardless of RLS
+      // Check if allocation already has a payment (to prevent double-linking)
+      if (allocation.payment_id && allocation.payment_id !== payment.id) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: { code: "ALREADY_LINKED", message: "Allocation already linked to another payment" },
+          },
+          { status: 400 }
+        );
+      }
+
+      // Link payment to allocation
+      const { error: linkError } = await supabase
+        .from("allocations")
+        .update({ payment_id: payment.id })
+        .eq("id", allocation_id);
+
+      if (linkError) {
+        console.error("Error linking payment to allocation:", linkError);
+        // Don't fail the payment verification, just log the error
+      }
+
+      // Ensure capacity block is marked as ALLOCATED
+      if (allocation.capacity_block && allocation.capacity_block.status !== "ALLOCATED") {
         let adminClient;
         try {
           adminClient = createAdminClient();
         } catch (error: any) {
           console.error("Failed to create admin client:", error.message);
-          return NextResponse.json(
-            {
-              success: false,
-              error: {
-                code: "CONFIG_ERROR",
-                message: error.message || "Server configuration error. Please check environment variables.",
-              },
-            },
-            { status: 500 }
-          );
-        }
-        const { data: availableBlocks, error: blocksError } = await adminClient
-          .from("capacity_blocks")
-          .select("id, kw")
-          .eq("project_id", allocation.project_id)
-          .eq("status", "AVAILABLE")
-          .order("created_at", { ascending: true })
-          .limit(Math.ceil(allocation.capacity_kw)); // Get enough blocks
-
-        if (blocksError) {
-          console.error("Error fetching capacity blocks:", blocksError);
-          return NextResponse.json(
-            {
-              success: false,
-              error: { code: "DB_ERROR", message: "Failed to fetch capacity blocks" },
-            },
-            { status: 500 }
-          );
+          // Continue without updating block status
         }
 
-        if (!availableBlocks || availableBlocks.length === 0) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: {
-                code: "INSUFFICIENT_CAPACITY",
-                message: "No capacity blocks available for allocation",
-              },
-            },
-            { status: 400 }
-          );
-        }
-
-        // Calculate how much capacity we need to allocate
-        let remainingCapacity = Number(allocation.capacity_kw);
-        const blocksToAllocate: string[] = [];
-
-        for (const block of availableBlocks) {
-          if (remainingCapacity <= 0) break;
-          blocksToAllocate.push(block.id);
-          remainingCapacity -= Number(block.kw || 0);
-        }
-
-        // Check if we have enough blocks
-        const allocatedCapacity = blocksToAllocate.reduce((sum, blockId) => {
-          const block = availableBlocks.find((b) => b.id === blockId);
-          return sum + Number(block?.kw || 0);
-        }, 0);
-
-        if (allocatedCapacity < Number(allocation.capacity_kw)) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: {
-                code: "INSUFFICIENT_CAPACITY",
-                message: `Only ${allocatedCapacity.toFixed(2)} kW available. Required: ${allocation.capacity_kw} kW`,
-              },
-            },
-            { status: 400 }
-          );
-        }
-
-        // Update capacity blocks status to ALLOCATED
-        // Use admin client to bypass RLS for this operation
-        const { error: updateBlocksError } = await adminClient
-          .from("capacity_blocks")
-          .update({ status: "ALLOCATED" })
-          .in("id", blocksToAllocate);
-
-        if (updateBlocksError) {
-          console.error("Error updating capacity blocks:", updateBlocksError);
-          return NextResponse.json(
-            {
-              success: false,
-              error: { code: "DB_ERROR", message: "Failed to allocate capacity blocks" },
-            },
-            { status: 500 }
-          );
-        }
-
-        // Update allocation status to active
-        const { error: updateAllocationError } = await supabase
-          .from("allocations")
-          .update({
-            status: "active",
-            start_date: new Date().toISOString().split("T")[0],
-          })
-          .eq("id", payment.allocation_id);
-
-        if (updateAllocationError) {
-          console.error("Error updating allocation:", updateAllocationError);
-          // Try to revert capacity blocks (though this is best-effort)
-          await adminClient
+        if (adminClient) {
+          const { error: updateBlockError } = await adminClient
             .from("capacity_blocks")
-            .update({ status: "AVAILABLE" })
-            .in("id", blocksToAllocate);
-          
-          return NextResponse.json(
-            {
-              success: false,
-              error: { code: "DB_ERROR", message: "Failed to activate allocation" },
-            },
-            { status: 500 }
-          );
+            .update({
+              status: "ALLOCATED",
+              allocated_at: new Date().toISOString(),
+            })
+            .eq("id", allocation.capacity_block_id);
+
+          if (updateBlockError) {
+            console.error("Error updating capacity block status:", updateBlockError);
+            // Don't fail payment verification, just log
+          }
         }
+      }
+    }
+
+    // If payment is for a bill, update bill status
+    if (payment.bill_id && payment.type === "BILL") {
+      const { error: billUpdateError } = await supabase
+        .from("bills")
+        .update({
+          status: "PAID",
+          paid_at: new Date().toISOString(),
+        })
+        .eq("id", payment.bill_id)
+        .eq("user_id", user.id);
+
+      if (billUpdateError) {
+        console.error("Error updating bill status:", billUpdateError);
+        // Don't fail payment verification
       }
     }
 
@@ -234,6 +194,7 @@ export async function POST(request: Request) {
       data: payment,
     });
   } catch (error: any) {
+    console.error("Payment verification error:", error);
     return NextResponse.json(
       {
         success: false,
@@ -246,4 +207,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

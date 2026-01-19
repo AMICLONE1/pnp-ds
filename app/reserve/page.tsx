@@ -219,9 +219,9 @@ function ProjectCard({
   onSelect: () => void;
 }) {
   const features = [
-    { icon: Zap, label: `${Number(project.available_capacity_kw).toLocaleString()} kW available` },
-    { icon: Shield, label: "75% guaranteed generation" },
-    { icon: Leaf, label: "100% renewable energy" },
+    { icon: Zap, label: `${Number(project.available_capacity_kw).toLocaleString()} kW available`, color: "text-gold" },
+    { icon: Shield, label: "75% guaranteed generation", color: "text-green-600" },
+    { icon: Leaf, label: "100% renewable energy", color: "text-emerald-600" },
   ];
 
   return (
@@ -229,116 +229,189 @@ function ProjectCard({
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -6, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onSelect}
       className={cn(
-        "relative cursor-pointer rounded-2xl border-2 transition-all duration-300",
+        "relative cursor-pointer rounded-3xl border-2 transition-all duration-300",
         "bg-white overflow-hidden group",
         isSelected
-          ? "border-gray-200 shadow-xl shadow-forest/10 ring-4 ring-forest/10"
-          : "border-gray-200 hover:border-gray-200/50 hover:shadow-lg"
+          ? "border-gold/50 shadow-2xl shadow-gold/20 ring-4 ring-gold/20"
+          : "border-gray-200 hover:border-gold/30 hover:shadow-xl hover:shadow-gold/10"
       )}
     >
-      {/* Selected indicator */}
+      {/* Selected indicator with animation */}
       {isSelected && (
-        <div className="absolute top-4 right-4 z-10">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="w-8 h-8 rounded-full bg-white flex items-center justify-center"
-          >
-            <CheckCircle className="w-5 h-5 text-black" />
-          </motion.div>
-        </div>
+        <motion.div 
+          className="absolute top-4 right-4 z-10"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          <div className="relative">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-amber-500 flex items-center justify-center shadow-lg shadow-gold/30">
+              <CheckCircle className="w-6 h-6 text-white" strokeWidth={2.5} />
+            </div>
+            <motion.div
+              className="absolute inset-0 rounded-full bg-gold/30 blur-md"
+              animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          </div>
+        </motion.div>
       )}
 
-      {/* Top gradient bar */}
-      <div className={cn(
-        "h-2 w-full transition-all duration-300",
-        isSelected
-          ? "bg-gradient-to-r from-white via-energy-green to-white"
-          : "bg-gradient-to-r from-gray-200 to-gray-300 group-hover:from-white/50 group-hover:to-energy-green/50"
-      )} />
+      {/* Enhanced top gradient bar */}
+      <motion.div 
+        className={cn(
+          "h-3 w-full transition-all duration-300 relative overflow-hidden",
+          isSelected
+            ? "bg-gradient-to-r from-gold via-amber-400 to-gold"
+            : "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 group-hover:from-gold/30 group-hover:via-gold/20 group-hover:to-gold/30"
+        )}
+      >
+        {isSelected && (
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+            animate={{ x: ["-100%", "200%"] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+        )}
+      </motion.div>
 
-      <div className="p-6">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
+      <div className="p-6 md:p-8">
+        {/* Enhanced Header */}
+        <div className="flex items-start justify-between mb-5">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <div className={cn(
-                "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                isSelected ? "bg-white text-white" : "bg-gray-100 text-black group-hover:bg-white/10 group-hover:text-black"
-              )}>
-                <Sun className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold text-black">
+            <div className="flex items-center gap-3 mb-3">
+              <motion.div 
+                className={cn(
+                  "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 shadow-md",
+                  isSelected 
+                    ? "bg-gradient-to-br from-gold/20 to-amber-100 border-2 border-gold/30" 
+                    : "bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 group-hover:from-gold/10 group-hover:to-amber-50 group-hover:border-gold/20"
+                )}
+                whileHover={{ rotate: 15, scale: 1.1 }}
+              >
+                <Sun className={cn(
+                  "w-6 h-6 transition-colors",
+                  isSelected ? "text-gold" : "text-gray-600 group-hover:text-gold"
+                )} />
+              </motion.div>
+              <div className="flex-1">
+                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl font-heading font-bold text-black mb-1">
                   {project.name}
                 </h3>
-                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-500 flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600 flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 text-gold" />
                   {project.location}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Price */}
-          <div className="text-right">
-            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl font-bold text-black">
+          {/* Enhanced Price */}
+          <div className="text-right ml-4">
+            <motion.div 
+              style={{ fontFamily: "'Montserrat', sans-serif" }} 
+              className={cn(
+                "text-4xl font-bold mb-1 transition-colors",
+                isSelected ? "text-gold" : "text-black"
+              )}
+              animate={isSelected ? { scale: [1, 1.05, 1] } : {}}
+              transition={{ duration: 0.5 }}
+            >
               ₹{project.price_per_kw}
+            </motion.div>
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-500 font-medium">
+              per kW/month
             </div>
-            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-500">per kW/month</div>
           </div>
         </div>
 
-        {/* Description */}
-        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black text-sm mb-4 line-clamp-2">
+        {/* Enhanced Description */}
+        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-700 text-sm mb-5 line-clamp-2 leading-relaxed">
           {project.description}
         </p>
 
-        {/* Features */}
-        <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-2 mb-4">
+        {/* Enhanced Features */}
+        <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-3 mb-5">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm text-black">
-              <feature.icon className={cn(
-                "w-4 h-4",
-                isSelected ? "text-black" : "text-gray-400"
-              )} />
-              <span>{feature.label}</span>
-            </div>
+            <motion.div 
+              key={index} 
+              className="flex items-center gap-3 text-sm"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <div className={cn(
+                "p-2 rounded-lg transition-all",
+                isSelected 
+                  ? "bg-gold/10" 
+                  : "bg-gray-50 group-hover:bg-gold/5"
+              )}>
+                <feature.icon className={cn(
+                  "w-4 h-4 transition-colors",
+                  isSelected ? feature.color : "text-gray-500 group-hover:" + feature.color
+                )} />
+              </div>
+              <span className={cn(
+                "font-medium transition-colors",
+                isSelected ? "text-black" : "text-gray-700 group-hover:text-black"
+              )}>
+                {feature.label}
+              </span>
+            </motion.div>
           ))}
         </div>
 
-        {/* Credit rate */}
+        {/* Enhanced Credit rate */}
         {project.rate_per_kwh && (
-          <div style={{ fontFamily: "'Montserrat', sans-serif" }} className={cn(
-            "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
-            isSelected ? "bg-white/10 text-black" : "bg-gray-100 text-black"
-          )}>
+          <motion.div 
+            style={{ fontFamily: "'Montserrat', sans-serif" }} 
+            className={cn(
+              "flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all",
+              isSelected 
+                ? "bg-gradient-to-r from-gold/10 via-amber-50/50 to-gold/10 border border-gold/20 text-gold" 
+                : "bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 text-gray-700 group-hover:from-gold/5 group-hover:to-amber-50/30 group-hover:border-gold/20 group-hover:text-gold"
+            )}
+            whileHover={{ scale: 1.02 }}
+          >
             <TrendingUp className="w-4 h-4" />
             ₹{project.rate_per_kwh}/unit credit value
-          </div>
+          </motion.div>
         )}
 
-        {/* Dates */}
+        {/* Enhanced Dates */}
         {(project.commission_date || project.operational_until) && (
-          <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
+          <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-5 pt-5 border-t border-gray-100 flex flex-wrap gap-4 text-xs">
             {project.commission_date && (
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                Since {new Date(project.commission_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
+                <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                <span className="text-gray-600 font-medium">
+                  Since {new Date(project.commission_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+                </span>
               </div>
             )}
             {project.operational_until && (
-              <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                Until {new Date(project.operational_until).getFullYear()}
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
+                <Clock className="w-3.5 h-3.5 text-gray-500" />
+                <span className="text-gray-600 font-medium">
+                  Until {new Date(project.operational_until).getFullYear()}
+                </span>
               </div>
             )}
           </div>
         )}
       </div>
+
+      {/* Hover glow effect */}
+      {!isSelected && (
+        <motion.div
+          className="absolute inset-0 rounded-3xl bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          initial={false}
+        />
+      )}
     </motion.div>
   );
 }
@@ -382,158 +455,204 @@ function CapacitySelector({
       transition={{ delay: 0.3 }}
       className="sticky top-24"
     >
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-white to-white-dark p-6 text-black">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-              <Battery className="w-5 h-5" />
-            </div>
+      <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-2xl overflow-hidden">
+        {/* Enhanced Header */}
+        <div className="relative bg-gradient-to-br from-gold/10 via-amber-50/30 to-gold/5 p-6 md:p-7 text-black border-b border-gold/20">
+          <div className="absolute inset-0 bg-gradient-to-r from-gold/5 via-transparent to-gold/5 opacity-50" />
+          <div className="relative flex items-center gap-3 mb-2">
+            <motion.div 
+              className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/20 to-amber-100 flex items-center justify-center border border-gold/30 shadow-md"
+              whileHover={{ rotate: 10, scale: 1.1 }}
+            >
+              <Battery className="w-6 h-6 text-gold" />
+            </motion.div>
             <div>
-              <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold">Reserve Capacity</h3>
-
-              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-black/70">Choose your solar allocation</p>
+              <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl font-heading font-bold">Reserve Capacity</h3>
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600 font-medium">Choose your solar allocation</p>
             </div>
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 md:p-7">
           {selectedProject ? (
             <>
-              {/* Selected project indicator */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg mb-6">
-                <CheckCircle className="w-4 h-4 text-black" />
-                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-medium text-black">{selectedProject.name}</span>
-              </div>
-
-              {/* Capacity display */}
-              <div className="text-center mb-6">
-                <div className="text-5xl font-bold text-black mb-1">
-                  {capacity}
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl text-gray-400 ml-1">kW</span>
+              {/* Enhanced Selected project indicator */}
+              <motion.div 
+                className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gold/10 via-amber-50/20 to-gold/10 rounded-xl mb-6 border border-gold/20 shadow-sm"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold to-amber-500 flex items-center justify-center shadow-md">
+                  <CheckCircle className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </div>
-                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-500">Selected capacity</p>
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-bold text-black">{selectedProject.name}</span>
+              </motion.div>
+
+              {/* Enhanced Capacity display */}
+              <div className="text-center mb-8">
+                <motion.div 
+                  className="text-6xl md:text-7xl font-bold mb-2"
+                  key={capacity}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 200 }}
+                >
+                  <span className="bg-gradient-to-r from-gold via-amber-500 to-gold bg-clip-text text-transparent">
+                    {capacity}
+                  </span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl text-gray-400 ml-2">kW</span>
+                </motion.div>
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600 font-medium">Selected capacity</p>
               </div>
 
-              {/* Preset buttons */}
-              <div className="grid grid-cols-4 gap-2 mb-4">
+              {/* Enhanced Preset buttons */}
+              <div className="grid grid-cols-4 gap-2.5 mb-6">
                 {presetCapacities.map((preset) => (
-                  <button
+                  <motion.button
                     key={preset}
                     onClick={() => setCapacity(Math.min(preset, maxCapacity))}
                     className={cn(
-                      "py-2 px-3 rounded-lg text-sm font-medium transition-all",
+                      "py-3 px-2 rounded-xl text-sm font-bold transition-all duration-200 shadow-sm",
                       capacity === preset
-                        ? "bg-white text-white"
-                        : "bg-gray-100 text-black hover:bg-gray-200"
+                        ? "bg-gradient-to-br from-gold to-amber-500 text-white shadow-lg shadow-gold/30 scale-105"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"
                     )}
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    disabled={preset > maxCapacity}
                   >
                     {preset} kW
-                  </button>
+                  </motion.button>
                 ))}
               </div>
 
-              {/* Slider */}
-              <div className="mb-6">
-                <input
-                  type="range"
-                  min="1"
-                  max={maxCapacity}
-                  value={capacity}
-                  onChange={(e) => setCapacity(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-forest"
-                  aria-label="Select solar capacity"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-2">
+              {/* Enhanced Slider */}
+              <div className="mb-8">
+                <div className="relative">
+                  <input
+                    type="range"
+                    min="1"
+                    max={maxCapacity}
+                    value={capacity}
+                    onChange={(e) => setCapacity(Number(e.target.value))}
+                    className="w-full h-3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full appearance-none cursor-pointer slider-thumb-centered"
+                    style={{
+                      background: `linear-gradient(to right, #FFB800 0%, #FFB800 ${((capacity - 1) / (maxCapacity - 1)) * 100}%, #E5E7EB ${((capacity - 1) / (maxCapacity - 1)) * 100}%, #E5E7EB 100%)`
+                    }}
+                    aria-label="Select solar capacity"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-gray-500 mt-3 font-medium">
                   <span style={{ fontFamily: "'Montserrat', sans-serif" }}>1 kW</span>
                   <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{maxCapacity} kW</span>
                 </div>
               </div>
 
-              {/* Cost breakdown */}
-              <div className="space-y-3 py-4 border-y border-gray-100">
-                <div className="flex justify-between items-center">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black">One-time Reservation</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-black">
+              {/* Enhanced Cost breakdown */}
+              <div className="space-y-4 py-6 border-y-2 border-gray-100">
+                <motion.div 
+                  className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gold/5 to-amber-50/30 border border-gold/20"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black font-semibold">One-time Reservation</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-bold text-gold">
                     {formatINR(reservationFee)}
                   </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black flex items-center gap-1">
-                    <TrendingUp className="w-4 h-4 text-energy-green" />
+                </motion.div>
+                <motion.div 
+                  className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black font-semibold flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-green-600" />
                     Est. Monthly Savings
                   </span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-energy-green">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-bold text-green-600">
                     {formatINR(savings.monthlySavings)}
                   </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500">Annual Savings</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-medium text-energy-green">
+                </motion.div>
+                <div className="flex justify-between items-center text-sm px-3">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 font-medium">Annual Savings</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-bold text-green-600">
                     {formatINR(annualSavings)}/year
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500">ROI Period</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-medium text-black">
-                    ~{roiYears} years
+                <div className="flex justify-between items-center text-sm px-3">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 font-medium">ROI Period</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-bold text-black">
+                    ~{roiYears.toFixed(1)} years
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500">Credit Rate</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-medium text-gold">
+                <div className="flex justify-between items-center text-sm px-3">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 font-medium">Credit Rate</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-bold text-gold">
                     ₹{SOLAR_CONSTANTS.creditRatePerUnit}/unit
                   </span>
                 </div>
               </div>
 
-              {/* Environmental impact */}
-              <div className="mt-4 p-4 bg-gradient-to-r from-energy-green/10 to-white/10 rounded-xl">
-                <div className="flex items-center gap-2 mb-2">
-                  <Leaf className="w-4 h-4 text-black" />
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm font-medium text-black">Environmental Impact</span>
+              {/* Enhanced Environmental impact */}
+              <motion.div 
+                className="mt-6 p-5 bg-gradient-to-br from-emerald-50 via-green-50 to-emerald-50 rounded-2xl border-2 border-emerald-200 shadow-md"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center shadow-md">
+                    <Leaf className="w-5 h-5 text-white" />
+                  </div>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-base font-bold text-emerald-800">Environmental Impact</span>
                 </div>
-                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-black">
-                  You&apos;ll offset <span className="font-semibold text-black">{savings.co2OffsetTonnes.toFixed(1)} tons</span> of CO₂/year,
-                  equivalent to planting <span className="font-semibold text-black">{savings.treesEquivalent} trees</span>
+                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-emerald-900 leading-relaxed">
+                  You&apos;ll offset <span className="font-bold text-emerald-800">{savings.co2OffsetTonnes.toFixed(1)} tons</span> of CO₂/year,
+                  equivalent to planting <span className="font-bold text-emerald-800">{savings.treesEquivalent} trees</span>
                 </p>
-              </div>
+              </motion.div>
 
-              {/* CTA */}
-              <div className="mt-6">
-                <Button
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  variant="primary"
-                  size="lg"
-                  className="w-full bg-white hover:bg-white text-black font-semibold py-4 text-lg group shadow-lg shadow-forest/20"
-                  onClick={onReserve}
-                >
-                  {isLoggedIn ? "Reserve Now" : "Sign Up to Reserve"}
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+              {/* Enhanced CTA */}
+              <div className="mt-8">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    variant="primary"
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-black font-bold py-5 text-lg group shadow-xl shadow-gold/30 hover:shadow-2xl hover:shadow-gold/40 transition-all duration-300"
+                    onClick={onReserve}
+                  >
+                    <Sparkles className="mr-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    {isLoggedIn ? "Reserve Now" : "Sign Up to Reserve"}
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </motion.div>
 
                 {!isLoggedIn && (
-                  <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-center text-xs text-gray-500 mt-3">
+                  <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-center text-xs text-gray-600 mt-4 font-medium">
                     Already have an account?{" "}
-                    <Link style={{ fontFamily: "'Montserrat', sans-serif" }} href="/login?redirect=/reserve" className="text-black hover:underline">
+                    <Link style={{ fontFamily: "'Montserrat', sans-serif" }} href="/login?redirect=/reserve" className="text-gold hover:underline font-semibold">
                       Log in
                     </Link>
                   </p>
                 )}
               </div>
 
-              {/* Trust badges */}
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Shield className="w-3 h-3" />
-                    <span style={{ fontFamily: "'Montserrat', sans-serif" }}>Secure Payment</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <BadgeCheck className="w-3 h-3" />
-                    <span style={{ fontFamily: "'Montserrat', sans-serif" }}>Verified Project</span>
-                  </div>
+              {/* Enhanced Trust badges */}
+              <div className="mt-8 pt-6 border-t-2 border-gray-100">
+                <div className="flex items-center justify-center gap-6">
+                  <motion.div 
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <Shield className="w-4 h-4 text-gold" />
+                    <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-700 font-semibold">Secure Payment</span>
+                  </motion.div>
+                  <motion.div 
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <BadgeCheck className="w-4 h-4 text-gold" />
+                    <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs text-gray-700 font-semibold">Verified Project</span>
+                  </motion.div>
                 </div>
               </div>
             </>
@@ -804,54 +923,106 @@ export default function ReservePage() {
                 </div>
               </div>
 
-              {/* FAQ section */}
+              {/* Enhanced FAQ section */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="mt-16 bg-white rounded-2xl border border-gray-200 p-8"
+                className="mt-16 bg-gradient-to-br from-white via-gold/5 to-amber-50/20 rounded-3xl border-2 border-gold/20 shadow-xl p-8 md:p-10"
               >
-                <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-heading font-bold text-black mb-6 flex items-center gap-2">
-                  <Info className="w-5 h-5 text-black" />
-                  Frequently Asked Questions
-                </h3>
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-8"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/20 to-amber-100 flex items-center justify-center border border-gold/30">
+                      <Info className="w-6 h-6 text-gold" />
+                    </div>
+                    <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl md:text-3xl font-heading font-bold text-black">
+                      Frequently Asked Questions
+                    </h3>
+                  </div>
+                  <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 ml-[3.75rem]">
+                    Everything you need to know about solar reservations
+                  </p>
+                </motion.div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-5">
                   {[
                     {
                       q: "How does solar reservation work?",
-                      a: "You reserve capacity in our solar projects. The energy generated is credited to your electricity bill as savings."
+                      a: "You reserve capacity in our solar projects. The energy generated is credited to your electricity bill as savings.",
+                      icon: Zap,
+                      color: "from-blue-50 to-cyan-50",
+                      borderColor: "border-blue-200"
                     },
                     {
                       q: "Do I need any installation?",
-                      a: "No! Digital solar requires zero installation. No roof access, no permits, no technicians."
+                      a: "No! Digital solar requires zero installation. No roof access, no permits, no technicians.",
+                      icon: Building2,
+                      color: "from-green-50 to-emerald-50",
+                      borderColor: "border-green-200"
                     },
                     {
                       q: "What is the 75% guarantee?",
-                      a: "We guarantee at least 75% of forecasted generation. You're protected even during monsoon."
+                      a: "We guarantee at least 75% of forecasted generation. You're protected even during monsoon.",
+                      icon: Shield,
+                      color: "from-amber-50 to-orange-50",
+                      borderColor: "border-amber-200"
                     },
                     {
                       q: "Can I change my capacity later?",
-                      a: "Yes, you can upgrade or downgrade your capacity anytime without any penalties."
+                      a: "Yes, you can upgrade or downgrade your capacity anytime without any penalties.",
+                      icon: TrendingUp,
+                      color: "from-purple-50 to-pink-50",
+                      borderColor: "border-purple-200"
                     }
                   ].map((faq, index) => (
-                    <div key={index} className="p-4 bg-white rounded-xl">
-                      <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-black mb-2">{faq.q}</h4>
-                      <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-black">{faq.a}</p>
-                    </div>
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ y: -4, scale: 1.02 }}
+                      className={cn(
+                        "p-5 rounded-2xl border-2 transition-all duration-300 shadow-md hover:shadow-lg",
+                        `bg-gradient-to-br ${faq.color} ${faq.borderColor}`
+                      )}
+                    >
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className={cn(
+                          "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
+                          `bg-gradient-to-br ${faq.color} border ${faq.borderColor}`
+                        )}>
+                          <faq.icon className="w-5 h-5 text-gray-700" />
+                        </div>
+                        <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-bold text-black text-base leading-tight">
+                          {faq.q}
+                        </h4>
+                      </div>
+                      <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-700 leading-relaxed ml-[3.25rem]">
+                        {faq.a}
+                      </p>
+                    </motion.div>
                   ))}
                 </div>
 
-                <div className="mt-6 text-center">
+                <motion.div 
+                  className="mt-8 text-center"
+                  whileHover={{ scale: 1.05 }}
+                >
                   <Link
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                     href="/help"
-                    className="inline-flex items-center gap-1 text-black font-medium hover:underline"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-gold/30 rounded-xl text-gold font-semibold hover:bg-gold/10 hover:border-gold/50 transition-all duration-300 shadow-md hover:shadow-lg"
                   >
                     View all FAQs
                     <ChevronRight className="w-4 h-4" />
                   </Link>
-                </div>
+                </motion.div>
               </motion.div>
             </>
           )}

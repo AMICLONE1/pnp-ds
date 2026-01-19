@@ -268,16 +268,47 @@ export function CalculatorSection() {
                         </span>
                       </div>
                     </div>
-                    <div className="relative py-6">
-                      {/* Track background with gradient - Behind the thumb */}
-                      <div className="absolute top-1/2 left-0 right-0 h-3 -translate-y-1/2 bg-gray-200 rounded-full overflow-visible z-[5]">
+                    <div className="relative py-8">
+                      {/* Enhanced Track background with gradient and glow */}
+                      <div className="absolute top-1/2 left-0 right-0 h-4 -translate-y-1/2 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-full overflow-visible z-[5] shadow-inner">
+                        {/* Animated gradient fill */}
                         <motion.div
-                          className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-gold rounded-full"
+                          className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 via-amber-400 to-gold rounded-full relative overflow-hidden"
                           initial={{ width: 0 }}
                           animate={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
-                          transition={{ duration: 0.5, ease: "easeOut" }}
-                        />
+                          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                          {/* Shimmer effect */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                            animate={{ x: ["-100%", "200%"] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                          />
+                          {/* Glow effect */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/50 via-blue-500/50 to-gold/50 blur-sm -z-10" />
+                        </motion.div>
                       </div>
+
+                      {/* Value indicator above thumb */}
+                      <motion.div
+                        className="absolute top-0 -translate-x-1/2 -translate-y-full mb-2 z-20 pointer-events-none"
+                        style={{
+                          left: `${((savingsPercent - 10) / 90) * 100}%`,
+                        }}
+                        initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        key={savingsPercent}
+                      >
+                        <div className="bg-gradient-to-br from-gold via-amber-500 to-gold text-black px-3 py-1.5 rounded-lg shadow-xl border-2 border-gold/30 backdrop-blur-sm whitespace-nowrap">
+                          <span className="text-sm font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                            {savingsPercent}%
+                          </span>
+                        </div>
+                        {/* Arrow pointing down */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent border-t-gold" />
+                      </motion.div>
+
                       {/* Range input - Thumb on top */}
                       <input
                         type="range"
@@ -287,76 +318,108 @@ export function CalculatorSection() {
                         value={savingsPercent}
                         onChange={(e) => setSavingsPercent(Number(e.target.value))}
                         className="relative w-full bg-transparent rounded-full appearance-none cursor-pointer z-[15] slider-thumb-centered
-                                   [&::-webkit-slider-runnable-track]:h-3
+                                   [&::-webkit-slider-runnable-track]:h-4
                                    [&::-webkit-slider-runnable-track]:bg-transparent
                                    [&::-webkit-slider-runnable-track]:rounded-full
                                    [&::-webkit-slider-thumb]:appearance-none 
-                                   [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-10
-                                   [&::-webkit-slider-thumb]:rounded-md 
-                                   [&::-webkit-slider-thumb]:bg-white
-                                   [&::-webkit-slider-thumb]:shadow-xl 
-                                   [&::-webkit-slider-thumb]:shadow-gold/40
+                                   [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-12
+                                   [&::-webkit-slider-thumb]:rounded-lg 
+                                   [&::-webkit-slider-thumb]:bg-gradient-to-br
+                                   [&::-webkit-slider-thumb]:from-white
+                                   [&::-webkit-slider-thumb]:via-white
+                                   [&::-webkit-slider-thumb]:to-gray-50
+                                   [&::-webkit-slider-thumb]:shadow-2xl 
+                                   [&::-webkit-slider-thumb]:shadow-gold/50
                                    [&::-webkit-slider-thumb]:border-[3px] 
                                    [&::-webkit-slider-thumb]:border-gold
                                    [&::-webkit-slider-thumb]:cursor-pointer 
                                    [&::-webkit-slider-thumb]:transition-all
-                                   [&::-webkit-slider-thumb]:duration-200
-                                   [&::-webkit-slider-thumb]:hover:scale-110
-                                   [&::-webkit-slider-thumb]:hover:shadow-2xl
-                                   [&::-webkit-slider-thumb]:hover:shadow-gold/60
-                                   [&::-webkit-slider-thumb]:active:scale-105
-                                   [&::-moz-range-track]:h-3
+                                   [&::-webkit-slider-thumb]:duration-300
+                                   [&::-webkit-slider-thumb]:hover:scale-125
+                                   [&::-webkit-slider-thumb]:hover:shadow-3xl
+                                   [&::-webkit-slider-thumb]:hover:shadow-gold/70
+                                   [&::-webkit-slider-thumb]:hover:border-gold
+                                   [&::-webkit-slider-thumb]:active:scale-110
+                                   [&::-moz-range-track]:h-4
                                    [&::-moz-range-track]:bg-transparent
                                    [&::-moz-range-track]:border-none
                                    [&::-moz-range-track]:rounded-full
                                    [&::-moz-range-thumb]:appearance-none
-                                   [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-10
-                                   [&::-moz-range-thumb]:rounded-md
-                                   [&::-moz-range-thumb]:bg-white
+                                   [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-12
+                                   [&::-moz-range-thumb]:rounded-lg
+                                   [&::-moz-range-thumb]:bg-gradient-to-br
+                                   [&::-moz-range-thumb]:from-white
+                                   [&::-moz-range-thumb]:via-white
+                                   [&::-moz-range-thumb]:to-gray-50
                                    [&::-moz-range-thumb]:border-[3px]
                                    [&::-moz-range-thumb]:border-gold
                                    [&::-moz-range-thumb]:cursor-pointer
-                                   [&::-moz-range-thumb]:shadow-xl
-                                   [&::-moz-range-thumb]:shadow-gold/40
+                                   [&::-moz-range-thumb]:shadow-2xl
+                                   [&::-moz-range-thumb]:shadow-gold/50
                                    [&::-moz-range-thumb]:transition-all
-                                   [&::-moz-range-thumb]:duration-200
-                                   [&::-moz-range-thumb]:hover:scale-110
-                                   [&::-moz-range-thumb]:hover:shadow-2xl
-                                   [&::-moz-range-thumb]:hover:shadow-gold/60
-                                   [&::-ms-track]:h-3
+                                   [&::-moz-range-thumb]:duration-300
+                                   [&::-moz-range-thumb]:hover:scale-125
+                                   [&::-moz-range-thumb]:hover:shadow-3xl
+                                   [&::-moz-range-thumb]:hover:shadow-gold/70
+                                   [&::-ms-track]:h-4
                                    [&::-ms-track]:bg-transparent
                                    [&::-ms-track]:border-none
                                    [&::-ms-track]:rounded-full
                                    [&::-ms-thumb]:appearance-none
-                                   [&::-ms-thumb]:w-4 [&::-ms-thumb]:h-10
-                                   [&::-ms-thumb]:rounded-md
-                                   [&::-ms-thumb]:bg-white
+                                   [&::-ms-thumb]:w-5 [&::-ms-thumb]:h-12
+                                   [&::-ms-thumb]:rounded-lg
+                                   [&::-ms-thumb]:bg-gradient-to-br
+                                   [&::-ms-thumb]:from-white
+                                   [&::-ms-thumb]:via-white
+                                   [&::-ms-thumb]:to-gray-50
                                    [&::-ms-thumb]:border-[3px]
                                    [&::-ms-thumb]:border-gold
                                    [&::-ms-thumb]:cursor-pointer
-                                   [&::-ms-thumb]:shadow-xl
-                                   [&::-ms-thumb]:shadow-gold/40"
+                                   [&::-ms-thumb]:shadow-2xl
+                                   [&::-ms-thumb]:shadow-gold/50"
                         style={{
                           background: 'transparent',
-                          height: '40px',
+                          height: '48px',
                           margin: 0,
                           padding: 0,
                         }}
                       />
-                      {/* Tick marks */}
-                      <div className="flex justify-between mt-5 px-1">
-                        {[10, 25, 50, 75, 100].map((tick) => (
-                          <span
-                            key={tick}
-                            className={cn(
-                              "text-xs font-medium transition-colors",
-                              savingsPercent >= tick ? "text-black" : "text-gray-400"
-                            )}
-                            style={{ fontFamily: "'Montserrat', sans-serif" }}
-                          >
-                            {tick}%
-                          </span>
-                        ))}
+
+                      {/* Enhanced Tick marks with indicators */}
+                      <div className="flex justify-between mt-8 px-1 relative">
+                        {[10, 25, 50, 75, 100].map((tick) => {
+                          const isActive = savingsPercent >= tick;
+                          const isCurrent = Math.abs(savingsPercent - tick) < 5;
+                          return (
+                            <div key={tick} className="flex flex-col items-center gap-1.5">
+                              {/* Tick mark indicator */}
+                              <motion.div
+                                className={cn(
+                                  "w-1.5 h-4 rounded-full transition-all duration-300",
+                                  isActive 
+                                    ? "bg-gradient-to-b from-gold to-amber-500 shadow-md shadow-gold/30" 
+                                    : "bg-gray-300"
+                                )}
+                                animate={isCurrent ? { scaleY: [1, 1.3, 1] } : {}}
+                                transition={{ duration: 0.3 }}
+                              />
+                              {/* Percentage label */}
+                              <motion.span
+                                className={cn(
+                                  "text-xs font-bold transition-all duration-300",
+                                  isActive 
+                                    ? "text-gold" 
+                                    : "text-gray-400"
+                                )}
+                                animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
+                                transition={{ duration: 0.3 }}
+                                style={{ fontFamily: "'Montserrat', sans-serif" }}
+                              >
+                                {tick}%
+                              </motion.span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

@@ -1,13 +1,13 @@
 -- ============================================
--- DIGITAL SOLAR DATABASE SCHEMA v2.0
--- Compatible with existing schema structure
+-- DIGITAL SOLAR DATABASE SCHEMA v3.0
+-- Matches actual Supabase schema structure
 -- ============================================
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
--- CREATE ENUM TYPES (if they don't exist)
+-- CREATE ENUM TYPES
 -- ============================================
 DO $$ BEGIN
     CREATE TYPE project_status AS ENUM ('DRAFT', 'ACTIVE', 'MAINTENANCE', 'RETIRED');
@@ -64,69 +64,194 @@ EXCEPTION
 END $$;
 
 -- ============================================
--- USERS TABLE (update if needed)
+-- USERS TABLE
 -- ============================================
--- Table already exists, just ensure columns exist
-DO $$ 
-BEGIN
-    -- Add columns if they don't exist
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'email_notifications') THEN
-        ALTER TABLE public.users ADD COLUMN email_notifications BOOLEAN DEFAULT TRUE;
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'sms_notifications') THEN
-        ALTER TABLE public.users ADD COLUMN sms_notifications BOOLEAN DEFAULT TRUE;
-    END IF;
-END $$;
+CREATE TABLE IF NOT EXISTS public.users (
+    id UUID NOT NULL,
+    email TEXT CHECK (email IS NULL OR email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'::text),
+    phone TEXT UNIQUE CHECK (phone IS NULL OR phone ~* '^\+?[1-9]\d{9,14}$'::text),
+    name TEXT,
+    kyc_status kyc_status DEFAULT 'PENDING'::kyc_status,
+    aadhaar_number TEXT UNIQUE,
+    pan_number TEXT,
+    utility_consumer_number TEXT,
+    state TEXT,
+    discom TEXT,
+    role user_role DEFAULT 'USER'::user_role,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    email_notifications BOOLEAN DEFAULT TRUE,
+    sms_notifications BOOLEAN DEFAULT TRUE,
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT users_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
+);
 
 -- ============================================
--- PROJECTS TABLE (already exists)
+-- PROJECTS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.projects (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    spv_id TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    total_kw NUMERIC NOT NULL,
+    rate_per_kwh NUMERIC NOT NULL,
+    location TEXT NOT NULL,
+    state TEXT NOT NULL,
+    status project_status DEFAULT 'DRAFT'::project_status,
+    description TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    CONSTRAINT projects_pkey PRIMARY KEY (id)
+);
 
 -- ============================================
--- CAPACITY_BLOCKS TABLE (already exists)
+-- CAPACITY_BLOCKS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.capacity_blocks (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    project_id UUID NOT NULL,
+    kw NUMERIC NOT NULL CHECK (kw > 0::numeric),
+    status capacity_block_status DEFAULT 'AVAILABLE'::capacity_block_status,
+    allocated_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT capacity_blocks_pkey PRIMARY KEY (id),
+    CONSTRAINT capacity_blocks_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id)
+);
 
 -- ============================================
--- ALLOCATIONS TABLE (already exists)
+-- ALLOCATIONS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.allocations (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    capacity_block_id UUID NOT NULL UNIQUE,
+    payment_id UUID,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    capacity_kw NUMERIC NOT NULL CHECK (capacity_kw > 0::numeric),
+    CONSTRAINT allocations_pkey PRIMARY KEY (id),
+    CONSTRAINT allocations_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+    CONSTRAINT allocations_capacity_block_id_fkey FOREIGN KEY (capacity_block_id) REFERENCES public.capacity_blocks(id),
+    CONSTRAINT allocations_payment_id_fkey FOREIGN KEY (payment_id) REFERENCES public.payments(id)
+);
 
 -- ============================================
--- PAYMENTS TABLE (already exists)
+-- PAYMENTS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.payments (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    amount NUMERIC NOT NULL CHECK (amount > 0::numeric),
+    type payment_type NOT NULL,
+    status payment_status DEFAULT 'PENDING'::payment_status,
+    transaction_id TEXT UNIQUE,
+    gateway TEXT,
+    gateway_order_id TEXT,
+    gateway_payment_id TEXT,
+    metadata JSONB,
+    refunded_at TIMESTAMPTZ,
+    refund_amount NUMERIC,
+    bill_id UUID,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT payments_pkey PRIMARY KEY (id),
+    CONSTRAINT payments_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+    CONSTRAINT payments_bill_id_fkey FOREIGN KEY (bill_id) REFERENCES public.bills(id)
+);
 
 -- ============================================
--- CREDIT_LEDGERS TABLE (already exists)
+-- CREDIT_LEDGERS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.credit_ledgers (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    amount NUMERIC NOT NULL,
+    type credit_ledger_type NOT NULL,
+    status credit_ledger_status DEFAULT 'PENDING'::credit_ledger_status,
+    month INTEGER CHECK (month >= 1 AND month <= 12),
+    year INTEGER CHECK (year IS NULL OR year >= 2000 AND year <= 2100),
+    ref_id UUID,
+    ref_type TEXT,
+    description TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT credit_ledgers_pkey PRIMARY KEY (id),
+    CONSTRAINT credit_ledgers_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
 
 -- ============================================
--- GENERATIONS TABLE (already exists)
+-- GENERATIONS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.generations (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    project_id UUID NOT NULL,
+    month INTEGER NOT NULL CHECK (month >= 1 AND month <= 12),
+    year INTEGER NOT NULL CHECK (year >= 2000 AND year <= 2100),
+    kwh NUMERIC NOT NULL CHECK (kwh >= 0::numeric),
+    validated BOOLEAN DEFAULT FALSE,
+    source TEXT,
+    validated_by UUID,
+    validated_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT generations_pkey PRIMARY KEY (id),
+    CONSTRAINT generations_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id),
+    CONSTRAINT generations_validated_by_fkey FOREIGN KEY (validated_by) REFERENCES public.users(id)
+);
 
 -- ============================================
--- BILLS TABLE (already exists)
+-- BILLS TABLE
 -- ============================================
--- Table structure matches existing schema
+CREATE TABLE IF NOT EXISTS public.bills (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    discom TEXT NOT NULL,
+    bill_number TEXT,
+    amount NUMERIC NOT NULL CHECK (amount >= 0::numeric),
+    credits_applied NUMERIC DEFAULT 0 CHECK (credits_applied >= 0::numeric),
+    due_date TIMESTAMPTZ NOT NULL,
+    status bill_status DEFAULT 'PENDING'::bill_status,
+    bbps_bill_id TEXT UNIQUE,
+    fetched_at TIMESTAMPTZ,
+    paid_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT bills_pkey PRIMARY KEY (id),
+    CONSTRAINT bills_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
 
 -- ============================================
--- NOTIFICATIONS TABLE (create if doesn't exist)
+-- NOTIFICATIONS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-    
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
     title TEXT NOT NULL,
     message TEXT NOT NULL,
-    type TEXT DEFAULT 'info' CHECK (type IN ('info', 'success', 'warning', 'error')),
-    
+    type TEXT DEFAULT 'info'::text CHECK (type = ANY (ARRAY['info'::text, 'success'::text, 'warning'::text, 'error'::text])),
     read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT notifications_pkey PRIMARY KEY (id),
+    CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+
+-- ============================================
+-- AUDIT_LOG TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.audit_log (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    table_name TEXT NOT NULL,
+    record_id UUID NOT NULL,
+    action TEXT NOT NULL CHECK (action = ANY (ARRAY['INSERT'::text, 'UPDATE'::text, 'DELETE'::text])),
+    old_data JSONB,
+    new_data JSONB,
+    user_id UUID,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT audit_log_pkey PRIMARY KEY (id),
+    CONSTRAINT audit_log_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
 
 -- ============================================
@@ -143,6 +268,7 @@ ALTER TABLE public.credit_ledgers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.generations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
 
 -- Users: Can only read/update own record
 DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
@@ -153,7 +279,7 @@ DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
 CREATE POLICY "Users can update own profile" ON public.users
     FOR UPDATE USING (auth.uid() = id);
 
--- Projects: Anyone can view active projects (using enum value)
+-- Projects: Anyone can view active projects
 DROP POLICY IF EXISTS "Anyone can view active projects" ON public.projects;
 CREATE POLICY "Anyone can view active projects" ON public.projects
     FOR SELECT USING (status = 'ACTIVE'::project_status);
@@ -171,6 +297,10 @@ CREATE POLICY "Users can view own allocations" ON public.allocations
 DROP POLICY IF EXISTS "Users can insert own allocations" ON public.allocations;
 CREATE POLICY "Users can insert own allocations" ON public.allocations
     FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update own allocations" ON public.allocations;
+CREATE POLICY "Users can update own allocations" ON public.allocations
+    FOR UPDATE USING (auth.uid() = user_id);
 
 -- Payments: Users can only see their own
 DROP POLICY IF EXISTS "Users can view own payments" ON public.payments;
@@ -196,6 +326,14 @@ DROP POLICY IF EXISTS "Users can view own bills" ON public.bills;
 CREATE POLICY "Users can view own bills" ON public.bills
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own bills" ON public.bills;
+CREATE POLICY "Users can insert own bills" ON public.bills
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update own bills" ON public.bills;
+CREATE POLICY "Users can update own bills" ON public.bills
+    FOR UPDATE USING (auth.uid() = user_id);
+
 -- Notifications: Users can only see their own
 DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
 CREATE POLICY "Users can view own notifications" ON public.notifications
@@ -204,6 +342,16 @@ CREATE POLICY "Users can view own notifications" ON public.notifications
 DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
 CREATE POLICY "Users can update own notifications" ON public.notifications
     FOR UPDATE USING (auth.uid() = user_id);
+
+-- Audit Log: Only admins can view (or no one, depending on your needs)
+DROP POLICY IF EXISTS "Admins can view audit log" ON public.audit_log;
+CREATE POLICY "Admins can view audit log" ON public.audit_log
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM public.users 
+            WHERE id = auth.uid() AND role = 'ADMIN'::user_role
+        )
+    );
 
 -- ============================================
 -- TRIGGERS
@@ -281,24 +429,55 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
 CREATE INDEX IF NOT EXISTS idx_users_phone ON public.users(phone);
 CREATE INDEX IF NOT EXISTS idx_allocations_user_id ON public.allocations(user_id);
 CREATE INDEX IF NOT EXISTS idx_allocations_capacity_block_id ON public.allocations(capacity_block_id);
+CREATE INDEX IF NOT EXISTS idx_allocations_payment_id ON public.allocations(payment_id);
 CREATE INDEX IF NOT EXISTS idx_capacity_blocks_project_id ON public.capacity_blocks(project_id);
 CREATE INDEX IF NOT EXISTS idx_capacity_blocks_status ON public.capacity_blocks(status);
 CREATE INDEX IF NOT EXISTS idx_payments_user_id ON public.payments(user_id);
 CREATE INDEX IF NOT EXISTS idx_payments_status ON public.payments(status);
+CREATE INDEX IF NOT EXISTS idx_payments_transaction_id ON public.payments(transaction_id);
 CREATE INDEX IF NOT EXISTS idx_credit_ledgers_user_id ON public.credit_ledgers(user_id);
 CREATE INDEX IF NOT EXISTS idx_credit_ledgers_period ON public.credit_ledgers(year, month);
+CREATE INDEX IF NOT EXISTS idx_credit_ledgers_status ON public.credit_ledgers(status);
 CREATE INDEX IF NOT EXISTS idx_bills_user_id ON public.bills(user_id);
 CREATE INDEX IF NOT EXISTS idx_bills_status ON public.bills(status);
+CREATE INDEX IF NOT EXISTS idx_bills_bbps_bill_id ON public.bills(bbps_bill_id);
 CREATE INDEX IF NOT EXISTS idx_generations_project_id ON public.generations(project_id);
 CREATE INDEX IF NOT EXISTS idx_generations_period ON public.generations(year, month);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_unread ON public.notifications(user_id) WHERE read = FALSE;
+CREATE INDEX IF NOT EXISTS idx_audit_log_table_record ON public.audit_log(table_name, record_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_user_id ON public.audit_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON public.audit_log(created_at);
+
+-- ============================================
+-- HELPER FUNCTIONS
+-- ============================================
+
+-- Function to get project_id from capacity_block_id
+CREATE OR REPLACE FUNCTION public.get_project_from_block(block_id UUID)
+RETURNS UUID AS $$
+BEGIN
+    RETURN (SELECT project_id FROM public.capacity_blocks WHERE id = block_id);
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+-- Function to calculate available capacity for a project
+CREATE OR REPLACE FUNCTION public.get_available_capacity(proj_id UUID)
+RETURNS NUMERIC AS $$
+BEGIN
+    RETURN COALESCE(
+        (SELECT SUM(kw) FROM public.capacity_blocks 
+         WHERE project_id = proj_id AND status = 'AVAILABLE'::capacity_block_status),
+        0
+    );
+END;
+$$ LANGUAGE plpgsql STABLE;
 
 -- ============================================
 -- SEED DATA (only if projects don't exist)
 -- ============================================
 
--- Insert sample projects (using your schema structure)
+-- Insert sample projects
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM public.projects WHERE spv_id = 'MAH-SOLAR-001') THEN

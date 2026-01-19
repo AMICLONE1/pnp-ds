@@ -37,7 +37,7 @@ const footerLinks = {
 const socialLinks = [
   { icon: Twitter, href: "https://twitter.com/powernetpro", label: "Twitter" },
   { icon: Linkedin, href: "https://linkedin.com/company/powernetpro", label: "LinkedIn" },
-  { icon: Instagram, href: "https://instagram.com/powernetpro", label: "Instagram" },
+  { icon: Instagram, href: "https://www.instagram.com/powernetpro", label: "Instagram" },
   { icon: Youtube, href: "https://youtube.com/@powernetpro", label: "YouTube" },
 ];
 

@@ -207,19 +207,6 @@ export function ScrollFade({
   const ref = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Use layoutEffect: false to prevent hydration mismatch with SSR
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-    layoutEffect: false,
-  });
-
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, threshold, 1 - threshold, 1],
-    [0, 1, 1, 0]
-  );
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -236,7 +223,7 @@ export function ScrollFade({
   };
 
   if (!mounted) {
-    return <div className={className}>{children}</div>;
+    return <div ref={ref} className={className}>{children}</div>;
   }
 
   return (
