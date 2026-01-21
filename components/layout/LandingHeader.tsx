@@ -1,10 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { Sun, User } from "lucide-react";
+import { Sun, User, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export function LandingHeader() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error("Error checking user:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkUser();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      setUser(null);
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -99,25 +133,57 @@ export function LandingHeader() {
               className="hidden absolute right-0 top-16 w-[200px] bg-white rounded-xl shadow-2xl border border-gold/30 py-2 z-50 overflow-hidden backdrop-blur-sm"
               style={{ boxShadow: '0 10px 40px rgba(255, 184, 0, 0.15)' }}
             >
-              <Link 
-                href="/login" 
-                className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
-              >
-                Login
-              </Link>
-              <Link 
-                href="/signup" 
-                className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
-              >
-                Signup
-              </Link>
-              <div className="border-t border-gold/20 my-1.5" />
-              <Link 
-                href="/signup" 
-                className="block px-5 py-2.5 text-gold hover:bg-gold hover:text-black transition-all duration-200 font-semibold text-sm border-l-2 border-transparent hover:border-gold"
-              >
-                Start Saving
-              </Link>
+              {loading ? (
+                <div className="px-5 py-2.5 text-gray-400 text-sm">Loading...</div>
+              ) : user ? (
+                <>
+                  <div className="px-5 py-2 text-xs text-gray-500 truncate border-b border-gold/10 mb-1">
+                    {user.email}
+                  </div>
+                  <Link
+                    href="/dashboard"
+                    className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/settings"
+                    className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
+                  >
+                    Settings
+                  </Link>
+                  <div className="border-t border-gold/20 my-1.5" />
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-5 py-2.5 text-red-600 hover:bg-red-50 transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-red-500 flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
+                  >
+                    Signup
+                  </Link>
+                  <div className="border-t border-gold/20 my-1.5" />
+                  <Link
+                    href="/signup"
+                    className="block px-5 py-2.5 text-gold hover:bg-gold hover:text-black transition-all duration-200 font-semibold text-sm border-l-2 border-transparent hover:border-gold"
+                  >
+                    Start Saving
+                  </Link>
+                </>
+              )}
             </motion.div>
           </div>
         </div>
