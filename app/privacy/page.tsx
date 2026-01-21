@@ -54,7 +54,7 @@ export default function PrivacyPage() {
                     1. Introduction
                   </h2>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    <strong>PowerNetPro Private Limited</strong> ("we", "us", or "our") operates the website www.powernetpro.com (the "Service"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service.
+                    <strong>PowerNetPro Private Limited</strong> (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) operates the website www.powernetpro.com (the &quot;Service&quot;). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service.
                   </p>
                   <p className="text-gray-700 leading-relaxed mb-3">
                     We use your data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this policy.
@@ -248,7 +248,7 @@ export default function PrivacyPage() {
                 <div>
                   <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
                     <Users className="h-6 w-6 text-gold" />
-                    10. Children's Privacy
+                    10. Children&apos;s Privacy
                   </h2>
                   <p className="text-gray-700 leading-relaxed">
                     Our Service is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal data, please contact us immediately.
@@ -264,7 +264,7 @@ export default function PrivacyPage() {
                   <p className="text-gray-700 leading-relaxed mb-3">We may update our Privacy Policy from time to time. We will notify you of any changes by:</p>
                   <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
                     <li>Posting the new Privacy Policy on this page</li>
-                    <li>Updating the "Last Updated" date</li>
+                    <li>Updating the &quot;Last Updated&quot; date</li>
                     <li>Sending you an email notification (for material changes)</li>
                     <li>Displaying a notice on our Service</li>
                   </ul>

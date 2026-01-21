@@ -124,13 +124,13 @@ function SignupContent() {
                   Start your <span className="text-gold">solar savings</span> journey
                 </h1>
                 <p className="text-black">
-                  Join 10,000+ families already saving on their electricity bills with PowerNetPro's digital solar platform.
+                  Join 10,000+ families already saving on their electricity bills with PowerNetPro&apos;s digital solar platform.
                 </p>
               </div>
 
               {/* What you get */}
               <div className="space-y-3">
-                <p className="text-sm font-semibold text-black">What you'll get:</p>
+                <p className="text-sm font-semibold text-black">What you&apos;ll get:</p>
                 {[
                   { icon: TrendingDown, text: "Save up to 30% on electricity bills", color: "text-energy-green" },
                   { icon: Zap, text: "Instant solar credits without installation", color: "text-gold" },
@@ -172,7 +172,7 @@ function SignupContent() {
                       ))}
                     </div>
                     <p className="text-black text-sm italic mb-2">
-                      "Saved ₹2,400 in just the first month! The signup was quick and I started seeing credits on my bill immediately."
+                      &quot;Saved ₹2,400 in just the first month! The signup was quick and I started seeing credits on my bill immediately.&quot;
                     </p>
                     <p className="text-black font-semibold text-sm">Rahul M.</p>
                     <p className="text-gray-400 text-xs">Bangalore</p>
@@ -316,7 +316,7 @@ function SignupContent() {
                         ) : (
                           <>
                             <AlertCircle className="h-3.5 w-3.5 text-red-500" />
-                            <span className="text-xs text-red-500">Passwords don't match</span>
+                            <span className="text-xs text-red-500">Passwords don&apos;t match</span>
                           </>
                         )}
                       </div>

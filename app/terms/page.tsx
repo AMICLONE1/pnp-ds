@@ -32,7 +32,7 @@ export default function TermsPage() {
               </CardHeader>
               <CardContent className="p-8" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  Thank you for choosing PowerNetPro! We're committed to making digital solar energy accessible, transparent, and beneficial for everyone. These Terms of Service explain your rights and our commitments in simple, straightforward language.
+                  Thank you for choosing PowerNetPro! We&apos;re committed to making digital solar energy accessible, transparent, and beneficial for everyone. These Terms of Service explain your rights and our commitments in simple, straightforward language.
                 </p>
                 <p className="text-gray-700 leading-relaxed">
                   By using PowerNetPro, you agree to these terms. Please read them carefully.
@@ -54,10 +54,10 @@ export default function TermsPage() {
                     1. About Us & Our Services
                   </h2>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    <strong>PowerNetPro Private Limited</strong> ("PowerNetPro", "we", "us", or "our") is a company registered under the Companies Act, 2013, with our registered office at <strong>Kothrud, Pune, Maharashtra, Bharat</strong>.
+                    <strong>PowerNetPro Private Limited</strong> (&quot;PowerNetPro&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is a company registered under the Companies Act, 2013, with our registered office at <strong>Kothrud, Pune, Maharashtra, Bharat</strong>.
                   </p>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    Our platform at <strong>www.powernetpro.com</strong> (the "Platform") enables you to:
+                    Our platform at <strong>www.powernetpro.com</strong> (the &quot;Platform&quot;) enables you to:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
                     <li>Reserve digital solar capacity from our renewable energy projects</li>
@@ -67,7 +67,7 @@ export default function TermsPage() {
                     <li>Contribute to a sustainable energy future</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
-                    <strong>This is a legally binding agreement.</strong> By clicking "I Agree," creating an account, or using our services, you confirm that you have read and understood these terms, you are at least 18 years old, you have the legal capacity to enter into this agreement, and all information you provide is accurate and truthful.
+                    <strong>This is a legally binding agreement.</strong> By clicking &quot;I Agree,&quot; creating an account, or using our services, you confirm that you have read and understood these terms, you are at least 18 years old, you have the legal capacity to enter into this agreement, and all information you provide is accurate and truthful.
                   </p>
                 </div>
 
@@ -89,7 +89,7 @@ export default function TermsPage() {
                         </tr>
                         <tr className="bg-gold/5">
                           <td className="border border-gold/30 p-3 text-gray-700"><strong>Credits or Monthly Credits</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">The monetary value you earn from your reserved solar capacity's electricity generation</td>
+                          <td className="border border-gold/30 p-3 text-gray-700">The monetary value you earn from your reserved solar capacity&apos;s electricity generation</td>
                         </tr>
                         <tr>
                           <td className="border border-gold/30 p-3 text-gray-700"><strong>Credit Balance</strong></td>
@@ -149,9 +149,9 @@ export default function TermsPage() {
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">Activation Timeline:</h3>
                   <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
                     <li>Standard activation: 24-48 hours from successful payment</li>
-                    <li>You'll receive email and SMS confirmation once activated</li>
+                    <li>You&apos;ll receive email and SMS confirmation once activated</li>
                     <li>If activation takes longer than 48 hours, contact support immediately</li>
-                    <li>If we fail to activate within 72 hours, you're eligible for a full refund automatically</li>
+                    <li>If we fail to activate within 72 hours, you&apos;re eligible for a full refund automatically</li>
                   </ul>
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">3.3 What We Guarantee</h3>
@@ -159,14 +159,14 @@ export default function TermsPage() {
                     <p className="font-semibold text-black mb-2">What We Guarantee:</p>
                     <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                       <li>✓ Your reserved capacity will be from real, operational solar panels</li>
-                      <li>✓ You'll receive transparent monthly reports</li>
+                      <li>✓ You&apos;ll receive transparent monthly reports</li>
                       <li>✓ Credits will be calculated fairly based on actual generation</li>
-                      <li>✓ We'll maintain and service the physical solar infrastructure</li>
+                      <li>✓ We&apos;ll maintain and service the physical solar infrastructure</li>
                       <li>✓ You can monitor your generation data in real-time</li>
                     </ul>
                   </div>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <p className="font-semibold text-black mb-2">What We Don't Guarantee:</p>
+                    <p className="font-semibold text-black mb-2">What We Don&apos;t Guarantee:</p>
                     <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                       <li>Exact monthly generation amounts (weather varies)</li>
                       <li>Consistent month-to-month credit values (seasonal variations occur)</li>
@@ -288,18 +288,18 @@ export default function TermsPage() {
                   <div className="space-y-4">
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                       <p className="font-semibold text-black mb-2"><strong>P50 Production Level (50% confidence):</strong></p>
-                      <p className="text-gray-700">There's a 50% probability that annual generation will meet or exceed this level. Used for standard projections.</p>
+                      <p className="text-gray-700">There&apos;s a 50% probability that annual generation will meet or exceed this level. Used for standard projections.</p>
                       <p className="text-gray-700 mt-2">Example: 5kW system, P50 = 7,500 kWh/year</p>
                     </div>
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                       <p className="font-semibold text-black mb-2"><strong>P90 Production Level (90% confidence):</strong></p>
-                      <p className="text-gray-700">There's a 90% probability that annual generation will meet or exceed this level. More conservative estimate.</p>
+                      <p className="text-gray-700">There&apos;s a 90% probability that annual generation will meet or exceed this level. More conservative estimate.</p>
                       <p className="text-gray-700 mt-2">Example: 5kW system, P90 = 6,500 kWh/year</p>
                     </div>
                   </div>
                   <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mt-4">
                     <p className="font-semibold text-black mb-2"><strong>Our Performance Guarantee:</strong></p>
-                    <p className="text-gray-700">If annual generation falls below P90 levels, we'll add bonus credits to bring you up to P90 levels. No questions asked, automatic adjustment.</p>
+                    <p className="text-gray-700">If annual generation falls below P90 levels, we&apos;ll add bonus credits to bring you up to P90 levels. No questions asked, automatic adjustment.</p>
                   </div>
                 </div>
 
@@ -394,7 +394,7 @@ export default function TermsPage() {
                     <AlertCircle className="h-6 w-6 text-gold" />
                     11. Limitations of Liability (Fair & Balanced)
                   </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">11.1 What We're NOT Liable For</h3>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">11.1 What We&apos;re NOT Liable For</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">We cannot be held responsible for:</p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                     <li>Government & Regulatory Changes (DISCOM policy modifications, tax changes)</li>
@@ -543,7 +543,7 @@ export default function TermsPage() {
                     <li>By calling our customer support line</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
-                    Refunds are calculated based on Section 14 (Refund Policy). You'll receive the appropriate refund amount based on how long you've been a customer.
+                    Refunds are calculated based on Section 14 (Refund Policy). You&apos;ll receive the appropriate refund amount based on how long you&apos;ve been a customer.
                   </p>
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">15.2 We Can Terminate Your Account If</h3>
@@ -556,7 +556,7 @@ export default function TermsPage() {
                     <li>Harassment of staff or other customers</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
-                    We will provide 30 days' written notice (except for fraud or illegal activity, which may be immediate).
+                    We will provide 30 days&apos; written notice (except for fraud or illegal activity, which may be immediate).
                   </p>
                 </div>
 
@@ -697,10 +697,10 @@ export default function TermsPage() {
                   <p className="text-gray-700 leading-relaxed">Check our website for the most up-to-date list of supported DISCOMs.</p>
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">19.2 Expansion Plans</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We're actively expanding to serve more states and DISCOMs. If your area isn't covered yet:</p>
+                  <p className="text-gray-700 leading-relaxed mb-3">We&apos;re actively expanding to serve more states and DISCOMs. If your area isn&apos;t covered yet:</p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                     <li>Join our waitlist on the website</li>
-                    <li>We'll notify you when service becomes available</li>
+                    <li>We&apos;ll notify you when service becomes available</li>
                     <li>Priority access for early waitlist members</li>
                   </ul>
                 </div>
@@ -717,23 +717,23 @@ export default function TermsPage() {
                     <li>Address customer feedback</li>
                   </ul>
 
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">20.2 How We'll Notify You</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We'll notify you of material changes through:</p>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">20.2 How We&apos;ll Notify You</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">We&apos;ll notify you of material changes through:</p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                     <li>Email to your registered address (30 days advance notice)</li>
                     <li>In-app notification on your dashboard</li>
                     <li>SMS for critical changes</li>
-                    <li>Updated "Last Updated" date on this page</li>
+                    <li>Updated &quot;Last Updated&quot; date on this page</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
                     Material changes include: pricing modifications, refund policy changes, liability limitations, or service scope changes.
                   </p>
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">20.3 Your Options</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">If you don't agree with updated terms:</p>
+                  <p className="text-gray-700 leading-relaxed mb-3">If you don&apos;t agree with updated terms:</p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                     <li>You can cancel your account within 30 days of the change</li>
-                    <li>You'll receive a refund per Section 14 (Refund Policy)</li>
+                    <li>You&apos;ll receive a refund per Section 14 (Refund Policy)</li>
                     <li>Continued use after 30 days means you accept the new terms</li>
                   </ul>
                 </div>
@@ -807,7 +807,7 @@ export default function TermsPage() {
                     23. Acknowledgment & Acceptance
                   </h2>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    By clicking "I Agree," creating an account, or using PowerNetPro services, you acknowledge that:
+                    By clicking &quot;I Agree,&quot; creating an account, or using PowerNetPro services, you acknowledge that:
                   </p>
                   <div className="bg-gold/5 rounded-xl p-4 border border-gold/20">
                     <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
@@ -816,7 +816,7 @@ export default function TermsPage() {
                       <li>✓ You have the legal capacity to enter into this agreement</li>
                       <li>✓ You provide accurate and truthful information</li>
                       <li>✓ You understand the risks and limitations described</li>
-                      <li>✓ You've had the opportunity to seek independent legal advice</li>
+                      <li>✓ You&apos;ve had the opportunity to seek independent legal advice</li>
                       <li>✓ You accept responsibility for your account security and usage</li>
                     </ul>
                   </div>
@@ -836,10 +836,10 @@ export default function TermsPage() {
                       <li><strong>Accountability:</strong> We own our responsibilities and make things right</li>
                       <li><strong>Protection:</strong> Your investment is secured, your data is protected</li>
                       <li><strong>Performance:</strong> We deliver on our commitments or compensate you</li>
-                      <li><strong>Sustainability:</strong> Together, we're building a cleaner energy future</li>
+                      <li><strong>Sustainability:</strong> Together, we&apos;re building a cleaner energy future</li>
                     </ul>
                     <p className="text-gold font-bold text-xl mt-6 text-center">
-                      Thank you for choosing PowerNetPro. Let's power India with sunshine!
+                      Thank you for choosing PowerNetPro. Let&apos;s power India with sunshine!
                     </p>
                   </div>
                 </div>

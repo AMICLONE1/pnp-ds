@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -741,7 +741,7 @@ function LoadingSkeleton() {
   );
 }
 
-export default function ReservePage() {
+function ReservePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -1034,3 +1034,10 @@ export default function ReservePage() {
   );
 }
 
+export default function ReservePage() {
+  return (
+    <Suspense fallback={<ProjectListSkeleton />}>
+      <ReservePageContent />
+    </Suspense>
+  );
+}

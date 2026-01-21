@@ -75,7 +75,7 @@ export default function CookiesPage() {
                     <li>Cookies are stored on your device by your web browser</li>
                     <li>They contain information about your browsing activity</li>
                     <li>They help websites remember your preferences and settings</li>
-                    <li>They can be "session cookies" (deleted when you close the browser) or "persistent cookies" (remain until expiration)</li>
+                    <li>They can be &quot;session cookies&quot; (deleted when you close the browser) or &quot;persistent cookies&quot; (remain until expiration)</li>
                   </ul>
                 </div>
 
@@ -143,7 +143,7 @@ export default function CookiesPage() {
                     These cookies are used to deliver relevant advertisements and track campaign effectiveness:
                   </p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Track which ads you've seen</li>
+                    <li>Track which ads you&apos;ve seen</li>
                     <li>Measure ad campaign performance</li>
                     <li>Personalize advertising content</li>
                   </ul>
@@ -230,7 +230,7 @@ export default function CookiesPage() {
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">6.2 Cookie Consent Banner</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    When you first visit our Service, you'll see a cookie consent banner where you can:
+                    When you first visit our Service, you&apos;ll see a cookie consent banner where you can:
                   </p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                     <li>Accept all cookies</li>

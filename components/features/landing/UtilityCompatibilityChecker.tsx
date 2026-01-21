@@ -245,7 +245,7 @@ export function UtilityCompatibilityChecker() {
             className="bg-energy-blue/15 border border-energy-blue/40 rounded-2xl p-5 backdrop-blur-sm shadow-md"
           >
             <p className="text-sm text-energy-blue" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              <strong>Expanding Soon:</strong> We're adding 15+ new DISCOMs this quarter. 
+              <strong>Expanding Soon:</strong> We&apos;re adding 15+ new DISCOMs this quarter. 
               Not seeing yours? Sign up for notifications.
             </p>
           </motion.div>
@@ -445,7 +445,7 @@ export function UtilityCompatibilityChecker() {
                           >
                             {result.compatible 
                               ? `${result.discomName} (${result.coverage}) is fully supported. Start saving on your electricity bills today!`
-                              : `${result.discomName} is not yet available. We're expanding rapidly—get notified when it's live.`
+                              : `${result.discomName} is not yet available. We&apos;re expanding rapidly—get notified when it's live.`
                             }
                           </motion.p>
                           <motion.div

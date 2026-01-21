@@ -119,7 +119,7 @@ export default function ContactPage() {
                             <Card className="bg-white/95 shadow-lg rounded-3xl border border-gray-100 h-full flex flex-col justify-between">
                               <CardHeader className="pb-2">
                                 <CardTitle className="text-2xl font-heading font-bold text-black">Send us a Message</CardTitle>
-                                <CardDescription className="text-gray-600 font-medium">Fill out the form below and we'll get back to you</CardDescription>
+                                <CardDescription className="text-gray-600 font-medium">Fill out the form below and we&apos;ll get back to you</CardDescription>
                               </CardHeader>
                               <CardContent className="pt-0">
                                 {submitted ? (
@@ -128,7 +128,7 @@ export default function ContactPage() {
                                       <Send className="h-8 w-8 text-green-600" />
                                     </div>
                                     <h3 className="text-lg font-semibold text-green-800 mb-2">Message Sent Successfully!</h3>
-                                    <p className="text-green-700">We've received your message and will get back to you soon.</p>
+                                    <p className="text-green-700">We&apos;ve received your message and will get back to you soon.</p>
                                   </div>
                                 ) : (
                                   <form onSubmit={handleSubmit} className="space-y-4">

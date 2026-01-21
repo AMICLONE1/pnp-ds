@@ -102,6 +102,7 @@ export async function POST(request: Request) {
           id,
           capacity_kw,
           capacity_block_id,
+          payment_id,
           capacity_block:capacity_blocks(
             id,
             project_id,
@@ -146,7 +147,12 @@ export async function POST(request: Request) {
       }
 
       // Ensure capacity block is marked as ALLOCATED
-      if (allocation.capacity_block && allocation.capacity_block.status !== "ALLOCATED") {
+      // capacity_block is returned as an array from the join, get the first item
+      const capacityBlock = Array.isArray(allocation.capacity_block)
+        ? allocation.capacity_block[0]
+        : allocation.capacity_block;
+
+      if (capacityBlock && capacityBlock.status !== "ALLOCATED") {
         let adminClient;
         try {
           adminClient = createAdminClient();

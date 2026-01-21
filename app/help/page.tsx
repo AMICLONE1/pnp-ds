@@ -139,7 +139,7 @@ export default function HelpPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-black/90 text-sm font-medium mb-6"
               >
                 <HelpCircle className="h-4 w-4" />
-                We're here to help
+                We&apos;re here to help
               </motion.div>
               
               <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-black">
@@ -397,7 +397,7 @@ export default function HelpPage() {
                         Still have questions?
                       </h2>
                       <p className="text-black/70 mb-6">
-                        Can't find what you're looking for? Our support team is ready to help you with any questions.
+                        Can&apos;t find what you&apos;re looking for? Our support team is ready to help you with any questions.
                       </p>
                       <div className="flex flex-wrap gap-3">
                         <a href="/contact">

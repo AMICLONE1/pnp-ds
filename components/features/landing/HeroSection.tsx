@@ -822,7 +822,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 3 }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pb-8"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pb-8 pointer-events-none"
       >
         <motion.button
           onClick={() => {
@@ -830,7 +830,7 @@ export function HeroSection() {
             const element = document.getElementById('stats-section');
             element?.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="relative flex flex-col items-center gap-2 text-black hover:text-gold transition-colors"
+          className="relative flex flex-col items-center gap-2 text-black hover:text-gold transition-colors pointer-events-auto"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >

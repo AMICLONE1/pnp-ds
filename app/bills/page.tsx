@@ -23,6 +23,7 @@ import {
   CreditCard
 } from "lucide-react";
 import { BillsSkeleton } from "@/components/ui/skeletons/BillsSkeleton";
+import { BillPayment } from "@/components/features/bills/BillPayment";
 
 export const dynamic = 'force-dynamic';
 

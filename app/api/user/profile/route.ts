@@ -63,9 +63,40 @@ export async function PUT(request: Request) {
 
     const body = await request.json();
 
+    // Whitelist allowed fields to prevent privilege escalation
+    const allowedFields = [
+      'full_name',
+      'phone',
+      'address',
+      'city',
+      'state',
+      'pincode',
+      'notification_preferences',
+      'avatar_url'
+    ];
+
+    // Extract only allowed fields from request body
+    const sanitizedUpdate: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        sanitizedUpdate[field] = body[field];
+      }
+    }
+
+    // Return error if no valid fields provided
+    if (Object.keys(sanitizedUpdate).length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "INVALID_REQUEST", message: "No valid fields to update" },
+        },
+        { status: 400 }
+      );
+    }
+
     const { data: profile, error } = await supabase
       .from("users")
-      .update(body)
+      .update(sanitizedUpdate)
       .eq("id", user.id)
       .select()
       .single();
