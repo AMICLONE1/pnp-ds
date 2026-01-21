@@ -15,7 +15,7 @@ import {
   Calculator
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SOLAR_CONSTANTS, calculateSetupCost } from "@/lib/solar-constants";
+import { SOLAR_CONSTANTS, calculateSetupCost, SOLAR_PROJECTS } from "@/lib/solar-constants";
 
 function formatCurrency(amount: number): string {
   return `₹${amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
@@ -131,10 +131,10 @@ export function CalculatorSection() {
                   </div>
                   <div>
                     <p className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                      Vedvyas Solar Park
+                      {SOLAR_PROJECTS.vedvyas.name}
                     </p>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-gold font-semibold">100 kW Capacity</span>
+                      <span className="text-sm text-gold font-semibold">{SOLAR_PROJECTS.vedvyas.totalKw} kW Capacity</span>
                       <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-700 font-medium border border-green-500/30">
                         LIVE
                       </span>
@@ -146,7 +146,7 @@ export function CalculatorSection() {
                     Credit Rate
                   </p>
                   <p className="text-gold font-bold text-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    ₹7<span className="text-sm text-gray-500">/unit</span>
+                    ₹{SOLAR_PROJECTS.vedvyas.ratePerKwh}<span className="text-sm text-gray-500">/unit</span>
                   </p>
                 </div>
               </div>

@@ -30,7 +30,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const supabase = createClient();
+
+  // Get supabase client - singleton pattern ensures same instance
+  const getSupabase = () => createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +52,7 @@ export default function LoginPage() {
       return;
     }
 
+    const supabase = getSupabase();
     const { data, error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim().toLowerCase(),
       password,
@@ -83,9 +86,9 @@ export default function LoginPage() {
     await new Promise((r) => setTimeout(r, 300));
     
     // Verify session is still valid before redirecting
-    const { data: { session: verifiedSession }, error: sessionError } = await supabase.auth.getSession();
+    const { data: { user: verifiedUser }, error: sessionError } = await supabase.auth.getUser();
     
-    if (sessionError || !verifiedSession) {
+    if (sessionError || !verifiedUser) {
       setError("Session could not be established. Please try again.");
       setLoading(false);
       return;

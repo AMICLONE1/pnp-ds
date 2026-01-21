@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { transformProject } from "./transform";
+import { SOLAR_PROJECTS_LIST } from "@/lib/solar-constants";
 
 export async function GET() {
   try {
@@ -25,7 +26,7 @@ export async function GET() {
         .select("*")
         .eq("status", "active")
         .order("created_at", { ascending: false });
-      
+
       if (!result.error) {
         projectsData = result.data;
         projectsError = null;
@@ -44,7 +45,7 @@ export async function GET() {
         .from("projects")
         .select("*")
         .order("created_at", { ascending: false });
-      
+
       if (!result.error) {
         projectsData = result.data;
         projectsError = null;
@@ -52,9 +53,9 @@ export async function GET() {
         // Filter active projects in code if needed
         if (projectsData) {
           projectsData = projectsData.filter(
-            (p: any) => 
-              p.status === "active" || 
-              p.status === "ACTIVE" || 
+            (p: any) =>
+              p.status === "active" ||
+              p.status === "ACTIVE" ||
               p.status?.toLowerCase() === "active"
           );
         }
@@ -80,10 +81,32 @@ export async function GET() {
 
     projects = projectsData || [];
 
+    // Fallback to SOLAR_PROJECTS_LIST if database is empty
+    // This ensures the reserve page shows the same projects as the homepage
+    if (projects.length === 0) {
+      console.log("No projects in database, using SOLAR_PROJECTS_LIST fallback");
+      const fallbackProjects = SOLAR_PROJECTS_LIST.map(project => ({
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        location: project.location,
+        state: project.state,
+        price_per_kw: 500, // Default subscription price per kW/month
+        rate_per_kwh: project.ratePerKwh,
+        total_kw: project.totalKw,
+        available_capacity_kw: project.totalKw,
+        status: "ACTIVE",
+        spv_id: project.spvId,
+      }));
+
+      const transformedFallback = fallbackProjects.map(transformProject);
+      return NextResponse.json({ success: true, data: transformedFallback });
+    }
+
     // Calculate available capacity for each project from capacity_blocks
     if (projects.length > 0) {
       const projectIds = projects.map((p: any) => p.id);
-      
+
       // Get available capacity blocks for all projects
       const { data: capacityBlocks } = await supabase
         .from("capacity_blocks")

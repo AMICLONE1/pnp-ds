@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SOLAR_CONSTANTS, calculateSetupCost } from "@/lib/solar-constants";
+import { SOLAR_CONSTANTS, calculateSetupCost, SOLAR_PROJECTS, SOLAR_PROJECTS_LIST } from "@/lib/solar-constants";
 import React from "react";
 
 // Stats data
@@ -437,16 +437,16 @@ function InteractiveSavingsCard() {
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-white rounded-full border-2 border-gray-200-dark" />
             </div>
             <div>
-              <p className="text-black font-bold text-sm">Vedvyas</p>
+              <p className="text-black font-bold text-sm">{SOLAR_PROJECTS.vedvyas.name.split(' ')[0]}</p>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-gold font-medium">100 kW</span>
+                <span className="text-[10px] text-gold font-medium">{SOLAR_PROJECTS.vedvyas.totalKw} kW</span>
                 <span className="text-[8px] px-1.5 py-0.5 rounded bg-white/20 text-black font-medium">LIVE</span>
               </div>
             </div>
           </div>
           <div className="text-right bg-white/5 rounded-lg px-2.5 py-1.5">
             <p className="text-[8px] text-black/40 uppercase tracking-wide">Credit Rate</p>
-            <p className="text-gold font-bold text-sm">₹7<span className="text-[9px] text-black/40">/unit</span></p>
+            <p className="text-gold font-bold text-sm">₹{SOLAR_PROJECTS.vedvyas.ratePerKwh}<span className="text-[9px] text-black/40">/unit</span></p>
           </div>
         </div>
 
@@ -822,7 +822,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 3 }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pb-8 pointer-events-none"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pb-8"
       >
         <motion.button
           onClick={() => {
@@ -830,7 +830,7 @@ export function HeroSection() {
             const element = document.getElementById('stats-section');
             element?.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="relative flex flex-col items-center gap-2 text-black hover:text-gold transition-colors pointer-events-auto"
+          className="relative flex flex-col items-center gap-2 text-black hover:text-gold transition-colors"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >

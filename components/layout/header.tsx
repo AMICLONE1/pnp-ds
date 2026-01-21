@@ -82,11 +82,18 @@ export function Header() {
     };
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user: any } | null) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any, session: any) => {
+      // Only update user state for actual auth changes, not initial session
+      // SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED, USER_UPDATED are the events we care about
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        setUser(session?.user ?? null);
+      }
+      // Ignore INITIAL_SESSION to prevent flickering during navigation
     });
 
-    return () => subscription.unsubscribe();
+    return () => subscription?.unsubscribe();
   }, [supabase]);
 
   const handleLogout = async () => {

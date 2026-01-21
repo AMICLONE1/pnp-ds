@@ -3,9 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+    request,
   });
 
   // Check if Supabase credentials are configured
@@ -13,10 +11,10 @@ export async function updateSession(request: NextRequest) {
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   // If credentials are not configured or are placeholders, skip auth entirely
-  if (!supabaseUrl || !supabaseKey || 
-      supabaseUrl.includes('placeholder') || 
+  if (!supabaseUrl || !supabaseKey ||
+      supabaseUrl.includes('placeholder') ||
       supabaseKey.includes('placeholder') ||
-      supabaseUrl === 'your-project-url' || 
+      supabaseUrl === 'your-project-url' ||
       supabaseKey === 'your-anon-key') {
     // Just pass through without any Supabase operations
     return supabaseResponse;
@@ -35,15 +33,12 @@ export async function updateSession(request: NextRequest) {
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request,
           });
-          // Use the options provided by Supabase SSR - it handles httpOnly, secure, sameSite correctly
           cookiesToSet.forEach(({ name, value, options }) => {
+            // Preserve Supabase's cookie options, only set path if not already set
             supabaseResponse.cookies.set(name, value, {
               ...options,
-              // Ensure path is set for session cookies
               path: options?.path || '/',
             });
           });
@@ -52,25 +47,15 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // IMPORTANT: Call getSession() to refresh the session if needed
-  // This ensures expired tokens are automatically refreshed by Supabase SSR
-  // getSession() will automatically refresh the access token if it's expired
+  // Use getUser() to validate the session
+  // This also refreshes the token if needed
   let user = null;
   try {
-    // getSession() automatically refreshes expired tokens
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    
-    if (!sessionError && session?.user) {
-      user = session.user;
-    } else {
-      // Fallback: try getUser() if getSession() fails
-      // This might happen if refresh token is also expired
-      const { data: { user: userData }, error: userError } = await supabase.auth.getUser();
-      if (!userError && userData) {
-        user = userData;
-      }
+    const { data: { user: userData }, error } = await supabase.auth.getUser();
+    if (!error && userData) {
+      user = userData;
     }
-  } catch (error) {
+  } catch {
     // Silently handle auth errors - don't break the request
     // This allows public routes to still work
     user = null;
@@ -99,7 +84,12 @@ export async function updateSession(request: NextRequest) {
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    // Preserve any cookies that were set during session refresh
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value);
+    });
+    return redirectResponse;
   }
 
   return supabaseResponse;
