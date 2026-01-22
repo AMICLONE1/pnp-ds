@@ -67,6 +67,7 @@ export async function updateSession(request: NextRequest) {
     "/login",
     "/signup",
     "/reserve",
+    "/waitlist",
     "/forgot-password",
     "/reset-password",
     "/help",

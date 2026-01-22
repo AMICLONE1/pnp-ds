@@ -760,7 +760,7 @@ export function BenefitsSection() {
           >
             Ready to experience these benefits yourself?
           </motion.p>
-          <Link href="/reserve">
+          <Link href="/waitlist">
             <motion.div
               whileHover={{ scale: 1.04, y: -4 }}
               whileTap={{ scale: 0.96 }}
@@ -769,7 +769,7 @@ export function BenefitsSection() {
               <Button
                 variant="primary"
                 size="lg"
-                className="relative overflow-hidden bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-gray-900 font-semibold px-12 py-7 text-lg group shadow-[0_15px_50px_-12px_rgba(255,184,0,0.5)] hover:shadow-[0_20px_60px_-12px_rgba(255,184,0,0.6)] transition-all duration-400 rounded-2xl border border-gold/20 hover:border-gold/40" 
+                className="relative overflow-hidden bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-gray-900 font-semibold px-12 py-7 text-lg group shadow-[0_15px_50px_-12px_rgba(255,184,0,0.5)] hover:shadow-[0_20px_60px_-12px_rgba(255,184,0,0.6)] transition-all duration-400 rounded-2xl border border-gold/20 hover:border-gold/40"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 {/* Shine effect */}
@@ -782,7 +782,7 @@ export function BenefitsSection() {
                 {/* Top highlight */}
                 <div className="absolute top-0 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                 <span className="relative z-10 flex items-center gap-3">
-                  Start Your Solar Journey
+                  Join the Waitlist
                   <motion.span
                     className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 group-hover:bg-white/30 transition-all duration-300"
                     animate={{ x: [0, 3, 0] }}

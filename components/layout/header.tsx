@@ -281,30 +281,18 @@ export function Header() {
                 </>
               ) : (
                 <>
-                  <Link href="/login">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="hidden sm:inline-flex text-black hover:bg-gray-100"
-                    >
-                      Login
-                    </Button>
+                  <Link
+                    href="/waitlist"
+                    className="hidden sm:inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-black hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    Login
                   </Link>
-                  <Link href="/signup">
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Button 
-                        variant="secondary" 
-                        size="sm"
-                        className="bg-gold hover:bg-gold-light text-black font-semibold shadow-lg shadow-gold/20 group"
-                        data-cursor-hover
-                      >
-                        Start Saving
-                        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </motion.div>
+                  <Link
+                    href="/waitlist"
+                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold bg-gold hover:bg-gold-light text-black rounded-full shadow-lg shadow-gold/20 transition-colors group"
+                  >
+                    Join Waitlist
+                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </>
               )}
@@ -445,16 +433,20 @@ export function Header() {
                     </>
                   ) : (
                     <>
-                      <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full">
-                          Login
-                        </Button>
+                      <Link
+                        href="/waitlist"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="w-full inline-flex items-center justify-center px-4 py-2 text-base font-medium border-2 border-gray-300 text-black hover:bg-gray-100 rounded-full transition-colors"
+                      >
+                        Login
                       </Link>
-                      <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="secondary" className="w-full bg-gold hover:bg-gold-light text-black">
-                          Start Saving Free
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
+                      <Link
+                        href="/waitlist"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="w-full inline-flex items-center justify-center px-4 py-2 text-base font-medium bg-gold hover:bg-gold-light text-black rounded-full transition-colors"
+                      >
+                        Join Waitlist
+                        <ArrowRight className="w-4 h-4 ml-2" />
                       </Link>
                     </>
                   )}

@@ -164,23 +164,23 @@ export function LandingHeader() {
               ) : (
                 <>
                   <Link
-                    href="/login"
+                    href="/waitlist"
                     className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
                   >
                     Login
                   </Link>
                   <Link
-                    href="/signup"
+                    href="/waitlist"
                     className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
                   >
                     Signup
                   </Link>
                   <div className="border-t border-gold/20 my-1.5" />
                   <Link
-                    href="/signup"
+                    href="/waitlist"
                     className="block px-5 py-2.5 text-gold hover:bg-gold hover:text-black transition-all duration-200 font-semibold text-sm border-l-2 border-transparent hover:border-gold"
                   >
-                    Start Saving
+                    Join Waitlist
                   </Link>
                 </>
               )}
