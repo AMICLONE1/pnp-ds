@@ -2,6 +2,10 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 import { checkRateLimit } from "@/lib/security/rateLimiter";
 
+// Waitlist mode - redirect auth pages to waitlist
+const WAITLIST_MODE = true;
+const WAITLIST_REDIRECT_PATHS = ["/login", "/signup", "/reserve"];
+
 export async function middleware(request: NextRequest) {
   // Skip middleware for static files and Next.js internals
   const pathname = request.nextUrl.pathname;
@@ -11,6 +15,11 @@ export async function middleware(request: NextRequest) {
     pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|js|css|woff|woff2|ttf|eot|ico)$/)
   ) {
     return NextResponse.next();
+  }
+
+  // Waitlist mode: redirect auth/protected pages to waitlist
+  if (WAITLIST_MODE && WAITLIST_REDIRECT_PATHS.includes(pathname)) {
+    return NextResponse.redirect(new URL("/waitlist", request.url));
   }
 
   // Rate limiting for API routes

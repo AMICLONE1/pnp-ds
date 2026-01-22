@@ -263,13 +263,13 @@ export function StatsSection() {
               </div>
 
               <motion.a
-                href="/reserve"
+                href="/waitlist"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex-shrink-0 px-6 py-3 bg-gold hover:bg-gold-light text-charcoal font-semibold rounded-xl transition-colors flex items-center gap-2 group"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                Join Now
+                Join Waitlist
                 <Zap className="w-4 h-4 group-hover:animate-pulse" />
               </motion.a>
             </div>

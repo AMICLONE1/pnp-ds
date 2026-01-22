@@ -33,6 +33,9 @@ import {
 } from "lucide-react";
 import { ProjectListSkeleton } from "@/components/ui/skeletons/ProjectListSkeleton";
 
+// Waitlist mode - redirect to waitlist page
+const WAITLIST_MODE = true;
+
 interface Project {
   id: string;
   name: string;
@@ -755,7 +758,10 @@ function ReservePageContent() {
   const urlCapacity = searchParams.get('capacity');
   const urlProject = searchParams.get('project');
 
+  // Fetch projects and user data (only runs when not in waitlist mode)
   useEffect(() => {
+    if (WAITLIST_MODE) return;
+
     const fetchProjects = async () => {
       const response = await fetch("/api/projects");
       const result = await response.json();
@@ -787,7 +793,7 @@ function ReservePageContent() {
       try {
         // Use getSession() to ensure session is refreshed if needed
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
+
         if (!sessionError && session?.user) {
           setUser(session.user);
         } else {
@@ -820,6 +826,7 @@ function ReservePageContent() {
 
   // Set capacity from URL params (from hero calculator)
   useEffect(() => {
+    if (WAITLIST_MODE) return;
     if (urlCapacity) {
       const cap = parseFloat(urlCapacity);
       if (!isNaN(cap) && cap >= 1 && cap <= 100) {
@@ -827,6 +834,30 @@ function ReservePageContent() {
       }
     }
   }, [urlCapacity]);
+
+  // Show waitlist redirect message
+  if (WAITLIST_MODE) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Sun className="w-8 h-8 text-gold" />
+          </div>
+          <h1 className="text-2xl font-bold text-black mb-3">Coming Soon!</h1>
+          <p className="text-gray-600 mb-6">
+            We're launching soon! Join our waitlist to be the first to reserve your solar capacity.
+          </p>
+          <Link
+            href="/waitlist"
+            className="inline-flex items-center justify-center bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3 rounded-full transition-colors"
+          >
+            Join Waitlist
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleReserve = () => {
     if (!selectedProject) return;

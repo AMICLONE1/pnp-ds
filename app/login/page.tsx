@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,12 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
-import { 
-  Sun, 
-  Mail, 
-  Lock, 
-  ArrowRight, 
-  AlertCircle, 
+import {
+  Sun,
+  Mail,
+  Lock,
+  ArrowRight,
+  AlertCircle,
   Sparkles,
   Shield,
   Zap,
@@ -24,12 +24,39 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+// Waitlist mode - redirect to waitlist page
+const WAITLIST_MODE = true;
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Show waitlist redirect message
+  // if (WAITLIST_MODE) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-white">
+  //       <div className="text-center max-w-md mx-auto px-4">
+  //         <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+  //           <Sun className="w-8 h-8 text-gold" />
+  //         </div>
+  //         <h1 className="text-2xl font-bold text-black mb-3">Coming Soon!</h1>
+  //         <p className="text-gray-600 mb-6">
+  //           We're launching soon! Join our waitlist to be the first to know when PowerNetPro goes live.
+  //         </p>
+  //         <Link
+  //           href="/waitlist"
+  //           className="inline-flex items-center justify-center bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3 rounded-full transition-colors"
+  //         >
+  //           Join Waitlist
+  //           <ArrowRight className="w-4 h-4 ml-2" />
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   // Get supabase client - singleton pattern ensures same instance
   const getSupabase = () => createClient();

@@ -598,14 +598,14 @@ function InteractiveSavingsCard() {
               <p className="text-black font-bold text-sm">{calculations.roiYears}y</p>
             </div>
           </div>
-          <Link href={`/reserve?capacity=${calculations.reservedSolarKw}&project=vedvyas`} className="block">
+          <Link href="/waitlist" className="block">
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               className="w-full py-2.5 px-4 bg-gradient-to-r from-white to-white/90 text-black font-bold text-sm rounded-lg
                          shadow-md shadow-gray-200/20 flex items-center justify-center gap-1.5 group"
             >
-              Get Started Free
+              Join Waitlist
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </motion.button>
           </Link>
@@ -786,7 +786,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row gap-3 justify-center"
               style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
-              <Link href="/reserve">
+              <Link href="/waitlist">
                 <Button
                   variant="secondary"
                   size="lg"
@@ -795,7 +795,7 @@ export function HeroSection() {
                 >
                   {/* Button shine effect */}
                   <span className="relative z-10 flex items-center">
-                    Start Saving Today
+                    Join Waitlist
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </Button>

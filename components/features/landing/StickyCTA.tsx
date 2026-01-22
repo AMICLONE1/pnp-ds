@@ -38,12 +38,12 @@ export function StickyCTA() {
           className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg md:hidden"
           aria-label="Sticky call to action"
         >
-          <Link href="/reserve" className="block w-full">
+          <Link href="/waitlist" className="block w-full">
             <Button
               className="w-full bg-gold hover:bg-gold-light text-black font-bold py-6 text-lg glow-button focus-visible-ring"
-              aria-label="Start saving now"
+              aria-label="Join waitlist"
             >
-              Start Saving Now
+              Join Waitlist
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
             </Button>
           </Link>

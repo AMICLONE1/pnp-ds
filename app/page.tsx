@@ -314,13 +314,13 @@ export default function HomePage() {
 
               <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="flex flex-col sm:flex-row gap-4 justify-center">
                 <MagneticButton strength={0.3}>
-                  <Link href="/reserve">
+                  <Link href="/waitlist">
                     <Button
                       variant="primary"
                       size="lg"
                       className="text-xl px-10 py-7 group bg-gold hover:bg-gold-light text-black shadow-2xl"
                     >
-                      Get Started Free
+                      Join Waitlist
                       <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
                     </Button>
                   </Link>
