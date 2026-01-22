@@ -845,7 +845,7 @@ function ReservePageContent() {
           </div>
           <h1 className="text-2xl font-bold text-black mb-3">Coming Soon!</h1>
           <p className="text-gray-600 mb-6">
-            We're launching soon! Join our waitlist to be the first to reserve your solar capacity.
+            We&apos;re launching soon! Join our waitlist to be the first to reserve your solar capacity.
           </p>
           <Link
             href="/waitlist"

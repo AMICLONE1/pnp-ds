@@ -216,7 +216,7 @@ export default function WaitlistPage() {
                           Get Early Access
                         </h2>
                         <p className="text-gray-500">
-                          Join the waitlist and we'll notify you when we launch
+                          Join the waitlist and we&apos;ll notify you when we launch
                         </p>
                       </div>
 
@@ -312,7 +312,7 @@ export default function WaitlistPage() {
                       </motion.div>
 
                       <h2 className="text-2xl font-bold text-black mb-2">
-                        You're on the list!
+                        You&apos;re on the list!
                       </h2>
 
                       {position && (
@@ -328,7 +328,7 @@ export default function WaitlistPage() {
                       )}
 
                       <p className="text-gray-600 mb-6">
-                        We'll send you an email when PowerNetPro launches.
+                        We&apos;ll send you an email when PowerNetPro launches.
                         <br />
                         Get ready to start saving!
                       </p>
@@ -361,10 +361,10 @@ export default function WaitlistPage() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl font-bold text-black mb-4">
-                What's Coming
+                What&apos;s Coming
               </h2>
               <p className="text-gray-600">
-                Here's what you'll get when we launch
+                Here&apos;s what you&apos;ll get when we launch
               </p>
             </motion.div>
 
