@@ -50,7 +50,7 @@ function SignupContent() {
           </div>
           <h1 className="text-2xl font-bold text-black mb-3">Coming Soon!</h1>
           <p className="text-gray-600 mb-6">
-            We're launching soon! Join our waitlist to be the first to know when PowerNetPro goes live.
+            We&apos;re launching soon! Join our waitlist to be the first to know when PowerNetPro goes live.
           </p>
           <Link
             href="/waitlist"
