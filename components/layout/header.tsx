@@ -282,7 +282,7 @@ export function Header() {
               ) : (
                 <>
                   <Link
-                    href="/waitlist"
+                    href="/login"
                     className="hidden sm:inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-black hover:bg-gray-100 rounded-full transition-colors"
                   >
                     Login
@@ -434,7 +434,7 @@ export function Header() {
                   ) : (
                     <>
                       <Link
-                        href="/waitlist"
+                        href="/login"
                         onClick={() => setMobileMenuOpen(false)}
                         className="w-full inline-flex items-center justify-center px-4 py-2 text-base font-medium border-2 border-gray-300 text-black hover:bg-gray-100 rounded-full transition-colors"
                       >
