@@ -764,7 +764,7 @@ function ReservePageContent() {
       if (result.success) {
         setProjects(result.data);
 
-        // Check if URL has project param - select that project
+        // Check if URL has project param - also select that project
         if (urlProject && result.data.length > 0) {
           const targetProject = result.data.find((p: Project) =>
             p.name.toLowerCase().includes(urlProject.toLowerCase()) || p.id === urlProject
