@@ -4,7 +4,7 @@ import { checkRateLimit } from "@/lib/security/rateLimiter";
 
 // Waitlist mode - redirect auth pages to waitlist
 const WAITLIST_MODE = true;
-const WAITLIST_REDIRECT_PATHS = ["/login", "/signup", "/reserve"];
+const WAITLIST_REDIRECT_PATHS = ["/signup"];
 
 export async function middleware(request: NextRequest) {
   // Skip middleware for static files and Next.js internals

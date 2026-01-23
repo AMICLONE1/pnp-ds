@@ -164,7 +164,7 @@ export function LandingHeader() {
               ) : (
                 <>
                   <Link
-                    href="/waitlist"
+                    href="/login"
                     className="block px-5 py-2.5 text-black hover:bg-gold/10 hover:text-gold transition-all duration-200 font-medium text-sm border-l-2 border-transparent hover:border-gold"
                   >
                     Login
