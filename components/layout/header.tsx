@@ -42,12 +42,12 @@ export function Header() {
   // Pages with dark hero sections that need transparent header with white text
   const darkHeroPages = ['/', '/reserve'];
   const hasDarkHero = darkHeroPages.includes(pathname);
-  
+
   // Force solid header on light background pages
   const needsSolidHeader = !hasDarkHero || isScrolled;
 
   const { scrollY } = useScroll();
-  
+
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() || 0;
     if (latest > previous && latest > 150) {
@@ -128,22 +128,22 @@ export function Header() {
         transition={{ duration: 0.3 }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          needsSolidHeader 
-            ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-100" 
+          needsSolidHeader
+            ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-100"
             : "bg-transparent"
         )}
       >
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-20 items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 md:h-20 items-center justify-between">
             {/* Logo */}
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="flex items-center gap-3 group"
               data-cursor-hover
             >
               <motion.div
                 className={cn(
-                  "relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-300",
+                  "relative w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-colors duration-300",
                   needsSolidHeader ? "bg-white" : "bg-white/10 backdrop-blur-md"
                 )}
                 whileHover={{ scale: 1.05, rotate: 5 }}
@@ -158,7 +158,7 @@ export function Header() {
                 />
               </motion.div>
               <span className={cn(
-                "text-xl font-heading font-bold transition-colors duration-300",
+                "text-lg md:text-xl font-heading font-bold transition-colors duration-300",
                 "text-black"
               )}>
                 PowerNet<span className="text-gold">Pro</span>
@@ -240,7 +240,7 @@ export function Header() {
               {user ? (
                 <>
                   <NotificationBell />
-                  <motion.div 
+                  <motion.div
                     className={cn(
                       "hidden md:flex items-center gap-2.5 px-4 py-2 rounded-full text-sm",
                       "bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10",
@@ -270,9 +270,9 @@ export function Header() {
                       {user.email}
                     </span>
                   </motion.div>
-                  <Button 
-                    variant={needsSolidHeader ? "outline" : "ghost"} 
-                    size="sm" 
+                  <Button
+                    variant={needsSolidHeader ? "outline" : "ghost"}
+                    size="sm"
                     onClick={handleLogout}
                     className="text-black border-gray-300 hover:bg-gray-100"
                   >
@@ -302,8 +302,8 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className={cn(
                   "lg:hidden p-2 rounded-lg transition-colors",
-                  needsSolidHeader 
-                    ? "text-black hover:bg-gray-100" 
+                  needsSolidHeader
+                    ? "text-black hover:bg-gray-100"
                     : "text-white hover:bg-white/10"
                 )}
                 aria-label="Toggle menu"
@@ -349,14 +349,14 @@ export function Header() {
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
-            
+
             {/* Menu Panel */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-white z-50 lg:hidden shadow-2xl"
+              className="fixed top-0 right-0 bottom-0 w-[85%] sm:w-[350px] bg-white z-50 lg:hidden shadow-2xl"
             >
               <div className="flex flex-col h-full">
                 {/* Header */}
@@ -423,9 +423,9 @@ export function Header() {
                         <div className="w-2 h-2 rounded-full bg-white" />
                         {user.email}
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="w-full" 
+                      <Button
+                        variant="outline"
+                        className="w-full"
                         onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                       >
                         Logout

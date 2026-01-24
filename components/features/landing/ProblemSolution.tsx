@@ -43,7 +43,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
   return (
     <section
       ref={containerRef}
-      className={`py-24 relative overflow-hidden ${className}`}
+      className={`py-12 sm:py-16 md:py-24 relative overflow-hidden ${className}`}
       aria-labelledby="problem-solution-heading"
     >
       {/* Background gradient */}
@@ -59,7 +59,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-12 lg:mb-16"
         >
           <span className="inline-block bg-gradient-to-r from-red-500/20 to-gray-500/20 text-black px-4 py-2 rounded-full text-sm font-semibold mb-4"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -68,12 +68,12 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
           </span>
           <h2
             id="problem-solution-heading"
-            className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-3 md:mb-4"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             The <span className="text-red-400" style={{ fontFamily: "'Montserrat', sans-serif" }}>Old Way</span> vs The <span className="text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>New Way</span>
           </h2>
-          <p className="text-xl text-black/80 max-w-2xl mx-auto"
+          <p className="text-lg md:text-xl text-black/80 max-w-2xl mx-auto"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             See why 1,247 families made the switch this month
@@ -81,7 +81,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
         </motion.div>
 
         {/* Toggle Buttons - Mobile */}
-        <div className="flex justify-center mb-8 md:hidden">
+        <div className="flex justify-center mb-6 md:hidden">
           <div className="inline-flex bg-white/10 backdrop-blur-sm rounded-full p-1">
             <button
               onClick={() => setActiveComparison("old")}
@@ -107,7 +107,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
         </div>
 
         {/* Comparison Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {/* OLD WAY Card */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -115,7 +115,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className={`relative ${activeComparison === "new" ? "hidden md:block" : ""}`}
           >
-            <div className="relative bg-white rounded-3xl shadow-xl border-2 border-red-100 p-8 h-full overflow-hidden group hover:border-red-200 transition-colors">
+            <div className="relative bg-white rounded-3xl shadow-xl border-2 border-red-100 p-6 md:p-8 h-full overflow-hidden group hover:border-red-200 transition-colors">
               {/* Animated background pattern */}
               <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -130,7 +130,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
                     <TrendingDown className="w-6 h-6 text-red-500" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>The Old Way</h3>
+                    <h3 className="text-xl md:text-2xl font-bold text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>The Old Way</h3>
                     <p className="text-sm text-red-500 font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>Traditional Grid Power</p>
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
                   whileHover={{ scale: 1.02 }}
                 >
                   <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-4xl font-bold text-red-600" style={{ fontFamily: "'Montserrat', sans-serif" }}>₹5,000</span>
+                    <span className="text-3xl md:text-4xl font-bold text-red-600" style={{ fontFamily: "'Montserrat', sans-serif" }}>₹5,000</span>
                     <span className="text-gray-500" style={{ fontFamily: "'Montserrat', sans-serif" }}>/month</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-red-500">
@@ -185,12 +185,12 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
             >
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-gold via-amber-500 to-gold rounded-full blur-md opacity-60 group-hover:opacity-80 transition-opacity" />
-              
+
               {/* Main badge */}
               <div className="relative w-full h-full bg-gradient-to-br from-gold via-amber-500 to-gold rounded-full flex items-center justify-center border-2 border-white/20 shadow-[0_10px_40px_-5px_rgba(255,184,0,0.5)]">
                 <span className="text-black font-bold text-lg drop-shadow-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>VS</span>
               </div>
-              
+
               {/* Animated ring */}
               <motion.div
                 className="absolute inset-0 rounded-full border-2 border-gold/50"
@@ -214,7 +214,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
             transition={{ duration: 0.6, delay: 0.3 }}
             className={`relative ${activeComparison === "old" ? "hidden md:block" : ""}`}
           >
-            <div className="relative bg-white rounded-3xl shadow-xl border-2 border-gray-200/30 p-8 h-full overflow-hidden group hover:border-gray-200/50 transition-colors">
+            <div className="relative bg-white rounded-3xl shadow-xl border-2 border-gray-200/30 p-6 md:p-8 h-full overflow-hidden group hover:border-gray-200/50 transition-colors">
               {/* Animated background pattern */}
               <div className="absolute inset-0 opacity-[0.03] overflow-hidden">
                 {/* Primary dot grid with animation */}
@@ -295,7 +295,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
                     <Zap className="w-7 h-7 text-black" />
                   </motion.div>
                   <div>
-                    <h3 className="text-2xl font-bold text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>The New Way</h3>
+                    <h3 className="text-xl md:text-2xl font-bold text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>The New Way</h3>
                     <p className="text-sm text-black font-semibold flex items-center gap-1.5" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -318,7 +318,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
                   <div className="flex items-baseline gap-2 mb-2 relative">
                     <motion.span
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      className="text-4xl font-bold text-black"
+                      className="text-3xl md:text-4xl font-bold text-black"
                       initial={{ opacity: 0, scale: 0.5 }}
                       animate={isInView ? { opacity: 1, scale: 1 } : {}}
                       transition={{ delay: 0.6, type: "spring" }}

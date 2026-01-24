@@ -87,7 +87,7 @@ export default function HomePage() {
         <Testimonials />
 
         {/* UTILITY COMPATIBILITY */}
-        <section className="py-14 md:py-16 bg-gradient-to-b from-white via-white to-white relative">
+        <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-white via-white to-white relative">
           <div className="container mx-auto px-4">
             <ScrollFade direction="up">
               <UtilityCompatibilityChecker />
@@ -96,7 +96,7 @@ export default function HomePage() {
         </section>
 
         {/* TRUST SECTION */}
-        <section className="py-14 md:py-16 bg-gradient-to-br from-white via-white to-white text-black relative overflow-hidden">
+        <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-white via-white to-white text-black relative overflow-hidden">
           <GradientMesh className="absolute inset-0 opacity-20" />
 
           <div className="container mx-auto px-4 relative z-10">
@@ -115,20 +115,20 @@ export default function HomePage() {
                   transition={{ delay: 0.1, duration: 0.5 }}
                   className="text-center mb-10"
                 >
-                  <motion.span 
+                  <motion.span
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.15 }}
-                    style={{ fontFamily: "'Montserrat', sans-serif" }} 
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
                     className="inline-flex items-center gap-2 bg-gold/20 text-gold px-4 py-2.5 rounded-full text-sm font-semibold mb-4 shadow-sm border border-gold/10"
                   >
                     <Award className="w-4 h-4" />
                     Built for India
                   </motion.span>
-                  <motion.h2 
-                    style={{ fontFamily: "'Montserrat', sans-serif" }} 
-                    className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-3 text-black"
+                  <motion.h2
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-3 text-black"
                     initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -136,8 +136,8 @@ export default function HomePage() {
                   >
                     Built for the Indian Energy Ecosystem
                   </motion.h2>
-                  <motion.p 
-                    style={{ fontFamily: "'Montserrat', sans-serif" }} 
+                  <motion.p
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
                     className="text-base md:text-lg text-black/70 mb-8 max-w-3xl mx-auto leading-relaxed"
                     initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -149,8 +149,8 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Cards Grid */}
-                <motion.div 
-                  className="grid md:grid-cols-4 gap-4 mb-8"
+                <motion.div
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -167,25 +167,25 @@ export default function HomePage() {
                       initial={{ opacity: 0, y: 30, scale: 0.9 }}
                       whileInView={{ opacity: 1, y: 0, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ 
-                        delay: 0.35 + index * 0.08, 
+                      transition={{
+                        delay: 0.35 + index * 0.08,
                         duration: 0.5,
                         type: "spring",
                         stiffness: 100,
                         damping: 20
                       }}
                     >
-                      <motion.div 
-                        style={{ fontFamily: "'Montserrat', sans-serif" }} 
+                      <motion.div
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
                         className="bg-gradient-to-br from-white to-gray-50/80 backdrop-blur-sm p-6 rounded-2xl border border-gray-200/60 shadow-md hover:shadow-lg transition-all duration-300 group h-full"
-                        whileHover={{ 
+                        whileHover={{
                           y: -6,
                           boxShadow: "0 20px 40px -10px rgba(0,0,0,0.12)"
                         }}
                         transition={{ type: "spring", stiffness: 200, damping: 20 }}
                       >
                         {/* Icon Container */}
-                        <motion.div 
+                        <motion.div
                           className="flex justify-center mb-5"
                           whileHover={{ scale: 1.2, rotate: 5 }}
                           transition={{ type: "spring", stiffness: 200 }}
@@ -224,7 +224,7 @@ export default function HomePage() {
         </section>
 
         {/* FAQ SECTION */}
-        <section className="py-14 md:py-16 bg-white relative overflow-hidden">
+        <section className="py-12 sm:py-16 md:py-20 bg-white relative overflow-hidden">
           <DotPattern className="absolute inset-0 opacity-10" />
           <div className="container mx-auto px-4 relative z-10">
             <motion.div
@@ -234,19 +234,19 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
             >
               <div className="text-center mb-10">
-                <motion.span 
+                <motion.span
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 }}
-                  style={{ fontFamily: "'Montserrat', sans-serif" }} 
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
                   className="inline-block bg-gold/20 text-gold px-4 py-2.5 rounded-full text-sm font-semibold mb-3 shadow-sm border border-gold/10"
                 >
                   Got Questions?
                 </motion.span>
-                <motion.h2 
-                  style={{ fontFamily: "'Montserrat', sans-serif" }} 
-                  className="text-3xl md:text-4xl font-heading font-bold text-black mb-3"
+                <motion.h2
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  className="text-3xl sm:text-3xl md:text-4xl font-heading font-bold text-black mb-3"
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -254,8 +254,8 @@ export default function HomePage() {
                 >
                   Frequently Asked Questions
                 </motion.h2>
-                <motion.p 
-                  style={{ fontFamily: "'Montserrat', sans-serif" }} 
+                <motion.p
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
                   className="text-base md:text-lg text-black/70 max-w-2xl mx-auto"
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -267,7 +267,7 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -282,7 +282,7 @@ export default function HomePage() {
         </section>
 
         {/* FINAL CTA */}
-        <section className="py-32 relative overflow-hidden">
+        <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
           <LightweightAuroraBackground className="absolute inset-0" />
           <div className="absolute inset-0 bg-gradient-to-b from-gold/90 via-gold to-gold-dark/90" />
 
@@ -305,10 +305,10 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-black">
+              <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-heading font-bold mb-6 text-black">
                 Join 1,247 Families Who<br />Switched This Month
               </h2>
-              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl md:text-2xl text-black/80 mb-10 max-w-2xl mx-auto">
+              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg sm:text-xl md:text-2xl text-black/80 mb-8 md:mb-10 max-w-2xl mx-auto">
                 Most people finish setup during their coffee break. ☕
               </p>
 
@@ -318,7 +318,7 @@ export default function HomePage() {
                     <Button
                       variant="primary"
                       size="lg"
-                      className="text-xl px-10 py-7 group bg-gold hover:bg-gold-light text-black shadow-2xl"
+                      className="text-lg sm:text-xl px-8 py-5 sm:px-10 sm:py-7 group bg-gold hover:bg-gold-light text-black shadow-2xl"
                     >
                       Join Waitlist
                       <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
@@ -330,7 +330,7 @@ export default function HomePage() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="text-xl px-10 py-7 border-2 border-gray-300 text-black hover:bg-gray-100 hover:text-black"
+                      className="text-lg sm:text-xl px-8 py-5 sm:px-10 sm:py-7 border-2 border-gray-300 text-black hover:bg-gray-100 hover:text-black"
                     >
                       Visit Help Center
                     </Button>

@@ -61,7 +61,7 @@ export function NotificationBell() {
       </Button>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
+        <div className="absolute -left-36 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
           <div className="p-4 border-b border-gray-200">
             <h3 className="font-semibold text-black">Notifications</h3>
           </div>
@@ -74,9 +74,8 @@ export function NotificationBell() {
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 hover:bg-gray-50 cursor-pointer ${
-                    !notification.read ? "bg-blue-50" : ""
-                  }`}
+                  className={`p-4 hover:bg-gray-50 cursor-pointer ${!notification.read ? "bg-blue-50" : ""
+                    }`}
                   onClick={() => markAsRead(notification.id)}
                 >
                   <div className="flex items-start justify-between">

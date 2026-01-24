@@ -78,7 +78,7 @@ function StepCard({
   isActive: boolean;
 }) {
   const cardRef = useRef(null);
-  
+
   const colors = {
     gold: {
       bg: "bg-gradient-to-br from-gold to-amber-500",
@@ -116,33 +116,33 @@ function StepCard({
     <motion.div
       ref={cardRef}
       initial={{ opacity: 0, y: 60, scale: 0.9 }}
-      animate={isRevealed ? { 
-        opacity: 1, 
-        y: 0, 
+      animate={isRevealed ? {
+        opacity: 1,
+        y: 0,
         scale: 1,
       } : { opacity: 0, y: 60, scale: 0.9 }}
-      transition={{ 
-        duration: 0.7, 
+      transition={{
+        duration: 0.7,
         ease: [0.25, 0.46, 0.45, 0.94],
         delay: 0.1
       }}
       className="relative"
     >
       {/* Card with enhanced styling */}
-      <motion.div 
+      <motion.div
         className={cn(
-          "relative p-7 md:p-8 rounded-2xl transition-all duration-500 bg-gradient-to-br from-white to-gray-50/80 border-2 backdrop-blur-sm overflow-hidden",
-          isActive 
-            ? `${colorScheme.border} shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)]` 
+          "relative p-5 sm:p-6 md:p-8 rounded-2xl transition-all duration-500 bg-gradient-to-br from-white to-gray-50/80 border-2 backdrop-blur-sm overflow-hidden",
+          isActive
+            ? `${colorScheme.border} shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)]`
             : "border-gray-100/80 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.12)]"
         )}
-        whileHover={{ 
+        whileHover={{
           y: -8,
           transition: { duration: 0.3, type: "spring", stiffness: 200 }
         }}
       >
         {/* Enhanced background shine effect */}
-        <motion.div 
+        <motion.div
           className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-0 group-hover:opacity-100"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: isActive ? 0.5 : 0.3 }}
@@ -166,15 +166,15 @@ function StepCard({
         )}
 
         {/* Number badge - positioned inside card, consistently on top-right */}
-        <motion.div 
+        <motion.div
           className={cn(
-            "absolute top-4 right-4 w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg text-white shadow-lg z-10",
+            "absolute top-4 right-4 w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-heading font-bold text-base md:text-lg text-white shadow-lg z-10",
             colorScheme.bg
           )}
           initial={{ scale: 0, rotate: -180 }}
           animate={isRevealed ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
-          transition={{ 
-            duration: 0.6, 
+          transition={{
+            duration: 0.6,
             delay: 0.2,
             type: "spring",
             stiffness: 200,
@@ -186,15 +186,15 @@ function StepCard({
         </motion.div>
 
         {/* Icon with animation and hover effect */}
-        <motion.div 
+        <motion.div
           className={cn(
-            "w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-[0_4px_16px_-2px_rgba(0,0,0,0.1)]",
+            "w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mb-5 shadow-[0_4px_16px_-2px_rgba(0,0,0,0.1)]",
             colorScheme.bgLight
           )}
           initial={{ scale: 0, rotate: -180 }}
           animate={isRevealed ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
           transition={{ duration: 0.5, delay: 0.3, type: "spring", stiffness: 180 }}
-          whileHover={{ 
+          whileHover={{
             scale: 1.15,
             rotate: 8,
             boxShadow: "0 8px 24px -4px rgba(0,0,0,0.15)"
@@ -206,8 +206,8 @@ function StepCard({
         {/* Content wrapper */}
         <div className="relative z-10">
           {/* Title with staggered animation */}
-          <motion.h3 
-            className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-3" 
+          <motion.h3
+            className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-gray-900 mb-2 md:mb-3"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             initial={{ opacity: 0, x: -20 }}
             animate={isRevealed ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
@@ -217,8 +217,8 @@ function StepCard({
           </motion.h3>
 
           {/* Description with staggered animation */}
-          <motion.p 
-            className="text-gray-600 leading-relaxed mb-5 text-sm md:text-base" 
+          <motion.p
+            className="text-gray-600 leading-relaxed mb-5 text-sm md:text-base"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             initial={{ opacity: 0, x: -20 }}
             animate={isRevealed ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
@@ -243,7 +243,7 @@ function StepCard({
                 className="flex items-center gap-3 text-sm text-gray-700 hover:text-gray-900 transition-colors"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                <motion.div 
+                <motion.div
                   className={cn("w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm", colorScheme.bgLight)}
                   whileHover={{ scale: 1.2 }}
                 >
@@ -260,11 +260,11 @@ function StepCard({
 }
 
 // Animated Timeline with scroll-based progression
-function AnimatedTimeline({ 
-  progress, 
+function AnimatedTimeline({
+  progress,
   activeIndex,
-  revealedSteps 
-}: { 
+  revealedSteps
+}: {
   progress: number;
   activeIndex: number;
   revealedSteps: boolean[];
@@ -273,7 +273,7 @@ function AnimatedTimeline({
     <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2">
       {/* Background track */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-200 via-gray-100 to-gray-200 rounded-full" />
-      
+
       {/* Animated progress line */}
       <motion.div
         className="absolute top-0 left-0 w-full rounded-full overflow-hidden"
@@ -281,7 +281,7 @@ function AnimatedTimeline({
       >
         {/* Main gradient line */}
         <div className="absolute inset-0 bg-gradient-to-b from-gold via-amber-400 to-gold" />
-        
+
         {/* Animated glow effect */}
         <motion.div
           className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-20 bg-gradient-to-t from-gold via-white to-transparent blur-md"
@@ -291,7 +291,7 @@ function AnimatedTimeline({
           }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         />
-        
+
         {/* Particle effects */}
         <motion.div
           className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-[0_0_15px_5px_rgba(255,184,0,0.8)]"
@@ -312,7 +312,7 @@ function AnimatedTimeline({
           "energy-blue": "from-cyan-400 to-cyan-600",
           dark: "from-gray-700 to-black"
         };
-        
+
         return (
           <motion.div
             key={index}
@@ -331,12 +331,12 @@ function AnimatedTimeline({
               } : {}}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            
+
             {/* Main node */}
             <motion.div
               className={cn(
                 "relative w-5 h-5 rounded-full border-4 transition-all duration-500",
-                isRevealed 
+                isRevealed
                   ? `bg-gradient-to-br ${colors[step.color as keyof typeof colors]} border-white shadow-[0_0_20px_rgba(255,184,0,0.5)]`
                   : "bg-white border-gray-300"
               )}
@@ -365,8 +365,8 @@ function AnimatedTimeline({
                     style={{ top: `${dot * 25}%` }}
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-                    transition={{ 
-                      delay: dot * 0.15, 
+                    transition={{
+                      delay: dot * 0.15,
                       duration: 0.8,
                       repeat: Infinity,
                       repeatDelay: 2
@@ -396,7 +396,7 @@ function MobileTimeline({ activeIndex, revealedSteps }: { activeIndex: number; r
             <motion.div
               className={cn(
                 "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500",
-                isRevealed 
+                isRevealed
                   ? "bg-gradient-to-br from-gold to-amber-500 text-white shadow-lg"
                   : "bg-gray-100 text-gray-400"
               )}
@@ -426,7 +426,7 @@ function MobileTimeline({ activeIndex, revealedSteps }: { activeIndex: number; r
 // Scroll progress indicator
 function ScrollProgressIndicator({ progress }: { progress: number }) {
   const percentage = Math.round(progress * 100);
-  
+
   return (
     <motion.div
       className="fixed bottom-8 right-8 z-50 hidden md:flex items-center gap-3"
@@ -439,7 +439,7 @@ function ScrollProgressIndicator({ progress }: { progress: number }) {
           Scroll to explore
         </span>
         <div className="w-12 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-          <motion.div 
+          <motion.div
             className="h-full bg-gradient-to-r from-gold to-amber-500 rounded-full"
             style={{ width: `${percentage}%` }}
           />
@@ -468,14 +468,14 @@ export function HowItWorksSection() {
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     // Calculate line progress (0 to 1)
     setLineProgress(Math.min(latest * 1.1, 1));
-    
+
     // Calculate which step should be active based on scroll
     // Spread the reveals across the scroll: 15%, 40%, 65%, 90%
     const thresholds = [0.15, 0.40, 0.65, 0.90];
-    
+
     const newRevealedSteps = thresholds.map((threshold) => latest >= threshold);
     setRevealedSteps(newRevealedSteps);
-    
+
     // Set active step (the most recently revealed one)
     const newActiveStep = newRevealedSteps.filter(Boolean).length - 1;
     setActiveStep(newActiveStep);
@@ -496,11 +496,11 @@ export function HowItWorksSection() {
         >
           <section
             id="how-it-works"
-            className="relative w-full py-16 md:py-20 bg-gradient-to-b from-white via-gray-50/30 to-white"
+            className="relative w-full py-12 sm:py-16 md:py-20 bg-gradient-to-b from-white via-gray-50/30 to-white"
           >
             {/* Background decorations */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <motion.div 
+              <motion.div
                 className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-gradient-to-br from-gold/10 to-amber-200/5 rounded-full blur-3xl"
                 animate={{
                   scale: [1, 1.1, 1],
@@ -508,7 +508,7 @@ export function HowItWorksSection() {
                 }}
                 transition={{ duration: 10, repeat: Infinity }}
               />
-              <motion.div 
+              <motion.div
                 className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-gradient-to-tl from-gray-200/20 to-gray-100/10 rounded-full blur-3xl"
                 animate={{
                   scale: [1.1, 1, 1.1],
@@ -526,7 +526,7 @@ export function HowItWorksSection() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="text-center mb-12 md:mb-16"
+                className="text-center mb-8 md:mb-12 lg:mb-16"
               >
                 <motion.span
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -539,13 +539,13 @@ export function HowItWorksSection() {
                   Simple Process
                 </motion.span>
 
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-5"
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 mb-3 md:mb-5"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   How It Works
                 </h2>
 
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto"
+                <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   From sign-up to savings in just 4 simple steps. No technical knowledge required.
@@ -580,14 +580,14 @@ export function HowItWorksSection() {
               {/* Steps with Timeline */}
               <div className="relative max-w-5xl mx-auto">
                 {/* Animated Timeline (desktop) */}
-                <AnimatedTimeline 
-                  progress={lineProgress} 
+                <AnimatedTimeline
+                  progress={lineProgress}
                   activeIndex={activeStep}
                   revealedSteps={revealedSteps}
                 />
 
                 {/* Step Cards */}
-                <div className="grid md:grid-cols-2 gap-8 md:gap-y-20 lg:gap-y-24">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 md:gap-y-20 lg:gap-y-24">
                   {steps.map((step, index) => (
                     <div
                       key={step.number}
@@ -610,12 +610,12 @@ export function HowItWorksSection() {
               {/* Bottom CTA - only shows when all steps revealed */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ 
-                  opacity: revealedSteps.every(Boolean) ? 1 : 0, 
-                  y: revealedSteps.every(Boolean) ? 0 : 30 
+                animate={{
+                  opacity: revealedSteps.every(Boolean) ? 1 : 0,
+                  y: revealedSteps.every(Boolean) ? 0 : 30
                 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="mt-16 md:mt-20 text-center"
+                className="mt-12 md:mt-16 lg:mt-20 text-center"
               >
                 <div className="inline-flex flex-col sm:flex-row gap-4 items-center">
                   <Link href="/waitlist">
@@ -626,7 +626,7 @@ export function HowItWorksSection() {
                       <Button
                         variant="secondary"
                         size="lg"
-                        className="relative overflow-hidden bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-black font-semibold px-10 py-7 text-lg group shadow-[0_10px_40px_-10px_rgba(255,184,0,0.4)] rounded-xl"
+                        className="relative overflow-hidden bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-black font-semibold px-8 py-5 sm:px-10 sm:py-7 text-base sm:text-lg group shadow-[0_10px_40px_-10px_rgba(255,184,0,0.4)] rounded-xl"
                         style={{ fontFamily: "'Montserrat', sans-serif" }}
                       >
                         <motion.div
@@ -645,7 +645,7 @@ export function HowItWorksSection() {
 
                   <span className="text-gray-400 font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>or</span>
 
-                  <motion.button 
+                  <motion.button
                     className="flex items-center gap-3 text-gold hover:text-amber-600 transition-colors group"
                     whileHover={{ x: 3 }}
                   >
