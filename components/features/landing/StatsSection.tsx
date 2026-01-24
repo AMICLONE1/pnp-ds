@@ -209,7 +209,7 @@ export function StatsSection() {
     <section
       id="stats-section"
       ref={ref}
-      className="relative py-14 md:py-18 overflow-hidden"
+      className="relative py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden"
       style={{ backgroundColor: "#f0f6f0" }}
     >
       {/* Background patterns */}
@@ -239,7 +239,7 @@ export function StatsSection() {
           transition={{ duration: 0.6 }}
           className="mb-12 max-w-4xl mx-auto"
         >
-          <div className="relative p-5 md:p-6 rounded-2xl bg-gradient-to-r from-forest to-forest-light overflow-hidden">
+          <div className="relative p-6 sm:p-8 md:p-10 rounded-2xl bg-gradient-to-r from-forest to-forest-light overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10">
               <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -254,7 +254,7 @@ export function StatsSection() {
 
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-white">
               <div className="text-center md:text-left">
-                <h3 className="text-xl md:text-2xl font-heading font-bold mb-2" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <h3 className="text-xl md:text-2xl lg:text-3xl font-heading font-bold mb-2" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                   Ready to be part of this community?
                 </h3>
                 <p className="text-white/80" style={{ fontFamily: "'Montserrat', sans-serif" }}>
@@ -281,7 +281,7 @@ export function StatsSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16 lg:mb-20"
         >
           <div className="flex items-center justify-center gap-4 mb-4">
             <motion.span
@@ -295,7 +295,7 @@ export function StatsSection() {
             <LiveIndicator />
           </div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-charcoal mb-4"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             Trusted by{" "}
@@ -313,7 +313,7 @@ export function StatsSection() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-6xl mx-auto">
           {stats.map((stat, index) => (
             <StatCard key={stat.label} stat={stat} index={index} />
           ))}
