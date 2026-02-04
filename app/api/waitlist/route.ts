@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
+import { sendWaitlistWelcomeEmail, sendAdminWaitlistNotification } from "@/lib/email";
 
 const waitlistSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -74,11 +75,18 @@ export async function POST(request: Request) {
       .select("*", { count: "exact", head: true })
       .lte("created_at", data.created_at);
 
+    // Send emails in background (don't block the response)
+    const position = count || 1;
+    Promise.allSettled([
+      sendWaitlistWelcomeEmail(validatedData.email, validatedData.name, position),
+      sendAdminWaitlistNotification(validatedData.email, validatedData.name, validatedData.phone, position),
+    ]).catch((err) => console.error("Email sending error:", err));
+
     return NextResponse.json({
       success: true,
       message: "You've been added to the waitlist! We'll notify you when we launch.",
       alreadyExists: false,
-      position: count || 1,
+      position,
     });
   } catch (error: unknown) {
     console.error("Waitlist API error:", error);

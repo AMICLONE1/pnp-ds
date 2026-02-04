@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { PageLoader } from "@/components/layout/PageLoader";
 
@@ -22,30 +22,41 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isNavigating, setIsNavigating] = useState(false);
   const pathname = usePathname();
+  const prevPathnameRef = useRef(pathname);
 
   // Initial page load - show briefly then hide
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 800); // 0.8 seconds - just enough for smooth transition
+    }, 1700);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Route change loading - brief transition
+  // Route change loading - use useLayoutEffect to set state synchronously before paint
+  useLayoutEffect(() => {
+    if (prevPathnameRef.current !== pathname) {
+      prevPathnameRef.current = pathname;
+      setIsNavigating(true);
+    }
+  }, [pathname]);
+
+  // Clear navigation state after delay
   useEffect(() => {
-    setIsNavigating(true);
+    if (!isNavigating) return;
     const timer = setTimeout(() => {
       setIsNavigating(false);
-    }, 500); // 0.5 seconds - quick transition between pages
+    }, 1500);
 
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [isNavigating]);
 
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
       {(isLoading || isNavigating) && <PageLoader />}
-      {children}
+      <div style={{ visibility: isLoading || isNavigating ? "hidden" : "visible" }}>
+        {children}
+      </div>
     </LoadingContext.Provider>
   );
 }

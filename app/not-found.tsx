@@ -10,7 +10,7 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 flex items-center justify-center bg-white px-4">
-        <Card className="max-w-md w-full">
+        <Card className="max-w-md mt-32 w-full">
           <CardContent className="p-8 text-center">
             <h1 className="text-6xl font-heading font-bold mb-4 text-black">
               404

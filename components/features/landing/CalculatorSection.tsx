@@ -53,18 +53,19 @@ export function CalculatorSection() {
   
   // Step 7: Calculate annual savings and ROI
   const annualSavings = monthlySavings * 12;
-  const roiYears = annualSavings > 0 ? (setupCost / annualSavings).toFixed(1) : '0';
-  
+  const roiYears = annualSavings > 0 ? parseFloat((setupCost / annualSavings).toFixed(1)) : 0;
+  const roiSavings = roiYears * annualSavings;
+
   const calculations = {
     monthlySavings: Math.round(monthlySavings * 100) / 100,
     annualSavings: Math.round(annualSavings * 100) / 100,
+    roiYears,
+    roiSavings: Math.round(roiSavings * 100) / 100,
     reservedSolarKw: Math.round(reservedSolarKw * 100) / 100,
     reservedSolarWatts: Math.round(reservedSolarWatts),
     energyProducedKwh: Math.round(energyProducedKwh * 100) / 100,
     co2OffsetTonnes: Math.round(co2OffsetTonnes * 100) / 100,
     reservationFee: setupCost,
-    setupCost: setupCost,
-    roiYears: roiYears,
   };
 
   return (
@@ -119,35 +120,35 @@ export function CalculatorSection() {
           <div className="absolute -inset-1 rounded-2xl sm:rounded-3xl opacity-30 pointer-events-none blur-xl sm:blur-2xl bg-gradient-to-r from-gold/30 via-blue-500/20 to-gold/30" />
 
           <div className="relative bg-white rounded-2xl sm:rounded-3xl border-2 border-gray-200 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] sm:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden">
+            
             {/* Top Project Header Bar */}
-            <div className="bg-gradient-to-r from-gold/10 via-gold/5 to-transparent border-b border-gray-200 px-4 sm:px-6 md:px-8 py-3 sm:py-4">
+            <div className="bg-gradient-to-r from-gold/10 via-gold/5 to-transparent border-b border-gray-200 px-4 sm:px-6 md:px-8 py-7 md:py-10">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                
                 <div className="flex items-center gap-2 sm:gap-3">
+                  
+                  {/* icon */}
                   <div className="relative flex-shrink-0">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
                       <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+                    {/* <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" /> */}
                   </div>
+
+                  {/* Solar Plant Name & Capacity (kWh) */}
                   <div className="min-w-0">
-                    <p className="text-black font-bold text-base sm:text-lg truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                    <p className="text-black font-bold text-[1.8vw] truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       {SOLAR_PROJECTS.vedvyas.name}
                     </p>
                     <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                      <span className="text-xs sm:text-sm text-gold font-semibold">{SOLAR_PROJECTS.vedvyas.totalKw} kW Capacity</span>
-                      <span className="text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-green-500/20 text-green-700 font-medium border border-green-500/30">
-                        LIVE
-                      </span>
+                      <span className="text-xs sm:text-[1vw] text-gold font-semibold">{SOLAR_PROJECTS.vedvyas.totalKw} kW Capacity</span>
                     </div>
                   </div>
                 </div>
-                <div className="text-left sm:text-right bg-white rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-200 shadow-sm self-start sm:self-auto">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-0.5" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    Credit Rate
-                  </p>
-                  <p className="text-gold font-bold text-lg sm:text-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    ₹{SOLAR_PROJECTS.vedvyas.ratePerKwh}<span className="text-xs sm:text-sm text-gray-500">/unit</span>
-                  </p>
+                <div className="rounded-full bg-amber-500/20 text-amber-700 font-medium border border-amber-500/30 text-left sm:text-right py-1.5 px-3 sm:px-4 border border-gray-200 shadow-sm self-start sm:self-auto">
+                  <span className="text-sm">
+                        Currently Not Operational (Coming Soon)
+                  </span>
                 </div>
               </div>
             </div>
@@ -155,15 +156,18 @@ export function CalculatorSection() {
             {/* Main Content - Horizontal Layout */}
             <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10 p-3 sm:p-4 md:p-6 lg:p-8">
               {/* LEFT: Input Controls */}
-              <div className="space-y-3 sm:space-y-4 md:space-y-6">
+              <div className="flex flex-col justify-between space-y-3 sm:space-y-4 md:space-y-6">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: 0.6 }}
                 >
-                  {/* Bill Input */}
                   <div>
+                    <h2 className="text-xl font-semibold">1 unit of energy generated = ₹7 discount on your power bill</h2>
+                  </div>
+                  {/* Bill Input */}
+                  <div className="mt-10">
                     <label
                       className="text-[11px] sm:text-xs md:text-sm text-gray-600 font-semibold mb-1.5 sm:mb-2 md:mb-3 flex items-center gap-1 sm:gap-1.5 md:gap-2"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -220,31 +224,10 @@ export function CalculatorSection() {
                       />
                       <div className="pr-2 sm:pr-3 md:pr-6 text-gray-400 text-[10px] sm:text-xs md:text-sm font-medium flex-shrink-0 whitespace-nowrap">/month</div>
                     </div>
-
-                    {/* Quick presets */}
-                    <div className="flex gap-1 sm:gap-1.5 md:gap-2 mt-1.5 sm:mt-2 md:mt-3">
-                      {[1000, 2500, 5000, 10000].map((preset) => (
-                        <button
-                          key={preset}
-                          onClick={() => {
-                            setAvgBill(preset);
-                            setBillInput(preset.toString());
-                          }}
-                          className={cn(
-                            "flex-1 py-1.5 sm:py-2 md:py-2.5 px-1.5 sm:px-2 md:px-3 text-[10px] sm:text-xs md:text-sm font-semibold rounded-md sm:rounded-lg md:rounded-xl transition-all whitespace-nowrap",
-                            avgBill === preset
-                              ? "bg-gold text-black shadow-md scale-105"
-                              : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
-                          )}
-                          style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        >
-                          ₹{(preset / 1000)}k
-                        </button>
-                      ))}
-                    </div>
                   </div>
                 </motion.div>
-
+                
+                
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -252,209 +235,112 @@ export function CalculatorSection() {
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
                   {/* Savings Slider */}
-                  <div>
-                    <div className="flex justify-between items-center mb-2 sm:mb-3 gap-2">
-                      <label
-                        className="text-[11px] sm:text-xs md:text-sm text-gray-600 font-semibold flex items-center gap-1 sm:gap-1.5 md:gap-2 flex-shrink-0"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gold flex-shrink-0" />
-                        <span className="whitespace-nowrap">Target Savings</span>
-                      </label>
-                      <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 bg-gold/10 rounded-full px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 border border-gold/20 flex-shrink-0">
-                        <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-gold flex-shrink-0" />
-                        <span className="text-black font-bold text-sm sm:text-base md:text-lg whitespace-nowrap" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                          {savingsPercent}%
-                        </span>
-                      </div>
-                    </div>
-                    <div className="relative py-4 sm:py-6 md:py-8">
-                      {/* Enhanced Track background with gradient and glow */}
-                      <div className="absolute top-1/2 left-0 right-0 h-2.5 sm:h-3 md:h-4 -translate-y-1/2 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-full overflow-visible z-[5] shadow-inner">
-                        {/* Animated gradient fill */}
-                        <motion.div
-                          className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 via-amber-400 to-gold rounded-full relative overflow-hidden"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
-                          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                        >
-                          {/* Shimmer effect */}
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                            animate={{ x: ["-100%", "200%"] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                          />
-                          {/* Glow effect */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/50 via-blue-500/50 to-gold/50 blur-sm -z-10" />
-                        </motion.div>
-                      </div>
+                  <div className="flex flex-col">
+                    <div className="flex flex-col">
 
-                      {/* Value indicator above thumb */}
-                      <motion.div
-                        className="absolute top-0 -translate-x-1/2 -translate-y-full mb-2 z-20 pointer-events-none hidden sm:block"
-                        style={{
-                          left: `${((savingsPercent - 10) / 90) * 100}%`,
-                        }}
-                        initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        key={savingsPercent}
-                      >
-                        <div className="bg-gradient-to-br from-gold via-amber-500 to-gold text-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-xl border-2 border-gold/30 backdrop-blur-sm whitespace-nowrap">
-                          <span className="text-xs sm:text-sm font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                      <div className="flex justify-start items-center  gap-2">
+                        <label
+                          className="text-[11px] sm:text-xs md:text-lg text-gray-600 font-semibold flex items-center gap-1 sm:gap-1.5 md:gap-2 flex-shrink-0"
+                          style={{ fontFamily: "'Montserrat', sans-serif" }}
+                        >
+                          
+                          <span className="whitespace-nowrap">Choose Savings Range</span>
+                          <span className="text-black font-bold text-sm sm:text-base md:text-lg whitespace-nowrap" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                            (%)
+                          </span>
+                        </label>
+                      </div>
+                      <div className="relative">
+                        {/* Track background */}
+                        <div className="absolute top-1/2 left-0 right-0 h-2 sm:h-2.5 md:h-3 -translate-y-1/2 bg-gray-300 rounded-full overflow-visible z-[5]">
+                          {/* Filled portion */}
+                          <motion.div
+                            className="h-full bg-gold rounded-full"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${((savingsPercent - 10) / 90) * 100}%` }}
+                            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                          />
+                        </div>
+
+                        {/* Range input */}
+                        <input
+                          type="range"
+                          min="10"
+                          max="100"
+                          step="5"
+                          value={savingsPercent}
+                          onChange={(e) => setSavingsPercent(Number(e.target.value))}
+                          className="absolute top-8 w-full bg-transparent rounded-full appearance-none cursor-pointer z-[15]
+                                    [&::-webkit-slider-runnable-track]:h-3
+                                    [&::-webkit-slider-runnable-track]:bg-transparent
+                                    [&::-webkit-slider-runnable-track]:rounded-full
+                                    [&::-webkit-slider-thumb]:appearance-none
+                                    [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
+                                    [&::-webkit-slider-thumb]:sm:w-6 [&::-webkit-slider-thumb]:sm:h-6
+                                    [&::-webkit-slider-thumb]:rounded-full
+                                    [&::-webkit-slider-thumb]:bg-gold
+                                    [&::-webkit-slider-thumb]:border-[3px]
+                                    [&::-webkit-slider-thumb]:border-gold
+                                    [&::-webkit-slider-thumb]:shadow-md
+                                    [&::-webkit-slider-thumb]:cursor-pointer
+                                    [&::-webkit-slider-thumb]:transition-transform
+                                    [&::-webkit-slider-thumb]:duration-200
+                                    [&::-webkit-slider-thumb]:hover:scale-110
+                                    [&::-moz-range-track]:h-3
+                                    [&::-moz-range-track]:bg-transparent
+                                    [&::-moz-range-track]:border-none
+                                    [&::-moz-range-track]:rounded-full
+                                    [&::-moz-range-thumb]:appearance-none
+                                    [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5
+                                    [&::-moz-range-thumb]:rounded-full
+                                    [&::-moz-range-thumb]:bg-gold
+                                    [&::-moz-range-thumb]:border-[3px]
+                                    [&::-moz-range-thumb]:border-gold
+                                    [&::-moz-range-thumb]:cursor-pointer
+                                    [&::-moz-range-thumb]:shadow-md"
+                          style={{
+                            background: 'transparent',
+                            height: '12px',
+                            margin: 0,
+                            padding: 0,
+                          }}
+                        />
+
+                        {/* Percentage label below */}
+                        <div className="flex justify-center mt-6">
+                          <span className="text-sm sm:text-base md:text-lg font-bold text-gold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                             {savingsPercent}%
                           </span>
                         </div>
-                        {/* Arrow pointing down */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] sm:border-l-[6px] border-r-[5px] sm:border-r-[6px] border-t-[5px] sm:border-t-[6px] border-transparent border-t-gold" />
-                      </motion.div>
-
-                      {/* Range input - Thumb on top */}
-                      <input
-                        type="range"
-                        min="10"
-                        max="100"
-                        step="5"
-                        value={savingsPercent}
-                        onChange={(e) => setSavingsPercent(Number(e.target.value))}
-                        className="relative w-full bg-transparent rounded-full appearance-none cursor-pointer z-[15] slider-thumb-centered
-                                   [&::-webkit-slider-runnable-track]:h-4
-                                   [&::-webkit-slider-runnable-track]:bg-transparent
-                                   [&::-webkit-slider-runnable-track]:rounded-full
-                                   [&::-webkit-slider-thumb]:appearance-none 
-                                   [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-12
-                                   [&::-webkit-slider-thumb]:rounded-lg 
-                                   [&::-webkit-slider-thumb]:bg-gradient-to-br
-                                   [&::-webkit-slider-thumb]:from-white
-                                   [&::-webkit-slider-thumb]:via-white
-                                   [&::-webkit-slider-thumb]:to-gray-50
-                                   [&::-webkit-slider-thumb]:shadow-2xl 
-                                   [&::-webkit-slider-thumb]:shadow-gold/50
-                                   [&::-webkit-slider-thumb]:border-[3px] 
-                                   [&::-webkit-slider-thumb]:border-gold
-                                   [&::-webkit-slider-thumb]:cursor-pointer 
-                                   [&::-webkit-slider-thumb]:transition-all
-                                   [&::-webkit-slider-thumb]:duration-300
-                                   [&::-webkit-slider-thumb]:hover:scale-125
-                                   [&::-webkit-slider-thumb]:hover:shadow-3xl
-                                   [&::-webkit-slider-thumb]:hover:shadow-gold/70
-                                   [&::-webkit-slider-thumb]:hover:border-gold
-                                   [&::-webkit-slider-thumb]:active:scale-110
-                                   [&::-moz-range-track]:h-4
-                                   [&::-moz-range-track]:bg-transparent
-                                   [&::-moz-range-track]:border-none
-                                   [&::-moz-range-track]:rounded-full
-                                   [&::-moz-range-thumb]:appearance-none
-                                   [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-12
-                                   [&::-moz-range-thumb]:rounded-lg
-                                   [&::-moz-range-thumb]:bg-gradient-to-br
-                                   [&::-moz-range-thumb]:from-white
-                                   [&::-moz-range-thumb]:via-white
-                                   [&::-moz-range-thumb]:to-gray-50
-                                   [&::-moz-range-thumb]:border-[3px]
-                                   [&::-moz-range-thumb]:border-gold
-                                   [&::-moz-range-thumb]:cursor-pointer
-                                   [&::-moz-range-thumb]:shadow-2xl
-                                   [&::-moz-range-thumb]:shadow-gold/50
-                                   [&::-moz-range-thumb]:transition-all
-                                   [&::-moz-range-thumb]:duration-300
-                                   [&::-moz-range-thumb]:hover:scale-125
-                                   [&::-moz-range-thumb]:hover:shadow-3xl
-                                   [&::-moz-range-thumb]:hover:shadow-gold/70
-                                   [&::-ms-track]:h-4
-                                   [&::-ms-track]:bg-transparent
-                                   [&::-ms-track]:border-none
-                                   [&::-ms-track]:rounded-full
-                                   [&::-ms-thumb]:appearance-none
-                                   [&::-ms-thumb]:w-5 [&::-ms-thumb]:h-12
-                                   [&::-ms-thumb]:rounded-lg
-                                   [&::-ms-thumb]:bg-gradient-to-br
-                                   [&::-ms-thumb]:from-white
-                                   [&::-ms-thumb]:via-white
-                                   [&::-ms-thumb]:to-gray-50
-                                   [&::-ms-thumb]:border-[3px]
-                                   [&::-ms-thumb]:border-gold
-                                   [&::-ms-thumb]:cursor-pointer
-                                   [&::-ms-thumb]:shadow-2xl
-                                   [&::-ms-thumb]:shadow-gold/50"
-                        style={{
-                          background: 'transparent',
-                          height: '48px',
-                          margin: 0,
-                          padding: 0,
-                        }}
-                      />
-
-                      {/* Enhanced Tick marks with indicators */}
-                      <div className="flex justify-between mt-4 sm:mt-6 md:mt-8 px-0 relative">
-                        {[10, 25, 50, 75, 100].map((tick) => {
-                          const isActive = savingsPercent >= tick;
-                          const isCurrent = Math.abs(savingsPercent - tick) < 5;
-                          return (
-                            <div key={tick} className="flex flex-col items-center gap-0.5 sm:gap-1 md:gap-1.5">
-                              {/* Tick mark indicator */}
-                              <motion.div
-                                className={cn(
-                                  "w-0.5 sm:w-1 md:w-1.5 h-2 sm:h-3 md:h-4 rounded-full transition-all duration-300",
-                                  isActive
-                                    ? "bg-gradient-to-b from-gold to-amber-500 shadow-md shadow-gold/30"
-                                    : "bg-gray-300"
-                                )}
-                                animate={isCurrent ? { scaleY: [1, 1.3, 1] } : {}}
-                                transition={{ duration: 0.3 }}
-                              />
-                              {/* Percentage label */}
-                              <motion.span
-                                className={cn(
-                                  "text-[8px] sm:text-[10px] md:text-xs font-bold transition-all duration-300",
-                                  isActive
-                                    ? "text-gold"
-                                    : "text-gray-400"
-                                )}
-                                animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
-                                transition={{ duration: 0.3 }}
-                                style={{ fontFamily: "'Montserrat', sans-serif" }}
-                              >
-                                {tick}%
-                              </motion.span>
-                            </div>
-                          );
-                        })}
                       </div>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Stats Grid - Compact */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                  className="grid grid-cols-3 gap-1.5 sm:gap-2 md:gap-3"
-                >
-                  <div className="p-2 sm:p-2.5 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-center">
-                    <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-amber-600 mx-auto mb-0.5 sm:mb-1 md:mb-2" />
-                    <p className="text-black font-bold text-xs sm:text-sm md:text-lg leading-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                      {(calculations.reservedSolarWatts / 1000).toFixed(1)}kW
-                    </p>
-                    <p className="text-gray-600 text-[9px] sm:text-[10px] md:text-xs font-medium">Solar</p>
+                {/* Digital Solar Features - hidden on small screens, shown on lg+ in left column */}
+                <div className="hidden lg:flex flex-row gap-2 sm:gap-3 md:gap-4 mt-2">
+                  <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-amber-50 border border-amber-200 flex-1">
+                    <CircleDollarSign className="w-5 h-5 text-gold flex-shrink-0" />
+                    <div>
+                      <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Lower Bills</p>
+                      <p className="text-gray-500 text-[9px] sm:text-[10px]">Save up to 100% on electricity</p>
+                    </div>
                   </div>
-                  <div className="p-2 sm:p-2.5 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 text-center">
-                    <Bolt className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-blue-600 mx-auto mb-0.5 sm:mb-1 md:mb-2" />
-                    <p className="text-black font-bold text-xs sm:text-sm md:text-lg leading-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                      {calculations.energyProducedKwh.toFixed(0)}
-                    </p>
-                    <p className="text-gray-600 text-[9px] sm:text-[10px] md:text-xs font-medium">kWh/mo</p>
+                  <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-green-50 border border-green-200 flex-1">
+                    <Leaf className="w-5 h-5 text-green-600 flex-shrink-0" />
+                    <div>
+                      <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Eco-Friendly</p>
+                      <p className="text-gray-500 text-[9px] sm:text-[10px]">100% clean & sustainable energy</p>
+                    </div>
                   </div>
-                  <div className="p-2 sm:p-2.5 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 text-center">
-                    <Leaf className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-green-600 mx-auto mb-0.5 sm:mb-1 md:mb-2" />
-                    <p className="text-black font-bold text-xs sm:text-sm md:text-lg leading-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                      {calculations.co2OffsetTonnes.toFixed(1)}T
-                    </p>
-                    <p className="text-gray-600 text-[9px] sm:text-[10px] md:text-xs font-medium">CO₂/yr</p>
+                  <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-blue-50 border border-blue-200 flex-1">
+                    <TrendingUp className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <div>
+                      <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Real-time Monitoring</p>
+                      <p className="text-gray-500 text-[9px] sm:text-[10px]">Track your generation live</p>
+                    </div>
                   </div>
-                </motion.div>
+                </div>
               </div>
 
               {/* RIGHT: Results & CTA */}
@@ -466,81 +352,123 @@ export function CalculatorSection() {
                   transition={{ delay: 0.3, duration: 0.6 }}
                   className="space-y-2 sm:space-y-3 md:space-y-4"
                 >
-                  {/* Main Savings Display */}
-                  <div className="p-3 sm:p-4 md:p-6 lg:p-8 rounded-lg sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-gold/10 via-amber-50/50 to-gold/5 border-2 border-gold/30 shadow-lg">
+                  {/* Your Monthly Savings */}
+                  <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-gold/10 via-amber-50/50 to-gold/5 border-2 border-gold/30 shadow-lg">
                     <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mb-1.5 sm:mb-2 md:mb-3">
                       <Zap className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gold flex-shrink-0" />
                       <span className="text-gray-700 text-[10px] sm:text-xs md:text-sm font-semibold uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                        Monthly Savings
+                        Your monthly savings
                       </span>
                     </div>
-                    <div className="flex items-baseline gap-1 sm:gap-2 md:gap-3 mb-1 sm:mb-1.5 md:mb-2">
-                      <motion.span
-                        key={calculations.monthlySavings}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold bg-gradient-to-r from-gold via-amber-500 to-gold bg-clip-text text-transparent"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        {formatCurrency(calculations.monthlySavings)}
-                      </motion.span>
-                    </div>
-                    <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 text-gray-700">
-                      <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0" />
-                      <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                        {formatCurrency(calculations.annualSavings)}/year
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Investment Details */}
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2 md:gap-4">
-                    <div className="p-2 sm:p-3 md:p-5 rounded-md sm:rounded-lg md:rounded-xl bg-white border border-gray-200 shadow-sm">
-                      <p className="text-gray-500 text-[9px] sm:text-[10px] md:text-xs font-medium mb-0.5 uppercase tracking-wide">One-time Fee</p>
-                      <p className="text-black font-bold text-sm sm:text-lg md:text-xl lg:text-2xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                        {formatCurrency(calculations.reservationFee)}
-                      </p>
-                    </div>
-                    <div className="p-2 sm:p-3 md:p-5 rounded-md sm:rounded-lg md:rounded-xl bg-white border border-gray-200 shadow-sm">
-                      <p className="text-gray-500 text-[9px] sm:text-[10px] md:text-xs font-medium mb-0.5 uppercase tracking-wide">Payback Period</p>
-                      <p className="text-black font-bold text-sm sm:text-lg md:text-xl lg:text-2xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                        {calculations.roiYears} years
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* CTA Button */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                >
-                  <Link href={`/reserve?capacity=${calculations.reservedSolarKw}&project=vedvyas`} className="block">
-                    <motion.button
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full py-2.5 sm:py-3.5 md:py-4 lg:py-5 px-3 sm:px-4 md:px-6 bg-gradient-to-r from-gold to-amber-500 text-black font-bold text-sm sm:text-base md:text-lg rounded-lg sm:rounded-xl md:rounded-2xl
-                                 shadow-[0_10px_30px_-5px_rgba(255,184,0,0.4)] hover:shadow-[0_15px_40px_-5px_rgba(255,184,0,0.5)]
-                                 flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 group transition-all duration-300"
+                    <motion.span
+                      key={calculations.monthlySavings}
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                      className="block text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold bg-gradient-to-r from-gold via-amber-500 to-gold bg-clip-text text-transparent"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
-                      <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:rotate-12 transition-transform flex-shrink-0" />
-                      <span className="whitespace-nowrap">Get Started Free</span>
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" />
-                    </motion.button>
-                  </Link>
-                  <p className="text-center text-gray-500 text-[9px] sm:text-[10px] md:text-xs mt-1.5 sm:mt-2 md:mt-3" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    No installation required • Start saving in 5 mins
-                  </p>
+                      {formatCurrency(calculations.monthlySavings)}
+                    </motion.span>
+                  </div>
+
+                  {/* Reserved Solar | Energy Produced */}
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2 md:gap-3">
+                    <div className="p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-white border border-gray-200 shadow-sm">
+                      <p className="text-gray-500 text-[9px] sm:text-[10px] md:text-xs font-medium mb-0.5 uppercase tracking-wide">Reserved Solar</p>
+                      <p className="text-black font-bold text-sm sm:text-lg md:text-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                        {calculations.reservedSolarWatts} W
+                      </p>
+                    </div>
+                    <div className="p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-white border border-gray-200 shadow-sm">
+                      <p className="text-gray-500 text-[9px] sm:text-[10px] md:text-xs font-medium mb-0.5 uppercase tracking-wide">Energy Produced /Mo</p>
+                      <p className="text-black font-bold text-sm sm:text-lg md:text-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                        {calculations.energyProducedKwh.toFixed(2)} kWh
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Annual Savings | ROI Years Savings */}
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2 md:gap-3">
+                    <div className="p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-white border border-gray-200 shadow-sm">
+                      <p className="text-gray-500 text-[9px] sm:text-[10px] md:text-xs font-medium mb-0.5 uppercase tracking-wide">Annual Savings</p>
+                      <p className="text-black font-bold text-sm sm:text-lg md:text-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                        {formatCurrency(calculations.annualSavings)}
+                      </p>
+                    </div>
+                    <div className="p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg md:rounded-xl bg-white border border-gray-200 shadow-sm">
+                      <p className="text-gray-500 text-[9px] sm:text-[10px] md:text-xs font-medium mb-0.5 uppercase tracking-wide">15 Years Savings</p>
+                      <p className="text-black font-bold text-sm sm:text-lg md:text-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                        {formatCurrency(calculations.roiSavings)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* One-time Reservation Fee */}
+                  <div className="w-full p-3 sm:p-4 md:p-5 rounded-lg sm:rounded-xl md:rounded-2xl bg-gradient-to-r from-gold/10 to-amber-50 border-2 border-gold/30 shadow-sm flex flex-col items-center justify-between">
+                    <div className="w-full flex items-center justify-between">
+                        <p className="text-black font-bold text-sm sm:text-base md:text-[1.5vw]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                          One-time Reservation Fee
+                        </p>
+                        <p className="text-gold font-bold text-lg sm:text-xl md:text-[1.8vw]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                          {formatCurrency(calculations.reservationFee)}
+                        </p>
+                    </div>
+
+                    {/* CTA Button */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5, duration: 0.6 }}
+                      className="w-full mt-8"
+                    >
+                      <Link href={`/reserve?capacity=${calculations.reservedSolarKw}&project=vedvyas`} className="block">
+                        <motion.button
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full py-2.5 sm:py-3.5 md:py-4 lg:py-3 bg-gradient-to-r from-gold to-amber-500 text-black font-bold text-sm sm:text-base md:text-lg md:rounded-full
+                                      shadow-[0_10px_30px_-5px_rgba(255,184,0,0.4)] hover:shadow-[0_15px_40px_-5px_rgba(255,184,0,0.5)]
+                                      flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 group transition-all duration-300"
+                          style={{ fontFamily: "'Montserrat', sans-serif" }}
+                        >
+                          <span className="whitespace-nowrap">Get Started</span>
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                        </motion.button>
+                      </Link>
+                    </motion.div>
+                  </div>
                 </motion.div>
+              </div>
+            </div>
+
+            {/* Digital Solar Features - shown on small screens only, after results */}
+            <div className="flex lg:hidden flex-col sm:flex-row gap-2 sm:gap-3 p-3 sm:p-4 pt-3">
+              <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-amber-50 border border-amber-200 flex-1">
+                <CircleDollarSign className="w-5 h-5 text-gold flex-shrink-0" />
+                <div>
+                  <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Lower Bills</p>
+                  <p className="text-gray-500 text-[9px] sm:text-[10px]">Save up to 100% on electricity</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-green-50 border border-green-200 flex-1">
+                <Leaf className="w-5 h-5 text-green-600 flex-shrink-0" />
+                <div>
+                  <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Eco-Friendly</p>
+                  <p className="text-gray-500 text-[9px] sm:text-[10px]">100% clean & sustainable energy</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-blue-50 border border-blue-200 flex-1">
+                <TrendingUp className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                <div>
+                  <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Real-time Monitoring</p>
+                  <p className="text-gray-500 text-[9px] sm:text-[10px]">Track your generation live</p>
+                </div>
               </div>
             </div>
           </div>
         </motion.div>
-      </div>
+      </div>  
     </section>
   );
 }
