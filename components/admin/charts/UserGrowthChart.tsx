@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  TooltipItem,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -62,8 +63,9 @@ export function UserGrowthChart({ data }: UserGrowthChartProps) {
         padding: 12,
         borderRadius: 8,
         callbacks: {
-          label: (context: { parsed: { y: number } }) => {
-            return `${context.parsed.y.toLocaleString()} users`;
+          label: (context: TooltipItem<"line">) => {
+            const value = context.parsed.y ?? 0;
+            return `${value.toLocaleString()} users`;
           },
         },
       },

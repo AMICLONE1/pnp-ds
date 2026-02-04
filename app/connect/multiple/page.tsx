@@ -53,6 +53,7 @@ export default function MultipleUtilitiesPage() {
 
   useEffect(() => {
     fetchUtilities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchUtilities = async () => {
