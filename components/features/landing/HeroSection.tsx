@@ -304,6 +304,7 @@ export function HeroSection() {
               >
                 Stop Paying
               </motion.span>
+              {/* hello */}
               <motion.span
                 initial={{ y: 60, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
