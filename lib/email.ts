@@ -1,17 +1,31 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid build-time errors when RESEND_API_KEY is not set
+let resendClient: Resend | null = null;
+
+function getResendClient(): Resend | null {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY is not set. Email sending is disabled.");
+    return null;
+  }
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
 
 // Free tier: only sends to your Resend account email via onboarding@resend.dev
 // To send to any user: verify your domain in Resend dashboard and change to e.g. "PNP Digital Solar <hello@yourdomain.com>"
 const FROM_EMAIL = "PNP Digital Solar <onboarding@resend.dev>";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "jenilreshamiya7@gmail.com";
 
 export async function sendWaitlistWelcomeEmail(
   email: string,
   name?: string | null,
   position?: number | null
 ) {
+  const resend = getResendClient();
+  if (!resend) return null;
+
   const displayName = name || "there";
 
   return resend.emails.send({
@@ -56,11 +70,14 @@ export async function sendAdminWaitlistNotification(
   phone?: string | null,
   position?: number | null
 ) {
-  if (!ADMIN_EMAIL) return;
+  const resend = getResendClient();
+  const adminEmail = process.env.ADMIN_EMAIL;
+
+  if (!resend || !adminEmail) return null;
 
   return resend.emails.send({
     from: FROM_EMAIL,
-    to: ADMIN_EMAIL,
+    to: adminEmail,
     subject: `New Waitlist Signup: ${email}`,
     html: `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
