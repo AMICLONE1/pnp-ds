@@ -42,6 +42,28 @@ export default function SettingsPage() {
 
   const [activeSection, setActiveSection] = useState("profile");
 
+  // Update active section based on scroll position
+  useEffect(() => {
+    const sectionIds = ["profile", "notifications", "security"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px" }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [loading]);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -126,7 +148,9 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      
       <Header />
+      
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         <div className="max-w-5xl mx-auto">
           {/* Enhanced Page Header */}
@@ -468,33 +492,24 @@ export default function SettingsPage() {
                               )}
                             </div>
                           </div>
-                          <label className="relative inline-flex items-center cursor-pointer ml-4">
-                            <input
-                              type="checkbox"
-                              checked={formData.email_notifications}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  email_notifications: e.target.checked,
-                                })
-                              }
-                              className="sr-only peer"
-                            />
-                            <div className={`w-7 h-7 border-2 rounded-full transition-all relative shadow-md ${
+                          <div
+                            role="switch"
+                            aria-checked={formData.email_notifications}
+                            tabIndex={0}
+                            onClick={() => setFormData({ ...formData, email_notifications: !formData.email_notifications })}
+                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setFormData({ ...formData, email_notifications: !formData.email_notifications }); } }}
+                            className={`ml-4 w-12 h-7 rounded-full transition-all duration-300 relative shadow-inner cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold/50 ${
                               formData.email_notifications
-                                ? "border-gold bg-gradient-to-br from-gold to-amber-500"
-                                : "border-gray-300 bg-white"
-                            } peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold/20`}>
-                              {formData.email_notifications && (
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-sm"
-                                />
-                              )}
-                            </div>
-                          </label>
+                                ? "bg-gradient-to-r from-gold to-amber-500"
+                                : "bg-gray-300"
+                            }`}
+                          >
+                            <motion.div
+                              className="absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md pointer-events-none"
+                              animate={{ left: formData.email_notifications ? "calc(100% - 1.625rem)" : "0.125rem" }}
+                              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                            />
+                          </div>
                         </div>
                       </motion.div>
                       
@@ -553,33 +568,24 @@ export default function SettingsPage() {
                               )}
                             </div>
                           </div>
-                          <label className="relative inline-flex items-center cursor-pointer ml-4">
-                            <input
-                              type="checkbox"
-                              checked={formData.sms_notifications}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  sms_notifications: e.target.checked,
-                                })
-                              }
-                              className="sr-only peer"
-                            />
-                            <div className={`w-7 h-7 border-2 rounded-full transition-all relative shadow-md ${
+                          <div
+                            role="switch"
+                            aria-checked={formData.sms_notifications}
+                            tabIndex={0}
+                            onClick={() => setFormData({ ...formData, sms_notifications: !formData.sms_notifications })}
+                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setFormData({ ...formData, sms_notifications: !formData.sms_notifications }); } }}
+                            className={`ml-4 w-12 h-7 rounded-full transition-all duration-300 relative shadow-inner cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold/50 ${
                               formData.sms_notifications
-                                ? "border-gold bg-gradient-to-br from-gold to-amber-500"
-                                : "border-gray-300 bg-white"
-                            } peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold/20`}>
-                              {formData.sms_notifications && (
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-sm"
-                                />
-                              )}
-                            </div>
-                          </label>
+                                ? "bg-gradient-to-r from-gold to-amber-500"
+                                : "bg-gray-300"
+                            }`}
+                          >
+                            <motion.div
+                              className="absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md pointer-events-none"
+                              animate={{ left: formData.sms_notifications ? "calc(100% - 1.625rem)" : "0.125rem" }}
+                              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                            />
+                          </div>
                         </div>
                       </motion.div>
 

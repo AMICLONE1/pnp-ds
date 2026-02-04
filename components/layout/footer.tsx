@@ -19,12 +19,12 @@ const footerLinks = {
     { label: "Help Center", href: "/help" },
     { label: "Contact", href: "/contact" },
     { label: "Refund Policy", href: "/refund" },
-    { label: "Careers", href: "/careers", badge: "Hiring" },
+    // { label: "Careers", href: "/careers", badge: "Hiring" },
   ],
   resources: [
-    { label: "Solar Calculator", href: "/reserve" },
+    { label: "Solar Calculator", href: "/#calculator" },
     { label: "FAQ", href: "/help#faq" },
-    { label: "Blog", href: "/blog" },
+    // { label: "Blog", href: "/blog" },
     { label: "Utility Partners", href: "/#utilities" },
   ],
   legal: [
@@ -204,11 +204,11 @@ export function Footer() {
                     className="text-gray-600 hover:text-black transition-colors text-sm inline-flex items-center gap-2 group"
                   >
                     {link.label}
-                    {link.badge && (
+                    {/* {link.badge && (
                       <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="px-1.5 py-0.5 text-[10px] font-semibold bg-gold/20 text-gold rounded">
                         {link.badge}
                       </span>
-                    )}
+                    )} */}
                     <ArrowUpRight style={{ fontFamily: "'Montserrat', sans-serif" }} className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </Link>
                 </li>

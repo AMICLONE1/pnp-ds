@@ -1,6 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
@@ -31,9 +29,7 @@ import { ProblemSolution } from "@/components/features/landing/ProblemSolution";
 import { StickyCTA } from "@/components/features/landing/StickyCTA";
 import {
   FAQAccordion,
-  TestimonialCarousel,
   ScrollFade,
-  CardTilt,
   MagneticButton,
   FloatingElement,
   LightweightAuroraBackground,
@@ -69,7 +65,9 @@ export default function HomePage() {
         <HeroSection />
 
         {/* CALCULATOR SECTION - Interactive Wide Calculator */}
-        <CalculatorSection />
+        <section id="calculator">
+          <CalculatorSection  />
+        </section>
 
         {/* STATS SECTION - New Animated Stats */}
         <StatsSection />
@@ -84,10 +82,10 @@ export default function HomePage() {
         <ProblemSolution />
 
         {/* TESTIMONIALS */}
-        <Testimonials />
+        {/* <Testimonials /> */}
 
         {/* UTILITY COMPATIBILITY */}
-        <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-white via-white to-white relative">
+        <section id="utilities" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-white via-white to-white relative">
           <div className="container mx-auto px-4">
             <ScrollFade direction="up">
               <UtilityCompatibilityChecker />
@@ -150,7 +148,7 @@ export default function HomePage() {
 
                 {/* Cards Grid */}
                 <motion.div
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+                  className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-8"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -158,7 +156,7 @@ export default function HomePage() {
                 >
                   {[
                     { icon: CheckCircle, title: "Regulatory Compliant", desc: "MERC/CERC aligned" },
-                    { icon: Shield, title: "ISO 27001 Ready", desc: "Security certified" },
+                    // { icon: Shield, title: "ISO 27001 Ready", desc: "Security certified" },
                     { icon: Award, title: "Make in India", desc: "Proudly Indian" },
                     { icon: Users, title: "Startup India", desc: "Recognized startup" },
                   ].map((item, index) => (

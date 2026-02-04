@@ -1,5 +1,4 @@
 "use client";
-
 import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, memo, useCallback } from "react";
 import Link from "next/link";
@@ -13,7 +12,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SOLAR_CONSTANTS, calculateSetupCost, SOLAR_PROJECTS, SOLAR_PROJECTS_LIST } from "@/lib/solar-constants";
 import React from "react";
 
 // Stats data
@@ -156,9 +154,6 @@ function AnimatedCheckList({ items, delay = 0 }: { items: string[]; delay?: numb
   );
 }
 
-
-
-
 // Mouse follower spotlight
 function MouseSpotlight() {
   const [mounted, setMounted] = useState(false);
@@ -299,6 +294,14 @@ export function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="text-black"
               >
+                What if your electricity bill was ₹0 ? 
+              </motion.span>
+              <motion.span
+                initial={{ y: 60, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="text-black"
+              >
                 Stop Paying
               </motion.span>
               <motion.span
@@ -332,7 +335,7 @@ export function HeroSection() {
               <span className="block sm:inline">No Roof Required. No Installation.</span>
             </motion.p>
 
-            <motion.p
+            {/* <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
@@ -344,7 +347,7 @@ export function HeroSection() {
                 ₹<NumberTicker value={24000} className="text-gold font-bold" />
               </span>{" "}
               per year with Digital Solar.
-            </motion.p>
+            </motion.p> */}
 
             {/* Animated Benefits Checklist */}
             <motion.div
@@ -356,16 +359,16 @@ export function HeroSection() {
             >
               <AnimatedCheckList
                 items={[
-                  "No rooftop required",
+                  "Upto 100% Savings",
                   "Zero maintenance costs",
-                  "Upto 75% savings"
+                  "Better Credit Rate"
                 ]}
                 delay={1.5}
               />
             </motion.div>
 
             {/* Stats with Gradient Border */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.8 }}
@@ -379,7 +382,7 @@ export function HeroSection() {
                   delay={1.9 + index * 0.1}
                 />
               ))}
-            </motion.div>
+            </motion.div> */}
 
             {/* CTAs with Magnetic Effect */}
             <motion.div
