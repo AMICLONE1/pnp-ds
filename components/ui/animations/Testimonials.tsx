@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Play, Star } from "lucide-react";
+import Image from "next/image";
 
 interface Testimonial {
   id?: string;
@@ -137,9 +138,11 @@ export function TestimonialCarousel({
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
                 {current.avatar ? (
-                  <img
+                  <Image
                     src={current.avatar}
                     alt={current.author}
+                    width={56}
+                    height={56}
                     className="w-14 h-14 rounded-full object-cover border-2 border-gold/30"
                   />
                 ) : (
@@ -258,9 +261,10 @@ export function LogoMarquee({ logos, className = "", speed = 30 }: LogoMarqueePr
             key={index}
             className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
           >
-            <img 
-              src={logo.src} 
-              alt={logo.alt} 
+{/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logo.src}
+              alt={logo.alt}
               className="h-10 md:h-12 w-auto object-contain"
               loading="lazy"
             />

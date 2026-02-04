@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
@@ -54,8 +55,9 @@ export function GenerationChart({ data }: GenerationChartProps) {
         padding: 12,
         borderRadius: 8,
         callbacks: {
-          label: (context: { parsed: { y: number } }) => {
-            return `${context.parsed.y.toLocaleString()} kWh`;
+          label: (context: TooltipItem<"bar">) => {
+            const value = context.parsed.y ?? 0;
+            return `${value.toLocaleString()} kWh`;
           },
         },
       },
