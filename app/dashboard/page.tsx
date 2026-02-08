@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/layout/header";
@@ -28,7 +29,6 @@ import StatCard from "@/components/dashboard/StatCard";
 import QuickActionButton from "@/components/dashboard/QuickActionButton";
 import AllocationCard from "@/components/dashboard/AllocationCard";
 
-export const dynamic = 'force-dynamic';
 
 interface DashboardSummary {
   totalCapacity: number;

@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { Suspense } from "react";
 import { Header } from "@/components/layout/header";
 import PaymentContent from "@/components/reserve/PaymentContent";
@@ -10,7 +11,6 @@ declare global {
   }
 }
 
-export const dynamic = 'force-dynamic';
 
 export default function PaymentPage() {
   return (

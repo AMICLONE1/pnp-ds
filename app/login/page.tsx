@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -22,7 +23,6 @@ import {
   TrendingDown
 } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
 
 // Waitlist mode - redirect to waitlist page
 const WAITLIST_MODE = true;
