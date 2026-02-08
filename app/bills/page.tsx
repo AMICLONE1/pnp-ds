@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { BillsSkeleton } from "@/components/ui/skeletons/BillsSkeleton";
 import { BillPayment } from "@/components/features/bills/BillPayment";
+import { fetchBills as apiFetchBills, fetchBillFromBBPS as apiFetchBillFromBBPS, submitManualBill } from "@/lib/utils/bills";
 
 export const dynamic = 'force-dynamic';
 
@@ -45,51 +46,31 @@ export default function BillsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const fetchBills = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch("/api/bills");
-      const result = await response.json();
-      if (result.success) {
-        setBills(result.data);
-      } else {
-        setError(result.error?.message || "Failed to fetch bills");
-      }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
-    } finally {
-      // Show skeleton for minimum 10 seconds
-      setTimeout(() => {
-        setLoading(false);
-      }, 10000);
+    setLoading(true);
+    setError(null);
+    const result = await apiFetchBills();
+    if (result.success) {
+      setBills(result.data);
+    } else {
+      setError(result.error);
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 3500);
   };
 
   const fetchBillFromBBPS = async () => {
     setFetching(true);
     setError(null);
     setSuccessMessage(null);
-
-    try {
-      const response = await fetch("/api/bills/fetch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setSuccessMessage(result.message || "Bill fetched successfully!");
-        // Refresh bills list
-        await fetchBills();
-      } else {
-        setError(result.error?.message || "Failed to fetch bill from BBPS");
-      }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
-    } finally {
-      setFetching(false);
+    const result = await apiFetchBillFromBBPS();
+    if (result.success) {
+      setSuccessMessage(result.message);
+      await fetchBills();
+    } else {
+      setError(result.error);
     }
+    setFetching(false);
   };
 
   const handleManualSubmit = async (e: React.FormEvent) => {
@@ -97,34 +78,21 @@ export default function BillsPage() {
     setSubmitting(true);
     setError(null);
     setSuccessMessage(null);
-
-    try {
-      const response = await fetch("/api/bills/manual", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(manualFormData),
+    const result = await submitManualBill(manualFormData);
+    if (result.success) {
+      setSuccessMessage(result.message);
+      setShowManualForm(false);
+      setManualFormData({
+        bill_number: "",
+        amount: "",
+        due_date: "",
+        discom: "",
       });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setSuccessMessage(result.message || "Bill added successfully!");
-        setShowManualForm(false);
-        setManualFormData({
-          bill_number: "",
-          amount: "",
-          due_date: "",
-          discom: "",
-        });
-        await fetchBills();
-      } else {
-        setError(result.error?.message || "Failed to add bill");
-      }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
-    } finally {
-      setSubmitting(false);
+      await fetchBills();
+    } else {
+      setError(result.error);
     }
+    setSubmitting(false);
   };
 
   useEffect(() => {

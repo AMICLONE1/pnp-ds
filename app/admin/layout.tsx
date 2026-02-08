@@ -8,7 +8,7 @@ import { Sun, Loader2 } from "lucide-react";
 
 function AdminSkeleton() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -60,7 +60,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-white">
       <AdminSidebar />
       <main className="flex-1 overflow-auto">{children}</main>
     </div>

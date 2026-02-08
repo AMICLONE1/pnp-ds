@@ -86,7 +86,7 @@ export function AdminStatCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all group"
+      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-all group"
     >
       <div className="flex items-start justify-between">
         <div
@@ -112,7 +112,7 @@ export function AdminStatCard({
       </div>
 
       <div className="mt-4">
-        <p className="text-sm text-gray-500 font-medium">{label}</p>
+        <p className="text-sm text-black font-medium">{label}</p>
         <p className={`text-3xl font-bold mt-1 ${color}`}>
           <AnimatedNumber
             value={value}
@@ -122,7 +122,7 @@ export function AdminStatCard({
           />
         </p>
         {trendLabel && (
-          <p className="text-xs text-gray-400 mt-1">{trendLabel}</p>
+          <p className="text-xs text-gray-500 mt-1">{trendLabel}</p>
         )}
       </div>
     </motion.div>
