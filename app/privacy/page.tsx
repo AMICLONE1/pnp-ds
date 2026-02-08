@@ -9,6 +9,7 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white via-white to-gold/10">
       <LandingHeader />
+      
       <main className="flex-1">
         <section className="pt-24 pb-12 md:pt-32 md:pb-16">
           <div className="container mx-auto px-4 max-w-4xl">

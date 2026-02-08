@@ -18,6 +18,7 @@ import { RevenueChart } from "@/components/admin/charts/RevenueChart";
 import { UserGrowthChart } from "@/components/admin/charts/UserGrowthChart";
 import { CapacityChart } from "@/components/admin/charts/CapacityChart";
 import { GenerationChart } from "@/components/admin/charts/GenerationChart";
+import DashboardSkeleton from "@/components/admin/DashboardSkeleton";
 
 interface AdminStats {
   totalDeployedCapacity: number;
@@ -31,32 +32,6 @@ interface AdminStats {
   userGrowthByMonth: Array<{ month: string; year: number; value: number }>;
   generationByMonth: Array<{ month: string; year: number; value: number }>;
   capacityByProject: Array<{ name: string; value: number }>;
-}
-
-function DashboardSkeleton() {
-  return (
-    <div className="p-8 space-y-8 animate-pulse">
-      {/* Header skeleton */}
-      <div className="h-8 w-64 bg-gray-200 rounded-lg" />
-
-      {/* Stat cards skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-32 bg-gray-200 rounded-2xl" />
-        ))}
-      </div>
-
-      {/* Charts skeleton */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        <div className="h-80 bg-gray-200 rounded-2xl" />
-        <div className="h-80 bg-gray-200 rounded-2xl" />
-      </div>
-      <div className="grid lg:grid-cols-2 gap-6">
-        <div className="h-80 bg-gray-200 rounded-2xl" />
-        <div className="h-80 bg-gray-200 rounded-2xl" />
-      </div>
-    </div>
-  );
 }
 
 export default function AdminDashboard() {
@@ -117,8 +92,8 @@ export default function AdminDashboard() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-500 mt-1">
+          <h1 className="text-3xl font-bold text-black">Admin Dashboard</h1>
+          <p className="text-gray-700 mt-1">
             Overview of your solar platform performance
           </p>
         </div>
@@ -174,16 +149,16 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-br from-forest to-forest/90 rounded-2xl p-6 text-white"
+          className="bg-green-100 rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-white/10 rounded-lg">
-              <TrendingUp className="w-5 h-5" />
+            <div className="p-2 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-green-600" />
             </div>
-            <span className="font-medium">Capacity Utilization</span>
+            <span className="font-medium text-black">Capacity Utilization</span>
           </div>
-          <p className="text-4xl font-bold">{stats.capacityUtilization}%</p>
-          <p className="text-white/70 text-sm mt-2">
+          <p className="text-4xl font-bold text-black">{stats.capacityUtilization}%</p>
+          <p className="text-gray-500 text-sm mt-2">
             {stats.totalDeployedCapacity.toLocaleString()} / {stats.totalCapacity.toLocaleString()} kW allocated
           </p>
         </motion.div>
@@ -192,16 +167,16 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-gradient-to-br from-gold to-amber-500 rounded-2xl p-6 text-forest"
+          className="bg-[#FFF6E0] rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-forest/10 rounded-lg">
-              <ListChecks className="w-5 h-5" />
+            <div className="p-2 rounded-lg">
+              <ListChecks className="w-5 h-5 text-gold-dark" />
             </div>
-            <span className="font-medium">Waitlist</span>
+            <span className="font-medium text-black">Waitlist</span>
           </div>
-          <p className="text-4xl font-bold">{stats.waitlistCount.toLocaleString()}</p>
-          <p className="text-forest/70 text-sm mt-2">
+          <p className="text-4xl font-bold text-black">{stats.waitlistCount.toLocaleString()}</p>
+          <p className="text-gray-500 text-sm mt-2">
             People waiting for access
           </p>
         </motion.div>
@@ -210,16 +185,16 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl p-6 text-white"
+          className="bg-[#EAF3FE] rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-white/10 rounded-lg">
-              <Zap className="w-5 h-5" />
+            <div className="p-2 rounded-lg">
+              <Zap className="w-5 h-5 text-cyan-600" />
             </div>
-            <span className="font-medium">Total Capacity</span>
+            <span className="font-medium text-black">Total Capacity</span>
           </div>
-          <p className="text-4xl font-bold">{stats.totalCapacity.toLocaleString()}</p>
-          <p className="text-white/70 text-sm mt-2">
+          <p className="text-4xl font-bold text-black">{stats.totalCapacity.toLocaleString()}</p>
+          <p className="text-gray-500 text-sm mt-2">
             kW available across all projects
           </p>
         </motion.div>

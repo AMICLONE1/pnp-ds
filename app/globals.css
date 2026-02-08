@@ -455,6 +455,55 @@
     z-index: 30;
   }
 
+  /* Reserve page slider - override global range styles */
+  /* Using input.reserve-slider for higher specificity than input[type="range"] */
+  input.reserve-slider::-webkit-slider-runnable-track {
+    height: 0;
+    background: transparent;
+  }
+
+  input.reserve-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #FFB800;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(255, 184, 0, 0.4);
+    cursor: pointer;
+    margin-top: -11px !important; /* Centers thumb: -(thumb 22px / 2) = -11px */
+    transform: translateY(0) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  input.reserve-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15) !important;
+    box-shadow: 0 3px 12px rgba(255, 184, 0, 0.5);
+  }
+
+  input.reserve-slider::-moz-range-track {
+    height: 0;
+    background: transparent;
+  }
+
+  input.reserve-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #FFB800;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(255, 184, 0, 0.4);
+    cursor: pointer;
+    transform: translateY(0) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  input.reserve-slider::-moz-range-thumb:hover {
+    transform: scale(1.15) !important;
+    box-shadow: 0 3px 12px rgba(255, 184, 0, 0.5);
+  }
+
   /* New utilities for redesign */
 
   /* Perspective for 3D effects */

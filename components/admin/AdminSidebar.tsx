@@ -37,16 +37,16 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-forest min-h-screen flex flex-col">
+    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-gray-200">
         <Link href="/admin" className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-gold to-amber-500 rounded-xl flex items-center justify-center">
             <Sun className="w-6 h-6 text-forest" />
           </div>
           <div>
-            <h1 className="text-white font-bold text-lg">PNP Solar</h1>
-            <p className="text-white/60 text-xs">Admin Panel</p>
+            <h1 className="text-black font-bold text-lg">PNP Solar</h1>
+            <p className="text-gray-500 text-xs">Admin Panel</p>
           </div>
         </Link>
       </div>
@@ -64,8 +64,8 @@ export function AdminSidebar() {
                   <motion.div
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       isActive
-                        ? "bg-gold text-forest font-semibold"
-                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                        ? "bg-gold/10 text-gold-dark font-semibold border border-gold/20"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-black"
                     }`}
                     whileHover={{ x: 4 }}
                     whileTap={{ scale: 0.98 }}
@@ -75,7 +75,7 @@ export function AdminSidebar() {
                     {isActive && (
                       <motion.div
                         layoutId="activeIndicator"
-                        className="ml-auto w-2 h-2 bg-forest rounded-full"
+                        className="ml-auto w-2 h-2 bg-gold rounded-full"
                       />
                     )}
                   </motion.div>
@@ -87,10 +87,10 @@ export function AdminSidebar() {
       </nav>
 
       {/* Bottom actions */}
-      <div className="p-4 border-t border-white/10 space-y-1">
+      <div className="p-4 border-t border-gray-200 space-y-1">
         <Link href="/dashboard">
           <motion.div
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-all"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black transition-all"
             whileHover={{ x: 4 }}
           >
             <Settings className="w-5 h-5" />
@@ -99,7 +99,7 @@ export function AdminSidebar() {
         </Link>
         <motion.button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all w-full"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all w-full"
           whileHover={{ x: 4 }}
         >
           <LogOut className="w-5 h-5" />
