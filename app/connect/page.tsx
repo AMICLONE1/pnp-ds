@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +16,6 @@ import BenefitsSidebar from "@/components/connect/BenefitsSidebar";
 import { UtilityFormCard } from "@/components/connect/UtilityFormCard";
 import { validateUtilityForm, connectUtility } from "@/lib/utils/connect";
 
-export const dynamic = 'force-dynamic';
 
 export default function ConnectPage() {
   const router = useRouter();

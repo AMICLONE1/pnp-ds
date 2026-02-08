@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,7 +27,6 @@ import { BillsSkeleton } from "@/components/ui/skeletons/BillsSkeleton";
 import { BillPayment } from "@/components/features/bills/BillPayment";
 import { fetchBills as apiFetchBills, fetchBillFromBBPS as apiFetchBillFromBBPS, submitManualBill } from "@/lib/utils/bills";
 
-export const dynamic = 'force-dynamic';
 
 export default function BillsPage() {
   const [bills, setBills] = useState<any[]>([]);

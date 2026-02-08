@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -11,7 +12,6 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Sun, CheckCircle, AlertCircle } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
 
 function ResetPasswordContent() {
   const router = useRouter();

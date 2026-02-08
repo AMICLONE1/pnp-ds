@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { SettingsSkeleton } from "@/components/ui/skeletons/SettingsSkeleton";
@@ -10,7 +11,6 @@ import SettingsHeader from "@/components/settings/SettingsHeader";
 import SettingsSidebar from "@/components/settings/SettingsSidebar";
 import { useSettings } from "@/lib/utils/settings/useSettings";
 
-export const dynamic = 'force-dynamic';
 
 export default function SettingsPage() {
   const {

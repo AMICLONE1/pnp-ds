@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -11,7 +12,6 @@ import { Footer } from "@/components/layout/footer";
 import { Sun, Mail, CheckCircle } from "lucide-react";
 import { forgotPasswordSchema } from "@/lib/validations";
 
-export const dynamic = 'force-dynamic';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");

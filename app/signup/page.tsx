@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -420,7 +421,6 @@ function SignupContent() {
   );
 }
 
-export const dynamic = 'force-dynamic';
 
 export default function SignupPage() {
   return (

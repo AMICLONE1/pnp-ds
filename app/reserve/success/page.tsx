@@ -1,10 +1,10 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
 import { Suspense } from "react";
 import { Header } from "@/components/layout/header";
 import SuccessContent from "@/components/reserve/SuccessContent";
 
-export const dynamic = 'force-dynamic';
 
 export default function SuccessPage() {
   return (
