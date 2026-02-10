@@ -149,7 +149,14 @@ export async function PUT(request: NextRequest) {
     const sanitizedUpdates: Record<string, string> = {};
     for (const key of allowedFields) {
       if (updates[key] !== undefined) {
-        sanitizedUpdates[key] = updates[key];
+        if (key === "phone") {
+            sanitizedUpdates[key] =
+                typeof updates[key] === "string" && updates[key].trim() === ""
+                    ? null
+                    : updates[key];
+        } else {
+            sanitizedUpdates[key] = updates[key];
+        }
       }
     }
 
