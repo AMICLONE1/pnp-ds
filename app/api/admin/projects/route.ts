@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
         if (error) {
             console.error("Error creating project:", error);
             return NextResponse.json(
-                { success: false, error: "Failed to create project" },
+                { success: false, error: error.message || "Failed to create project" },
                 { status: 500 }
             );
         }
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error("Admin project create error:", error);
         return NextResponse.json(
-            { success: false, error: "Failed to create project" },
+            { success: false, error: error instanceof Error ? error.message : "Failed to create project" },
             { status: 500 }
         );
     }
@@ -284,8 +284,15 @@ export async function PUT(request: NextRequest) {
         if (error) {
             console.error("Error updating project:", error);
             return NextResponse.json(
-                { success: false, error: "Failed to update project" },
+                { success: false, message : "Failed to update project" },
                 { status: 500 }
+            );
+        }
+
+        if (!data) {
+            return NextResponse.json(
+                { success: false, error: "Project not found" },
+                { status: 404 }
             );
         }
 
@@ -293,7 +300,7 @@ export async function PUT(request: NextRequest) {
     } catch (error) {
         console.error("Admin project update error:", error);
         return NextResponse.json(
-            { success: false, error: "Failed to update project" },
+            { success: false, error: error instanceof Error ? error.message : "Failed to update project" },
             { status: 500 }
         );
     }
@@ -339,20 +346,29 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        const { error } = await adminClient
+        const { data, error } = await adminClient
             .from("projects")
             .update({
                 deleted_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
                 status: "RETIRED",
             })
-            .eq("id", id);
+            .eq("id", id)
+            .select()
+            .single();
 
         if (error) {
             console.error("Error deleting project:", error);
             return NextResponse.json(
-                { success: false, error: "Failed to delete project" },
+                { success: false, error: error.message || "Failed to delete project" },
                 { status: 500 }
+            );
+        }
+
+        if (!data) {
+            return NextResponse.json(
+                { success: false, error: "Project not found" },
+                { status: 404 }
             );
         }
 

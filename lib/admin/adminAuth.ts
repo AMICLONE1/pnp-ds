@@ -60,7 +60,7 @@ export function unauthorizedResponse(error: string) {
     : "Admin access required";
 
   return NextResponse.json(
-    { success: false, error: { code: error, message } },
+    { success: false, error: message },
     { status }
   );
 }

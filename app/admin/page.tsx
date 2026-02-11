@@ -84,15 +84,15 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-3xl font-bold text-black">Admin Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-black">Admin Dashboard</h1>
           <p className="text-gray-700 mt-1">
             Overview of your solar platform performance
           </p>
@@ -104,7 +104,7 @@ export default function AdminDashboard() {
       </motion.div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <AdminStatCard
           icon={Zap}
           label="Deployed Capacity"
@@ -144,7 +144,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Secondary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -157,7 +157,7 @@ export default function AdminDashboard() {
             </div>
             <span className="font-medium text-black">Capacity Utilization</span>
           </div>
-          <p className="text-4xl font-bold text-black">{stats.capacityUtilization}%</p>
+          <p className="text-3xl sm:text-4xl font-bold text-black">{stats.capacityUtilization}%</p>
           <p className="text-gray-500 text-sm mt-2">
             {stats.totalDeployedCapacity.toLocaleString()} / {stats.totalCapacity.toLocaleString()} kW allocated
           </p>
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
             </div>
             <span className="font-medium text-black">Waitlist</span>
           </div>
-          <p className="text-4xl font-bold text-black">{stats.waitlistCount.toLocaleString()}</p>
+          <p className="text-3xl sm:text-4xl font-bold text-black">{stats.waitlistCount.toLocaleString()}</p>
           <p className="text-gray-500 text-sm mt-2">
             People waiting for access
           </p>
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
             </div>
             <span className="font-medium text-black">Total Capacity</span>
           </div>
-          <p className="text-4xl font-bold text-black">{stats.totalCapacity.toLocaleString()}</p>
+          <p className="text-3xl sm:text-4xl font-bold text-black">{stats.totalCapacity.toLocaleString()}</p>
           <p className="text-gray-500 text-sm mt-2">
             kW available across all projects
           </p>
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Charts Row 1 */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

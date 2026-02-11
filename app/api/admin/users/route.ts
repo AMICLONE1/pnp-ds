@@ -145,11 +145,17 @@ export async function PUT(request: NextRequest) {
       "kyc_status",
       "state",
       "discom",
+      "deleted_at",
     ];
-    const sanitizedUpdates: Record<string, string> = {};
+    // Fields that should be null instead of empty string
+    const nullableFields = ["name", "phone", "state", "discom"];
+    const sanitizedUpdates: Record<string, any> = {};
     for (const key of allowedFields) {
       if (updates[key] !== undefined) {
-        if (key === "phone") {
+        // Allow explicit null for deleted_at (unban)
+        if (key === "deleted_at" && updates[key] === null) {
+            sanitizedUpdates[key] = null;
+        } else if (nullableFields.includes(key)) {
             sanitizedUpdates[key] =
                 typeof updates[key] === "string" && updates[key].trim() === ""
                     ? null
@@ -197,7 +203,8 @@ export async function PUT(request: NextRequest) {
 
 /**
  * DELETE /api/admin/users
- * Soft-delete a user by setting deleted_at
+ * Temporary ban (type=temp): soft-delete by setting deleted_at
+ * Permanent ban (type=permanent): hard-delete from public.users and auth.users
  */
 export async function DELETE(request: NextRequest) {
   try {
@@ -208,6 +215,7 @@ export async function DELETE(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+    const type = searchParams.get("type") || "temp";
 
     if (!id) {
       return NextResponse.json(
@@ -216,36 +224,73 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Prevent admin from deleting themselves
+    // Prevent admin from banning themselves
     if (authResult.user && id === authResult.user.id) {
       return NextResponse.json(
-        { success: false, error: "Cannot delete your own account" },
+        { success: false, error: "Cannot ban your own account" },
         { status: 400 }
       );
     }
 
     const adminClient = createAdminClient();
-    const { error } = await adminClient
-      .from("users")
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", id);
 
-    if (error) {
-      console.error("Error deleting user:", error);
-      return NextResponse.json(
-        { success: false, error: "Failed to delete user" },
-        { status: 500 }
-      );
+    if (type === "permanent") {
+      // Hard-delete: remove from public.users then auth.users
+      const { error: deleteError } = await adminClient
+        .from("users")
+        .delete()
+        .eq("id", id);
+
+      if (deleteError) {
+        console.error("Error hard-deleting user:", deleteError);
+        return NextResponse.json(
+          { success: false, error: "Failed to permanently delete user" },
+          { status: 500 }
+        );
+      }
+
+      // Also delete from Supabase Auth so the email can't be used to log in
+      const { error: authDeleteError } = await adminClient.auth.admin.deleteUser(id);
+
+      if (authDeleteError) {
+        console.error("Error deleting user from auth:", authDeleteError);
+        // User is already removed from public.users, log but don't fail
+      }
+
+      return NextResponse.json({ success: true, message: "User permanently banned and removed" });
+    } else {
+      // Temporary ban: soft-delete by setting deleted_at
+      const { data, error } = await adminClient
+        .from("users")
+        .update({
+          deleted_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error banning user:", error);
+        return NextResponse.json(
+          { success: false, error: "Failed to ban user" },
+          { status: 500 }
+        );
+      }
+
+      if (!data) {
+        return NextResponse.json(
+          { success: false, error: "User not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({ success: true, message: "User temporarily banned" });
     }
-
-    return NextResponse.json({ success: true, message: "User deleted" });
   } catch (error) {
-    console.error("Admin user delete error:", error);
+    console.error("Admin user ban error:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to delete user" },
+      { success: false, error: "Failed to process ban action" },
       { status: 500 }
     );
   }

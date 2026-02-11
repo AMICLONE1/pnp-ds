@@ -103,7 +103,10 @@ export function useProjects(){
                 const result = await res.json();
 
                 if (!result.success) {
-                    throw new Error(result.error || "Failed to fetch projects");
+                    const errMsg = typeof result.error === "string"
+                        ? result.error
+                        : result.error?.message || "Failed to fetch projects";
+                    throw new Error(errMsg);
                 }
 
                 setProjects(result.data.projects);
@@ -141,6 +144,12 @@ export function useProjects(){
         });
     };
 
+    const extractError = (error: any, fallback: string): string => {
+        if (typeof error === "string") return error;
+        if (error && typeof error === "object" && error.message) return error.message;
+        return fallback;
+    };
+
     const handleEditSave = async () => {
         if (!editingProject) return;
         setActionLoading(true);
@@ -154,7 +163,7 @@ export function useProjects(){
             const result = await res.json();
 
             if (!result.success) {
-                throw new Error(result.error || "Failed to update project");
+                throw new Error(extractError(result.error, "Failed to update project"));
             }
 
             showToast("success", "Project updated successfully");
@@ -183,7 +192,7 @@ export function useProjects(){
             const result = await res.json();
 
             if (!result.success) {
-                throw new Error(result.error || "Failed to update status");
+                throw new Error(extractError(result.error, "Failed to update status"));
             }
 
             showToast("success", `Project status changed to ${newStatus}`);
@@ -209,7 +218,7 @@ export function useProjects(){
             const result = await res.json();
 
             if (!result.success) {
-                throw new Error(result.error || "Failed to delete project");
+                throw new Error(extractError(result.error, "Failed to delete project"));
             }
 
             showToast("success", "Project deleted successfully");
@@ -243,7 +252,7 @@ export function useProjects(){
             const result = await res.json();
 
             if (!result.success) {
-                throw new Error(result.error || "Failed to create project");
+                throw new Error(extractError(result.error, "Failed to create project"));
             }
 
             showToast("success", "Project created successfully");

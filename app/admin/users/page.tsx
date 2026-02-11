@@ -10,11 +10,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Edit3,
-  Trash2,
+  Ban,
+  UserX,
+  Undo2,
   X,
   Check,
   UserCheck,
-  UserX,
   Shield,
   Filter,
   RefreshCw,
@@ -34,38 +35,40 @@ interface UserAllocation {
 }
 
 export default function AdminUsersPage() {
-  const{
-        users,
-        pagination,
-        loading,
-        searchQuery,
-        setSearchQuery,
-        statusFilter,
-        setStatusFilter,
-        roleFilter,
-        setRoleFilter,
-        editingUser,
-        setEditingUser,
-        deletingUserId,
-        setDeletingUserId,
-        actionLoading,
-        showFilters,
-        setShowFilters,
-        fetchUsers,
-        handleSearch,
-        handleEditStart,
-        handleEditSave,
-        handleDelete,
-        getKycBadge,
-        getRoleBadge,
-        formatDate
+  const {
+    users,
+    pagination,
+    loading,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    roleFilter,
+    setRoleFilter,
+    editingUser,
+    setEditingUser,
+    banAction,
+    setBanAction,
+    actionLoading,
+    showFilters,
+    setShowFilters,
+    fetchUsers,
+    handleSearch,
+    handleEditStart,
+    handleEditSave,
+    handleTempBan,
+    handlePermBan,
+    handleUnban,
+    getKycBadge,
+    getRoleBadge,
+    formatDate
   } = useUsers();
 
   // Skeleton loading
   if (loading && users.length === 0) {
     return (
-      <div className="p-8 space-y-8 animate-pulse">
-        <div className="flex items-center justify-between">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-8 animate-pulse">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="h-8 w-48 bg-gray-100 rounded-lg" />
           <div className="h-10 w-64 bg-gray-100 rounded-lg" />
         </div>
@@ -185,7 +188,7 @@ export default function AdminUsersPage() {
                         >
                           <option value="all">All Statuses</option>
                           <option value="active">Active</option>
-                          <option value="deleted">Deleted</option>
+                          <option value="deleted">Banned</option>
                         </select>
                       </div>
                       <div className="flex-1">
@@ -265,19 +268,17 @@ export default function AdminUsersPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className={`hover:bg-gray-50/50 transition-colors ${
-                      user.deleted_at ? "opacity-60" : ""
-                    }`}
+                    className={`hover:bg-gray-50/50 transition-colors ${user.deleted_at ? "opacity-60" : ""
+                      }`}
                   >
                     {/* User Info */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                            user.role === "ADMIN"
+                          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${user.role === "ADMIN"
                               ? "bg-purple-100 text-purple-700"
                               : "bg-gold/10 text-gold-dark"
-                          }`}
+                            }`}
                         >
                           {(user.name || user.email)
                             .charAt(0)
@@ -288,8 +289,8 @@ export default function AdminUsersPage() {
                             {user.name || "—"}
                           </p>
                           {user.deleted_at && (
-                            <span className="text-xs text-red-500 font-medium">
-                              Deleted
+                            <span className="text-xs text-amber-600 font-medium">
+                              Banned
                             </span>
                           )}
                         </div>
@@ -374,7 +375,7 @@ export default function AdminUsersPage() {
 
                     {/* Actions */}
                     <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleEditStart(user)}
                           className="p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-all"
@@ -382,15 +383,30 @@ export default function AdminUsersPage() {
                         >
                           <Edit3 className="w-4 h-4" />
                         </button>
-                        {!user.deleted_at && (
+                        {user.deleted_at ? (
                           <button
-                            onClick={() => setDeletingUserId(user.id)}
-                            className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all"
-                            title="Delete user"
+                            onClick={() => handleUnban(user.id)}
+                            className="p-2 rounded-lg text-gray-500 hover:text-green-600 hover:bg-green-50 transition-all"
+                            title="Unban user"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Undo2 className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => setBanAction({ userId: user.id, type: "temp" })}
+                            className="p-2 rounded-lg text-gray-500 hover:text-amber-600 hover:bg-amber-50 transition-all"
+                            title="Temporary ban"
+                          >
+                            <Ban className="w-4 h-4" />
                           </button>
                         )}
+                        <button
+                          onClick={() => setBanAction({ userId: user.id, type: "perm" })}
+                          className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all"
+                          title="Permanent ban"
+                        >
+                          <UserX className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </motion.tr>
@@ -432,11 +448,10 @@ export default function AdminUsersPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                        user.role === "ADMIN"
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${user.role === "ADMIN"
                           ? "bg-purple-100 text-purple-700"
                           : "bg-gold/10 text-gold-dark"
-                      }`}
+                        }`}
                     >
                       {(user.name || user.email)
                         .charAt(0)
@@ -458,14 +473,27 @@ export default function AdminUsersPage() {
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    {!user.deleted_at && (
+                    {user.deleted_at ? (
                       <button
-                        onClick={() => setDeletingUserId(user.id)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all"
+                        onClick={() => handleUnban(user.id)}
+                        className="p-1.5 rounded-lg text-gray-500 hover:text-green-600 hover:bg-green-50 transition-all"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Undo2 className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setBanAction({ userId: user.id, type: "temp" })}
+                        className="p-1.5 rounded-lg text-gray-500 hover:text-amber-600 hover:bg-amber-50 transition-all"
+                      >
+                        <Ban className="w-4 h-4" />
                       </button>
                     )}
+                    <button
+                      onClick={() => setBanAction({ userId: user.id, type: "perm" })}
+                      className="p-1.5 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all"
+                    >
+                      <UserX className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
@@ -519,8 +547,8 @@ export default function AdminUsersPage() {
                     );
                   })()}
                   {user.deleted_at && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                      Deleted
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                      Banned
                     </span>
                   )}
                 </div>
@@ -603,11 +631,10 @@ export default function AdminUsersPage() {
                     <button
                       key={pageNum}
                       onClick={() => fetchUsers(pageNum)}
-                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
-                        pageNum === pagination.page
+                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${pageNum === pagination.page
                           ? "bg-gold text-black"
                           : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>
@@ -693,7 +720,7 @@ export default function AdminUsersPage() {
                   placeholder="Enter phone number"
                 />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-black mb-1.5">
                       Role
@@ -738,7 +765,7 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="State"
                     value={editingUser.state}
@@ -782,16 +809,16 @@ export default function AdminUsersPage() {
         )}
       </AnimatePresence>
 
-      {/* Delete Confirmation Modal */}
+      {/* Ban Confirmation Modal */}
       <AnimatePresence>
-        {deletingUserId && (
+        {banAction && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
             onClick={(e) => {
-              if (e.target === e.currentTarget) setDeletingUserId(null);
+              if (e.target === e.currentTarget) setBanAction(null);
             }}
           >
             <motion.div
@@ -801,37 +828,62 @@ export default function AdminUsersPage() {
               className="bg-white rounded-2xl shadow-xl w-full max-w-md"
             >
               <div className="p-6 text-center">
-                <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-                  <AlertTriangle className="w-7 h-7 text-red-600" />
-                </div>
-                <h2 className="text-lg font-bold text-black mb-2">
-                  Delete User
-                </h2>
-                <p className="text-gray-500 text-sm mb-6">
-                  Are you sure you want to delete this user? This action will
-                  soft-delete the account. The user will no longer be able to
-                  access the platform.
-                </p>
+                {banAction.type === "temp" ? (
+                  <>
+                    <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+                      <Ban className="w-7 h-7 text-amber-600" />
+                    </div>
+                    <h2 className="text-lg font-bold text-black mb-2">
+                      Temporary Ban
+                    </h2>
+                    <p className="text-gray-500 text-sm mb-6">
+                      This will temporarily revoke the user&apos;s access to the
+                      platform. You can unban them later to restore access.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                      <AlertTriangle className="w-7 h-7 text-red-600" />
+                    </div>
+                    <h2 className="text-lg font-bold text-black mb-2">
+                      Permanent Ban
+                    </h2>
+                    <p className="text-gray-500 text-sm mb-6">
+                      This will permanently delete the user&apos;s account and all
+                      associated data. This action <strong>cannot be undone</strong>.
+                    </p>
+                  </>
+                )}
                 <div className="flex items-center justify-center gap-3">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setDeletingUserId(null)}
+                    onClick={() => setBanAction(null)}
                     className="px-6"
                   >
                     Cancel
                   </Button>
                   <button
-                    onClick={() => handleDelete(deletingUserId)}
+                    onClick={() =>
+                      banAction.type === "temp"
+                        ? handleTempBan(banAction.userId)
+                        : handlePermBan(banAction.userId)
+                    }
                     disabled={actionLoading}
-                    className="inline-flex items-center justify-center px-6 py-2 rounded-full text-sm font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+                    className={`inline-flex items-center justify-center px-6 py-2 rounded-full text-sm font-medium text-white disabled:opacity-50 transition-colors ${banAction.type === "temp"
+                        ? "bg-amber-600 hover:bg-amber-700"
+                        : "bg-red-600 hover:bg-red-700"
+                      }`}
                   >
                     {actionLoading ? (
                       <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                    ) : banAction.type === "temp" ? (
+                      <Ban className="w-4 h-4 mr-1.5" />
                     ) : (
-                      <Trash2 className="w-4 h-4 mr-1.5" />
+                      <UserX className="w-4 h-4 mr-1.5" />
                     )}
-                    Delete User
+                    {banAction.type === "temp" ? "Temporary Ban" : "Permanent Ban"}
                   </button>
                 </div>
               </div>

@@ -23,28 +23,26 @@ export async function middleware(request: NextRequest) {
   }
 
   // Rate limiting for API routes
+  let rateLimitResult: { allowed: boolean; remaining: number; resetTime: number } | null = null;
   if (pathname.startsWith("/api/")) {
     const identifier = request.ip || request.headers.get("x-forwarded-for") || "unknown";
     const path = request.nextUrl.pathname;
 
-    const rateLimit = checkRateLimit(identifier, path);
+    rateLimitResult = checkRateLimit(identifier, path);
 
-    if (!rateLimit.allowed) {
+    if (!rateLimitResult.allowed) {
       return NextResponse.json(
         {
           success: false,
-          error: {
-            code: "RATE_LIMIT_EXCEEDED",
-            message: "Too many requests. Please try again later.",
-          },
+          error: "Too many requests. Please try again later.",
         },
         {
           status: 429,
           headers: {
             "X-RateLimit-Limit": "60",
             "X-RateLimit-Remaining": "0",
-            "X-RateLimit-Reset": rateLimit.resetTime.toString(),
-            "Retry-After": Math.ceil((rateLimit.resetTime - Date.now()) / 1000).toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetTime.toString(),
+            "Retry-After": Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString(),
           },
         }
       );
@@ -54,14 +52,10 @@ export async function middleware(request: NextRequest) {
   // Update Supabase session
   const response = await updateSession(request);
 
-  // Add rate limit headers to response
-  if (request.nextUrl.pathname.startsWith("/api/")) {
-    const identifier = request.ip || request.headers.get("x-forwarded-for") || "unknown";
-    const path = request.nextUrl.pathname;
-    const rateLimit = checkRateLimit(identifier, path);
-
-    response.headers.set("X-RateLimit-Remaining", rateLimit.remaining.toString());
-    response.headers.set("X-RateLimit-Reset", rateLimit.resetTime.toString());
+  // Add rate limit headers to response (reuse result from earlier check)
+  if (rateLimitResult) {
+    response.headers.set("X-RateLimit-Remaining", rateLimitResult.remaining.toString());
+    response.headers.set("X-RateLimit-Reset", rateLimitResult.resetTime.toString());
   }
 
   return response;

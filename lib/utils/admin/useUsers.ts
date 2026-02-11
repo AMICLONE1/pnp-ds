@@ -39,6 +39,11 @@ interface EditingUser {
   discom: string;
 }
 
+interface BanAction {
+  userId: string;
+  type: "temp" | "perm";
+}
+
 export function useUsers(){
     const { showToast } = useToast();
       const [users, setUsers] = useState<AdminUser[]>([]);
@@ -53,10 +58,10 @@ export function useUsers(){
       const [statusFilter, setStatusFilter] = useState("all");
       const [roleFilter, setRoleFilter] = useState("all");
       const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
-      const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+      const [banAction, setBanAction] = useState<BanAction | null>(null);
       const [actionLoading, setActionLoading] = useState(false);
       const [showFilters, setShowFilters] = useState(false);
-    
+
       const fetchUsers = useCallback(
         async (page = 1) => {
           setLoading(true);
@@ -68,16 +73,19 @@ export function useUsers(){
               ...(statusFilter !== "all" && { status: statusFilter }),
               ...(roleFilter !== "all" && { role: roleFilter }),
             });
-    
+
             const res = await fetch(`/api/admin/users?${params}`, {
               credentials: "include",
             });
             const result = await res.json();
-    
+
             if (!result.success) {
-              throw new Error(result.error || "Failed to fetch users");
+              const errMsg = typeof result.error === "string"
+                ? result.error
+                : result.error?.message || "Failed to fetch users";
+              throw new Error(errMsg);
             }
-    
+
             setUsers(result.data.users);
             setPagination(result.data.pagination);
           } catch (error) {
@@ -89,16 +97,16 @@ export function useUsers(){
         },
         [searchQuery, statusFilter, roleFilter, showToast]
       );
-    
+
       useEffect(() => {
         fetchUsers();
       }, [fetchUsers]);
-    
+
       const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         fetchUsers(1);
       };
-    
+
       const handleEditStart = (user: AdminUser) => {
         setEditingUser({
           id: user.id,
@@ -111,7 +119,13 @@ export function useUsers(){
           discom: user.discom || "",
         });
       };
-    
+
+      const extractError = (error: any, fallback: string): string => {
+        if (typeof error === "string") return error;
+        if (error && typeof error === "object" && error.message) return error.message;
+        return fallback;
+      };
+
       const handleEditSave = async () => {
         if (!editingUser) return;
         setActionLoading(true);
@@ -123,11 +137,11 @@ export function useUsers(){
             body: JSON.stringify(editingUser),
           });
           const result = await res.json();
-    
+
           if (!result.success) {
-            throw new Error(result.error || "Failed to update user");
+            throw new Error(extractError(result.error, "Failed to update user"));
           }
-    
+
           showToast("success", "User updated successfully");
           setEditingUser(null);
           fetchUsers(pagination.page);
@@ -141,34 +155,89 @@ export function useUsers(){
           setActionLoading(false);
         }
       };
-    
-      const handleDelete = async (userId: string) => {
+
+      const handleTempBan = async (userId: string) => {
         setActionLoading(true);
         try {
-          const res = await fetch(`/api/admin/users?id=${userId}`, {
+          const res = await fetch(`/api/admin/users?id=${userId}&type=temp`, {
             method: "DELETE",
             credentials: "include",
           });
           const result = await res.json();
-    
+
           if (!result.success) {
-            throw new Error(result.error || "Failed to delete user");
+            throw new Error(extractError(result.error, "Failed to ban user"));
           }
-    
-          showToast("success", "User deleted successfully");
-          setDeletingUserId(null);
+
+          showToast("success", "User temporarily banned");
+          setBanAction(null);
           fetchUsers(pagination.page);
         } catch (error) {
-          console.error("Error deleting user:", error);
+          console.error("Error banning user:", error);
           showToast(
             "error",
-            error instanceof Error ? error.message : "Failed to delete user"
+            error instanceof Error ? error.message : "Failed to ban user"
           );
         } finally {
           setActionLoading(false);
         }
       };
-    
+
+      const handlePermBan = async (userId: string) => {
+        setActionLoading(true);
+        try {
+          const res = await fetch(`/api/admin/users?id=${userId}&type=permanent`, {
+            method: "DELETE",
+            credentials: "include",
+          });
+          const result = await res.json();
+
+          if (!result.success) {
+            throw new Error(extractError(result.error, "Failed to permanently ban user"));
+          }
+
+          showToast("success", "User permanently banned and removed");
+          setBanAction(null);
+          fetchUsers(pagination.page);
+        } catch (error) {
+          console.error("Error permanently banning user:", error);
+          showToast(
+            "error",
+            error instanceof Error ? error.message : "Failed to permanently ban user"
+          );
+        } finally {
+          setActionLoading(false);
+        }
+      };
+
+      const handleUnban = async (userId: string) => {
+        setActionLoading(true);
+        try {
+          const res = await fetch("/api/admin/users", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ id: userId, deleted_at: null }),
+          });
+          const result = await res.json();
+
+          if (!result.success) {
+            throw new Error(extractError(result.error, "Failed to unban user"));
+          }
+
+          showToast("success", "User unbanned successfully");
+          fetchUsers(pagination.page);
+        } catch (error) {
+          console.error("Error unbanning user:", error);
+          showToast(
+            "error",
+            error instanceof Error ? error.message : "Failed to unban user"
+          );
+        } finally {
+          setActionLoading(false);
+        }
+      };
+
       const getKycBadge = (status: string) => {
         const badges: Record<string, { bg: string; text: string; label: string }> =
           {
@@ -195,14 +264,14 @@ export function useUsers(){
           };
         return badges[status] || badges.PENDING;
       };
-    
+
       const getRoleBadge = (role: string) => {
         if (role === "ADMIN") {
           return { bg: "bg-purple-100", text: "text-purple-700", label: "Admin" };
         }
         return { bg: "bg-gray-100", text: "text-gray-700", label: "User" };
       };
-    
+
       const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-IN", {
           day: "numeric",
@@ -223,17 +292,18 @@ export function useUsers(){
         setRoleFilter,
         editingUser,
         setEditingUser,
-        deletingUserId,
-        setDeletingUserId,
+        banAction,
+        setBanAction,
         actionLoading,
-        setActionLoading,
         showFilters,
         setShowFilters,
         fetchUsers,
         handleSearch,
         handleEditStart,
         handleEditSave,
-        handleDelete,
+        handleTempBan,
+        handlePermBan,
+        handleUnban,
         getKycBadge,
         getRoleBadge,
         formatDate
