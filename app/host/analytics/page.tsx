@@ -509,7 +509,7 @@ function PlantComparison() {
       },
       y: {
         grid: { display: false },
-        ticks: { color: "#374151", font: { size: 12, family: "Inter", weight: "500" as const } },
+        ticks: { color: "#374151", font: { size: 12, family: "Inter", weight: "bold" as const } },
       },
     },
   };
