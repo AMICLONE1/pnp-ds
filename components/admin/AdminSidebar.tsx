@@ -48,7 +48,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   };
 
   const sidebarContent = (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col shrink-0">
+    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col shrink-">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-3" onClick={handleNavClick}>

@@ -121,7 +121,21 @@ export default function LoginPage() {
       return;
     }
 
-    // Only redirect if we have a verified session
+    // Check user role to determine redirect destination
+    try {
+      const roleRes = await fetch("/api/host/verify");
+      const roleResult = await roleRes.json();
+
+      if (roleResult.success && roleResult.isHost) {
+        router.push("/host");
+        router.refresh();
+        return;
+      }
+    } catch {
+      // If host verify fails, fall through to default dashboard
+    }
+
+    // Default redirect for USER and ADMIN roles
     router.push("/dashboard");
     router.refresh();
   };

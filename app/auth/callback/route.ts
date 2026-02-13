@@ -10,6 +10,21 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // If no explicit next path, check user role for smart redirect
+      if (next === "/dashboard") {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: userData } = await supabase
+            .from("users")
+            .select("role")
+            .eq("id", user.id)
+            .single();
+
+          if (userData?.role === "HOST") {
+            return NextResponse.redirect(`${origin}/host`);
+          }
+        }
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
