@@ -16,7 +16,7 @@ import {
   Filler,
   TooltipItem,
 } from "chart.js";
-import { Line, Bar, Doughnut } from "react-chartjs-2";
+import { Line, Bar, Doughnut, Chart } from "react-chartjs-2";
 import {
   Wallet,
   TrendingUp,
@@ -39,7 +39,6 @@ import {
   Percent,
   Building2,
   CalendarDays,
-  ArrowUpRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -57,8 +56,6 @@ ChartJS.register(
 );
 
 // ─── Mock Data ──────────────────────────────────────────────────────────────
-
-const PPA_RATE = 3.5;
 
 const REVENUE_12M = [
   { month: "Mar '25", revenue: 398200, generation: 113771 },
@@ -768,7 +765,7 @@ function PlantRevenueBreakdown() {
       },
       y: {
         grid: { display: false },
-        ticks: { color: "#374151", font: { size: 12, family: "Inter", weight: "500" as const } },
+        ticks: { color: "#374151", font: { size: 12, family: "Inter", weight: "bold" as const } },
       },
     },
   };
@@ -852,7 +849,7 @@ function RevenueGenerationCorrelation() {
         padding: 12,
         cornerRadius: 8,
         callbacks: {
-          label: (context: TooltipItem<"bar" | "line">) => {
+          label: (context: TooltipItem<"bar">) => {
             if (context.datasetIndex === 0) {
               return ` Generation: ${(context.parsed.y ?? 0).toLocaleString("en-IN")} kWh`;
             }
@@ -906,7 +903,7 @@ function RevenueGenerationCorrelation() {
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">
-            <Bar data={chartData} options={options} />
+            <Chart type="bar" data={chartData as never} options={options} />
           </div>
         </CardContent>
       </Card>
