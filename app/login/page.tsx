@@ -23,7 +23,7 @@ import {
   TrendingDown
 } from "lucide-react";
 
-
+// Digital Solar
 // Waitlist mode - redirect to waitlist page
 const WAITLIST_MODE = true;
 
