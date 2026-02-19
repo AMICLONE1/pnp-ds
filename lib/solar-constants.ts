@@ -5,14 +5,14 @@ export const SOLAR_CONSTANTS = {
   // Credit rate per kWh (discount on power bill) - ₹7 per unit
   creditRatePerUnit: 7,
   
-  // Average solar generation per kW per day (in kWh) - 1kW generates 4.5 units per day
-  avgGenerationPerKwPerDay: 4.5,
+  // Average solar generation per kW per day (in kWh) - 1kW generates 4 units per day
+  avgGenerationPerKwPerDay: 4,
   
   // Days in a month
   daysPerMonth: 30,
   
-  // Base setup cost per kW - ₹35,000 per kW
-  baseCostPerKw: 35000,
+  // Base setup cost per kW - ₹50,000 per kW
+  baseCostPerKw: 50000,
   
   // Bulk discount tiers (cost reduction as capacity increases)
   // Format: [minKw, discountPercentage]
@@ -146,7 +146,7 @@ export function calculateSetupCost(capacityKw: number): number {
 
 // Calculate savings based on capacity in kW
 export function calculateSolarSavings(capacityKw: number) {
-  // 1kW generates 4.5 units per day
+  // 1kW generates 4 units per day
   const dailyGenerationKwh = capacityKw * SOLAR_CONSTANTS.avgGenerationPerKwPerDay;
   const monthlyGenerationKwh = dailyGenerationKwh * SOLAR_CONSTANTS.daysPerMonth;
   const monthlySavings = monthlyGenerationKwh * SOLAR_CONSTANTS.creditRatePerUnit;
@@ -183,8 +183,8 @@ export function calculateCapacityForSavings(monthlySavings: number) {
   // Energy needed per month (kWh) to achieve target savings
   const energyNeededKwh = monthlySavings / SOLAR_CONSTANTS.creditRatePerUnit;
   
-  // 1kW generates 4.5 units per day = 135 units per month
-  const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; // 135 kWh/month per kW
+  // 1kW generates 4 units per day = 120 units per month
+  const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; // 120 kWh/month per kW
   const capacityNeededKw = energyNeededKwh / monthlyGenerationPerKw;
   const capacityNeededWatts = Math.round(capacityNeededKw * 1000);
   

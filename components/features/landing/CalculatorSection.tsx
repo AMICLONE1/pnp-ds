@@ -37,8 +37,8 @@ export function CalculatorSection() {
   const energyNeededKwhPerMonth = monthlySavings / SOLAR_CONSTANTS.creditRatePerUnit;
   
   // Step 3: Calculate capacity needed (kW)
-  // 1kW generates 4.5 units per day = 4.5 × 30 = 135 units per month
-  const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; // 135 kWh/month per kW
+  // 1kW generates 4 units per day = 4 × 30 = 120 units per month
+  const monthlyGenerationPerKw = SOLAR_CONSTANTS.avgGenerationPerKwPerDay * SOLAR_CONSTANTS.daysPerMonth; // 120 kWh/month per kW
   const reservedSolarKw = energyNeededKwhPerMonth / monthlyGenerationPerKw;
   const reservedSolarWatts = reservedSolarKw * 1000;
   
@@ -51,16 +51,14 @@ export function CalculatorSection() {
   // Step 6: Calculate setup cost with bulk discount
   const setupCost = calculateSetupCost(reservedSolarKw);
   
-  // Step 7: Calculate annual savings and ROI
+  // Step 7: Calculate annual savings and 15-year total
   const annualSavings = monthlySavings * 12;
-  const roiYears = annualSavings > 0 ? parseFloat((setupCost / annualSavings).toFixed(1)) : 0;
-  const roiSavings = roiYears * annualSavings;
+  const fifteenYearSavings = annualSavings * 15;
 
   const calculations = {
     monthlySavings: Math.round(monthlySavings * 100) / 100,
     annualSavings: Math.round(annualSavings * 100) / 100,
-    roiYears,
-    roiSavings: Math.round(roiSavings * 100) / 100,
+    roiSavings: Math.round(fifteenYearSavings * 100) / 100,
     reservedSolarKw: Math.round(reservedSolarKw * 100) / 100,
     reservedSolarWatts: Math.round(reservedSolarWatts),
     energyProducedKwh: Math.round(energyProducedKwh * 100) / 100,
