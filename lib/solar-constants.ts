@@ -5,7 +5,7 @@ export const SOLAR_CONSTANTS = {
   // Credit rate per kWh (discount on power bill) - ₹7 per unit
   creditRatePerUnit: 7,
   
-  // Average solar generation per kW per day (in kWh) - 1kW generates 4 units per day
+  // Average solar generation per kW per day (in kWh) - 1kW generates 4 units per day (1kW = 4 units)
   avgGenerationPerKwPerDay: 4,
   
   // Days in a month
