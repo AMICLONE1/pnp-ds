@@ -11,8 +11,67 @@ const WAITLIST_REDIRECT_PATHS = ["/signup"];
 const HOST_ROUTES = ["/host"];
 const HOST_API_ROUTES = ["/api/host"];
 
-// User-only routes that HOST users cannot access
+// Routes that require ADMIN role
+const ADMIN_ROUTES = ["/admin"];
+const ADMIN_API_ROUTES = ["/api/admin"];
+
+// User-only routes that HOST and ADMIN users cannot access
 const USER_ONLY_ROUTES = ["/dashboard", "/bills", "/reserve", "/connect"];
+
+// Login pages should be accessible without role checks
+const LOGIN_PAGES = ["/login", "/host/login", "/admin/login"];
+
+/**
+ * Helper: create a Supabase client for middleware if properly configured.
+ * Returns null when Supabase env vars are missing / placeholder.
+ */
+function createMiddlewareSupabase(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (
+    !supabaseUrl ||
+    !supabaseKey ||
+    supabaseUrl.includes("placeholder") ||
+    supabaseKey === "your-anon-key"
+  ) {
+    return null;
+  }
+
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll() {
+        // No-op in middleware read-only context
+      },
+    },
+  });
+}
+
+/**
+ * Fetches the authenticated user and their role.
+ * Returns { user, role } or nulls when not authenticated.
+ */
+async function getUserAndRole(request: NextRequest) {
+  const supabase = createMiddlewareSupabase(request);
+  if (!supabase) return { user: null, role: null };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { user: null, role: null };
+
+  const { data: userData } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  return { user, role: userData?.role ?? null };
+}
 
 export async function middleware(request: NextRequest) {
   // Skip middleware for static files and Next.js internals
@@ -60,125 +119,108 @@ export async function middleware(request: NextRequest) {
   // Update Supabase session
   const response = await updateSession(request);
 
-  // Host route protection: verify HOST role for /host/* and /api/host/* routes
-  // Skip the verify endpoint itself to avoid circular dependency
-  const isHostRoute = HOST_ROUTES.some((route) => pathname.startsWith(route));
-  const isHostApiRoute = HOST_API_ROUTES.some((route) => pathname.startsWith(route));
-  const isVerifyEndpoint = pathname === "/api/host/verify";
+  // ──────────────────────────────────────────────────────────────
+  // RBAC: Centralized role-based access control
+  // ──────────────────────────────────────────────────────────────
 
-  if ((isHostRoute || isHostApiRoute) && !isVerifyEndpoint) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Skip RBAC checks for login pages (they must remain accessible)
+  const isLoginPage = LOGIN_PAGES.some((p) => pathname === p);
+  // Skip verify endpoints to avoid circular dependency
+  const isVerifyEndpoint =
+    pathname === "/api/host/verify" || pathname === "/api/admin/verify";
 
-    // Only enforce host auth when Supabase is properly configured
-    if (
-      supabaseUrl &&
-      supabaseKey &&
-      !supabaseUrl.includes("placeholder") &&
-      supabaseKey !== "your-anon-key"
-    ) {
-      const supabase = createServerClient(supabaseUrl, supabaseKey, {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll() {
-            // No-op in middleware read-only context
-          },
-        },
-      });
+  const isHostRoute = HOST_ROUTES.some((route) => pathname.startsWith(route)) && !isLoginPage;
+  const isHostApiRoute = HOST_API_ROUTES.some((route) => pathname.startsWith(route)) && !isVerifyEndpoint;
+  const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route)) && !isLoginPage;
+  const isAdminApiRoute = ADMIN_API_ROUTES.some((route) => pathname.startsWith(route)) && !isVerifyEndpoint;
+  const isUserOnlyRoute = USER_ONLY_ROUTES.some((route) => pathname.startsWith(route));
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  const needsRbac = isHostRoute || isHostApiRoute || isAdminRoute || isAdminApiRoute || isUserOnlyRoute;
 
-      if (!user) {
-        if (isHostApiRoute) {
-          return NextResponse.json(
-            { success: false, error: "Authentication required" },
-            { status: 401 }
-          );
-        }
-        return NextResponse.redirect(new URL("/login", request.url));
+  if (needsRbac) {
+    const { user, role } = await getUserAndRole(request);
+
+    // ── Not authenticated ──
+    if (!user) {
+      if (isHostApiRoute || isAdminApiRoute) {
+        return NextResponse.json(
+          { success: false, error: "Authentication required" },
+          { status: 401 }
+        );
       }
+      if (isHostRoute) {
+        return NextResponse.redirect(new URL("/host/login", request.url));
+      }
+      if (isAdminRoute) {
+        return NextResponse.redirect(new URL("/admin/login", request.url));
+      }
+      // User-only routes
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
 
-      // Check user role is HOST
-      const { data: userData } = await supabase
-        .from("users")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-      if (!userData || userData.role !== "HOST") {
+    // ── HOST route protection ──
+    if (isHostRoute || isHostApiRoute) {
+      if (role !== "HOST") {
         if (isHostApiRoute) {
           return NextResponse.json(
             { success: false, error: "Host access required" },
             { status: 403 }
           );
         }
+        // Redirect non-hosts to their own area
+        if (role === "ADMIN") {
+          return NextResponse.redirect(new URL("/admin", request.url));
+        }
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
 
-      // Check host record is active
-      const { data: hostData } = await supabase
-        .from("hosts")
-        .select("id, status")
-        .eq("user_id", user.id)
-        .single();
+      // Verify host record is ACTIVE (for page routes, not login)
+      const supabase = createMiddlewareSupabase(request);
+      if (supabase) {
+        const { data: hostData } = await supabase
+          .from("hosts")
+          .select("id, status")
+          .eq("user_id", user.id)
+          .single();
 
-      if (!hostData || hostData.status !== "ACTIVE") {
-        if (isHostApiRoute) {
+        if (!hostData || hostData.status !== "ACTIVE") {
+          if (isHostApiRoute) {
+            return NextResponse.json(
+              { success: false, error: "Host account is not active" },
+              { status: 403 }
+            );
+          }
+          return NextResponse.redirect(
+            new URL("/host/login?error=host_inactive", request.url)
+          );
+        }
+      }
+    }
+
+    // ── ADMIN route protection ──
+    if (isAdminRoute || isAdminApiRoute) {
+      if (role !== "ADMIN") {
+        if (isAdminApiRoute) {
           return NextResponse.json(
-            { success: false, error: "Host account is not active" },
+            { success: false, error: "Admin access required" },
             { status: 403 }
           );
         }
-        return NextResponse.redirect(
-          new URL("/login?error=host_inactive", request.url)
-        );
-      }
-
-    }
-  }
-
-  // Block HOST users from accessing user-only routes
-  const isUserOnlyRoute = USER_ONLY_ROUTES.some((route) => pathname.startsWith(route));
-
-  if (isUserOnlyRoute) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (
-      supabaseUrl &&
-      supabaseKey &&
-      !supabaseUrl.includes("placeholder") &&
-      supabaseKey !== "your-anon-key"
-    ) {
-      const supabase = createServerClient(supabaseUrl, supabaseKey, {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll() {
-            // No-op in middleware read-only context
-          },
-        },
-      });
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        const { data: userData } = await supabase
-          .from("users")
-          .select("role")
-          .eq("id", user.id)
-          .single();
-
-        if (userData?.role === "HOST") {
+        // Redirect non-admins to their own area
+        if (role === "HOST") {
           return NextResponse.redirect(new URL("/host", request.url));
         }
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    }
+
+    // ── USER-ONLY route protection ──
+    if (isUserOnlyRoute) {
+      if (role === "HOST") {
+        return NextResponse.redirect(new URL("/host", request.url));
+      }
+      if (role === "ADMIN") {
+        return NextResponse.redirect(new URL("/admin", request.url));
       }
     }
   }

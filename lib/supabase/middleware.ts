@@ -12,10 +12,10 @@ export async function updateSession(request: NextRequest) {
 
   // If credentials are not configured or are placeholders, skip auth entirely
   if (!supabaseUrl || !supabaseKey ||
-      supabaseUrl.includes('placeholder') ||
-      supabaseKey.includes('placeholder') ||
-      supabaseUrl === 'your-project-url' ||
-      supabaseKey === 'your-anon-key') {
+    supabaseUrl.includes('placeholder') ||
+    supabaseKey.includes('placeholder') ||
+    supabaseUrl === 'your-project-url' ||
+    supabaseKey === 'your-anon-key') {
     // Just pass through without any Supabase operations
     return supabaseResponse;
   }
@@ -65,6 +65,8 @@ export async function updateSession(request: NextRequest) {
   const publicPaths = [
     "/",
     "/login",
+    "/host/login",
+    "/admin/login",
     "/signup",
     "/reserve",
     "/waitlist",

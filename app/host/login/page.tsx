@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import {
@@ -17,48 +17,19 @@ import {
   Lock,
   ArrowRight,
   AlertCircle,
-  Sparkles,
-  Shield,
-  Zap,
-  TrendingDown
+  Building2,
+  BarChart3,
+  Wallet,
+  Users,
 } from "lucide-react";
 
-// Digital Solar
-// Waitlist mode - redirect to waitlist page
-const WAITLIST_MODE = true;
-
-export default function LoginPage() {
+export default function HostLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Show waitlist redirect message
-  // if (WAITLIST_MODE) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-white">
-  //       <div className="text-center max-w-md mx-auto px-4">
-  //         <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
-  //           <Sun className="w-8 h-8 text-gold" />
-  //         </div>
-  //         <h1 className="text-2xl font-bold text-black mb-3">Coming Soon!</h1>
-  //         <p className="text-gray-600 mb-6">
-  //           We're launching soon! Join our waitlist to be the first to know when PowerNetPro goes live.
-  //         </p>
-  //         <Link
-  //           href="/waitlist"
-  //           className="inline-flex items-center justify-center bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3 rounded-full transition-colors"
-  //         >
-  //           Join Waitlist
-  //           <ArrowRight className="w-4 h-4 ml-2" />
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // Get supabase client - singleton pattern ensures same instance
   const getSupabase = () => createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -66,7 +37,6 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    // Validate inputs
     if (!email.trim()) {
       setError("Email is required");
       setLoading(false);
@@ -85,14 +55,13 @@ export default function LoginPage() {
       password,
     });
 
-    // CRITICAL: Always check for errors FIRST before checking for session
-    // This prevents security vulnerabilities where incorrect passwords might be accepted
     if (authError) {
-      // Provide user-friendly error messages
-      if (authError.message.includes("Invalid login credentials") ||
+      if (
+        authError.message.includes("Invalid login credentials") ||
         authError.message.includes("Invalid login") ||
         authError.message.includes("Email not confirmed") ||
-        authError.message.includes("User not found")) {
+        authError.message.includes("User not found")
+      ) {
         setError("Invalid email or password. Please check your credentials and try again.");
       } else {
         setError(authError.message);
@@ -101,7 +70,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Only proceed if there's NO error AND a valid session exists
     if (!data || !data.session) {
       setError("Login failed. Please try again.");
       setLoading(false);
@@ -109,10 +77,8 @@ export default function LoginPage() {
     }
 
     // Ensure session is properly established
-    // Wait a bit for cookies to be set and session to be synced
     await new Promise((r) => setTimeout(r, 300));
 
-    // Verify session is still valid before redirecting
     const { data: { user: verifiedUser }, error: sessionError } = await supabase.auth.getUser();
 
     if (sessionError || !verifiedUser) {
@@ -121,41 +87,27 @@ export default function LoginPage() {
       return;
     }
 
-    // Check user role — this login page is for USER role only
+    // Verify user is a HOST
     try {
       const roleRes = await fetch("/api/host/verify");
       const roleResult = await roleRes.json();
 
       if (roleResult.success && roleResult.isHost) {
-        // This is a HOST account — sign out and show error
+        router.push("/host");
+        router.refresh();
+        return;
+      } else {
+        // Not a host — sign them out and show error
         await supabase.auth.signOut();
-        setError("This is a Host account. Please use the Host login portal.");
+        setError("This account does not have Host access. Please use the correct login page for your role.");
         setLoading(false);
         return;
       }
     } catch {
-      // If host verify fails, continue — user is likely a regular user
+      await supabase.auth.signOut();
+      setError("Could not verify host access. Please try again.");
+      setLoading(false);
     }
-
-    // Check if user is an admin
-    try {
-      const adminRes = await fetch("/api/admin/verify");
-      const adminResult = await adminRes.json();
-
-      if (adminResult.success && adminResult.isAdmin) {
-        // This is an ADMIN account — sign out and show error
-        await supabase.auth.signOut();
-        setError("This is an Admin account. Please use the Admin login portal.");
-        setLoading(false);
-        return;
-      }
-    } catch {
-      // If admin verify fails, continue — user is a regular user
-    }
-
-    // Regular USER — redirect to dashboard
-    router.push("/dashboard");
-    router.refresh();
   };
 
   return (
@@ -163,7 +115,7 @@ export default function LoginPage() {
       <LandingHeader />
       <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-offwhite via-white to-white/5 pt-28 pb-12 px-4">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
-          {/* Left Side - Benefits */}
+          {/* Left Side - Host Benefits */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -176,25 +128,25 @@ export default function LoginPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-black text-sm font-medium mb-4"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-sm font-medium mb-4 border border-amber-200"
                 >
-                  <Sparkles className="h-4 w-4" />
-                  Welcome back to PowerNetPro
+                  <Building2 className="h-4 w-4" />
+                  Host Partner Portal
                 </motion.div>
                 <h1 className="text-4xl font-heading font-bold text-black mb-3">
-                  Sign in to manage your <span className="text-black">solar savings</span>
+                  Manage your <span className="text-amber-600">solar plants</span>
                 </h1>
                 <p className="text-black">
-                  Access your dashboard, track credits, and manage your electricity bills all in one place.
+                  Access your host dashboard to manage solar installations, track generation, and monitor financials.
                 </p>
               </div>
 
               {/* Feature Cards */}
               <div className="space-y-3">
                 {[
-                  { icon: TrendingDown, title: "Track Savings", desc: "Monitor your monthly solar credits in real-time", color: "text-energy-green", bg: "bg-white/10" },
-                  { icon: Zap, title: "Instant Updates", desc: "Get notified when credits are applied to your bills", color: "text-gold", bg: "bg-gold/10" },
-                  { icon: Shield, title: "Secure Access", desc: "Your data is protected with enterprise-grade security", color: "text-black", bg: "bg-white/10" },
+                  { icon: BarChart3, title: "Plant Analytics", desc: "Monitor energy generation and performance metrics", color: "text-energy-green", bg: "bg-emerald-50" },
+                  { icon: Wallet, title: "Financial Dashboard", desc: "Track revenue, payments, and earnings in real-time", color: "text-gold", bg: "bg-amber-50" },
+                  { icon: Users, title: "Customer Management", desc: "View and manage connected consumers", color: "text-black", bg: "bg-gray-50" },
                 ].map((feature, index) => (
                   <motion.div
                     key={feature.title}
@@ -213,29 +165,6 @@ export default function LoginPage() {
                   </motion.div>
                 ))}
               </div>
-
-              {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="flex items-center gap-6 pt-4"
-              >
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-black">10,000+</p>
-                  <p className="text-xs text-gray-500">Active Users</p>
-                </div>
-                <div className="w-px h-10 bg-gray-200" />
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-black">₹2Cr+</p>
-                  <p className="text-xs text-gray-500">Saved Monthly</p>
-                </div>
-                <div className="w-px h-10 bg-gray-200" />
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-black">4.9★</p>
-                  <p className="text-xs text-gray-500">User Rating</p>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
 
@@ -247,18 +176,18 @@ export default function LoginPage() {
           >
             <Card className="w-full max-w-md mx-auto overflow-hidden shadow-xl shadow-forest/5 border-0">
               {/* Card Header with Gradient */}
-              <div className="bg-gradient-to-br from-white via-white to-white-light p-8 text-center relative overflow-hidden">
+              <div className="bg-gradient-to-br from-amber-50 via-white to-white p-8 text-center relative overflow-hidden">
                 <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute -top-12 -right-12 w-32 h-32 bg-gold/10 rounded-full blur-2xl" />
-                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
+                  <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-100/50 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gold/10 rounded-full blur-2xl" />
                 </div>
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                  className="relative inline-flex p-4 rounded-2xl bg-white/10 backdrop-blur-sm mb-4"
+                  className="relative inline-flex p-4 rounded-2xl bg-amber-50 mb-4"
                 >
-                  <Sun className="h-10 w-10 text-gold" />
+                  <Building2 className="h-10 w-10 text-amber-600" />
                 </motion.div>
                 <motion.h2
                   initial={{ opacity: 0, y: 10 }}
@@ -266,7 +195,7 @@ export default function LoginPage() {
                   transition={{ delay: 0.3 }}
                   className="relative text-2xl font-heading font-bold text-black"
                 >
-                  Welcome Back
+                  Host Portal
                 </motion.h2>
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -274,7 +203,7 @@ export default function LoginPage() {
                   transition={{ delay: 0.4 }}
                   className="relative text-black/70 text-sm mt-1"
                 >
-                  Sign in to your PowerNetPro account
+                  Sign in to your Host Partner account
                 </motion.p>
               </div>
 
@@ -287,7 +216,7 @@ export default function LoginPage() {
                     </label>
                     <Input
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder="host@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -314,11 +243,7 @@ export default function LoginPage() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-black focus:ring-forest" />
-                      <span className="text-sm text-black">Remember me</span>
-                    </label>
+                  <div className="flex items-center justify-end">
                     <Link
                       href="/forgot-password"
                       className="text-sm text-black hover:underline font-medium"
@@ -348,48 +273,21 @@ export default function LoginPage() {
                     className="w-full h-12 rounded-xl group"
                     isLoading={loading}
                   >
-                    Sign In
+                    Sign In as Host
                     <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>
 
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <p className="text-center text-sm text-black">
-                    Don&apos;t have an account?{" "}
-                    <Link href="/signup" className="text-black hover:underline font-semibold">
-                      Sign up free
-                    </Link>
-                  </p>
-                  <p className="text-center text-xs text-gray-400 mt-3">
-                    <Link href="/host/login" className="hover:underline">
-                      Host Login
-                    </Link>
-                    {" · "}
-                    <Link href="/admin/login" className="hover:underline">
-                      Admin Login
+                  <p className="text-center text-sm text-gray-500">
+                    Not a host partner?{" "}
+                    <Link href="/login" className="text-black hover:underline font-semibold">
+                      User Login
                     </Link>
                   </p>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Mobile-only trust badges */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="lg:hidden flex items-center justify-center gap-4 mt-6 text-xs text-gray-500"
-            >
-              <div className="flex items-center gap-1">
-                <Shield className="h-3.5 w-3.5 text-black" />
-                Secure Login
-              </div>
-              <div className="w-1 h-1 rounded-full bg-gray-300" />
-              <div className="flex items-center gap-1">
-                <Zap className="h-3.5 w-3.5 text-gold" />
-                10,000+ Users
-              </div>
-            </motion.div>
           </motion.div>
         </div>
       </main>
@@ -397,4 +295,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
