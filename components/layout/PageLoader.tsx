@@ -59,11 +59,8 @@ export function PageLoader() {
           transition={{ delay: 0.4, duration: 0.8 }}
           className="text-center"
         >
-          <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-black leading-tight mb-4">
+          <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-black leading-tight">
             Go Solar in 5 mins.
-          </p>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gold">
-            No Roof Required. No Installation.
           </p>
         </motion.div>
 
@@ -72,7 +69,7 @@ export function PageLoader() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex flex-col items-center gap-4 mt-8"
+          className="flex flex-col items-center gap-4 mt-5"
         >
           {/* Loading Dots */}
           <div className="flex gap-2">
@@ -98,7 +95,7 @@ export function PageLoader() {
 
       {/* Bottom Gradient Fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
-      
+
       <style jsx>{`
         @keyframes float {
           0%, 100% {

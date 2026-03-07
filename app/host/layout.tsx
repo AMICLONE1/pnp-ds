@@ -1,68 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { HostSidebar } from "@/components/host/layout/HostSidebar";
-import { Sun, Loader2, Menu } from "lucide-react";
-
-function HostSkeleton() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center gap-4"
-      >
-        <div className="w-16 h-16 bg-gradient-to-br from-gold to-amber-500 rounded-2xl flex items-center justify-center">
-          <Sun className="w-8 h-8 text-forest" />
-        </div>
-        <div className="flex items-center gap-2 text-gray-600">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span>Loading host dashboard...</span>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
+import { Sun, Menu } from "lucide-react";
 
 export default function HostLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isHost, setIsHost] = useState<boolean | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const checkHost = async () => {
-      try {
-        const res = await fetch("/api/host/verify");
-        const result = await res.json();
-
-        if (!result.success || !result.isHost) {
-          // Not a host - redirect based on error type
-          if (result.error === "UNAUTHORIZED") {
-            router.push("/login");
-          } else {
-            router.push("/dashboard");
-          }
-          return;
-        }
-
-        setIsHost(true);
-      } catch (error) {
-        console.error("Host verification failed:", error);
-        router.push("/login");
-      }
-    };
-
-    checkHost();
-  }, [router]);
-
-  if (isHost === null) {
-    return <HostSkeleton />;
+  // Login page renders without the sidebar layout
+  if (pathname === "/host/login") {
+    return <>{children}</>;
   }
 
   return (
@@ -97,3 +50,4 @@ export default function HostLayout({
     </div>
   );
 }
+
