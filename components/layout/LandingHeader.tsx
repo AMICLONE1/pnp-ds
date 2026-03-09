@@ -71,6 +71,13 @@ export function LandingHeader() {
           <nav className="hidden md:flex items-center justify-center">
             <div className="bg-white/90 border-2 border-gold rounded-2xl shadow-lg px-6 py-2.5 flex items-center gap-6" style={{ boxShadow: '0 4px 24px 0 rgba(255,184,0,0.10)' }}>
               <Link
+                href="/host-landing"
+                className="text-black hover:text-gold transition-all duration-300 font-medium text-sm whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-gold/5"
+              >
+                For Hosts
+              </Link>
+              <div className="w-px h-5 bg-gold/30" />
+              <Link
                 href="/#how-it-works"
                 className="text-black hover:text-gold transition-all duration-300 font-medium text-sm whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-gold/5"
               >
