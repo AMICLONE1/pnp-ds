@@ -129,10 +129,10 @@ export async function middleware(request: NextRequest) {
   const isVerifyEndpoint =
     pathname === "/api/host/verify" || pathname === "/api/admin/verify";
 
-  const isHostRoute = HOST_ROUTES.some((route) => pathname.startsWith(route)) && !isLoginPage;
-  const isHostApiRoute = HOST_API_ROUTES.some((route) => pathname.startsWith(route)) && !isVerifyEndpoint;
-  const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route)) && !isLoginPage;
-  const isAdminApiRoute = ADMIN_API_ROUTES.some((route) => pathname.startsWith(route)) && !isVerifyEndpoint;
+  const isHostRoute = HOST_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/')) && !isLoginPage;
+  const isHostApiRoute = HOST_API_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/')) && !isVerifyEndpoint;
+  const isAdminRoute = ADMIN_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/')) && !isLoginPage;
+  const isAdminApiRoute = ADMIN_API_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/')) && !isVerifyEndpoint;
   const isUserOnlyRoute = USER_ONLY_ROUTES.some((route) => pathname.startsWith(route));
 
   const needsRbac = isHostRoute || isHostApiRoute || isAdminRoute || isAdminApiRoute || isUserOnlyRoute;
