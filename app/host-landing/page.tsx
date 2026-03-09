@@ -259,7 +259,7 @@ export default function HostLandingPage() {
                             From assessment to activation<br aria-hidden="true" className="hidden sm:block" /> in 4 simple steps
                         </h2>
                         <p className="text-[17px] text-[#8A8A87] max-w-[600px] leading-[1.6] mb-[56px]">
-                            Our team handles every aspect of the process. Here's what to expect.
+                            Our team handles every aspect of the process. Here&apos;s what to expect.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative items-start z-10">
@@ -295,7 +295,7 @@ export default function HostLandingPage() {
                             See what you save,<br aria-hidden="true" className="hidden sm:block" /> month after month
                         </h2>
                         <p className="text-[17px] text-[#8A8A87] max-w-[600px] leading-[1.6] mb-[56px]">
-                            A side-by-side look at what you're paying now vs. what you'd pay with PowerNetPro solar on your rooftop.
+                            A side-by-side look at what you&apos;re paying now vs. what you&apos;d pay with PowerNetPro solar on your rooftop.
                         </p>
 
                         <div className="bg-white border border-[#EBEBEA] rounded-[20px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
@@ -329,7 +329,7 @@ export default function HostLandingPage() {
                             Check if your property qualifies
                         </h2>
                         <p className="text-[17px] text-[#8A8A87] max-w-[600px] leading-[1.6] mb-[56px]">
-                            Most commercial and large residential properties with adequate rooftop space are eligible. Here's what we look for.
+                            Most commercial and large residential properties with adequate rooftop space are eligible. Here&apos;s what we look for.
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
