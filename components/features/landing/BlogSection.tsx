@@ -39,7 +39,7 @@ export function BlogSection() {
                             </p>
                         </div>
 
-                        <motion.div
+                        {/* <motion.div
                             whileHover={{ x: 5 }}
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
@@ -50,7 +50,7 @@ export function BlogSection() {
                                 Explore All Articles
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
-                        </motion.div>
+                        </motion.div> */}
                     </div>
                 </ScrollFade>
 
