@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/animations";
 import { faqData } from "../lib/utils/data.js"
 import { Testimonials } from "@/components/ui/Testimonials";
+import { BlogSection } from "@/components/features/landing/BlogSection";
 
 
 export default function HomePage() {
@@ -66,7 +67,7 @@ export default function HomePage() {
 
         {/* CALCULATOR SECTION - Interactive Wide Calculator */}
         <section id="calculator">
-          <CalculatorSection  />
+          <CalculatorSection />
         </section>
 
         {/* STATS SECTION - New Animated Stats */}
@@ -220,6 +221,9 @@ export default function HomePage() {
             </motion.div>
           </div>
         </section>
+
+        {/* BLOG SECTION */}
+        <BlogSection />
 
         {/* FAQ SECTION */}
         <section className="py-12 sm:py-16 md:py-20 bg-white relative overflow-hidden">

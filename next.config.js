@@ -5,7 +5,7 @@ const nextConfig = {
     instrumentationHook: true,
   },
   images: {
-    domains: ['kmwinrwqavqvclnevyxp.supabase.co'],
+    domains: ['kmwinrwqavqvclnevyxp.supabase.co', 'images.unsplash.com', 'api.dicebear.com'],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -30,26 +30,26 @@ const nextConfig = {
         fs: false,
       };
     }
-    
+
     // Ensure proper module resolution
     config.resolve.extensionAlias = {
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.jsx': ['.tsx', '.jsx'],
     };
-    
+
     // Fix for dynamic import issues with React Server Components
     config.optimization = {
       ...config.optimization,
       moduleIds: 'deterministic',
     };
-    
+
     // Add error handling for undefined factory functions
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       })
     );
-    
+
     return config;
   },
   // Simplified headers to avoid interfering with dev server
