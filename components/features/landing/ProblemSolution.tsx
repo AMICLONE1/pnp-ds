@@ -43,7 +43,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
   return (
     <section
       ref={containerRef}
-      className={`py-12 sm:py-16 md:py-24 relative overflow-hidden ${className}`}
+      className={`py-12 sm:py-16 md:py-14 relative overflow-hidden ${className}`}
       aria-labelledby="problem-solution-heading"
     >
       {/* Background gradient */}

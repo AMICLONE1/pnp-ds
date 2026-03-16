@@ -209,7 +209,7 @@ export function StatsSection() {
     <section
       id="stats-section"
       ref={ref}
-      className="relative py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden"
+      className="relative py-12 sm:py-16 md:py-14 overflow-hidden"
       style={{ backgroundColor: "#f0f6f0" }}
     >
       {/* Background patterns */}

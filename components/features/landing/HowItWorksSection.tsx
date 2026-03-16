@@ -496,7 +496,7 @@ export function HowItWorksSection() {
         >
           <section
             id="how-it-works"
-            className="relative w-full py-12 sm:py-16 md:py-20 bg-gradient-to-b from-white via-gray-50/30 to-white"
+            className="relative w-full py-12 sm:py-16 md:py-14 bg-gradient-to-b from-white via-gray-50/30 to-white"
           >
             {/* Background decorations */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -642,18 +642,6 @@ export function HowItWorksSection() {
                       </Button>
                     </motion.div>
                   </Link>
-
-                  <span className="text-gray-400 font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>or</span>
-
-                  <motion.button
-                    className="flex items-center gap-3 text-gold hover:text-amber-600 transition-colors group"
-                    whileHover={{ x: 3 }}
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold/20 to-amber-100/30 flex items-center justify-center group-hover:from-gold/30 group-hover:to-amber-200/40 transition-all shadow-sm">
-                      <Play className="w-5 h-5 ml-0.5" />
-                    </div>
-                    <span className="font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>Watch video explainer</span>
-                  </motion.button>
                 </div>
               </motion.div>
             </div>

@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export function BlogSection() {
     return (
-        <section className="py-24 bg-white relative overflow-hidden px-20">
+        <section className="py-12 sm:py-16 md:py-14 bg-white relative overflow-hidden px-20">
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />

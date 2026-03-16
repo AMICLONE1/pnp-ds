@@ -11,8 +11,8 @@ const footerLinks = {
     { label: "How It Works", href: "/#how-it-works" },
     { label: "Pricing", href: "/reserve#pricing" },
     { label: "Solar Projects", href: "/reserve" },
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Bills & Payments", href: "/bills" },
+    // { label: "Dashboard", href: "/dashboard" },
+    // { label: "Bills & Payments", href: "/bills" },
   ],
   company: [
     { label: "About Us", href: "/about" },
@@ -22,8 +22,8 @@ const footerLinks = {
     // { label: "Careers", href: "/careers", badge: "Hiring" },
   ],
   resources: [
-    { label: "Solar Calculator", href: "/#calculator" },
-    { label: "FAQ", href: "/help#faq" },
+    { label: "Savings Calculator", href: "#calculator" },
+    { label: "FAQ", href: "#faq" },
     // { label: "Blog", href: "/blog" },
     { label: "Utility Partners", href: "/#utilities" },
   ],
@@ -126,9 +126,6 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
-              <div className="w-9 h-9 rounded-xl bg-gold/20 flex items-center justify-center group-hover:bg-gold/30 transition-colors">
-                <Sun className="h-5 w-5 text-gold" />
-              </div>
               <span className="text-lg font-heading font-bold text-black">
                 PowerNet<span className="text-gold">Pro</span>
               </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import {
   Zap,
   Home,
@@ -442,134 +442,8 @@ function FeatureCard({
   );
 }
 
-// Stats banner
-function StatsBanner() {
-  const stats = [
-    { value: "5", suffix: "min", label: "Setup Time", icon: Clock },
-    { value: "75", suffix: "%", label: "Guaranteed", icon: Shield },
-    { value: "24K", suffix: "+", label: "Annual Savings", icon: TrendingUp },
-    { value: "340", suffix: "", label: "Trees Equivalent", icon: Leaf },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      className="mt-16 md:mt-24"
-    >
-      {/* Main container with light elegant gradient */}
-      <div className="relative bg-gradient-to-br from-white via-gray-50 to-white rounded-2xl md:rounded-3xl lg:rounded-[2rem] p-6 sm:p-8 md:p-10 lg:p-14 overflow-hidden border border-gray-200 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_70px_-15px_rgba(0,0,0,0.15)] transition-all duration-500">
-        {/* Decorative background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Animated gradient orbs */}
-          <motion.div
-            className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-gold/20 to-amber-500/10 rounded-full blur-[100px]"
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.3, 0.5, 0.3],
-              x: [0, 20, 0],
-              y: [0, -20, 0],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-gradient-to-tl from-gold/10 to-gray-100/50 rounded-full blur-[120px]"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.2, 0.4, 0.2],
-            }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-gray-100/30 to-transparent rounded-full blur-[80px]"
-            animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          {/* Subtle grid pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
-          {/* Top highlight line */}
-          <div className="absolute top-0 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-        </div>
-
-        <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.12, duration: 0.6, ease: "easeOut" }}
-              whileHover={{
-                y: -10,
-                transition: { duration: 0.3, ease: "easeOut" }
-              }}
-              className="group relative text-center"
-            >
-              {/* Card with glass morphism on light */}
-              <div className="relative bg-white backdrop-blur-md rounded-2xl p-6 md:p-7 border border-gray-200 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,184,0,0.1)] group-hover:bg-gray-50 group-hover:border-gold/50 group-hover:shadow-[0_20px_50px_-10px_rgba(255,184,0,0.3),inset_0_1px_0_0_rgba(255,184,0,0.2)] transition-all duration-500">
-                {/* Icon container */}
-                <motion.div
-                  className="w-14 h-14 mx-auto mb-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center group-hover:from-gold/20 group-hover:to-amber-100 transition-all duration-400 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,184,0,0.1)] border border-gray-200 group-hover:border-gold/40"
-                  whileHover={{ rotate: [0, -8, 8, 0], scale: 1.05, transition: { duration: 0.5 } }}
-                >
-                  <stat.icon className="w-7 h-7 text-gray-600 group-hover:text-gold transition-colors duration-300" />
-                </motion.div>
-
-                {/* Value */}
-                <div className="flex items-baseline justify-center gap-1 mb-3">
-                  <motion.span
-                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black drop-shadow-[0_2px_10px_rgba(0,0,0,0.05)]"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.12 + 0.2, duration: 0.5 }}
-                  >
-                    {stat.value}
-                  </motion.span>
-                  <span
-                    className="text-lg md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gold to-amber-500 bg-clip-text text-transparent"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  >
-                    {stat.suffix}
-                  </span>
-                </div>
-
-                {/* Label */}
-                <p
-                  className="text-sm md:text-base text-gray-600 font-medium tracking-wide uppercase group-hover:text-gray-700 transition-colors duration-300"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {stat.label}
-                </p>
-
-                {/* Bottom accent line */}
-                <motion.div
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-gold via-amber-400 to-gold group-hover:w-3/4 transition-all duration-500 rounded-full"
-                />
-
-                {/* Corner accents */}
-                <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-transparent group-hover:border-gold/40 rounded-tl-xl transition-all duration-500" />
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-transparent group-hover:border-gold/40 rounded-br-xl transition-all duration-500" />
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Bottom decorative element */}
-        <div className="absolute bottom-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      </div>
-    </motion.div>
-  );
-}
-
 // Progress indicator
-function ProgressIndicator({ total, current }: { total: number; current: number }) {
+function ProgressIndicator({ total, current, duration }: { total: number; current: number; duration: number }) {
   return (
     <div className="flex items-center justify-center gap-3 mt-10">
       <div className="flex items-center gap-3 bg-gradient-to-r from-gray-100 via-white to-gray-100 backdrop-blur-sm px-6 py-3 rounded-full shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15),inset_0_1px_0_0_rgba(255,255,255,0.8)] border border-gray-200/80">
@@ -577,26 +451,32 @@ function ProgressIndicator({ total, current }: { total: number; current: number 
           <motion.div
             key={i}
             className={cn(
-              "rounded-full transition-all duration-500 ease-out cursor-pointer",
+              "relative rounded-full overflow-hidden transition-all duration-500 ease-out cursor-pointer",
               i === current
-                ? "w-10 h-3 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.4)]"
+                ? "w-10 h-3 bg-gray-200 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.4)]"
                 : "w-3 h-3 bg-gray-300 hover:bg-gray-400 shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)]"
             )}
-            animate={{
-              scale: i === current ? 1 : 0.9,
-              opacity: i === current ? 1 : 0.6
-            }}
-            transition={{
-              duration: 0.4,
-              ease: "easeOut"
-            }}
+            animate={{ scale: i === current ? 1 : 0.9, opacity: i === current ? 1 : 0.6 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             whileHover={{ scale: 1.15, opacity: 0.9 }}
-          />
+          >
+            {i === current && (
+              <motion.div
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 origin-left"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: duration / 1000, ease: "linear" }}
+                key={current}
+              />
+            )}
+          </motion.div>
         ))}
       </div>
     </div>
   );
 }
+
+const SLIDE_DURATION = 5000;
 
 // Main section component
 export function BenefitsSection() {
@@ -604,15 +484,31 @@ export function BenefitsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef(null);
   const isHeaderInView = useInView(headerRef, { once: true });
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // No auto-cycling - user clicks to change categories
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setActiveCategory(prev => (prev + 1) % benefitCategories.length);
+    }, SLIDE_DURATION);
+  }, []);
+
+  useEffect(() => {
+    startTimer();
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [activeCategory, startTimer]);
+
+  const handleSelect = useCallback((index: number) => {
+    setActiveCategory(index);
+  }, []);
+
   const currentCategory = benefitCategories[activeCategory];
 
   return (
     <section
       ref={sectionRef}
       id="benefits"
-      className="relative py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden"
+      className="relative py-12 sm:py-16 md:py-14 overflow-hidden"
       style={{
         background: "linear-gradient(180deg, #f0f6f0 0%, #fafbfa 50%, #ffffff 100%)"
       }}
@@ -705,7 +601,7 @@ export function BenefitsSection() {
         <CategoryNav
           categories={benefitCategories}
           activeIndex={activeCategory}
-          onSelect={setActiveCategory}
+          onSelect={handleSelect}
         />
 
         {/* Category hero content */}
@@ -737,64 +633,12 @@ export function BenefitsSection() {
         <ProgressIndicator
           total={benefitCategories.length}
           current={activeCategory}
+          duration={SLIDE_DURATION}
         />
 
         {/* Stats banner */}
-        <StatsBanner />
+        {/* <StatsBanner /> */}
 
-        {/* Bottom CTA with smooth styling */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-          className="mt-16 md:mt-24 text-center"
-        >
-          <motion.p
-            className="text-lg text-gray-600 mb-10 tracking-wide"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
-            Ready to experience these benefits yourself?
-          </motion.p>
-          <Link href="/waitlist">
-            <motion.div
-              whileHover={{ scale: 1.04, y: -4 }}
-              whileTap={{ scale: 0.96 }}
-              className="inline-block"
-            >
-              <Button
-                variant="primary"
-                size="lg"
-                className="relative overflow-hidden bg-gradient-to-r from-gold via-amber-500 to-gold hover:from-amber-500 hover:via-gold hover:to-amber-500 text-gray-900 font-semibold px-8 py-4 sm:px-10 sm:py-5 md:px-12 md:py-7 text-base sm:text-lg group shadow-[0_15px_50px_-12px_rgba(255,184,0,0.5)] hover:shadow-[0_20px_60px_-12px_rgba(255,184,0,0.6)] transition-all duration-400 rounded-2xl border border-gold/20 hover:border-gold/40"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                {/* Shine effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.7 }}
-                />
-                {/* Top highlight */}
-                <div className="absolute top-0 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                <span className="relative z-10 flex items-center gap-3">
-                  Join the Waitlist
-                  <motion.span
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 group-hover:bg-white/30 transition-all duration-300"
-                    animate={{ x: [0, 3, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <ArrowRight className="w-4 h-4 text-gray-900 group-hover:translate-x-0.5 transition-all duration-300" />
-                  </motion.span>
-                </span>
-              </Button>
-            </motion.div>
-          </Link>
-        </motion.div>
       </div>
     </section>
   );
