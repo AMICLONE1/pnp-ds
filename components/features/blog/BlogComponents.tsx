@@ -162,34 +162,3 @@ export function KeyTakeaways({ points }: { points: string[] }) {
         </div>
     );
 }
-
-// --- Lead Gen / Sticky Sidebar Box ---
-export function BlogSidebarCTA() {
-    return (
-        <div className="bg-blue-600 rounded-2xl p-8 text-white mb-8">
-            <h3 className="text-2xl font-bold mb-4">Ready to go solar?</h3>
-            <p className="text-blue-100 text-sm mb-6">Join thousands of families saving on sunlight.</p>
-            <div className="flex gap-2 mb-4">
-                <input
-                    type="text"
-                    placeholder="ZIP code"
-                    className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-sm w-full placeholder:text-white/50 focus:outline-none focus:bg-white/20"
-                />
-                <button className="bg-white text-blue-600 font-bold px-4 py-2 rounded-lg text-sm hover:bg-blue-50 transition-colors whitespace-nowrap">
-                    See solar prices
-                </button>
-            </div>
-            <div className="flex flex-col gap-2 text-[11px] text-blue-100">
-                <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3" /> Vetted installers
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3" /> Unbiased advice
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3" /> Completely free
-                </div>
-            </div>
-        </div>
-    );
-}
