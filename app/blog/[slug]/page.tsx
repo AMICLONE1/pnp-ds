@@ -9,7 +9,6 @@ import {
     SocialShare,
     TableOfContents,
     KeyTakeaways,
-    BlogSidebarCTA
 } from "@/components/features/blog/BlogComponents";
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
@@ -39,12 +38,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                             <SocialShare />
-                            <BlogMeta
-                                author={post.author}
-                                editor={post.editor}
-                                updatedDate={post.updatedDate}
-                                readingTime={post.readingTime}
-                            />
+                            
                         </div>
                     </div>
 
@@ -53,9 +47,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                         <aside className="lg:w-[280px] flex-shrink-0 order-2 lg:order-1">
                             <div className="lg:sticky lg:top-32">
                                 <TableOfContents items={post.toc || []} />
-                                <div className="hidden lg:block">
-                                    <BlogSidebarCTA />
-                                </div>
                             </div>
                         </aside>
 
@@ -84,7 +75,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
                             {/* Mobile CTA */}
                             <div className="lg:hidden mt-12">
-                                <BlogSidebarCTA />
                             </div>
                         </article>
                     </div>
