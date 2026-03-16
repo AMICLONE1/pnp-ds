@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { LandingHeader } from "@/components/layout/LandingHeader";
+import { HostHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import { motion } from "framer-motion";
 import {
-    DollarSign,
+    IndianRupee,
     Zap,
     Wrench,
     Home,
@@ -15,18 +15,14 @@ import {
     ArrowRight,
     CheckCircle,
     ChevronDown,
-    Phone,
-    Globe,
     Ruler,
     Building2,
     Sun,
 } from "lucide-react";
 
-const sectionIds = ["benefits", "how-it-works", "savings", "eligibility", "faq"];
-
 const benefits = [
     {
-        icon: DollarSign,
+        icon: IndianRupee,
         title: "Zero Capital Expenditure",
         desc: "No upfront cost whatsoever. PowerNetPro handles the entire investment — panels, inverters, mounting, wiring, and commissioning.",
         gradient: "from-gold/20 to-gold/10",
@@ -139,26 +135,7 @@ const trustItems = [
 ];
 
 export default function HostLandingPage() {
-    const [activeSection, setActiveSection] = useState("");
     const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const sections = document.querySelectorAll("section[id]");
-            let current = "";
-            sections.forEach((section) => {
-                const element = section as HTMLElement;
-                const sectionTop = element.offsetTop - 160;
-                if (window.scrollY >= sectionTop) {
-                    current = element.getAttribute("id") || "";
-                }
-            });
-            setActiveSection(current);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
 
     const toggleFaq = (index: number) => {
         setOpenFaq(openFaq === index ? null : index);
@@ -166,78 +143,24 @@ export default function HostLandingPage() {
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
-            {/* Shared site header */}
-            <LandingHeader />
+            {/* Host-specific header */}
+            <HostHeader />
 
-            {/* Secondary sub-navigation */}
-            <div className="fixed top-[96px] md:top-[112px] left-0 right-0 h-12 bg-white/95 backdrop-blur-md z-40 flex items-center justify-between px-6 md:px-10 border-b border-gray-200 shadow-sm">
-                <div className="flex items-center gap-1">
-                    <span className="hidden sm:inline-block text-xs font-bold text-gold bg-gold/15 px-3 py-1 rounded-md uppercase tracking-wider mr-2">
-                        Host
-                    </span>
-                    <ul className="flex items-center gap-0 list-none m-0 p-0 overflow-x-auto scrollbar-hide">
-                        {sectionIds.map((id) => (
-                            <li key={id}>
-                                <Link
-                                    href={`#${id}`}
-                                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                                    className={`text-xs font-semibold py-1.5 px-3 rounded-md transition-all duration-200 inline-block capitalize whitespace-nowrap ${activeSection === id
-                                        ? "text-gold bg-gold/15"
-                                        : "text-gray-500 hover:text-black hover:bg-gray-100"
-                                        }`}
-                                >
-                                    {id.replace(/-/g, " ")}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="flex items-center gap-2">
-                    <a
-                        href="tel:+918180861415"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold py-1.5 px-4 rounded-lg transition-all duration-200 text-gold border border-gold bg-transparent hover:bg-gold/10"
-                    >
-                        <Phone className="w-3 h-3" />
-                        Call Us
-                    </a>
-                    <Link
-                        href="#cta"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        className="text-xs font-bold py-2 px-4 inline-block rounded-lg transition-all duration-200 bg-gold text-black hover:bg-gold-light shadow-sm"
-                    >
-                        Get <span className="hidden sm:inline">a Free</span> Assessment
-                    </Link>
-                </div>
-            </div>
-
-            <main className="flex-1 mt-[144px] md:mt-[160px]">
+            <main className="flex-1 mt-[96px]">
                 {/* ============================================ */}
                 {/* HERO SECTION */}
                 {/* ============================================ */}
                 <section
                     id="overview"
                     className="relative overflow-hidden py-16 md:py-24 lg:py-32 px-4 md:px-8"
-                    style={{
-                        background:
-                            "linear-gradient(175deg, #0D2818 0%, #0A1F12 50%, #111 100%)",
-                    }}
                 >
-                    {/* Decorative glows */}
+                    {/* Background image */}
                     <div
-                        className="absolute top-[-200px] right-[-150px] w-[700px] h-[700px] pointer-events-none"
-                        style={{
-                            background:
-                                "radial-gradient(circle, rgba(255,184,0,0.15) 0%, transparent 70%)",
-                        }}
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: "url('/images/host_landing_page_hero_background.jpg')" }}
                     />
-                    <div
-                        className="absolute bottom-[-100px] left-[15%] w-[500px] h-[500px] pointer-events-none"
-                        style={{
-                            background:
-                                "radial-gradient(circle, rgba(76,175,80,0.12) 0%, transparent 70%)",
-                        }}
-                    />
+                    {/* Dark overlay */}
+                    <div className="absolute inset-0 bg-black/60" />
 
                     <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 relative z-10">
                         {/* Left content */}
@@ -400,7 +323,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* BENEFITS */}
                 {/* ============================================ */}
-                <section id="benefits" className="bg-white py-16 md:py-24 px-6 md:px-10">
+                <section id="benefits" className="bg-white py-12 md:py-16 px-6 md:px-10">
                     <div className="w-full mx-auto">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -472,7 +395,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 <section
                     id="how-it-works"
-                    className="bg-gradient-to-b from-gray-50 to-white py-16 md:py-24 px-6 md:px-10"
+                    className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 px-6 md:px-10"
                 >
                     <div className="w-full mx-auto">
                         <motion.div
@@ -545,7 +468,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* SAVINGS COMPARISON */}
                 {/* ============================================ */}
-                <section id="savings" className="bg-white py-16 md:py-24 px-6 md:px-10">
+                <section id="savings" className="bg-white py-12 md:py-16 px-6 md:px-10">
                     <div className="w-full mx-auto">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -657,7 +580,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 <section
                     id="eligibility"
-                    className="bg-gradient-to-b from-gray-50 to-white py-16 md:py-24 px-6 md:px-10"
+                    className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 px-6 md:px-10"
                 >
                     <div className="w-full mx-auto">
                         <motion.div
@@ -721,7 +644,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* FAQ */}
                 {/* ============================================ */}
-                <section id="faq" className="bg-white py-16 md:py-24 px-6 md:px-10 w-full">
+                <section id="faq" className="bg-white py-12 md:py-16 px-6 md:px-10 w-full">
                     <div className="w-full mx-auto flex items-center justify-center">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -793,8 +716,8 @@ export default function HostLandingPage() {
                         Get a free site assessment and a customised proposal for your property — no commitment required.
                     </p>
                     <div className="flex flex-wrap justify-center gap-3.5">
-                        <a href="tel:+918180861415" className="inline-flex items-center justify-center py-3.5 px-8 rounded-xl text-[15px] font-semibold transition-all duration-250 bg-[#D4A843] text-[#0A0A0A] hover:bg-[#c49a38] hover:-translate-y-[1px]">
-                            Call 8180 861 415
+                        <a href="https://wa.me/918180861415" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center py-3.5 px-8 rounded-xl text-[15px] font-semibold transition-all duration-250 bg-[#D4A843] text-[#0A0A0A] hover:bg-[#c49a38] hover:-translate-y-[1px]">
+                            Message 8180 861 415
                         </a>
                         <a href="https://www.powernetpro.com" className="inline-flex items-center justify-center py-3.5 px-8 rounded-xl text-[15px] font-semibold transition-all duration-250 bg-transparent text-white border-[1.5px] border-white/25 hover:border-white/50 hover:bg-white/5">
                             Visit powernetpro.com →
@@ -807,9 +730,6 @@ export default function HostLandingPage() {
                     <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
                         <div className="lg:col-span-2">
                             <Link href="/" className="flex items-center gap-2 mb-4 text-white no-underline w-fit">
-                                <div className="w-8 h-8 bg-[#D4A843] rounded-lg flex items-center justify-center font-bold text-sm text-[#0A0A0A]">
-                                    P
-                                </div>
                                 <span className="font-semibold text-[17px] tracking-tight">PowerNetPro</span>
                             </Link>
                             <p className="text-[14px] leading-[1.6] max-w-[280px]">
@@ -821,9 +741,9 @@ export default function HostLandingPage() {
                             <h5 className="text-white/30 text-[11px] font-semibold uppercase tracking-[1.5px] mb-4">Platform</h5>
                             <div className="flex flex-col gap-2.5">
                                 <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">For Subscribers</Link>
-                                <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">For Hosts</Link>
-                                <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">How It Works</Link>
-                                <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Pricing</Link>
+                                <Link href="/" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">For Hosts</Link>
+                                <Link href="#how-it-works" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">How It Works</Link>
+                                <Link href="#savings" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Pricing</Link>
                             </div>
                         </div>
 
@@ -831,9 +751,8 @@ export default function HostLandingPage() {
                             <h5 className="text-white/30 text-[11px] font-semibold uppercase tracking-[1.5px] mb-4">Company</h5>
                             <div className="flex flex-col gap-2.5">
                                 <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">About Us</Link>
-                                <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Blog</Link>
-                                <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Careers</Link>
-                                <Link href="#" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Contact</Link>
+                                <Link href="/blog" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Blog</Link>
+                                <Link href="/contact" className="text-white/50 hover:text-white text-[14px] transition-colors duration-200">Contact</Link>
                             </div>
                         </div>
 
@@ -848,7 +767,7 @@ export default function HostLandingPage() {
                     </div>
 
                     <div className="w-full mx-auto mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-[13px] gap-4">
-                        <span>© 2026 PowerNetPro LLP. All rights reserved.</span>
+                        <span>© 2026 PowerNetPro Pvt Ltd. All rights reserved.</span>
                         <span>Pune, Maharashtra, India</span>
                     </div>
                 </footer>

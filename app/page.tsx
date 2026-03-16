@@ -21,7 +21,7 @@ import { HowItWorksSection } from "@/components/features/landing/HowItWorksSecti
 import { CalculatorSection } from "@/components/features/landing/CalculatorSection";
 
 // Import client-only components - they handle SSR internally
-import { SmoothScrollProgress, CursorFollower } from "@/components/ui/modern-animations";
+import { SmoothScrollProgress } from "@/components/ui/modern-animations";
 
 // Import existing components that still work well
 import { UtilityCompatibilityChecker } from "@/components/features/landing/UtilityCompatibilityChecker";
@@ -47,9 +47,6 @@ export default function HomePage() {
       {/* Smooth Scroll Progress Indicator */}
       <SmoothScrollProgress />
 
-      {/* Custom Cursor (desktop only) */}
-      <CursorFollower />
-
       {/* Skip to main content link for accessibility */}
       <a
         href="#main-content"
@@ -71,7 +68,7 @@ export default function HomePage() {
         </section>
 
         {/* STATS SECTION - New Animated Stats */}
-        <StatsSection />
+        {/* <StatsSection /> */}
 
         {/* FEATURES / BENEFITS - New Category-based Design */}
         <BenefitsSection />
@@ -86,7 +83,7 @@ export default function HomePage() {
         {/* <Testimonials /> */}
 
         {/* UTILITY COMPATIBILITY */}
-        <section id="utilities" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-white via-white to-white relative">
+        <section id="utilities" className="py-12 sm:py-16 md:py-14 bg-gradient-to-b from-white via-white to-white relative">
           <div className="container mx-auto px-4">
             <ScrollFade direction="up">
               <UtilityCompatibilityChecker />
@@ -95,7 +92,7 @@ export default function HomePage() {
         </section>
 
         {/* TRUST SECTION */}
-        <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-white via-white to-white text-black relative overflow-hidden">
+        <section className="py-12 sm:py-16 md:py-14 bg-gradient-to-br from-white via-white to-white text-black relative overflow-hidden">
           <GradientMesh className="absolute inset-0 opacity-20" />
 
           <div className="container mx-auto px-4 relative z-10">
@@ -226,7 +223,7 @@ export default function HomePage() {
         <BlogSection />
 
         {/* FAQ SECTION */}
-        <section className="py-12 sm:py-16 md:py-20 bg-white relative overflow-hidden">
+        <section id="faq" className="py-12 sm:py-16 md:py-14 bg-white relative overflow-hidden">
           <DotPattern className="absolute inset-0 opacity-10" />
           <div className="container mx-auto px-4 relative z-10">
             <motion.div
@@ -284,7 +281,7 @@ export default function HomePage() {
         </section>
 
         {/* FINAL CTA */}
-        <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
+        <section className="py-16 sm:py-24 md:py-20 relative overflow-hidden">
           <LightweightAuroraBackground className="absolute inset-0" />
           <div className="absolute inset-0 bg-gradient-to-b from-gold/90 via-gold to-gold-dark/90" />
 
@@ -308,7 +305,7 @@ export default function HomePage() {
               </div>
 
               <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-heading font-bold mb-6 text-black">
-                Join 1,247 Families Who<br />Switched This Month
+                Join Families Who<br />Switched To Digital Solar This Month
               </h2>
               <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg sm:text-xl md:text-2xl text-black/80 mb-8 md:mb-10 max-w-2xl mx-auto">
                 Most people finish setup during their coffee break. ☕
@@ -349,7 +346,7 @@ export default function HomePage() {
       </main>
 
       <Footer />
-      <StickyCTA />
+      {/* <StickyCTA /> */}
     </div>
   );
 }

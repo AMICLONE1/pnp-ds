@@ -9,7 +9,7 @@ import {
   Bolt, 
   Leaf, 
   TrendingUp, 
-  CircleDollarSign, 
+  IndianRupee,
   ArrowRight,
   Sparkles,
   Calculator
@@ -67,7 +67,7 @@ export function CalculatorSection() {
   };
 
   return (
-    <section className="relative py-10 sm:py-14 md:py-20 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden">
+    <section className="relative py-12 sm:py-16 md:py-14 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-gold/5 rounded-full blur-3xl animate-pulse" />
@@ -170,7 +170,7 @@ export function CalculatorSection() {
                       className="text-[11px] sm:text-xs md:text-sm text-gray-600 font-semibold mb-1.5 sm:mb-2 md:mb-3 flex items-center gap-1 sm:gap-1.5 md:gap-2"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
-                      <CircleDollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gold flex-shrink-0" />
+                      <IndianRupee className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-gold flex-shrink-0" />
                       <span className="whitespace-nowrap">Monthly Electricity Bill</span>
                     </label>
                     <div className={cn(
@@ -318,7 +318,7 @@ export function CalculatorSection() {
                 {/* Digital Solar Features - hidden on small screens, shown on lg+ in left column */}
                 <div className="hidden lg:flex flex-row gap-2 sm:gap-3 md:gap-4 mt-2">
                   <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-amber-50 border border-amber-200 flex-1">
-                    <CircleDollarSign className="w-5 h-5 text-gold flex-shrink-0" />
+                    <IndianRupee className="w-5 h-5 text-gold flex-shrink-0" />
                     <div>
                       <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Lower Bills</p>
                       <p className="text-gray-500 text-[9px] sm:text-[10px]">Save up to 100% on electricity</p>
@@ -443,7 +443,7 @@ export function CalculatorSection() {
             {/* Digital Solar Features - shown on small screens only, after results */}
             <div className="flex lg:hidden flex-col sm:flex-row gap-2 sm:gap-3 p-3 sm:p-4 pt-3">
               <div className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-amber-50 border border-amber-200 flex-1">
-                <CircleDollarSign className="w-5 h-5 text-gold flex-shrink-0" />
+                <IndianRupee className="w-5 h-5 text-gold flex-shrink-0" />
                 <div>
                   <p className="text-black font-semibold text-xs sm:text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>Lower Bills</p>
                   <p className="text-gray-500 text-[9px] sm:text-[10px]">Save up to 100% on electricity</p>
