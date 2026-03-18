@@ -78,6 +78,7 @@ export async function updateSession(request: NextRequest) {
     "/terms",
     "/cookies",
     "/host-landing",
+    "/reserve"
   ];
   const isPublicPath =
     publicPaths.includes(request.nextUrl.pathname) ||

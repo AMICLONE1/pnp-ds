@@ -259,7 +259,7 @@ export function LandingHeader() {
                   About Us
                 </Link>
                 <div className="w-px h-5 bg-gold/30" />
-                <Link href="/#projects" className="text-black hover:text-gold transition-all duration-300 font-medium text-sm whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-gold/5">
+                <Link href="/reserve" className="text-black hover:text-gold transition-all duration-300 font-medium text-sm whitespace-nowrap px-3 py-1.5 rounded-lg hover:bg-gold/5">
                   Projects
                 </Link>
                 <div className="w-px h-5 bg-gold/30" />
