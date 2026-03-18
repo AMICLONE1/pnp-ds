@@ -16,7 +16,7 @@ const ADMIN_ROUTES = ["/admin"];
 const ADMIN_API_ROUTES = ["/api/admin"];
 
 // User-only routes that HOST and ADMIN users cannot access
-const USER_ONLY_ROUTES = ["/dashboard", "/bills", "/reserve", "/connect"];
+const USER_ONLY_ROUTES = ["/dashboard", "/bills", "/connect"];
 
 // Login pages should be accessible without role checks
 const LOGIN_PAGES = ["/login", "/host/login", "/admin/login"];
