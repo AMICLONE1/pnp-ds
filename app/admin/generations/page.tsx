@@ -7,7 +7,8 @@ import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { GenerationTrendChart } from "@/components/admin/charts/GenerationTrendChart";
 import { MiniGenerationChart } from "@/components/admin/charts/MiniGenerationChart";
 import { useGenerations } from "@/lib/utils/admin/useGenerations";
-import type { ChartPeriod } from "@/lib/data/generationsMockData";
+import type { ChartPeriod } from "@/lib/data/generations";
+import { AdminPageHeader } from "@/components/admin/shared/AdminPageHeader";
 import {
     Zap,
     Sun,
@@ -134,20 +135,19 @@ export default function AdminGenerationsPage() {
     return (
         <div className="p-4 sm:p-6 lg:p-8 space-y-6">
             {/* Header */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-            >
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-black">Generation Management</h1>
-                    <p className="text-gray-600 mt-1 text-sm sm:text-base">Monitor solar generation, performance, and environmental impact</p>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl">
-                    <Zap className="w-4 h-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-700">{stats.activeProjects} Active Projects</span>
-                </div>
-            </motion.div>
+            <AdminPageHeader
+                title="Generation Management"
+                subtitle="Monitor solar generation, performance, and environmental impact"
+                breadcrumbs={[
+                    { label: "Admin", href: "/admin" },
+                    { label: "Generations" },
+                ]}
+                badge={
+                    <span className="px-2.5 py-1 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold rounded-full">
+                        {stats.activeProjects} Active Projects
+                    </span>
+                }
+            />
 
             {/* Summary Stats Cards — 6 columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">

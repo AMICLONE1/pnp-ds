@@ -43,6 +43,17 @@ export function sanitizeConsumerNumber(consumerNumber: string): string {
 }
 
 /**
+ * Sanitize free-text search terms used in query filters.
+ */
+export function sanitizeSearchTerm(input: string): string {
+  return sanitizeText(input)
+    .replace(/[^a-zA-Z0-9@.\-\s+]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 100);
+}
+
+/**
  * Sanitize numeric input
  */
 export function sanitizeNumber(input: string | number): number {

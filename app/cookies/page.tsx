@@ -257,14 +257,14 @@ export default function CookiesPage() {
                       <Mail className="h-5 w-5 text-gold mt-1" />
                       <div>
                         <p className="font-semibold text-black mb-1">Email:</p>
-                        <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a>
+                        <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Phone className="h-5 w-5 text-gold mt-1" />
                       <div>
                         <p className="font-semibold text-black mb-1">Phone:</p>
-                        <a href="tel:+918180861415" className="text-gold hover:underline">+91 8180 861 415</a>
+                        <a href="tel:+918805881601" className="text-gold hover:underline">+91 8805 881 601</a>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">

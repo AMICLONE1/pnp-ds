@@ -3,7 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 
 /**
  * POST /api/bills/manual
- * Manually create a bill (for testing or when BBPS is not available)
+ *
+ * User submits a DISCOM bill for admin review. Credits are NOT applied here —
+ * an admin must approve via /api/admin/bills/[id]/review, at which point the
+ * bill becomes PAID and any PENDING credits are auto-applied.
+ *
+ * Body: { bill_number, amount, due_date, discom, proof_url }
  */
 export async function POST(request: Request) {
   try {
@@ -16,162 +21,101 @@ export async function POST(request: Request) {
 
     if (authError || !user) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "UNAUTHORIZED", message: "Not authenticated" },
-        },
+        { success: false, error: { code: "UNAUTHORIZED", message: "Not authenticated" } },
         { status: 401 }
       );
     }
 
     const body = await request.json();
-    const { bill_number, amount, due_date, bill_month, bill_year, discom } = body;
+    const { bill_number, amount, due_date, discom, proof_url } = body;
 
-    // Validation
-    if (!bill_number || !amount || !due_date || !discom) {
+    if (!amount || !due_date || !discom || !proof_url) {
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Missing required fields: bill_number, amount, due_date, discom",
+            message: "amount, due_date, discom and proof_url are required",
           },
         },
         { status: 400 }
       );
     }
 
-    // Check if bill already exists
-    const { data: existingBill } = await supabase
-      .from("bills")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("bill_number", bill_number)
-      .single();
-
-    if (existingBill) {
+    const numericAmount = Number(amount);
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
       return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "BILL_EXISTS",
-            message: "A bill with this number already exists",
-          },
-        },
-        { status: 409 }
+        { success: false, error: { code: "VALIDATION_ERROR", message: "Invalid amount" } },
+        { status: 400 }
       );
     }
 
-    // Create bill - only use fields that exist in schema
-    const billInsert: any = {
-      user_id: user.id,
-      bill_number: bill_number || null,
-      amount: Number(amount),
-      due_date,
-      discom,
-      status: "PENDING",
-    };
+    // Guard: the proof must live under the user's own folder in bill-proofs.
+    // Path convention set by the upload helper: `${user.id}/${uuid}.${ext}`.
+    if (!proof_url.startsWith(`${user.id}/`)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "FORBIDDEN", message: "Proof path does not belong to you" },
+        },
+        { status: 403 }
+      );
+    }
 
-    // Note: bill_month and bill_year are not in the current schema
-    // If needed, they can be added to the schema or stored in metadata
+    // Prevent duplicate SUBMITTED bills for the same bill_number.
+    if (bill_number) {
+      const { data: existing } = await supabase
+        .from("bills")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("bill_number", bill_number)
+        .maybeSingle();
+      if (existing) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: { code: "BILL_EXISTS", message: "A bill with this number already exists" },
+          },
+          { status: 409 }
+        );
+      }
+    }
 
     const { data: bill, error: billError } = await supabase
       .from("bills")
-      .insert(billInsert)
+      .insert({
+        user_id: user.id,
+        bill_number: bill_number || null,
+        amount: numericAmount,
+        due_date,
+        discom,
+        status: "PENDING",
+        review_status: "SUBMITTED",
+        proof_url,
+        submitted_at: new Date().toISOString(),
+      })
       .select()
       .single();
 
     if (billError) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "DB_ERROR", message: billError.message },
-        },
+        { success: false, error: { code: "DB_ERROR", message: billError.message } },
         { status: 500 }
       );
     }
 
-    // Auto-apply credits if available
-    const { data: availableCredits } = await supabase
-      .from("credit_ledgers")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("status", "PENDING")
-      .order("created_at", { ascending: true });
-
-    if (availableCredits && availableCredits.length > 0) {
-      let remainingAmount = Number(amount);
-      const creditsToApply: any[] = [];
-
-      for (const credit of availableCredits) {
-        if (remainingAmount <= 0) break;
-        const creditAmount = Number(credit.amount);
-        const appliedAmount = Math.min(creditAmount, remainingAmount);
-
-        creditsToApply.push({
-          id: credit.id,
-          appliedAmount,
-        });
-
-        remainingAmount -= appliedAmount;
-      }
-
-      if (creditsToApply.length > 0) {
-        const totalCreditsApplied = creditsToApply.reduce(
-          (sum, c) => sum + c.appliedAmount,
-          0
-        );
-
-        // Calculate final amount (not stored in DB, calculated on the fly)
-        const finalAmount = Number(amount) - totalCreditsApplied;
-        const newStatus = totalCreditsApplied >= Number(amount) ? "PAID" : "PENDING";
-
-        await supabase
-          .from("bills")
-          .update({
-            credits_applied: totalCreditsApplied,
-            status: newStatus,
-            // Note: final_amount is not in schema, calculate it when needed
-            // final_amount = amount - credits_applied
-          })
-          .eq("id", bill.id);
-
-        for (const credit of creditsToApply) {
-          await supabase
-            .from("credit_ledgers")
-            .update({
-              status: "APPLIED",
-              ref_id: bill.id,
-              ref_type: "bill",
-            })
-            .eq("id", credit.id);
-        }
-      }
-    }
-
-    // Fetch updated bill
-    const { data: updatedBill } = await supabase
-      .from("bills")
-      .select("*")
-      .eq("id", bill.id)
-      .single();
-
     return NextResponse.json({
       success: true,
-      data: updatedBill,
-      message: "Bill added and credits applied successfully",
+      data: bill,
+      message: "Bill submitted for review. We'll notify you once an admin approves it.",
     });
   } catch (error: any) {
     return NextResponse.json(
       {
         success: false,
-        error: {
-          code: "SERVER_ERROR",
-          message: error.message || "Failed to add bill",
-        },
+        error: { code: "SERVER_ERROR", message: error.message || "Failed to submit bill" },
       },
       { status: 500 }
     );
   }
 }
-

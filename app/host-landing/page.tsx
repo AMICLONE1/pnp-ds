@@ -716,8 +716,8 @@ export default function HostLandingPage() {
                         Get a free site assessment and a customised proposal for your property — no commitment required.
                     </p>
                     <div className="flex flex-wrap justify-center gap-3.5">
-                        <a href="https://wa.me/918180861415" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center py-3.5 px-8 rounded-xl text-[15px] font-semibold transition-all duration-250 bg-[#D4A843] text-[#0A0A0A] hover:bg-[#c49a38] hover:-translate-y-[1px]">
-                            Message 8180 861 415
+                        <a href="https://wa.me/918805881601" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center py-3.5 px-8 rounded-xl text-[15px] font-semibold transition-all duration-250 bg-[#D4A843] text-[#0A0A0A] hover:bg-[#c49a38] hover:-translate-y-[1px]">
+                            Message 8805 881 601
                         </a>
                         <a href="https://www.powernetpro.com" className="inline-flex items-center justify-center py-3.5 px-8 rounded-xl text-[15px] font-semibold transition-all duration-250 bg-transparent text-white border-[1.5px] border-white/25 hover:border-white/50 hover:bg-white/5">
                             Visit powernetpro.com →

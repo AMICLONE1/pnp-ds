@@ -35,6 +35,12 @@ export const SOLAR_CONSTANTS = {
   
   // Trees equivalent per ton of CO2
   treesPerTonCO2: 45,
+
+  // Platform fee (one-time, in ₹)
+  platformFee: 1000,
+
+  // GST rate (18%)
+  gstRate: 0.18,
 };
 
 // Project data - matching database structure
@@ -47,67 +53,7 @@ export const SOLAR_PROJECTS = {
     ratePerKwh: 7,
     location: 'Cuttack, Odisha',
     state: 'Odisha',
-    description: 'A 100kW community solar project located in Vedvyas, Cuttack. This project provides reliable solar energy generation with 75% secured generation guarantee. Perfect for residential users looking to offset their electricity bills.',
-  },
-  parshuram: {
-    id: '550e8400-e29b-41d4-a716-446655440002',
-    spvId: 'SPV-PNP-002',
-    name: 'Parshuram Solar Plant',
-    totalKw: 250,
-    ratePerKwh: 7,
-    location: 'Mumbai, Maharashtra',
-    state: 'Maharashtra',
-    description: 'A 250kW solar power plant in Mumbai offering higher capacity for urban energy needs. This project is ideal for users with larger electricity consumption. Features real-time monitoring and 75% guaranteed generation coverage.',
-  },
-  surya: {
-    id: '550e8400-e29b-41d4-a716-446655440003',
-    spvId: 'SPV-PNP-003',
-    name: 'Surya Solar Farm',
-    totalKw: 500,
-    ratePerKwh: 7,
-    location: 'Ahmedabad, Gujarat',
-    state: 'Gujarat',
-    description: 'A large-scale 500kW solar farm in Gujarat, one of India\'s sunniest states. Ideal for commercial and industrial users seeking significant electricity bill reductions with maximum solar generation potential.',
-  },
-  thar: {
-    id: '550e8400-e29b-41d4-a716-446655440004',
-    spvId: 'SPV-PNP-004',
-    name: 'Thar Desert Solar',
-    totalKw: 750,
-    ratePerKwh: 7,
-    location: 'Jodhpur, Rajasthan',
-    state: 'Rajasthan',
-    description: 'A 750kW solar installation in the Thar Desert region, leveraging Rajasthan\'s exceptional solar irradiance. Perfect for large-scale energy needs with optimal sun exposure year-round.',
-  },
-  kaveri: {
-    id: '550e8400-e29b-41d4-a716-446655440005',
-    spvId: 'SPV-PNP-005',
-    name: 'Kaveri Solar Hub',
-    totalKw: 200,
-    ratePerKwh: 7,
-    location: 'Bangalore, Karnataka',
-    state: 'Karnataka',
-    description: 'A 200kW solar hub serving the tech capital of India. Designed for IT professionals and startups looking to reduce operational costs while supporting renewable energy adoption.',
-  },
-  marina: {
-    id: '550e8400-e29b-41d4-a716-446655440006',
-    spvId: 'SPV-PNP-006',
-    name: 'Marina Solar Station',
-    totalKw: 300,
-    ratePerKwh: 7,
-    location: 'Chennai, Tamil Nadu',
-    state: 'Tamil Nadu',
-    description: 'A 300kW coastal solar station near Chennai. Engineered for the tropical climate with corrosion-resistant panels. Ideal for residential and commercial users in South India.',
-  },
-  ganga: {
-    id: '550e8400-e29b-41d4-a716-446655440007',
-    spvId: 'SPV-PNP-007',
-    name: 'Ganga Plains Solar',
-    totalKw: 400,
-    ratePerKwh: 7,
-    location: 'Lucknow, Uttar Pradesh',
-    state: 'Uttar Pradesh',
-    description: 'A 400kW solar project serving the populous Ganga plains region. Affordable solar energy for millions of households in North India with reliable generation and easy accessibility.',
+    description: 'A 100kW community solar project located in Vedvyas, Cuttack. This project provides reliable solar generation and a clean billing reference for the current host.',
   },
 };
 
@@ -116,10 +62,6 @@ export const SOLAR_PROJECTS_LIST = Object.values(SOLAR_PROJECTS);
 
 // Get a featured project (first one by default, or random)
 export function getFeaturedProject(random = false) {
-  if (random) {
-    const index = Math.floor(Math.random() * SOLAR_PROJECTS_LIST.length);
-    return SOLAR_PROJECTS_LIST[index];
-  }
   return SOLAR_PROJECTS.vedvyas;
 }
 

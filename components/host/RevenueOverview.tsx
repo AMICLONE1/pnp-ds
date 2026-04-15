@@ -8,15 +8,19 @@ import {
   IndianRupee,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_REVENUE_DATA } from "@/lib/utils/host/data";
+import { GenerationHistory } from "@/lib/utils/host/useDashboard";
 
-export function RevenueOverview(){
+interface RevenueOverviewProps {
+  generationHistory: GenerationHistory[];
+}
+
+export function RevenueOverview({ generationHistory }: RevenueOverviewProps) {
   const chartData = {
-    labels: MOCK_REVENUE_DATA.map((d) => d.month),
+    labels: generationHistory.map((d) => d.month),
     datasets: [
       {
-        label: "Revenue (₹)",
-        data: MOCK_REVENUE_DATA.map((d) => d.amount),
+        label: "Generation (kWh)",
+        data: generationHistory.map((d) => d.kwh),
         borderColor: "#FFB800",
         backgroundColor: "rgba(255, 184, 0, 0.08)",
         fill: true,

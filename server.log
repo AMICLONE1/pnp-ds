@@ -1,0 +1,51 @@
+
+> digital-solar@2.0.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · instrumentationHook
+
+ ✓ Starting...
+ ○ Compiling /instrumentation ...
+ ✓ Compiled /instrumentation in 1298ms (20 modules)
+ ✓ Ready in 7.1s
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 567ms (125 modules)
+ ○ Compiling / ...
+
+
+#
+# Fatal process out of memory: Zone
+#
+----- Native stack trace -----
+
+ 1: 00007FF6EEFD1427 
+ 2: 00007FF6EEEA5D3F 
+ 3: 00007FF6F010BC16 
+ 4: 00007FF6EFA92D41 
+ 5: 00007FF6EF575A4B 
+ 6: 00007FF6F034B774 
+ 7: 00007FF6F034A22C 
+ 8: 00007FF6F03501CF 
+ 9: 00007FF6F034E1AC 
+10: 00007FF6F025B227 
+11: 00007FF6F022DA01 
+12: 00007FF6F025AE18 
+13: 00007FF6F025B5CE 
+14: 00007FF6F025B2B2 
+15: 00007FF6F022F5ED 
+16: 00007FF6F022B335 
+17: 00007FF6F022606A 
+18: 00007FF6EFA10074 
+19: 00007FF6EF9D6C52 
+20: 00007FF6EFC97B96 
+21: 00007FF6EEEA8AC0 
+22: 00007FF6EF032263 
+23: 00007FF6F0820BCB 
+24: 00007FFF0540E8D7 BaseThreadInitThunk+23
+25: 00007FFF06C6C48C RtlUserThreadStart+44
+[?25h

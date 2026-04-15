@@ -11,7 +11,7 @@ interface AdminUser {
   name: string | null;
   email: string;
   phone: string | null;
-  role: "USER" | "ADMIN";
+  role: "USER" | "ADMIN" | "HOST";
   kyc_status: "PENDING" | "SUBMITTED" | "VERIFIED" | "REJECTED";
   state: string | null;
   discom: string | null;
@@ -33,7 +33,7 @@ interface EditingUser {
   name: string;
   email: string;
   phone: string;
-  role: "USER" | "ADMIN";
+  role: "USER" | "ADMIN" | "HOST";
   kyc_status: "PENDING" | "SUBMITTED" | "VERIFIED" | "REJECTED";
   state: string;
   discom: string;
@@ -268,6 +268,9 @@ export function useUsers(){
       const getRoleBadge = (role: string) => {
         if (role === "ADMIN") {
           return { bg: "bg-purple-100", text: "text-purple-700", label: "Admin" };
+        }
+        if (role === "HOST") {
+          return { bg: "bg-emerald-100", text: "text-emerald-700", label: "Host" };
         }
         return { bg: "bg-gray-100", text: "text-gray-700", label: "User" };
       };

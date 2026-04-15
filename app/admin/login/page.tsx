@@ -22,9 +22,11 @@ import {
     Activity,
 } from "lucide-react";
 
+const configuredAdminEmail = process.env.NEXT_PUBLIC_ADMIN_LOGIN_EMAIL?.trim().toLowerCase() || "";
+
 export default function AdminLoginPage() {
     const router = useRouter();
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(configuredAdminEmail);
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -48,9 +50,16 @@ export default function AdminLoginPage() {
             return;
         }
 
+        const normalizedEmail = email.trim().toLowerCase();
+        if (configuredAdminEmail && normalizedEmail !== configuredAdminEmail) {
+            setError("Use the dedicated admin email issued for this deployment.");
+            setLoading(false);
+            return;
+        }
+
         const supabase = getSupabase();
         const { data, error: authError } = await supabase.auth.signInWithPassword({
-            email: email.trim().toLowerCase(),
+            email: normalizedEmail,
             password,
         });
 
@@ -98,7 +107,11 @@ export default function AdminLoginPage() {
             } else {
                 // Not an admin — sign them out and show error
                 await supabase.auth.signOut();
-                setError("This account does not have Admin access.");
+                setError(
+                    roleResult.error === "ADMIN_EMAIL_MISMATCH"
+                        ? "Use the dedicated admin account configured for this portal."
+                        : "This account does not have Admin access."
+                );
                 setLoading(false);
                 return;
             }
@@ -215,15 +228,21 @@ export default function AdminLoginPage() {
                                         </label>
                                         <Input
                                             type="email"
-                                            placeholder="admin@powernet.pro"
+                                            placeholder={configuredAdminEmail || "admin@powernet.pro"}
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
                                             disabled={loading}
                                             autoComplete="off"
                                             autoFocus
-                                            className="h-12 rounded-xl"
+                                            readOnly={Boolean(configuredAdminEmail)}
+                                            className={`h-12 rounded-xl ${configuredAdminEmail ? "bg-gray-50" : ""}`}
                                         />
+                                        {configuredAdminEmail && (
+                                            <p className="mt-2 text-xs text-gray-500">
+                                                Admin sign-in is locked to the configured account for this deployment.
+                                            </p>
+                                        )}
                                     </div>
                                     <div>
                                         <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">

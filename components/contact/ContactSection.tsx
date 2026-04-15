@@ -1,6 +1,6 @@
+"use client";
+
 import { useState } from "react";
-import { LandingHeader } from "@/components/layout/LandingHeader";
-import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,20 +16,42 @@ export default function ContactSection(){
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+        setError(null);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
 
-    setLoading(false);
-    setSubmitted(true);
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+            const result = await response.json();
 
-    // Reset success message after 5 seconds
-    setTimeout(() => setSubmitted(false), 5000);
+            if (!response.ok) {
+                throw new Error(result?.error?.message || "Failed to send message");
+            }
+
+            if (result?.deliveryMode === "mailto" && result?.mailtoUrl) {
+                window.location.href = result.mailtoUrl;
+            }
+
+            setSubmitted(true);
+            setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+
+            // Reset success message after 5 seconds
+            setTimeout(() => setSubmitted(false), 5000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to send your message.");
+        } finally {
+            setLoading(false);
+        }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -57,7 +79,7 @@ export default function ContactSection(){
                             </div>
                             <div>
                             <h3 className="font-semibold text-black mb-1">Email</h3>
-                            <a href="mailto:omkarkolhe912@gmail.com" className="text-black hover:underline">omkarkolhe912@gmail.com</a>
+                            <a href="mailto:info@powernetpro.com" className="text-black hover:underline">info@powernetpro.com</a>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -66,7 +88,7 @@ export default function ContactSection(){
                             </div>
                             <div>
                             <h3 className="font-semibold text-black mb-1">Phone</h3>
-                            <a href="tel:+918180861415" className="text-black hover:underline">+91 8180 861 415</a>
+                            <a href="tel:+918805881601" className="text-black hover:underline">+91 8805 881 601</a>
                             <p className="text-sm text-gray-600 mt-1">Mon - Fri, 9:00 AM - 6:00 PM IST</p>
                             </div>
                         </div>
@@ -102,13 +124,18 @@ export default function ContactSection(){
                         <CardDescription className="text-gray-600 font-medium">Fill out the form below and we&apos;ll get back to you</CardDescription>
                         </CardHeader>
                         <CardContent className="pt-0">
+                        {error ? (
+                            <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                            {error}
+                            </div>
+                        ) : null}
                         {submitted ? (
                             <div className="p-6 bg-green-50 border border-green-200 rounded-2xl text-center">
                             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Send className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="text-lg font-semibold text-green-800 mb-2">Message Sent Successfully!</h3>
-                            <p className="text-green-700">We&apos;ve received your message and will get back to you soon.</p>
+                            <p className="text-green-700">We&apos;ve sent your message to info@powernetpro.com and will get back to you soon.</p>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-4">

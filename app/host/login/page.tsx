@@ -1,16 +1,15 @@
 "use client";
 
 export const dynamic = 'force-dynamic';
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { LandingHeader } from "@/components/layout/LandingHeader";
-import { Footer } from "@/components/layout/footer";
+import { HostAuthHeader } from "@/components/layout/HostAuthHeader";
 import {
   Sun,
   Mail,
@@ -23,14 +22,22 @@ import {
   Users,
 } from "lucide-react";
 
-export default function HostLoginPage() {
+function HostLoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hostError = searchParams.get("error");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const getSupabase = () => createClient();
+
+  useEffect(() => {
+    if (hostError === "host_inactive") {
+      setError("This host account is inactive. Please ask an administrator to reactivate it.");
+    }
+  }, [hostError]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +106,15 @@ export default function HostLoginPage() {
       } else {
         // Not a host — sign them out and show error
         await supabase.auth.signOut();
-        setError("This account does not have Host access. Please use the correct login page for your role.");
+        if (roleResult.error === "HOST_INACTIVE") {
+          setError("This host account is inactive. Please ask an administrator to reactivate it.");
+        } else if (roleResult.error === "HOST_NOT_FOUND") {
+          setError("This account is not provisioned as a host yet.");
+        } else if (roleResult.error === "ACCOUNT_DISABLED") {
+          setError("This account has been disabled.");
+        } else {
+          setError("This account does not have Host access. Please use the correct login page for your role.");
+        }
         setLoading(false);
         return;
       }
@@ -112,7 +127,7 @@ export default function HostLoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <LandingHeader />
+      <HostAuthHeader />
       <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-offwhite via-white to-white/5 pt-28 pb-12 px-4">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
           {/* Left Side - Host Benefits */}
@@ -203,7 +218,7 @@ export default function HostLoginPage() {
                   transition={{ delay: 0.4 }}
                   className="relative text-black/70 text-sm mt-1"
                 >
-                  Sign in to your Host Partner account
+                  Sign in with the username and password issued by your administrator
                 </motion.p>
               </div>
 
@@ -221,7 +236,7 @@ export default function HostLoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       disabled={loading}
-                      autoComplete="off"
+                      autoComplete="username"
                       autoFocus
                       className="h-12 rounded-xl"
                     />
@@ -238,7 +253,7 @@ export default function HostLoginPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       disabled={loading}
-                      autoComplete="off"
+                      autoComplete="current-password"
                       className="h-12 rounded-xl"
                     />
                   </div>
@@ -280,9 +295,11 @@ export default function HostLoginPage() {
 
                 <div className="mt-6 pt-6 border-t border-gray-100">
                   <p className="text-center text-sm text-gray-500">
-                    Not a host partner?{" "}
-                    <Link href="/login" className="text-black hover:underline font-semibold">
-                      User Login
+                    Accounts are created by the admin team. No self-signup is available.
+                  </p>
+                  <p className="text-center text-sm mt-3">
+                    <Link href="/host-landing" className="text-black hover:underline font-semibold">
+                      Back to Host Landing
                     </Link>
                   </p>
                 </div>
@@ -291,7 +308,16 @@ export default function HostLoginPage() {
           </motion.div>
         </div>
       </main>
-      <Footer />
     </div>
+  );
+}
+
+export default function HostLoginPage() {
+  return (
+    <Suspense
+      fallback={<div className="min-h-screen bg-gradient-to-br from-offwhite via-white to-white/5" />}
+    >
+      <HostLoginContent />
+    </Suspense>
   );
 }

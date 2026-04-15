@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { CommandPalette } from "@/components/admin/shared/CommandPalette";
 import { Sun, Menu } from "lucide-react";
 
 export default function AdminLayout({
@@ -42,6 +43,8 @@ export default function AdminLayout({
 
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
+
+      <CommandPalette />
     </div>
   );
 }

@@ -7,6 +7,24 @@ import { StatusBadge } from "./StatusBadge";
 import { BILLING_HISTORY } from "./data";
 
 export function BillingHistoryTable() {
+  // Calculate tax and other amounts from BILLING_HISTORY
+  const bills = BILLING_HISTORY.map((bill) => {
+    const baseAmount = bill.generation * bill.rate;
+    const cgst = baseAmount * 0.09;
+    const sgst = baseAmount * 0.09;
+    const tds = baseAmount * 0.02;
+    const netPayable = baseAmount + cgst + sgst - tds + bill.adjustments;
+
+    return {
+      ...bill,
+      baseAmount,
+      cgst,
+      sgst,
+      tds,
+      netPayable,
+    };
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -40,7 +58,7 @@ export function BillingHistoryTable() {
                 </tr>
               </thead>
               <tbody>
-                {BILLING_HISTORY.map((bill, i) => (
+                {bills.map((bill, i) => (
                   <motion.tr
                     key={bill.month}
                     initial={{ opacity: 0, x: -10 }}

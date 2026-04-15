@@ -4,7 +4,6 @@ import { useRef, useState, useEffect, useMemo, memo, useCallback } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Play,
   Leaf,
   Shield,
   ChevronDown,
@@ -391,10 +390,10 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.2, duration: 0.5 }}
-              className="flex flex-col sm:flex-row gap-3 justify-center w-full px-4 sm:px-0 sm:w-auto"
+              className="flex justify-center w-full px-4 sm:px-0"
               style={{ fontFamily: "'Open Sans', sans-serif" }}
             >
-              <Link href="/waitlist" className="w-full sm:w-auto">
+              <Link href="/signup" className="w-full sm:w-auto">
                 <Button
                   variant="secondary"
                   size="lg"
@@ -403,21 +402,9 @@ export function HeroSection() {
                 >
                   {/* Button shine effect */}
                   <span className="relative z-10 flex items-center justify-center">
-                    Join Waitlist
+                    Get Started
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </span>
-                </Button>
-              </Link>
-
-              <Link href="/#how-it-works" className="w-full sm:w-auto">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 border-2 border-gray-300 text-black hover:bg-gray-100 backdrop-blur-sm font-semibold group"
-                  style={{ fontFamily: "'Open Sans', sans-serif" }}
-                >
-                  <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform" />
-                  See How It Works
                 </Button>
               </Link>
             </motion.div>

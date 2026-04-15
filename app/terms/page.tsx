@@ -3,7 +3,7 @@
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Scale, AlertCircle, CheckCircle, DollarSign, Shield, Users, Zap, CreditCard, TrendingUp, BarChart3, Phone, Mail, MapPin, Info, Gavel, Globe, RefreshCw, XCircle, Lock } from "lucide-react";
+import { FileText, Scale, AlertCircle, CheckCircle, IndianRupee, Shield, Users, Zap, CreditCard, TrendingUp, BarChart3, Phone, Mail, MapPin, Info, Gavel, Globe, RefreshCw, XCircle, Lock } from "lucide-react";
 
 export default function TermsPage() {
   return (
@@ -178,7 +178,7 @@ export default function TermsPage() {
                 {/* Section 4 */}
                 <div>
                   <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <DollarSign className="h-6 w-6 text-gold" />
+                    <IndianRupee className="h-6 w-6 text-gold" />
                     4. Pricing, Payments & Fees
                   </h2>
                   <h3 className="text-xl font-semibold text-black mb-3 mt-4">4.1 Transparent Pricing Structure</h3>
@@ -539,7 +539,7 @@ export default function TermsPage() {
                   <p className="text-gray-700 leading-relaxed mb-3">You have the right to cancel your account at any time:</p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
                     <li>Through your dashboard (self-service cancellation)</li>
-                    <li>By emailing <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a></li>
+                    <li>By emailing <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
                     <li>By calling our customer support line</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
@@ -643,8 +643,8 @@ export default function TermsPage() {
                   <h3 className="text-xl font-semibold text-black mb-3 mt-4">18.1 Step 1: Direct Communication</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">First, contact our customer support team:</p>
                   <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Email: <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a></li>
-                    <li>Phone: <a href="tel:+918180861415" className="text-gold hover:underline">+91 8180 861 415</a></li>
+                    <li>Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
+                    <li>Phone: <a href="tel:+918805881601" className="text-gold hover:underline">+91 8805 881 601</a></li>
                     <li>Live Chat: Available on dashboard</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">Most issues are resolved at this stage within 48 hours.</p>
@@ -784,8 +784,8 @@ export default function TermsPage() {
                       <p className="font-semibold text-black mb-2">Customer Support</p>
                       <p className="text-gray-700 mb-2">For service issues, billing questions, technical support:</p>
                       <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>Phone: <a href="tel:+918180861415" className="text-gold hover:underline">+91 8180 861 415</a> (Monday-Saturday, 9 AM - 7 PM IST)</li>
-                        <li>Email: <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a></li>
+                        <li>Phone: <a href="tel:+918805881601" className="text-gold hover:underline">+91 8805 881 601</a> (Monday-Saturday, 9 AM - 7 PM IST)</li>
+                        <li>Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
                         <li>Live Chat: Available on dashboard during business hours</li>
                       </ul>
                     </div>
@@ -793,7 +793,7 @@ export default function TermsPage() {
                       <p className="font-semibold text-black mb-2">Legal & Compliance</p>
                       <p className="text-gray-700 mb-2">For legal notices, privacy concerns, regulatory matters:</p>
                       <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>Email: <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a></li>
+                        <li>Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
                         <li>Address: Kothrud, Pune, Maharashtra, Bharat</li>
                       </ul>
                     </div>

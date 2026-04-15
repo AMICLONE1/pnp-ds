@@ -7,6 +7,7 @@ export interface HostVerifyResult {
   error?: string;
   user?: { id: string; email: string };
   host?: { id: string; status: string; business_name: string };
+  hostId?: string;
 }
 
 /**
@@ -32,12 +33,16 @@ export async function verifyHost(): Promise<HostVerifyResult> {
     // Check user role is HOST
     const { data: userData, error: userError } = await adminClient
       .from("users")
-      .select("role")
+      .select("role, deleted_at")
       .eq("id", user.id)
       .single();
 
     if (userError || !userData) {
       return { authorized: false, error: "USER_NOT_FOUND" };
+    }
+
+    if (userData.deleted_at) {
+      return { authorized: false, error: "ACCOUNT_DISABLED" };
     }
 
     if (userData.role !== "HOST") {
@@ -63,6 +68,7 @@ export async function verifyHost(): Promise<HostVerifyResult> {
       authorized: true,
       user: { id: user.id, email: user.email || "" },
       host: hostData,
+      hostId: hostData.id,
     };
   } catch (error) {
     console.error("Host verification error:", error);
@@ -73,6 +79,10 @@ export async function verifyHost(): Promise<HostVerifyResult> {
 /**
  * Helper to create unauthorized response for host routes
  */
+export function unauthorizedResponse(error: string) {
+  return hostUnauthorizedResponse(error);
+}
+
 export function hostUnauthorizedResponse(error: string) {
   const status =
     error === "UNAUTHORIZED"
@@ -84,6 +94,7 @@ export function hostUnauthorizedResponse(error: string) {
   const messages: Record<string, string> = {
     UNAUTHORIZED: "Authentication required",
     USER_NOT_FOUND: "User account not found",
+      ACCOUNT_DISABLED: "This account has been disabled",
     NOT_A_HOST: "Host access required",
     HOST_NOT_FOUND: "Host profile not found",
     HOST_INACTIVE: "Host account is not active. Please contact support.",

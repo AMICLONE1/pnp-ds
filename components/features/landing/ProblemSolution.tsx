@@ -397,11 +397,11 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
             Perfect for: <span className="font-semibold">Renters</span> • <span className="font-semibold">Apartments</span> • <span className="font-semibold">Planning to Move</span>
           </p>
           <a
-            href="/waitlist"
+            href="/signup"
             className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            Join the waitlist
+            Get started
             <ChevronRight className="w-5 h-5" />
           </a>
         </motion.div>

@@ -9,17 +9,21 @@ import {
   Activity,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_GENERATION_DATA} from "@/lib/utils/host/data";
+import { GenerationHistory } from "@/lib/utils/host/useDashboard";
 
-export function GenerationChart(){
+interface GenerationChartProps {
+  generationHistory: GenerationHistory[];
+}
+
+export function GenerationChart({ generationHistory }: GenerationChartProps) {
   const [period, setPeriod] = useState<"day" | "week" | "month">("month");
 
   const chartData = {
-    labels: MOCK_GENERATION_DATA.map((d) => d.date),
+    labels: generationHistory.map((d) => d.month),
     datasets: [
       {
         label: "Generation (kWh)",
-        data: MOCK_GENERATION_DATA.map((d) => d.value),
+        data: generationHistory.map((d) => d.kwh),
         fill: true,
         backgroundColor: (context: { chart: { ctx: CanvasRenderingContext2D; chartArea: { top: number; bottom: number } } }) => {
           const ctx = context.chart.ctx;

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { CreditCard, Receipt, ChevronRight, ArrowDownToLine, XCircle } from "lucide-react";
 import { TooltipItem } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
@@ -8,9 +9,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BILLING_HISTORY, PAYMENT_TRANSACTIONS } from "./data";
 
 export function PaymentStatusOverview() {
-  const paidTotal = BILLING_HISTORY.filter((b) => b.status === "PAID").reduce((a, b) => a + b.netPayable, 0);
-  const pendingTotal = BILLING_HISTORY.filter((b) => b.status === "PENDING").reduce((a, b) => a + b.netPayable, 0);
-  const overdueTotal = BILLING_HISTORY.filter((b) => b.status === "OVERDUE").reduce((a, b) => a + b.netPayable, 0);
+  // Calculate net payable from billing history
+  const bills = BILLING_HISTORY.map((b) => ({
+    ...b,
+    netPayable: (b.generation * b.rate) + (b.generation * b.rate * 0.18) - (b.generation * b.rate * 0.02) + b.adjustments,
+  }));
+
+  const paidTotal = bills.filter((b) => b.status === "PAID").reduce((a, b) => a + b.netPayable, 0);
+  const pendingTotal = bills.filter((b) => b.status === "PENDING").reduce((a, b) => a + b.netPayable, 0);
+  const overdueTotal = bills.filter((b) => b.status === "OVERDUE").reduce((a, b) => a + b.netPayable, 0);
 
   const total = paidTotal + pendingTotal + overdueTotal;
 
@@ -109,9 +116,9 @@ export function PaymentStatusOverview() {
               <Receipt className="w-5 h-5 text-gold" />
               Recent Transactions
             </CardTitle>
-            <button className="text-xs text-forest font-medium hover:text-forest-light transition-colors flex items-center gap-1">
+            <Link href="#history" className="text-xs text-forest font-medium hover:text-forest-light transition-colors flex items-center gap-1">
               View All <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            </Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">

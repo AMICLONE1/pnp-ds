@@ -5,11 +5,11 @@ import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import {
     BlogBreadcrumbs,
-    BlogMeta,
     SocialShare,
     TableOfContents,
     KeyTakeaways,
 } from "@/components/features/blog/BlogComponents";
+import { normalizeBlogHtml } from "@/lib/utils/blog-format";
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
     const post = blogData.find((p) => p.slug === params.slug);
@@ -18,63 +18,78 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         notFound();
     }
 
+    const hasToc = Boolean(post.toc?.length);
+    const contentHtml = normalizeBlogHtml(post.content);
+
     return (
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_rgba(255,184,0,0.08),_transparent_30%),linear-gradient(180deg,#ffffff_0%,#fbfaf6_100%)]">
             <LandingHeader />
 
-            <main className="flex-1 pt-32 pb-24">
+            <main className="flex-1 pt-28 pb-20 sm:pt-32 sm:pb-24">
                 <div className="container mx-auto px-4 max-w-7xl">
-                    {/* Breadcrumbs */}
                     <BlogBreadcrumbs title={post.title} />
 
-                    {/* Header Section */}
-                    <div className="mb-10">
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-black mb-4 leading-tight">
-                            {post.title}
-                        </h1>
-                        <p className="text-lg text-gray-600 font-normal mb-6 max-w-2xl">
-                            {post.description || post.excerpt}
-                        </p>
-
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
-                            <SocialShare />
-                            
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col lg:flex-row gap-10">
-                        {/* Sidebar - left, sticky */}
-                        <aside className="lg:w-[280px] flex-shrink-0 order-2 lg:order-1">
-                            <div className="lg:sticky lg:top-32">
+                    <div className={`mt-6 grid gap-10 ${hasToc ? "lg:grid-cols-[280px_minmax(0,1fr)]" : ""}`}>
+                        {hasToc && (
+                            <aside className="order-2 h-fit lg:sticky lg:top-32 lg:order-1">
                                 <TableOfContents items={post.toc || []} />
-                            </div>
-                        </aside>
+                            </aside>
+                        )}
 
-                        {/* Main Content - right */}
-                        <article className="flex-1 min-w-0 order-1 lg:order-2">
-                            {/* Featured Image */}
-                            <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-4 shadow-lg">
-                                <Image
-                                    src={post.image}
-                                    alt={post.title}
-                                    fill
-                                    className="object-cover"
-                                    priority
-                                />
-                            </div>
-                            <p className="text-xs text-gray-400 mb-10 italic">Digital Solar</p>
+                        <article className={`order-1 min-w-0 ${hasToc ? "lg:order-2" : ""}`}>
+                            <div className="overflow-hidden rounded-[2rem] border border-gray-100 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+                                <div className="p-6 sm:p-8 lg:p-10">
+                                    <div className="max-w-4xl space-y-6">
+                                        <span className="inline-flex items-center rounded-full border border-gold/20 bg-gold/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-gold-dark">
+                                            {post.category}
+                                        </span>
 
-                            {/* Key Takeaways */}
-                            {post.takeaways && <KeyTakeaways points={post.takeaways} />}
+                                        <h1 className="max-w-4xl text-3xl font-heading font-bold leading-tight text-black sm:text-4xl lg:text-5xl">
+                                            {post.title}
+                                        </h1>
 
-                            {/* Blog Content */}
-                            <div
-                                className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-headings:text-black prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-black prose-li:text-gray-700 prose-ol:space-y-2 prose-ul:space-y-2"
-                                dangerouslySetInnerHTML={{ __html: post.content }}
-                            />
+                                        <p className="max-w-3xl text-lg leading-8 text-gray-600 sm:text-xl">
+                                            {post.description || post.excerpt}
+                                        </p>
 
-                            {/* Mobile CTA */}
-                            <div className="lg:hidden mt-12">
+                                        <div className="flex flex-wrap items-center gap-3">
+                                            <div className="inline-flex items-center gap-3 rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-sm text-gray-600">
+                                                <span className="font-semibold text-black">{post.author?.name ?? "PowerNetPro Team"}</span>
+                                                <span className="h-1 w-1 rounded-full bg-gray-300" />
+                                                <span>{post.readingTime}</span>
+                                                <span className="h-1 w-1 rounded-full bg-gray-300" />
+                                                <span>{post.date}</span>
+                                            </div>
+                                        </div>
+
+                                        <SocialShare />
+                                    </div>
+
+                                    <div className="mt-8">
+                                        <div className="relative aspect-[16/9] overflow-hidden rounded-[1.75rem] shadow-lg">
+                                            <Image
+                                                src={post.image}
+                                                alt={post.title}
+                                                fill
+                                                className="object-cover"
+                                                priority
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-10 max-w-4xl">
+                                        {post.takeaways && (
+                                            <div className="mb-10">
+                                                <KeyTakeaways points={post.takeaways} />
+                                            </div>
+                                        )}
+
+                                        <div
+                                            className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-headings:text-black prose-headings:scroll-mt-28 prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-5 prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-3 prose-p:text-gray-700 prose-p:leading-8 prose-p:my-5 prose-strong:text-black prose-li:text-gray-700 prose-li:my-2 prose-ol:space-y-3 prose-ul:space-y-3 prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:px-5 prose-blockquote:py-1 prose-blockquote:rounded-r-xl prose-blockquote:not-italic"
+                                            dangerouslySetInnerHTML={{ __html: contentHtml }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </article>
                     </div>
@@ -86,7 +101,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     );
 }
 
-// Generate static params for better performance if using static export, or just leave dynamic
 export function generateStaticParams() {
     return blogData.map((post) => ({
         slug: post.slug,

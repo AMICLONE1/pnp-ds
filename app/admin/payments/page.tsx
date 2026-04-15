@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { PaymentRevenueChart } from "@/components/admin/charts/PaymentRevenueChart";
-import { revenueByMonth } from "@/lib/data/paymentsMockData";
 import { usePayments } from "@/lib/utils/admin/usePayments";
+import { AdminPageHeader } from "@/components/admin/shared/AdminPageHeader";
+import Link from "next/link";
 import {
     Wallet,
     CheckCircle2,
@@ -39,9 +40,12 @@ export default function AdminPaymentsPage() {
         activeTab,
         handleTabChange,
         stats,
+        revenueByMonth,
         transactions,
         electricityBills,
         pagination,
+        loading,
+        error,
         statusFilter,
         handleStatusFilter,
         searchQuery,
@@ -70,6 +74,31 @@ export default function AdminPaymentsPage() {
         getBillStatusBadge,
     } = usePayments();
 
+    if (loading) {
+        return (
+            <div className="p-4 sm:p-6 lg:p-8 min-h-[60vh] flex items-center justify-center">
+                <div className="flex items-center gap-3 text-gray-600">
+                    <Loader2 className="w-5 h-5 animate-spin text-gold" />
+                    <span className="text-sm font-medium">Loading billing data...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-4 sm:p-6 lg:p-8 min-h-[60vh] flex items-center justify-center">
+                <Card className="max-w-lg w-full border-red-200 bg-red-50">
+                    <CardContent className="p-6 text-center space-y-3">
+                        <XCircle className="w-10 h-10 text-red-500 mx-auto" />
+                        <h2 className="text-lg font-semibold text-red-700">Failed to load billing data</h2>
+                        <p className="text-sm text-red-600">{error}</p>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
     // Sort icon helper
     const SortIcon = ({ column }: { column: string }) => {
         if (sortColumn !== column) return <ArrowUpDown className="w-3 h-3 text-gray-400" />;
@@ -83,26 +112,28 @@ export default function AdminPaymentsPage() {
     return (
         <div className="p-4 sm:p-6 lg:p-8 space-y-6">
             {/* Header */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-            >
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-black">
-                        Payment Management
-                    </h1>
-                    <p className="text-gray-600 mt-1 text-sm sm:text-base">
-                        Track revenue, transactions, and billing
-                    </p>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-200 rounded-xl">
-                    <Wallet className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm font-medium text-purple-700">
+            <AdminPageHeader
+                title="Payment Management"
+                subtitle="Track revenue, transactions, and billing"
+                breadcrumbs={[
+                    { label: "Admin", href: "/admin" },
+                    { label: "Payments" },
+                ]}
+                badge={
+                    <span className="px-2.5 py-1 bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold rounded-full">
                         {pagination.total} Transactions
                     </span>
-                </div>
-            </motion.div>
+                }
+                actions={
+                    <Link
+                        href="/admin/payments/reconciliation"
+                        className="flex items-center gap-2 px-4 py-2 bg-forest text-white rounded-xl text-sm font-medium hover:bg-forest/90 transition-colors"
+                    >
+                        <ArrowUpDown className="w-4 h-4" />
+                        Reconciliation
+                    </Link>
+                }
+            />
 
             {/* Summary Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -196,7 +227,7 @@ export default function AdminPaymentsPage() {
                 >
                     <span className="flex items-center gap-2">
                         <Zap className="w-4 h-4" />
-                        Electricity Bills
+                        Invoices
                     </span>
                 </button>
             </motion.div>
@@ -610,7 +641,7 @@ export default function AdminPaymentsPage() {
                 </>
             )}
 
-            {/* === Electricity Bills Tab === */}
+            {/* === Invoices Tab === */}
             {activeTab === "bills" && (
                 <>
                     {/* Bills Table - Desktop */}

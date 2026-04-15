@@ -194,7 +194,7 @@ export default function PrivacyPage() {
                     <li><strong>Right to Grievance:</strong> File complaints with the Data Protection Board</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
-                    To exercise these rights, contact us at <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline font-semibold">omkarkolhe912@gmail.com</a>. We will respond within 30 days.
+                    To exercise these rights, contact us at <a href="mailto:info@powernetpro.com" className="text-gold hover:underline font-semibold">info@powernetpro.com</a>. We will respond within 30 days.
                   </p>
                 </div>
 
@@ -286,21 +286,21 @@ export default function PrivacyPage() {
                       <Mail className="h-5 w-5 text-gold mt-1" />
                       <div>
                         <p className="font-semibold text-black mb-1">Privacy Inquiries:</p>
-                        <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a>
+                        <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Phone className="h-5 w-5 text-gold mt-1" />
                       <div>
                         <p className="font-semibold text-black mb-1">Phone:</p>
-                        <a href="tel:+918180861415" className="text-gold hover:underline">+91 8180 861 415</a>
+                        <a href="tel:+918805881601" className="text-gold hover:underline">+91 8805 881 601</a>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <MapPin className="h-5 w-5 text-gold mt-1" />
                       <div>
                         <p className="font-semibold text-black mb-1">Data Protection Officer:</p>
-                        <p className="text-gray-700">Email: <a href="mailto:omkarkolhe912@gmail.com" className="text-gold hover:underline">omkarkolhe912@gmail.com</a></p>
+                        <p className="text-gray-700">Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></p>
                         <p className="text-gray-700">Address: Kothrud, Pune, Maharashtra, Bharat</p>
                       </div>
                     </div>

@@ -50,6 +50,13 @@ The `.env.local` file is already created with your Supabase credentials. If you 
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
+# Dedicated admin portal login
+NEXT_PUBLIC_ADMIN_LOGIN_EMAIL=admin@yourdomain.com
+ADMIN_INITIAL_PASSWORD=change-this-to-a-strong-password
+
+# Required for admin provisioning and other server-side admin tasks
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
 # Optional: Razorpay
 RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_secret
@@ -70,7 +77,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📁 Project Structure
 
-```
+```text
 .
 ├── app/                    # Next.js App Router pages
 │   ├── api/               # API routes
@@ -107,6 +114,8 @@ The app uses a custom design system with:
 2. Database trigger creates public.users record
 3. User is automatically logged in
 4. Session managed via secure cookies
+
+Admin access uses a dedicated admin auth account. Set `NEXT_PUBLIC_ADMIN_LOGIN_EMAIL` to the single email that should be allowed to sign in to `/admin/login`, then set `ADMIN_INITIAL_PASSWORD` and run `npm run admin:provision` to create or refresh the matching Supabase Auth user and `public.users` row.
 
 ## 📊 Database Schema
 
@@ -168,6 +177,7 @@ Currently, the app uses simulated payments. To test the full flow:
 - **Cypress**: Component tests (optional)
 
 Run tests:
+
 ```bash
 npm run test          # Playwright tests
 npm run test:ui       # Playwright UI mode
@@ -202,4 +212,3 @@ Proprietary - All rights reserved
 ---
 
 Built with ❤️ for clean energy accessibility
-

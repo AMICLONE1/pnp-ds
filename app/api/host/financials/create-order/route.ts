@@ -1,0 +1,312 @@
+import { NextResponse } from "next/server";
+import { verifyHost, hostUnauthorizedResponse } from "@/lib/host/hostAuth";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { calculateHostBillingSummary } from "@/lib/host/billing";
+
+function initRazorpay() {
+  try {
+    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+      const Razorpay = require("razorpay");
+      return new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET,
+      });
+    }
+  } catch (error) {
+    console.warn("Razorpay not configured:", error);
+  }
+
+  return null;
+}
+
+function sumKwh(rows: Array<{ kwh: string | number }>) {
+  return rows.reduce((total, row) => total + Number(row.kwh || 0), 0);
+}
+
+async function buildLiveBillingSummary(hostId: string, billingMonth?: number, billingYear?: number) {
+  const adminClient = createAdminClient();
+
+  const { data: ppaRows } = await adminClient
+    .from("ppa_agreements")
+    .select("id, project_id, agreement_number, rate_per_kwh, payment_due_day, late_fee_percent, minimum_guarantee_kwh")
+    .eq("host_id", hostId)
+    .eq("status", "ACTIVE")
+    .order("created_at", { ascending: false });
+
+  const activePpa = ppaRows?.[0];
+  if (!activePpa) {
+    return null;
+  }
+
+  const { data: projectData } = await adminClient
+    .from("projects")
+    .select("name")
+    .eq("id", activePpa.project_id)
+    .single();
+
+  if (!projectData) {
+    return null;
+  }
+
+  const targetMonth = billingMonth || new Date().getMonth() + 1;
+  const targetYear = billingYear || new Date().getFullYear();
+
+  const { data: requestedGeneration } = await adminClient
+    .from("generations")
+    .select("kwh")
+    .eq("project_id", activePpa.project_id)
+    .eq("month", targetMonth)
+    .eq("year", targetYear);
+
+  let finalMonth = targetMonth;
+  let finalYear = targetYear;
+  let generationKwh = sumKwh(requestedGeneration || []);
+
+  if (generationKwh === 0) {
+    const { data: latestGenerationRows } = await adminClient
+      .from("generations")
+      .select("month, year, kwh")
+      .eq("project_id", activePpa.project_id)
+      .order("year", { ascending: false })
+      .order("month", { ascending: false });
+
+    const latestGeneration = latestGenerationRows?.[0];
+    if (latestGeneration) {
+      finalMonth = Number(latestGeneration.month);
+      finalYear = Number(latestGeneration.year);
+      generationKwh = sumKwh(
+        (latestGenerationRows || []).filter(
+          (row) => Number(row.month) === finalMonth && Number(row.year) === finalYear
+        )
+      );
+    }
+  }
+
+  if (generationKwh === 0) {
+    return null;
+  }
+
+  const dueDate = new Date(
+    finalYear,
+    finalMonth - 1,
+    Math.min(Math.max(Number(activePpa.payment_due_day || 10), 1), 28),
+    18,
+    0,
+    0,
+    0
+  );
+
+  const paymentStatus = new Date() > dueDate ? "OVERDUE" : "PENDING";
+
+  return calculateHostBillingSummary({
+    hostId,
+    projectId: activePpa.project_id,
+    ppaAgreementId: activePpa.id,
+    agreementNumber: activePpa.agreement_number,
+    projectName: projectData.name,
+    billingMonth: finalMonth,
+    billingYear: finalYear,
+    generationKwh,
+    ratePerKwh: Number(activePpa.rate_per_kwh),
+    paymentDueDay: Number(activePpa.payment_due_day || 10),
+    adjustments: 0,
+    lateFeePercent: Number(activePpa.late_fee_percent || 0),
+    minimumGuaranteeKwh:
+      activePpa.minimum_guarantee_kwh === null || activePpa.minimum_guarantee_kwh === undefined
+        ? null
+        : Number(activePpa.minimum_guarantee_kwh),
+    paymentStatus,
+    isLiveData: true,
+    liveSource: "generation",
+  });
+}
+
+export async function POST(request: Request) {
+  try {
+    const authResult = await verifyHost();
+    if (!authResult.authorized || !authResult.host) {
+      return hostUnauthorizedResponse(authResult.error || "UNAUTHORIZED");
+    }
+
+    const body = await request.json().catch(() => ({}));
+    const billingMonth = body.billingMonth ? Number(body.billingMonth) : undefined;
+    const billingYear = body.billingYear ? Number(body.billingYear) : undefined;
+
+    const summary = await buildLiveBillingSummary(authResult.host.id, billingMonth, billingYear);
+
+    if (!summary) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "BILLING_NOT_READY",
+            message: "Host billing data is not ready yet. The host must have an active PPA and generation data before payment can start.",
+          },
+        },
+        { status: 409 }
+      );
+    }
+
+    const adminClient = createAdminClient();
+
+    const { data: existingPayment } = await adminClient
+      .from("host_payments")
+      .select("id, status, invoice_id")
+      .eq("host_id", authResult.host.id)
+      .eq("billing_month", summary.billingMonth)
+      .eq("billing_year", summary.billingYear)
+      .limit(1);
+
+    if (existingPayment?.[0]?.status === "COMPLETED") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "ALREADY_PAID",
+            message: "This billing cycle has already been paid.",
+          },
+        },
+        { status: 409 }
+      );
+    }
+
+    const paymentMethod = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET
+      ? "RAZORPAY"
+      : "MOCK_RAZORPAY";
+
+    const paymentPayload = {
+      host_id: authResult.host.id,
+      ppa_agreement_id: summary.ppaAgreementId,
+      billing_month: summary.billingMonth,
+      billing_year: summary.billingYear,
+      generation_kwh: summary.generationKwh,
+      rate_per_kwh: summary.ratePerKwh,
+      base_amount: summary.subtotal,
+      adjustments: summary.adjustments,
+      late_fee: summary.lateFee,
+      total_amount: summary.totalAmount,
+      status: "PENDING",
+      due_date: summary.dueDate,
+      payment_method: paymentMethod,
+      invoice_id: null,
+      gateway_order_id: null,
+      gateway_payment_id: null,
+      gateway_signature: null,
+      payment_reference: null,
+      notes: JSON.stringify({
+        agreement_number: summary.agreementNumber,
+        project_name: summary.projectName,
+        invoice_number: summary.invoiceNumber,
+      }),
+    };
+
+    let paymentId = existingPayment?.[0]?.id || null;
+    if (paymentId) {
+      const { error: updateError } = await adminClient
+        .from("host_payments")
+        .update(paymentPayload)
+        .eq("id", paymentId);
+
+      if (updateError) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "DB_ERROR",
+              message: updateError.message,
+            },
+          },
+          { status: 500 }
+        );
+      }
+    } else {
+      const { data: createdPayment, error: insertError } = await adminClient
+        .from("host_payments")
+        .insert(paymentPayload)
+        .select("id")
+        .single();
+
+      if (insertError || !createdPayment) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "DB_ERROR",
+              message: insertError?.message || "Failed to create host payment record",
+            },
+          },
+          { status: 500 }
+        );
+      }
+
+      paymentId = createdPayment.id;
+    }
+
+    const razorpayInstance = initRazorpay();
+
+    if (!razorpayInstance) {
+      const mockOrderId = `host_order_mock_${Date.now()}`;
+
+      await adminClient
+        .from("host_payments")
+        .update({ gateway_order_id: mockOrderId })
+        .eq("id", paymentId);
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          order_id: mockOrderId,
+          amount: Math.round(summary.totalAmount * 100),
+          currency: "INR",
+          payment_id: paymentId,
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+          mock: true,
+          summary,
+        },
+      });
+    }
+
+    const order = await razorpayInstance.orders.create({
+      amount: Math.round(summary.totalAmount * 100),
+      currency: "INR",
+      receipt: summary.invoiceNumber,
+      notes: {
+        host_id: authResult.host.id,
+        ppa_agreement_id: summary.ppaAgreementId,
+        billing_month: String(summary.billingMonth),
+        billing_year: String(summary.billingYear),
+        invoice_number: summary.invoiceNumber,
+      },
+    });
+
+    await adminClient
+      .from("host_payments")
+      .update({ gateway_order_id: order.id })
+      .eq("id", paymentId);
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        order_id: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        payment_id: paymentId,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        mock: false,
+        summary,
+      },
+    });
+  } catch (error: any) {
+    console.error("Host billing order error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: "HOST_BILLING_ERROR",
+          message: error.message || "Failed to create host billing order",
+        },
+      },
+      { status: 500 }
+    );
+  }
+}

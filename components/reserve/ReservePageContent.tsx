@@ -23,6 +23,8 @@ import Link from "next/link";
 import PageHero from "@/components/reserve/PageHero";
 import { Footer } from "@/components/layout/footer";
 import { LandingHeader } from "@/components/layout/LandingHeader";
+import AllocationCard from "@/components/dashboard/AllocationCard";
+import { formatCurrency } from "@/lib/utils";
 
 
 export default function ReservePageContent(){
@@ -33,6 +35,8 @@ export default function ReservePageContent(){
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [capacity, setCapacity] = useState(5);
   const [user, setUser] = useState<any>(null);
+  const [allocations, setAllocations] = useState<any[]>([]);
+  const [allocationsLoading, setAllocationsLoading] = useState(false);
   const supabase = createClient();
 
   // Get URL params from hero section
@@ -63,10 +67,7 @@ export default function ReservePageContent(){
           setSelectedProject(result.data[0]);
         }
       }
-      // Show skeleton for minimum 10 seconds
-      setTimeout(() => {
-        setLoading(false);
-      }, 3500);
+      setLoading(false);
     };
 
     const getUser = async () => {
@@ -103,6 +104,30 @@ export default function ReservePageContent(){
       subscription.unsubscribe();
     };
   }, [supabase, urlProject]);
+
+  // Load the user's existing allocations once we know who they are.
+  useEffect(() => {
+    if (!user) {
+      setAllocations([]);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      setAllocationsLoading(true);
+      try {
+        const res = await fetch("/api/allocations", { credentials: "include" });
+        const result = await res.json();
+        if (!cancelled && result.success) setAllocations(result.data || []);
+      } catch {
+        // Silently ignore — the dashboard handles the error surface.
+      } finally {
+        if (!cancelled) setAllocationsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   // Set capacity from URL params (from hero calculator)
   useEffect(() => {
@@ -150,6 +175,65 @@ export default function ReservePageContent(){
             <ProjectListSkeleton />
           ) : (
             <>
+              {/* Your reservations (logged-in users only) */}
+              {user && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-10"
+                >
+                  <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <h2
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                        className="text-2xl md:text-3xl font-heading font-bold text-black"
+                      >
+                        Your Reservations
+                      </h2>
+                      <p
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                        className="text-sm text-gray-600 mt-1"
+                      >
+                        {allocationsLoading
+                          ? "Loading your projects…"
+                          : allocations.length === 0
+                          ? "You haven't reserved any capacity yet."
+                          : `${allocations.length} active reservation${allocations.length === 1 ? "" : "s"} · ${formatCurrency(
+                              Math.round(
+                                allocations.reduce(
+                                  (sum, a: any) =>
+                                    sum +
+                                    Number(a.capacity_kw || 0) *
+                                      120 *
+                                      Number(
+                                        a.project?.rate_per_kwh ||
+                                          a.capacity_block?.project?.rate_per_kwh ||
+                                          7
+                                      ),
+                                  0
+                                )
+                              )
+                            )}/mo estimated savings`}
+                      </p>
+                    </div>
+                    <Link
+                      href="/dashboard"
+                      className="text-sm font-semibold text-gold hover:underline"
+                    >
+                      Open dashboard →
+                    </Link>
+                  </div>
+
+                  {allocations.length > 0 && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {allocations.map((alloc: any, i: number) => (
+                        <AllocationCard key={alloc.id} allocation={alloc} index={i} />
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
               {/* Section header */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -157,7 +241,7 @@ export default function ReservePageContent(){
                 className="mb-8"
               >
                 <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl md:text-3xl font-heading font-bold text-black mb-2">
-                  Available Projects
+                  {user && allocations.length > 0 ? "Reserve more capacity" : "Available Projects"}
                 </h2>
                 <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-black">
                   {projects.length} verified solar project{projects.length !== 1 ? 's' : ''} available for reservation

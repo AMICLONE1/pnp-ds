@@ -1,7 +1,14 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import crypto from "crypto";
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+
+const verifyPaymentSchema = z.object({
+  razorpay_order_id: z.string().min(1),
+  razorpay_payment_id: z.string().min(1),
+  razorpay_signature: z.string().min(1),
+});
 
 export async function POST(request: Request) {
   try {
@@ -22,33 +29,51 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, allocation_id } = body;
+    const body = verifyPaymentSchema.safeParse(await request.json());
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (!body.success) {
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Missing payment details",
+            message: body.error.errors.map((item) => item.message).join(", "),
           },
         },
         { status: 400 }
       );
     }
 
-    // Verify signature (skip for mock payments)
-    const isMockPayment = razorpay_payment_id.startsWith("mock_payment_") || razorpay_signature === "mock_signature";
-    
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body.data;
+    const allowMockPayments = process.env.NODE_ENV !== "production";
+    const isMockPayment =
+      allowMockPayments &&
+      (razorpay_payment_id.startsWith("mock_payment_") || razorpay_signature === "mock_signature");
+
     if (!isMockPayment) {
+      if (!process.env.RAZORPAY_KEY_SECRET) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "PAYMENT_GATEWAY_UNAVAILABLE",
+              message: "Payment gateway is not configured",
+            },
+          },
+          { status: 503 }
+        );
+      }
+
       const text = `${razorpay_order_id}|${razorpay_payment_id}`;
       const generatedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "")
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
         .update(text)
         .digest("hex");
 
-      if (generatedSignature !== razorpay_signature) {
+      // Constant-time compare to avoid signature timing oracles.
+      const a = Buffer.from(generatedSignature, "utf8");
+      const b = Buffer.from(razorpay_signature, "utf8");
+      if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
         return NextResponse.json(
           {
             success: false,
@@ -59,62 +84,96 @@ export async function POST(request: Request) {
       }
     }
 
-    // Get existing payment first to preserve metadata
-    const { data: existingPayment } = await supabase
+    const { data: payment, error: paymentFetchError } = await supabase
       .from("payments")
-      .select("metadata")
+      .select("id, amount, type, bill_id, status, metadata")
       .eq("gateway_order_id", razorpay_order_id)
       .eq("user_id", user.id)
       .single();
 
-    // Update payment record
-    const { data: payment, error: paymentError } = await supabase
+    if (paymentFetchError || !payment) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "PAYMENT_NOT_FOUND", message: "Payment order not found" },
+        },
+        { status: 404 }
+      );
+    }
+
+    // Idempotency: if this payment is already COMPLETED, return success without
+    // re-running the activation side-effects (prevents replay double-credits).
+    if (payment.status === "COMPLETED") {
+      return NextResponse.json({ success: true, data: payment });
+    }
+
+    if (payment.type === "MONTHLY") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "UNSUPPORTED_PAYMENT_TYPE",
+            message: "Monthly host payments must be verified through /api/host/payments/verify",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    const existingMetadata = (payment.metadata || {}) as Record<string, unknown>;
+    const { data: verifiedPayment, error: paymentUpdateError } = await supabase
       .from("payments")
       .update({
         gateway_payment_id: razorpay_payment_id,
         metadata: {
-          ...(existingPayment?.metadata || {}),
+          ...existingMetadata,
           razorpay_signature,
         },
         status: "COMPLETED",
       })
-      .eq("gateway_order_id", razorpay_order_id)
-      .eq("user_id", user.id)
+      .eq("id", payment.id)
       .select()
       .single();
 
-    if (paymentError) {
+    if (paymentUpdateError || !verifiedPayment) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "DB_ERROR", message: paymentError.message },
+          error: { code: "DB_ERROR", message: paymentUpdateError?.message || "Failed to update payment" },
         },
         { status: 500 }
       );
     }
 
-    // If payment is for allocation and allocation_id is provided, link them
-    if (allocation_id && payment.type === "ALLOCATION") {
-      // Get allocation details with capacity block info
+    if (payment.type === "ALLOCATION") {
+      const allocationId = String(existingMetadata.allocation_id || "");
+
+      if (!allocationId) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "MISSING_METADATA",
+              message: "Allocation reference missing from payment metadata",
+            },
+          },
+          { status: 400 }
+        );
+      }
+
       const { data: allocation, error: allocationError } = await supabase
         .from("allocations")
-        .select(`
-          id,
-          capacity_kw,
-          capacity_block_id,
-          payment_id,
-          capacity_block:capacity_blocks(
+        .select(
+          `id, capacity_block_id, payment_id, capacity_block:capacity_blocks(
             id,
-            project_id,
             status
-          )
-        `)
-        .eq("id", allocation_id)
+          )`
+        )
+        .eq("id", allocationId)
         .eq("user_id", user.id)
         .single();
 
       if (allocationError || !allocation) {
-        console.error("Error fetching allocation:", allocationError);
         return NextResponse.json(
           {
             success: false,
@@ -124,41 +183,40 @@ export async function POST(request: Request) {
         );
       }
 
-      // Check if allocation already has a payment (to prevent double-linking)
-      if (allocation.payment_id && allocation.payment_id !== payment.id) {
+      if (allocation.payment_id && allocation.payment_id !== verifiedPayment.id) {
         return NextResponse.json(
           {
             success: false,
-            error: { code: "ALREADY_LINKED", message: "Allocation already linked to another payment" },
+            error: {
+              code: "ALREADY_LINKED",
+              message: "Allocation already linked to another payment",
+            },
           },
-          { status: 400 }
+          { status: 409 }
         );
       }
 
-      // Link payment to allocation
       const { error: linkError } = await supabase
         .from("allocations")
-        .update({ payment_id: payment.id })
-        .eq("id", allocation_id);
+        .update({ payment_id: verifiedPayment.id })
+        .eq("id", allocationId)
+        .eq("user_id", user.id);
 
       if (linkError) {
         console.error("Error linking payment to allocation:", linkError);
-        // Don't fail the payment verification, just log the error
       }
 
-      // Ensure capacity block is marked as ALLOCATED
-      // capacity_block is returned as an array from the join, get the first item
       const capacityBlock = Array.isArray(allocation.capacity_block)
         ? allocation.capacity_block[0]
         : allocation.capacity_block;
 
       if (capacityBlock && capacityBlock.status !== "ALLOCATED") {
         let adminClient;
+
         try {
           adminClient = createAdminClient();
         } catch (error: any) {
           console.error("Failed to create admin client:", error.message);
-          // Continue without updating block status
         }
 
         if (adminClient) {
@@ -172,32 +230,44 @@ export async function POST(request: Request) {
 
           if (updateBlockError) {
             console.error("Error updating capacity block status:", updateBlockError);
-            // Don't fail payment verification, just log
           }
         }
       }
     }
 
-    // If payment is for a bill, update bill status
-    if (payment.bill_id && payment.type === "BILL") {
+    if (payment.type === "BILL") {
+      const billId = payment.bill_id || String(existingMetadata.bill_id || "");
+
+      if (!billId) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "MISSING_METADATA",
+              message: "Bill reference missing from payment record",
+            },
+          },
+          { status: 400 }
+        );
+      }
+
       const { error: billUpdateError } = await supabase
         .from("bills")
         .update({
           status: "PAID",
           paid_at: new Date().toISOString(),
         })
-        .eq("id", payment.bill_id)
+        .eq("id", billId)
         .eq("user_id", user.id);
 
       if (billUpdateError) {
         console.error("Error updating bill status:", billUpdateError);
-        // Don't fail payment verification
       }
     }
 
     return NextResponse.json({
       success: true,
-      data: payment,
+      data: verifiedPayment,
     });
   } catch (error: any) {
     console.error("Payment verification error:", error);

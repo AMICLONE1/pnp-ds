@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Zap,
@@ -5,13 +6,15 @@ import {
   ChevronRight,
   ArrowUpRight,
 } from "lucide-react";
-import { MOCK_PLANTS } from "@/lib/utils/host/data";
-
+import { DashboardPlant } from "@/lib/utils/host/useDashboard";
 import { StatusBadge } from "@/components/host/StatusBadge";
 import { EfficiencyRing } from "@/components/host/EfficiencyRing";
 
+interface PlantOverviewCardsProps {
+  plant: DashboardPlant | null;
+}
 
-export function PlantOverviewCards(){
+export function PlantOverviewCards({ plant }: PlantOverviewCardsProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -23,19 +26,18 @@ export function PlantOverviewCards(){
           <Zap className="w-5 h-5 text-forest" />
           My Solar Plants
         </h2>
-        <button className="flex items-center gap-1 text-sm text-forest font-medium hover:text-forest-light transition-colors">
+        <Link href="/host/plants" className="flex items-center gap-1 text-sm text-forest font-medium hover:text-forest-light transition-colors">
           View All
           <ChevronRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {MOCK_PLANTS.map((plant, i) => (
+        {plant ? (
           <motion.div
-            key={plant.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 + i * 0.1 }}
+            transition={{ delay: 0.8 }}
             className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer group"
           >
             <div className="flex items-start justify-between mb-3">
@@ -48,7 +50,7 @@ export function PlantOverviewCards(){
                   {plant.location}
                 </div>
               </div>
-              <StatusBadge status={plant.status} />
+              <StatusBadge status={plant.status === "active" ? "ACTIVE" : plant.status === "maintenance" ? "MAINTENANCE" : "INACTIVE"} />
             </div>
 
             <div className="flex items-center gap-4 mt-4">
@@ -82,7 +84,11 @@ export function PlantOverviewCards(){
               <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-forest transition-colors" />
             </div>
           </motion.div>
-        ))}
+        ) : (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            <p>No plants associated yet</p>
+          </div>
+        )}
       </div>
     </motion.div>
   );

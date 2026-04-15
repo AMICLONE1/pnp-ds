@@ -17,6 +17,30 @@ function getResendClient(): Resend | null {
 // Free tier: only sends to your Resend account email via onboarding@resend.dev
 // To send to any user: verify your domain in Resend dashboard and change to e.g. "PNP Digital Solar <hello@yourdomain.com>"
 const FROM_EMAIL = "PNP Digital Solar <onboarding@resend.dev>";
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "info@powernetpro.com";
+
+export function buildContactMailtoUrl(input: {
+  name: string;
+  email: string;
+  phone?: string | null;
+  subject: string;
+  message: string;
+}) {
+  const subject = encodeURIComponent(`[Contact] ${input.subject}`);
+  const body = encodeURIComponent(
+    [
+      "New Contact Message",
+      `Name: ${input.name}`,
+      `Email: ${input.email}`,
+      `Phone: ${input.phone?.trim() || "Not provided"}`,
+      `Subject: ${input.subject}`,
+      "",
+      input.message,
+    ].join("\n")
+  );
+
+  return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+}
 
 export async function sendWaitlistWelcomeEmail(
   email: string,
@@ -90,5 +114,62 @@ export async function sendAdminWaitlistNotification(
         </table>
       </div>
     `,
+  });
+}
+
+export async function sendContactMessageNotification(input: {
+  name: string;
+  email: string;
+  phone?: string | null;
+  subject: string;
+  message: string;
+}) {
+  const resend = getResendClient();
+
+  if (!resend) return null;
+
+  const phone = input.phone?.trim() || "Not provided";
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: CONTACT_EMAIL,
+    replyTo: input.email,
+    subject: `[Contact] ${input.subject}`,
+    html: `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 640px; margin: 0 auto; padding: 24px; color: #111827;">
+        <h2 style="margin: 0 0 16px; color: #b45309;">New Contact Message</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 8px 0; font-weight: 600; width: 140px; vertical-align: top;">Name</td>
+            <td style="padding: 8px 0;">${input.name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: 600; width: 140px; vertical-align: top;">Email</td>
+            <td style="padding: 8px 0;"><a href="mailto:${input.email}" style="color: #b45309;">${input.email}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: 600; width: 140px; vertical-align: top;">Phone</td>
+            <td style="padding: 8px 0;">${phone}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: 600; width: 140px; vertical-align: top;">Subject</td>
+            <td style="padding: 8px 0;">${input.subject}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: 600; width: 140px; vertical-align: top;">Message</td>
+            <td style="padding: 8px 0; white-space: pre-wrap; line-height: 1.6;">${input.message}</td>
+          </tr>
+        </table>
+      </div>
+    `,
+    text: [
+      "New Contact Message",
+      `Name: ${input.name}`,
+      `Email: ${input.email}`,
+      `Phone: ${phone}`,
+      `Subject: ${input.subject}`,
+      "",
+      input.message,
+    ].join("\n"),
   });
 }

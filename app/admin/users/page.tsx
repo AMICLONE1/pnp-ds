@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useUsers } from "@/lib/utils/admin/useUsers";
+import { AdminPageHeader } from "@/components/admin/shared/AdminPageHeader";
 
 interface UserAllocation {
   count: number;
@@ -83,26 +85,30 @@ export default function AdminUsersPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-      >
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-black">
-            User Management
-          </h1>
-          <p className="text-gray-600 mt-1 text-sm sm:text-base">
-            Manage and monitor all registered users
-          </p>
-        </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-xl self-start">
-          <Users className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-medium text-blue-700">
+      <AdminPageHeader
+        title="User Management"
+        subtitle="Manage and monitor all registered users"
+        breadcrumbs={[
+          { label: "Admin", href: "/admin" },
+          { label: "Users" },
+        ]}
+        badge={
+          <span className="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold rounded-full">
             {pagination.total} Total Users
           </span>
-        </div>
-      </motion.div>
+        }
+      />
+
+      <Card className="border border-amber-200 bg-amber-50/60 shadow-sm">
+        <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-amber-900">Host provisioning moved</p>
+            <p className="text-sm text-amber-800/80 mt-1">
+              Create the host while registering the project in <span className="font-medium">Project Management</span>. This keeps the plant, host, logger, and billing records linked from the start.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Search & Filters */}
       <motion.div
@@ -205,6 +211,7 @@ export default function AdminUsersPage() {
                           <option value="all">All Roles</option>
                           <option value="USER">User</option>
                           <option value="ADMIN">Admin</option>
+                          <option value="HOST">Host</option>
                         </select>
                       </div>
                       <div className="flex items-end">
@@ -277,7 +284,9 @@ export default function AdminUsersPage() {
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${user.role === "ADMIN"
                               ? "bg-purple-100 text-purple-700"
-                              : "bg-gold/10 text-gold-dark"
+                              : user.role === "HOST"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-gold/10 text-gold-dark"
                             }`}
                         >
                           {(user.name || user.email)
@@ -285,11 +294,14 @@ export default function AdminUsersPage() {
                             .toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-medium text-black text-sm">
+                          <Link
+                            href={user.role === "HOST" ? `/admin/hosts/${user.id}` : `/admin/users/${user.id}`}
+                            className="font-medium text-black text-sm hover:text-gold-dark hover:underline decoration-dotted underline-offset-2"
+                          >
                             {user.name || "—"}
-                          </p>
+                          </Link>
                           {user.deleted_at && (
-                            <span className="text-xs text-amber-600 font-medium">
+                            <span className="text-xs text-amber-600 font-medium block">
                               Banned
                             </span>
                           )}
@@ -325,6 +337,8 @@ export default function AdminUsersPage() {
                           >
                             {user.role === "ADMIN" ? (
                               <Shield className="w-3 h-3" />
+                            ) : user.role === "HOST" ? (
+                              <Users className="w-3 h-3" />
                             ) : (
                               <UserCheck className="w-3 h-3" />
                             )}
@@ -449,8 +463,10 @@ export default function AdminUsersPage() {
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${user.role === "ADMIN"
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-gold/10 text-gold-dark"
+                              ? "bg-purple-100 text-purple-700"
+                              : user.role === "HOST"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-gold/10 text-gold-dark"
                         }`}
                     >
                       {(user.name || user.email)
@@ -458,9 +474,12 @@ export default function AdminUsersPage() {
                         .toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-medium text-black text-sm">
+                      <Link
+                        href={user.role === "HOST" ? `/admin/hosts/${user.id}` : `/admin/users/${user.id}`}
+                        className="font-medium text-black text-sm hover:text-gold-dark hover:underline decoration-dotted underline-offset-2"
+                      >
                         {user.name || "—"}
-                      </p>
+                      </Link>
                       <p className="text-xs text-gray-500 truncate max-w-[200px]">
                         {user.email}
                       </p>
@@ -706,11 +725,13 @@ export default function AdminUsersPage() {
                   label="Email"
                   type="email"
                   value={editingUser.email}
-                  onChange={(e) =>
-                    setEditingUser({ ...editingUser, email: e.target.value })
-                  }
                   placeholder="Enter email"
+                  readOnly
+                  className="h-12 rounded-xl bg-gray-50"
                 />
+                <p className="text-xs text-gray-500 -mt-2">
+                  Login email is managed during provisioning and cannot be changed here.
+                </p>
                 <Input
                   label="Phone"
                   value={editingUser.phone}
@@ -730,13 +751,14 @@ export default function AdminUsersPage() {
                       onChange={(e) =>
                         setEditingUser({
                           ...editingUser,
-                          role: e.target.value as "USER" | "ADMIN",
+                          role: e.target.value as "USER" | "ADMIN" | "HOST",
                         })
                       }
                       className="w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-forest focus:border-transparent transition-all"
                     >
                       <option value="USER">User</option>
                       <option value="ADMIN">Admin</option>
+                      <option value="HOST">Host</option>
                     </select>
                   </div>
                   <div>

@@ -1,8 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+
+type Dot = { left: number; top: number; duration: number; delay: number };
 
 export function PageLoader() {
+  const [dots, setDots] = useState<Dot[]>([]);
+
+  useEffect(() => {
+    setDots(
+      Array.from({ length: 50 }, () => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: 3 + Math.random() * 2,
+        delay: Math.random() * 2,
+      }))
+    );
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white overflow-hidden">
       {/* Animated Background Pattern */}
@@ -17,22 +33,22 @@ export function PageLoader() {
 
       {/* Animated Dots Pattern */}
       <div className="absolute inset-0 opacity-5">
-        {[...Array(50)].map((_, i) => (
+        {dots.map((dot, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-gold rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${dot.left}%`,
+              top: `${dot.top}%`,
             }}
             animate={{
               scale: [1, 1.5, 1],
               opacity: [0.3, 0.8, 0.3],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: dot.duration,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: dot.delay,
             }}
           />
         ))}

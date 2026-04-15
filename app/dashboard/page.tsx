@@ -33,8 +33,19 @@ import AllocationCard from "@/components/dashboard/AllocationCard";
 interface DashboardSummary {
   totalCapacity: number;
   totalSavings: number;
+  availableCreditBalance: number;
   co2Offset: string;
+  estimatedMonthlyKwh: number;
+  allocationCount: number;
   recentActivity: any[];
+  pendingBill: {
+    id: string;
+    amount: number;
+    credits_applied: number;
+    due_date: string;
+    status: string;
+    review_status: string | null;
+  } | null;
 }
 
 export default function DashboardPage() {
@@ -76,8 +87,12 @@ export default function DashboardPage() {
         setSummary({
           totalCapacity: 0,
           totalSavings: 0,
+          availableCreditBalance: 0,
           co2Offset: "0",
+          estimatedMonthlyKwh: 0,
+          allocationCount: 0,
           recentActivity: [],
+          pendingBill: null,
         });
         setAllocations([]);
       } finally {
@@ -108,38 +123,84 @@ export default function DashboardPage() {
           {/* Welcome Banner */}
           <WelcomeBanner />
 
+          {/* Pending bill banner */}
+          {summary?.pendingBill && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-white p-4 shadow-sm"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100">
+                  <Wallet className="h-5 w-5 text-amber-700" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-black">
+                    {summary.pendingBill.review_status === "SUBMITTED"
+                      ? "Bill under review"
+                      : "Bill due"}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {formatCurrency(
+                      Number(summary.pendingBill.amount) -
+                        Number(summary.pendingBill.credits_applied || 0)
+                    )}{" "}
+                    · Due{" "}
+                    {new Date(summary.pendingBill.due_date).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </p>
+                </div>
+              </div>
+              <Link href="/bills">
+                <Button variant="primary" size="sm" className="h-9">
+                  {summary.pendingBill.review_status === "SUBMITTED" ? "View status" : "Pay now"}
+                </Button>
+              </Link>
+            </motion.div>
+          )}
+
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-4 gap-4 mb-8">
             <StatCard
               icon={Zap}
-              label="Total Capacity"
+              label="Reserved"
               value={summary?.totalCapacity || 0}
               suffix=" kW"
               color="text-black"
-              bgColor="bg-white/10"
+              bgColor="bg-amber-100"
               delay={0.1}
-              trend={12}
-              trendLabel="Reserved solar capacity"
+              trendLabel={`${summary?.allocationCount || 0} active project${(summary?.allocationCount || 0) === 1 ? "" : "s"}`}
+            />
+            <StatCard
+              icon={Sun}
+              label="Est. monthly gen"
+              value={summary?.estimatedMonthlyKwh || 0}
+              suffix=" kWh"
+              color="text-black"
+              bgColor="bg-blue-100"
+              delay={0.15}
+              trendLabel="Your share this month"
             />
             <StatCard
               icon={Wallet}
-              label="Total Saved"
-              value={summary?.totalSavings || 0}
+              label="Credit balance"
+              value={summary?.availableCreditBalance || 0}
               prefix="₹"
               color="text-green-600"
               bgColor="bg-green-100"
               delay={0.2}
-              trend={8}
-              trendLabel="Lifetime savings"
+              trendLabel="Auto-applied to next bill"
             />
             <StatCard
               icon={Leaf}
-              label="CO₂ Offset"
+              label="CO₂ offset / yr"
               value={parseFloat(summary?.co2Offset || "0")}
-              suffix=" tons"
-              color="text-black"
+              suffix=" t"
+              color="text-emerald-700"
               bgColor="bg-emerald-100"
-              delay={0.3}
+              delay={0.25}
               trendLabel="Environmental impact"
             />
           </div>
@@ -176,27 +237,27 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <QuickActionButton
-                    href="/reserve"
+                    href="/bills?submit=1"
                     icon={Plus}
-                    label="Add More Capacity"
-                    description="Expand your solar portfolio"
-                    color="bg-gradient-to-br from-white to-white-light"
-                    delay={0.6}
-                  />
-                  <QuickActionButton
-                    href="/connect"
-                    icon={Zap}
-                    label="Connect Utility"
-                    description="Link your electricity provider"
+                    label="Submit a bill"
+                    description="Upload your DISCOM bill for review"
                     color="bg-gradient-to-br from-gold to-orange-500"
-                    delay={0.7}
+                    delay={0.6}
                   />
                   <QuickActionButton
                     href="/bills"
                     icon={Wallet}
-                    label="View Bills"
-                    description="Track payments and credits"
+                    label="View bills & credits"
+                    description="Track payments and solar credits"
                     color="bg-gradient-to-br from-blue-500 to-blue-600"
+                    delay={0.7}
+                  />
+                  <QuickActionButton
+                    href="/settings"
+                    icon={Target}
+                    label="Account settings"
+                    description="Profile, KYC, security"
+                    color="bg-gradient-to-br from-emerald-500 to-emerald-600"
                     delay={0.8}
                   />
                 </CardContent>

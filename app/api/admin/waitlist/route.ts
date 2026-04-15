@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdmin, unauthorizedResponse } from "@/lib/admin/adminAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sanitizeSearchTerm } from "@/lib/security/inputSanitizer";
 
 type WaitlistStatus = "pending" | "invited" | "converted";
 
@@ -18,11 +19,18 @@ export async function GET(request: NextRequest) {
         const adminClient = createAdminClient();
 
         const { searchParams } = new URL(request.url);
-        const search = searchParams.get("search") || "";
+        const search = sanitizeSearchTerm(searchParams.get("search") || "");
         const status = searchParams.get("status") || "all";
         const page = parseInt(searchParams.get("page") || "1", 10);
         const limit = parseInt(searchParams.get("limit") || "20", 10);
         const offset = (page - 1) * limit;
+
+        if (!["all", "pending", "invited", "converted"].includes(status)) {
+            return NextResponse.json(
+                { success: false, error: "Invalid status filter" },
+                { status: 400 }
+            );
+        }
 
         let query = adminClient
             .from("waitlist")

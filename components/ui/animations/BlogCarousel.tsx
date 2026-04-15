@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Calendar, Tag, ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -38,6 +38,11 @@ export function BlogCarousel({
     // For simplicity in this "simple slider", we'll show 1 at a time on mobile, 2 on tablet, 3 on desktop
     // But for a "carousel" effect with AnimatePresence, showing 1 with nice transitions is often cleaner
 
+    const move = useCallback((step: number) => {
+        setDirection(step);
+        setCurrentIndex((prev) => (prev + step + posts.length) % posts.length);
+    }, [posts.length]);
+
     useEffect(() => {
         if (!autoPlay || isPaused) return;
 
@@ -46,12 +51,7 @@ export function BlogCarousel({
         }, autoPlayInterval);
 
         return () => clearInterval(interval);
-    }, [autoPlay, autoPlayInterval, isPaused, posts.length]);
-
-    const move = (step: number) => {
-        setDirection(step);
-        setCurrentIndex((prev) => (prev + step + posts.length) % posts.length);
-    };
+    }, [autoPlay, autoPlayInterval, isPaused, move]);
 
     const variants = {
         enter: (direction: number) => ({

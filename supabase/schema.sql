@@ -100,11 +100,47 @@ CREATE TABLE IF NOT EXISTS public.projects (
     state TEXT NOT NULL,
     status project_status DEFAULT 'DRAFT'::project_status,
     description TEXT,
+    host_id UUID,
+    data_logger_serial_id TEXT,
+    logger_api_key TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     deleted_at TIMESTAMPTZ,
     CONSTRAINT projects_pkey PRIMARY KEY (id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_projects_host_id ON public.projects(host_id);
+CREATE INDEX IF NOT EXISTS idx_projects_status ON public.projects(status);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_projects_data_logger_serial_id ON public.projects(data_logger_serial_id)
+    WHERE data_logger_serial_id IS NOT NULL;
+
+-- ============================================
+-- PPA_AGREEMENTS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.ppa_agreements (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    project_id UUID NOT NULL,
+    host_id UUID NOT NULL,
+    agreement_number TEXT UNIQUE,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    duration_years INTEGER,
+    rate_per_kwh NUMERIC,
+    rate_escalation_percent NUMERIC,
+    contracted_capacity_kw NUMERIC,
+    payment_due_day INTEGER,
+    status project_status DEFAULT 'ACTIVE'::project_status,
+    agreement_document_path TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT ppa_agreements_pkey PRIMARY KEY (id),
+    CONSTRAINT ppa_agreements_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id),
+    CONSTRAINT ppa_agreements_host_id_fkey FOREIGN KEY (host_id) REFERENCES public.users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ppa_agreements_project_id ON public.ppa_agreements(project_id);
+CREATE INDEX IF NOT EXISTS idx_ppa_agreements_host_id ON public.ppa_agreements(host_id);
+CREATE INDEX IF NOT EXISTS idx_ppa_agreements_status ON public.ppa_agreements(status);
 
 -- ============================================
 -- CAPACITY_BLOCKS TABLE
@@ -261,6 +297,7 @@ CREATE TABLE IF NOT EXISTS public.audit_log (
 -- Enable RLS on all tables
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ppa_agreements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.capacity_blocks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.allocations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
@@ -283,6 +320,11 @@ CREATE POLICY "Users can update own profile" ON public.users
 DROP POLICY IF EXISTS "Anyone can view active projects" ON public.projects;
 CREATE POLICY "Anyone can view active projects" ON public.projects
     FOR SELECT USING (status = 'ACTIVE'::project_status);
+
+-- PPA Agreements: Hosts can view their own, anyone can view active agreements
+DROP POLICY IF EXISTS "Hosts can view own PPA agreements" ON public.ppa_agreements;
+CREATE POLICY "Hosts can view own PPA agreements" ON public.ppa_agreements
+    FOR SELECT USING (auth.uid() = host_id OR status = 'ACTIVE'::project_status);
 
 -- Capacity Blocks: Users can view available blocks
 DROP POLICY IF EXISTS "Anyone can view available capacity blocks" ON public.capacity_blocks;
@@ -421,6 +463,11 @@ CREATE TRIGGER update_bills_updated_at
     BEFORE UPDATE ON public.bills
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
+DROP TRIGGER IF EXISTS update_ppa_agreements_updated_at ON public.ppa_agreements;
+CREATE TRIGGER update_ppa_agreements_updated_at
+    BEFORE UPDATE ON public.ppa_agreements
+    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
 -- ============================================
 -- INDEXES
 -- ============================================
@@ -474,34 +521,25 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 -- ============================================
--- SEED DATA (only if projects don't exist)
+-- SUPABASE STORAGE BUCKET: ppa-documents
+-- ============================================
+-- NOTE: Create this bucket manually via Supabase dashboard or use the SQL below
+-- The bucket and RLS policies should be created through Supabase UI for proper permissions
+
+-- To create manually in Supabase SQL Editor (as superuser/owner):
+-- 1. Go to Storage > Buckets
+-- 2. Click "+ New bucket"
+-- 3. Name it "ppa-documents"
+-- 4. Uncheck "Public bucket"
+-- 5. Set file size limit to 10MB
+-- 6. Set allowed MIME types to "application/pdf"
+--
+-- Then set RLS policies in Storage > Policies:
+-- INSERT: bucket_id = 'ppa-documents' AND auth.role() = 'authenticated'
+-- SELECT: bucket_id = 'ppa-documents' AND auth.role() = 'authenticated'
+
+-- ============================================
+-- SEED DATA
 -- ============================================
 
--- Insert sample projects
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE spv_id = 'MAH-SOLAR-001') THEN
-        INSERT INTO public.projects (spv_id, name, total_kw, rate_per_kwh, location, state, status, description)
-        VALUES ('MAH-SOLAR-001', 'Maharashtra Solar Farm', 500000, 5.00, 'Nagpur, Maharashtra', 'Maharashtra', 'ACTIVE'::project_status, 'A 500 MW solar farm in the Vidarbha region, one of India''s largest community solar projects.');
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE spv_id = 'KAR-SOLAR-001') THEN
-        INSERT INTO public.projects (spv_id, name, total_kw, rate_per_kwh, location, state, status, description)
-        VALUES ('KAR-SOLAR-001', 'Karnataka Green Energy', 300000, 4.50, 'Tumkur, Karnataka', 'Karnataka', 'ACTIVE'::project_status, 'State-of-the-art solar installation in Karnataka with excellent solar irradiance.');
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE spv_id = 'TN-SOLAR-001') THEN
-        INSERT INTO public.projects (spv_id, name, total_kw, rate_per_kwh, location, state, status, description)
-        VALUES ('TN-SOLAR-001', 'Tamil Nadu Solar Park', 400000, 4.80, 'Ramanathapuram, Tamil Nadu', 'Tamil Nadu', 'ACTIVE'::project_status, 'Part of Tamil Nadu''s ambitious renewable energy program, located in Ramanathapuram.');
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE spv_id = 'GUJ-SOLAR-001') THEN
-        INSERT INTO public.projects (spv_id, name, total_kw, rate_per_kwh, location, state, status, description)
-        VALUES ('GUJ-SOLAR-001', 'Gujarat Sun Project', 600000, 4.20, 'Kutch, Gujarat', 'Gujarat', 'ACTIVE'::project_status, 'Located in the sunny Kutch region with exceptional capacity factors.');
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE spv_id = 'RAJ-SOLAR-001') THEN
-        INSERT INTO public.projects (spv_id, name, total_kw, rate_per_kwh, location, state, status, description)
-        VALUES ('RAJ-SOLAR-001', 'Rajasthan Desert Solar', 800000, 3.80, 'Jodhpur, Rajasthan', 'Rajasthan', 'ACTIVE'::project_status, 'Massive solar installation in Thar Desert with highest solar radiation in India.');
-    END IF;
-END $$;
+-- Use supabase/seed_projects.sql to seed Vedvyas test project and other test data

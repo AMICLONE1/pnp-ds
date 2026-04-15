@@ -16,6 +16,7 @@ export async function GET() {
       .from("projects")
       .select("*")
       .eq("status", "ACTIVE")
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
 
     // If that fails, try with 'active' (lowercase)
@@ -25,6 +26,7 @@ export async function GET() {
         .from("projects")
         .select("*")
         .eq("status", "active")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false });
 
       if (!result.error) {
@@ -44,6 +46,7 @@ export async function GET() {
       const result = await supabase
         .from("projects")
         .select("*")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false });
 
       if (!result.error) {

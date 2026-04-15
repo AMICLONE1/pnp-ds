@@ -6,10 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BILLING_HISTORY } from "./data";
 
 export function TaxDeductionsCard() {
-  const currentBill = BILLING_HISTORY[0];
-  const totalTax = currentBill.cgst + currentBill.sgst;
-  const grossAmount = currentBill.baseAmount + totalTax;
-  const netAfterTds = grossAmount - currentBill.tds;
+  const rawBill = BILLING_HISTORY[0];
+  const baseAmount = rawBill.generation * rawBill.rate;
+  const cgst = baseAmount * 0.09;
+  const sgst = baseAmount * 0.09;
+  const tds = baseAmount * 0.02;
+  const totalTax = cgst + sgst;
+  const grossAmount = baseAmount + totalTax;
+  const netAfterTds = grossAmount - tds;
+
+  const currentBill = {
+    ...rawBill,
+    baseAmount,
+    cgst,
+    sgst,
+    tds,
+  };
 
   const deductions = [
     { label: "CGST (9%)", amount: currentBill.cgst, type: "tax" as const },

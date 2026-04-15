@@ -24,7 +24,7 @@ const navItems = [
   { href: "/host/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/host/financials", icon: Wallet, label: "Financials" },
   { href: "/host/alerts", icon: Bell, label: "Alerts", badge: 3 },
-  { href: "/settings", icon: Settings, label: "Settings" },
+  { href: "/host/settings", icon: Settings, label: "Settings" },
 ];
 
 interface HostSidebarProps {
@@ -39,7 +39,8 @@ export function HostSidebar({ isOpen, onClose }: HostSidebarProps) {
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/login");
+    router.replace("/host/login");
+    router.refresh();
   };
 
   const handleNavClick = () => {
@@ -147,13 +148,13 @@ export function HostSidebar({ isOpen, onClose }: HostSidebarProps) {
 
       {/* Bottom actions */}
       <div className="p-4 border-t border-gray-200 space-y-1">
-        <Link href="/" onClick={handleNavClick}>
+        <Link href="/host-landing" onClick={handleNavClick}>
           <motion.div
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black transition-all"
             whileHover={{ x: 4 }}
           >
             <LayoutDashboard className="w-5 h-5" />
-            <span>Home Page</span>
+            <span>Host Landing</span>
           </motion.div>
         </Link>
         <motion.button

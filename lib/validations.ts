@@ -45,6 +45,7 @@ export const reservationSchema = z.object({
 export const paymentSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
   allocation_id: z.string().uuid("Invalid allocation ID").optional(),
-  payment_type: z.enum(["allocation", "monthly", "bill"]),
+  bill_id: z.string().uuid("Invalid bill ID").optional(),
+  payment_type: z.enum(["ALLOCATION", "MONTHLY", "BILL"]),
 });
 

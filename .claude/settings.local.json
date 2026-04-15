@@ -5,7 +5,13 @@
       "Bash(npm run lint)",
       "Bash(npx tsc:*)",
       "Bash(npm test)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(curl -s http://localhost:3001/api/admin/projects?page=1)",
+      "Bash(limit=20 2>&1)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(npm run:*)",
+      "Bash(tee -a server_full.log)",
+      "Bash(grep -h \"^import.*from.*data\" \"d:/PowerNetPro/PNP-DSnew/components/host/financials\"/*.tsx)"
     ]
   }
 }

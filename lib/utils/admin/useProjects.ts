@@ -9,6 +9,21 @@ interface ProjectCapacity {
     utilization: number;
 }
 
+interface ProjectHost {
+    id: string;
+    business_name: string;
+    contact_name: string;
+    contact_email: string;
+    contact_phone: string;
+}
+
+interface ProjectAgreement {
+    id: string;
+    agreement_number: string;
+    status: string;
+    rate_per_kwh: number;
+}
+
 interface AdminProject {
     id: string;
     spv_id: string;
@@ -22,6 +37,12 @@ interface AdminProject {
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
+    host_id: string | null;
+    data_logger_serial_id: string | null;
+    logger_api_key: string | null;
+    trillectric_site_ids: string[] | null;
+    host?: ProjectHost | null;
+    agreement?: ProjectAgreement | null;
     capacity: ProjectCapacity;
 }
 
@@ -42,6 +63,9 @@ interface EditingProject {
     total_kw: number;
     rate_per_kwh: number;
     status: ProjectStatus;
+    data_logger_serial_id?: string;
+    logger_api_key?: string;
+    trillectric_site_ids?: string;
 }
 
 interface NewProject {
@@ -53,6 +77,15 @@ interface NewProject {
     total_kw: number;
     rate_per_kwh: number;
     status: ProjectStatus;
+    data_logger_serial_id: string;
+    logger_api_key?: string;
+    trillectric_site_ids: string;
+    host_business_name: string;
+    host_contact_name: string;
+    host_contact_email: string;
+    host_contact_phone: string;
+    host_password: string;
+    ppa_document?: File | null;
 }
 
 const emptyNewProject: NewProject = {
@@ -64,6 +97,15 @@ const emptyNewProject: NewProject = {
     total_kw: 0,
     rate_per_kwh: 0,
     status: "DRAFT",
+    data_logger_serial_id: "",
+    logger_api_key: undefined,
+    trillectric_site_ids: "",
+    host_business_name: "",
+    host_contact_name: "",
+    host_contact_email: "",
+    host_contact_phone: "",
+    host_password: "",
+    ppa_document: null,
 };
 
 export function useProjects(){
@@ -141,6 +183,9 @@ export function useProjects(){
             total_kw: project.total_kw,
             rate_per_kwh: project.rate_per_kwh,
             status: project.status,
+            data_logger_serial_id: project.data_logger_serial_id || "",
+            logger_api_key: project.logger_api_key || "",
+            trillectric_site_ids: (project.trillectric_site_ids || []).join(", "),
         });
     };
 
@@ -237,17 +282,71 @@ export function useProjects(){
     };
 
     const handleCreateProject = async () => {
-        if (!newProject.spv_id || !newProject.name || !newProject.location || !newProject.state) {
+        if (
+            !newProject.spv_id ||
+            !newProject.name ||
+            !newProject.location ||
+            !newProject.state ||
+            !newProject.data_logger_serial_id ||
+            !newProject.host_business_name ||
+            !newProject.host_contact_name ||
+            !newProject.host_contact_email ||
+            !newProject.host_contact_phone ||
+            !newProject.host_password
+        ) {
             showToast("error", "Please fill in all required fields");
             return;
         }
+
+        if (newProject.host_password.length < 12) {
+            showToast("error", "Use at least 12 characters for the initial host password");
+            return;
+        }
+
+        // Validate PDF if provided
+        if (newProject.ppa_document) {
+            if (newProject.ppa_document.type !== "application/pdf") {
+                showToast("error", "PPA document must be a PDF file");
+                return;
+            }
+            if (newProject.ppa_document.size > 10 * 1024 * 1024) {
+                showToast("error", "PPA document must be less than 10MB");
+                return;
+            }
+        }
+
         setActionLoading(true);
         try {
+            const formData = new FormData();
+            formData.append("spv_id", newProject.spv_id);
+            formData.append("name", newProject.name);
+            formData.append("description", newProject.description);
+            formData.append("location", newProject.location);
+            formData.append("state", newProject.state);
+            formData.append("total_kw", String(newProject.total_kw));
+            formData.append("rate_per_kwh", String(newProject.rate_per_kwh));
+            formData.append("status", newProject.status);
+            formData.append("data_logger_serial_id", newProject.data_logger_serial_id);
+            if (newProject.logger_api_key) {
+                formData.append("logger_api_key", newProject.logger_api_key);
+            }
+            if (newProject.trillectric_site_ids && newProject.trillectric_site_ids.trim()) {
+                // API accepts a comma-separated string and normalises it into a TEXT[].
+                formData.append("trillectric_site_ids", newProject.trillectric_site_ids.trim());
+            }
+            formData.append("host_business_name", newProject.host_business_name);
+            formData.append("host_contact_name", newProject.host_contact_name);
+            formData.append("host_contact_email", newProject.host_contact_email);
+            formData.append("host_contact_phone", newProject.host_contact_phone);
+            formData.append("host_password", newProject.host_password);
+            if (newProject.ppa_document) {
+                formData.append("ppa_document", newProject.ppa_document);
+            }
+
             const res = await fetch("/api/admin/projects", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify(newProject),
+                body: formData,
             });
             const result = await res.json();
 
@@ -255,7 +354,7 @@ export function useProjects(){
                 throw new Error(extractError(result.error, "Failed to create project"));
             }
 
-            showToast("success", "Project created successfully");
+            showToast("success", "Project, host, and logger provisioned successfully");
             setShowCreateModal(false);
             setNewProject(emptyNewProject);
             fetchProjects(1);

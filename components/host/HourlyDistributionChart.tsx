@@ -8,7 +8,12 @@ import {
   Sun,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_HOURLY_DATA} from "@/lib/utils/host/data";
+
+// Demo hourly data - replace with real API data
+const MOCK_HOURLY_DATA = Array.from({ length: 24 }, (_, i) => ({
+  hour: `${i.toString().padStart(2, "0")}:00`,
+  kwh: Math.random() * 500,
+}));
 
 export function HourlyDistributionChart(){
       const chartData = {

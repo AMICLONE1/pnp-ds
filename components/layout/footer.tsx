@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sun, ArrowRight, Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Youtube, ArrowUpRight } from "lucide-react";
+import { Sun, ArrowRight, Mail, MapPin, Phone, Linkedin, Instagram, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -35,10 +35,8 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Twitter, href: "https://twitter.com/powernetpro", label: "Twitter" },
   { icon: Linkedin, href: "https://linkedin.com/company/powernetpro", label: "LinkedIn" },
   { icon: Instagram, href: "https://www.instagram.com/powernetpro", label: "Instagram" },
-  { icon: Youtube, href: "https://youtube.com/@powernetpro", label: "YouTube" },
 ];
 
 export function Footer() {
@@ -138,14 +136,14 @@ export function Footer() {
 
             {/* Contact Info */}
             <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-2.5 mb-5">
-              <a href="mailto:omkarkolhe912@gmail.com" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
+              <a href="mailto:info@powernetpro.com" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
                 <Mail className="w-4 h-4 text-gold" />
-                omkarkolhe912@gmail.com
+                info@powernetpro.com
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <a href="tel:+918180861415" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
+              <a href="tel:+918805881601" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
                 <Phone className="w-4 h-4 text-gold" />
-                +91 8180 861 415
+                +91 8805 881 601
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <div className="flex items-start gap-2.5 text-gray-600 text-sm">

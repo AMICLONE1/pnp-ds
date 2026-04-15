@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,9 +24,11 @@ import {
     Pause,
     StopCircle,
     RotateCcw,
-    DollarSign,
+    IndianRupee,
+    FileText,
 } from "lucide-react";
 import { useProjects } from "@/lib/utils/admin/useProjects";
+import { AdminPageHeader } from "@/components/admin/shared/AdminPageHeader";
 
 type ProjectStatus = "DRAFT" | "ACTIVE" | "MAINTENANCE" | "RETIRED";
 
@@ -40,6 +43,13 @@ interface NewProject {
     total_kw: number;
     rate_per_kwh: number;
     status: ProjectStatus;
+    data_logger_serial_id: string;
+    trillectric_site_ids: string;
+    host_business_name: string;
+    host_contact_name: string;
+    host_contact_email: string;
+    host_contact_phone: string;
+    host_password: string;
 }
 
 const emptyNewProject: NewProject = {
@@ -51,6 +61,13 @@ const emptyNewProject: NewProject = {
     total_kw: 0,
     rate_per_kwh: 0,
     status: "DRAFT",
+    data_logger_serial_id: "",
+    trillectric_site_ids: "",
+    host_business_name: "",
+    host_contact_name: "",
+    host_contact_email: "",
+    host_contact_phone: "",
+    host_password: "",
 };
 
 export default function AdminProjectsPage() {
@@ -106,26 +123,19 @@ export default function AdminProjectsPage() {
     return (
         <div className="p-4 sm:p-6 lg:p-8 space-y-6">
             {/* Header */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-            >
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-black">
-                        Project Management
-                    </h1>
-                    <p className="text-gray-600 mt-1 text-sm sm:text-base">
-                        Manage and monitor all solar projects
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-xl">
-                        <FolderKanban className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-700">
-                            {pagination.total} Projects
-                        </span>
-                    </div>
+            <AdminPageHeader
+                title="Project Management"
+                subtitle="Manage and monitor all solar projects"
+                breadcrumbs={[
+                    { label: "Admin", href: "/admin" },
+                    { label: "Plants" },
+                ]}
+                badge={
+                    <span className="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold rounded-full">
+                        {pagination.total} Projects
+                    </span>
+                }
+                actions={
                     <Button
                         variant="primary"
                         size="sm"
@@ -135,8 +145,8 @@ export default function AdminProjectsPage() {
                         <Plus className="w-4 h-4" />
                         <span className="hidden sm:inline">New Project</span>
                     </Button>
-                </div>
-            </motion.div>
+                }
+            />
 
             {/* Search & Filters */}
             <motion.div
@@ -294,12 +304,32 @@ export default function AdminProjectsPage() {
                                                     <FolderKanban className="w-5 h-5 text-gold-dark" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-black text-sm">
+                                                    <Link
+                                                        href={`/admin/projects/${project.id}`}
+                                                        className="font-medium text-black text-sm hover:text-gold-dark hover:underline decoration-dotted underline-offset-2"
+                                                    >
                                                         {project.name}
-                                                    </p>
+                                                    </Link>
                                                     <p className="text-xs text-gray-500">
                                                         {project.spv_id}
                                                     </p>
+                                                    {project.host?.id ? (
+                                                        <Link
+                                                            href={`/admin/hosts/${project.host.id}`}
+                                                            className="text-[11px] text-emerald-700 mt-0.5 hover:underline block"
+                                                        >
+                                                            Host: {project.host.business_name || project.host.contact_name || project.host.contact_email}
+                                                        </Link>
+                                                    ) : project.host?.business_name && (
+                                                        <p className="text-[11px] text-emerald-700 mt-0.5">
+                                                            Host: {project.host.business_name}
+                                                        </p>
+                                                    )}
+                                                    {project.data_logger_serial_id && (
+                                                        <p className="text-[11px] text-gray-400">
+                                                            Logger: {project.data_logger_serial_id}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                         </td>
@@ -355,8 +385,8 @@ export default function AdminProjectsPage() {
                                         {/* Rate */}
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-1.5 text-sm text-gray-700">
-                                                <DollarSign className="w-3.5 h-3.5 text-gray-400" />
-                                                ₹{project.rate_per_kwh}/kWh
+                                                <IndianRupee className="w-3.5 h-3.5 text-gray-400" />
+                                                {project.rate_per_kwh}/kWh
                                             </div>
                                         </td>
 
@@ -481,10 +511,30 @@ export default function AdminProjectsPage() {
                                             <FolderKanban className="w-5 h-5 text-gold-dark" />
                                         </div>
                                         <div>
-                                            <p className="font-medium text-black text-sm">
+                                            <Link
+                                                href={`/admin/projects/${project.id}`}
+                                                className="font-medium text-black text-sm hover:text-gold-dark hover:underline decoration-dotted underline-offset-2"
+                                            >
                                                 {project.name}
-                                            </p>
+                                            </Link>
                                             <p className="text-xs text-gray-500">{project.spv_id}</p>
+                                            {project.host?.id ? (
+                                                <Link
+                                                    href={`/admin/hosts/${project.host.id}`}
+                                                    className="text-[11px] text-emerald-700 mt-0.5 hover:underline block"
+                                                >
+                                                    Host: {project.host.business_name || project.host.contact_name || project.host.contact_email}
+                                                </Link>
+                                            ) : project.host?.business_name && (
+                                                <p className="text-[11px] text-emerald-700 mt-0.5">
+                                                    Host: {project.host.business_name}
+                                                </p>
+                                            )}
+                                            {project.data_logger_serial_id && (
+                                                <p className="text-[11px] text-gray-400">
+                                                    Logger: {project.data_logger_serial_id}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex gap-1">
@@ -520,8 +570,8 @@ export default function AdminProjectsPage() {
                                         {formatNumber(project.total_kw)} kW
                                     </div>
                                     <div className="flex items-center gap-1.5 text-gray-600">
-                                        <DollarSign className="w-3 h-3 text-gray-400" />
-                                        ₹{project.rate_per_kwh}/kWh
+                                        <IndianRupee className="w-3 h-3 text-gray-400" />
+                                        {project.rate_per_kwh}/kWh
                                     </div>
                                 </div>
 
@@ -792,6 +842,44 @@ export default function AdminProjectsPage() {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                        Data Logger Serial ID
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editingProject.data_logger_serial_id || ""}
+                                        onChange={(e) =>
+                                            setEditingProject({
+                                                ...editingProject,
+                                                data_logger_serial_id: e.target.value,
+                                            })
+                                        }
+                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                        Trillectric Site IDs
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Comma-separated site IDs"
+                                        value={editingProject.trillectric_site_ids || ""}
+                                        onChange={(e) =>
+                                            setEditingProject({
+                                                ...editingProject,
+                                                trillectric_site_ids: e.target.value,
+                                            })
+                                        }
+                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                    />
+                                    <p className="mt-1 text-[11px] text-gray-500">
+                                        One or more Trillectric site IDs bound to this plant for live telemetry.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
                                         Status
                                     </label>
                                     <select
@@ -1003,6 +1091,119 @@ export default function AdminProjectsPage() {
                                         <option value="DRAFT">Draft</option>
                                         <option value="ACTIVE">Active</option>
                                     </select>
+                                </div>
+
+                                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 space-y-4">
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-emerald-900">Host & Logger Setup</h3>
+                                        <p className="text-xs text-emerald-800/80 mt-1">
+                                            Creating the project will also provision the host login, attach the logger serial, and seed the first generation records.
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="sm:col-span-2">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Host Business Name <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Vedvyas Solar Park LLP"
+                                                value={newProject.host_business_name}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, host_business_name: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Contact Name <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Rajesh Patel"
+                                                value={newProject.host_contact_name}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, host_contact_name: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Contact Email <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="email"
+                                                placeholder="host@example.com"
+                                                value={newProject.host_contact_email}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, host_contact_email: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Contact Phone <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="+91 98765 43210"
+                                                value={newProject.host_contact_phone}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, host_contact_phone: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Logger Serial ID <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="TLX-VEV-001"
+                                                value={newProject.data_logger_serial_id}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, data_logger_serial_id: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Trillectric Site IDs
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="6930245480e6a90013342f06, 69a93f7ce189c00012109f28"
+                                                value={newProject.trillectric_site_ids}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, trillectric_site_ids: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                            <p className="mt-1 text-[11px] text-gray-500">
+                                                Comma-separated. Each ID binds an inverter to this plant for live telemetry.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Temporary Password <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="password"
+                                                placeholder="12+ characters"
+                                                value={newProject.host_password}
+                                                onChange={(e) =>
+                                                    setNewProject({ ...newProject, host_password: e.target.value })
+                                                }
+                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

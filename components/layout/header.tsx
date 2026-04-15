@@ -288,10 +288,10 @@ export function Header() {
                     Login
                   </Link>
                   <Link
-                    href="/waitlist"
+                    href="/signup"
                     className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold bg-gold hover:bg-gold-light text-black rounded-full shadow-lg shadow-gold/20 transition-colors group"
                   >
-                    Join Waitlist
+                    Get Started
                     <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </>
@@ -441,11 +441,11 @@ export function Header() {
                         Login
                       </Link>
                       <Link
-                        href="/waitlist"
+                        href="/signup"
                         onClick={() => setMobileMenuOpen(false)}
                         className="w-full inline-flex items-center justify-center px-4 py-2 text-base font-medium bg-gold hover:bg-gold-light text-black rounded-full transition-colors"
                       >
-                        Join Waitlist
+                        Get Started
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Link>
                     </>

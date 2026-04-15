@@ -4,7 +4,7 @@ import { checkRateLimit } from "@/lib/security/rateLimiter";
 import { createServerClient } from "@supabase/ssr";
 
 // Waitlist mode - redirect auth pages to waitlist
-const WAITLIST_MODE = true;
+const WAITLIST_MODE = false;
 const WAITLIST_REDIRECT_PATHS = ["/signup"];
 
 // Routes that require HOST role
@@ -66,9 +66,13 @@ async function getUserAndRole(request: NextRequest) {
 
   const { data: userData } = await supabase
     .from("users")
-    .select("role")
+    .select("role, deleted_at")
     .eq("id", user.id)
     .single();
+
+  if (userData?.deleted_at) {
+    return { user: null, role: null };
+  }
 
   return { user, role: userData?.role ?? null };
 }

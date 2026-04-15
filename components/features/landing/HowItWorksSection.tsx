@@ -618,7 +618,7 @@ export function HowItWorksSection() {
                 className="mt-12 md:mt-16 lg:mt-20 text-center"
               >
                 <div className="inline-flex flex-col sm:flex-row gap-4 items-center">
-                  <Link href="/waitlist">
+                  <Link href="/signup">
                     <motion.div
                       whileHover={{ scale: 1.03, y: -2 }}
                       whileTap={{ scale: 0.98 }}
@@ -636,7 +636,7 @@ export function HowItWorksSection() {
                           transition={{ duration: 0.6 }}
                         />
                         <span className="relative z-10 flex items-center gap-2">
-                          Join Waitlist
+                          Get Started
                           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </Button>

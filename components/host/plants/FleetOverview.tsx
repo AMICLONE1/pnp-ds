@@ -5,20 +5,22 @@ import {
   Gauge,
   Leaf,
   BarChart3,
-  
+
 } from "lucide-react";
 
-import { MOCK_PLANTS } from "@/lib/utils/host/plants/data";
 import { AnimatedNumber } from "@/components/host/plants/AnimatedNumber";
 import { LivePulse } from "@/components/host/plants/LivePulse";
 
+// Demo plants - replace with real API data
+const MOCK_PLANTS: any[] = [];
+
 export function FleetOverview(){
-  const totalCapacity = MOCK_PLANTS.reduce((s, p) => s + p.capacityKw, 0);
-  const totalToday = MOCK_PLANTS.reduce((s, p) => s + p.todayKwh, 0);
-  const totalMonthly = MOCK_PLANTS.reduce((s, p) => s + p.monthlyKwh, 0);
-  const avgEfficiency = MOCK_PLANTS.reduce((s, p) => s + p.efficiency, 0) / MOCK_PLANTS.length;
+  const totalCapacity = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.capacityKw, 0) : 0;
+  const totalToday = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.todayKwh, 0) : 0;
+  const totalMonthly = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.monthlyKwh, 0) : 0;
+  const avgEfficiency = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.efficiency, 0) / MOCK_PLANTS.length : 0;
   const activePlants = MOCK_PLANTS.filter((p) => p.status === "ACTIVE").length;
-  const totalCo2 = MOCK_PLANTS.reduce((s, p) => s + p.co2OffsetTons, 0);
+  const totalCo2 = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.co2OffsetTons, 0) : 0;
 
   const summaryStats = [
     { icon: Zap, label: "Total Capacity", value: totalCapacity, suffix: " kW", color: "text-gold-dark", bg: "bg-gold/10" },

@@ -27,7 +27,7 @@ export async function GET() {
       capacityBlocksResult,
       usersResult,
       projectsResult,
-      paymentsResult,
+      hostPaymentsResult,
       waitlistResult,
       generationsResult,
     ] = await Promise.all([
@@ -40,8 +40,8 @@ export async function GET() {
       // All projects
       adminClient.from("projects").select("id, name, status, total_kw"),
 
-      // All completed payments
-      adminClient.from("payments").select("amount, created_at, status"),
+      // Host billing ledger
+      adminClient.from("host_payments").select("total_amount, created_at, status, payment_method"),
 
       // Waitlist count
       adminClient.from("waitlist").select("id", { count: "exact", head: true }),
@@ -74,12 +74,11 @@ export async function GET() {
     const capacityByProject = processCapacityByProject(allBlocks, allProjects);
 
     // Process payments data
-    const allPayments = paymentsResult.data || [];
-    const completedPayments = allPayments.filter(p => p.status === "COMPLETED");
-    const totalRevenue = completedPayments.reduce((sum, p) => sum + Number(p.amount), 0);
+    const hostPayments = hostPaymentsResult.data || [];
+    const totalRevenue = hostPayments.reduce((sum, payment) => sum + Number(payment.total_amount || 0), 0);
 
     // Process revenue by month
-    const revenueByMonth = processRevenueByMonth(completedPayments);
+    const revenueByMonth = processRevenueByMonth(hostPayments);
 
     // Process generation data
     const generations = generationsResult.data || [];
@@ -148,14 +147,14 @@ function processUserGrowth(users: { created_at: string; deleted_at: string | nul
   });
 }
 
-function processRevenueByMonth(payments: { amount: number; created_at: string }[]): MonthlyData[] {
+function processRevenueByMonth(payments: { total_amount: number; created_at: string }[]): MonthlyData[] {
   const monthlyMap = new Map<string, number>();
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   payments.forEach(payment => {
     const date = new Date(payment.created_at);
     const key = `${months[date.getMonth()]}-${date.getFullYear()}`;
-    monthlyMap.set(key, (monthlyMap.get(key) || 0) + Number(payment.amount));
+      monthlyMap.set(key, (monthlyMap.get(key) || 0) + Number(payment.total_amount));
   });
 
   // Convert to sorted array (last 12 months)

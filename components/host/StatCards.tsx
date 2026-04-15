@@ -7,15 +7,19 @@ import {
   Gauge,
   IndianRupee,
 } from "lucide-react";
-import { MOCK_STATS } from "@/lib/utils/host/data";
+import { DashboardStats } from "@/lib/utils/host/useDashboard";
 import AnimatedNumber from "@/components/host/AnimatedNumber";
 
-export function StatCards(){
+interface StatCardsProps {
+  stats: DashboardStats;
+}
+
+export function StatCards({ stats: dashboardStats }: StatCardsProps) {
   const stats = [
     {
       icon: Zap,
       label: "Total Capacity",
-      value: MOCK_STATS.totalCapacityKw,
+      value: dashboardStats.totalCapacityKw,
       suffix: " kW",
       color: "text-gold-dark",
       bgColor: "bg-gold/10",
@@ -24,32 +28,32 @@ export function StatCards(){
     {
       icon: Sun,
       label: "Today's Generation",
-      value: MOCK_STATS.todayGenerationKwh,
+      value: dashboardStats.todayGenerationKwh,
       suffix: " kWh",
       color: "text-forest",
       bgColor: "bg-forest/10",
-      trend: MOCK_STATS.todayTrend,
+      trend: dashboardStats.todayTrend,
       trendLabel: "vs yesterday",
       decimals: 1,
     },
     {
       icon: IndianRupee,
       label: "Monthly Due",
-      value: MOCK_STATS.monthlyRevenue,
+      value: dashboardStats.monthlyRevenue,
       prefix: "₹",
       color: "text-purple-600",
       bgColor: "bg-purple-100",
-      trend: MOCK_STATS.monthlyTrend,
+      trend: dashboardStats.monthlyTrend,
       trendLabel: "vs last month",
     },
     {
       icon: Gauge,
       label: "Plant Efficiency",
-      value: MOCK_STATS.plantEfficiency,
+      value: dashboardStats.plantEfficiency,
       suffix: "%",
       color: "text-green-600",
       bgColor: "bg-green-100",
-      trend: MOCK_STATS.efficiencyTrend,
+      trend: dashboardStats.efficiencyTrend,
       trendLabel: "vs last month",
       decimals: 1,
     },

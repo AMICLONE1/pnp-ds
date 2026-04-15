@@ -2,18 +2,23 @@ import { motion } from "framer-motion";
 import {
   Sun,
   CalendarDays,
-  
+
 } from "lucide-react";
-import { HOST_NAME, MOCK_STATS } from "@/lib/utils/host/data";
+import { DashboardStats } from "@/lib/utils/host/useDashboard";
 import { LivePulse } from "@/components/host/LivePulse";
 
-export function WelcomeBanner(){
+interface WelcomeBannerProps {
+  stats: DashboardStats;
+}
+
+export function WelcomeBanner({ stats }: WelcomeBannerProps) {
     const today = new Date().toLocaleDateString("en-IN", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     });
+
     return(
         <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -32,7 +37,7 @@ export function WelcomeBanner(){
                 <Sun className="w-20 h-20 text-gold/15" strokeWidth={1} />
             </motion.div>
             </div>
-    
+
             <div className="relative z-10">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-2">
                 <div className="flex items-center gap-2">
@@ -48,17 +53,17 @@ export function WelcomeBanner(){
                 <span className="text-xs font-medium text-blue-700">{today}</span>
                 </div>
             </div>
-    
+
             <h1 className="text-2xl sm:text-3xl font-bold text-black font-heading mt-4">
                 Welcome back,{" "}
-                <span className="gradient-text">{HOST_NAME}</span>
+                <span className="gradient-text">Solar Host</span>
             </h1>
             <p className="text-gray-600 mt-1.5 text-sm sm:text-base">
                 Your solar plants generated{" "}
                 <span className="font-semibold text-forest">
-                {MOCK_STATS.todayGenerationKwh.toLocaleString("en-IN")} kWh
+                {stats.todayGenerationKwh.toLocaleString("en-IN")} kWh
                 </span>{" "}
-                today across {MOCK_STATS.activePlants} active installations.
+                today across {stats.activePlants} active installations.
             </p>
             </div>
         </motion.div>

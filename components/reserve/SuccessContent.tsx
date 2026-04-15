@@ -58,22 +58,22 @@ export default function SuccessContent(){
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/connect">
+                <Link href="/dashboard">
                     <Button variant="primary" size="lg">
-                    Connect Utility
+                    Go to Dashboard
                     <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                 </Link>
-                <Link href="/dashboard">
+                <Link href="/bills?submit=1">
                     <Button variant="outline" size="lg">
-                    Go to Dashboard
+                    Submit your first bill
                     </Button>
                 </Link>
                 </div>
 
                 <p className="text-sm text-gray-500 mt-6">
-                Next step: Link your electricity provider to start receiving credits
-                on your bills.
+                Next step: upload your next DISCOM bill — we&apos;ll review it and apply
+                your solar credits automatically.
                 </p>
             </CardContent>
             </Card>

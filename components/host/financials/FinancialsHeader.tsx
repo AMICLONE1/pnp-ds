@@ -35,7 +35,7 @@ export function FinancialsHeader({ period, onPeriodChange }: FinancialsHeaderPro
             <div className="flex items-center gap-2 mb-3">
               <div className="flex items-center gap-1.5 px-3 py-1 bg-forest/5 border border-forest/15 rounded-full">
                 <IndianRupee className="w-3.5 h-3.5 text-forest" />
-                <span className="text-xs font-medium text-forest">Revenue Tracking</span>
+                <span className="text-xs font-medium text-forest">Monthly PPA Billing</span>
               </div>
               <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 border border-blue-200 rounded-full">
                 <CalendarDays className="w-3.5 h-3.5 text-blue-600" />
@@ -43,10 +43,10 @@ export function FinancialsHeader({ period, onPeriodChange }: FinancialsHeaderPro
               </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-black font-heading">
-              <span className="gradient-text">Financials</span>
+              <span className="gradient-text">Billing & Receipts</span>
             </h1>
             <p className="text-gray-600 mt-1.5 text-sm sm:text-base">
-              Complete financial overview of your{" "}
+              Complete financial overview of your monthly PPA settlements, invoices, and payment history.
               <span className="font-semibold text-forest">₹53.8L</span> solar portfolio earnings.
             </p>
           </div>

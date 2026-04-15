@@ -19,10 +19,12 @@ import {
   Sun,
   Search,
 } from "lucide-react";
-import { MOCK_PLANTS } from "@/lib/utils/host/plants/data";
 import { FleetOverview } from "@/components/host/plants/FleetOverview";
 import { PlantCard } from "@/components/host/plants/PlantCard";
 import { PlantDetailView } from "@/components/host/plants/PlantDetailView";
+
+// Demo plants - replace with real API data
+const MOCK_PLANTS: any[] = [];
 
 // Register Chart.js components
 ChartJS.register(

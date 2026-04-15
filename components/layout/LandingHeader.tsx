@@ -117,7 +117,7 @@ export function HostHeader() {
 
             {/* CTA - Right */}
             <Link
-              href="/login"
+              href="/host/login"
               className="text-sm font-semibold bg-gold text-black px-4 py-2 rounded-xl hover:bg-gold/90 transition-all duration-200 shadow-sm whitespace-nowrap"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
@@ -350,7 +350,7 @@ export function LandingHeader() {
                     Login
                   </Link>
                   <Link
-                    href="/waitlist"
+                    href="/signup"
                     className="text-sm font-semibold bg-gold text-black px-4 py-2 rounded-xl hover:bg-gold/90 transition-all duration-200 shadow-md hover:shadow-gold/30 hover:shadow-lg"
                   >
                     Get Started

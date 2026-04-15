@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdmin, unauthorizedResponse } from "@/lib/admin/adminAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sanitizeEmail, sanitizeSearchTerm } from "@/lib/security/inputSanitizer";
 
 /**
  * GET /api/admin/users
@@ -16,12 +17,26 @@ export async function GET(request: NextRequest) {
     const adminClient = createAdminClient();
 
     const { searchParams } = new URL(request.url);
-    const search = searchParams.get("search") || "";
+    const search = sanitizeSearchTerm(searchParams.get("search") || "");
     const status = searchParams.get("status") || "all";
     const role = searchParams.get("role") || "all";
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 10);
     const offset = (page - 1) * limit;
+
+    if (!["all", "active", "deleted"].includes(status)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid status filter" },
+        { status: 400 }
+      );
+    }
+
+    if (!["all", "ADMIN", "USER", "HOST"].includes(role)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid role filter" },
+        { status: 400 }
+      );
+    }
 
     let query = adminClient
       .from("users")
@@ -51,6 +66,8 @@ export async function GET(request: NextRequest) {
       query = query.eq("role", "ADMIN");
     } else if (role === "USER") {
       query = query.eq("role", "USER");
+    } else if (role === "HOST") {
+      query = query.eq("role", "HOST");
     }
 
     const { data: users, error, count } = await query;
@@ -136,10 +153,37 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const adminClient = createAdminClient();
+    const { data: currentUser, error: currentUserError } = await adminClient
+      .from("users")
+      .select("email")
+      .eq("id", id)
+      .single();
+
+    if (currentUserError || !currentUser) {
+      return NextResponse.json(
+        { success: false, error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    const incomingEmail =
+      typeof updates.email === "string" ? sanitizeEmail(updates.email).trim().toLowerCase() : "";
+    const currentEmail = String(currentUser.email || "").trim().toLowerCase();
+
+    if (incomingEmail && incomingEmail !== currentEmail) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Email cannot be changed from the admin user editor. Use host provisioning to create a new login.",
+        },
+        { status: 400 }
+      );
+    }
+
     // Whitelist allowed fields
     const allowedFields = [
       "name",
-      "email",
       "phone",
       "role",
       "kyc_status",
@@ -175,7 +219,6 @@ export async function PUT(request: NextRequest) {
 
     sanitizedUpdates["updated_at"] = new Date().toISOString();
 
-    const adminClient = createAdminClient();
     const { data, error } = await adminClient
       .from("users")
       .update(sanitizedUpdates)
@@ -235,29 +278,35 @@ export async function DELETE(request: NextRequest) {
     const adminClient = createAdminClient();
 
     if (type === "permanent") {
-      // Hard-delete: remove from public.users then auth.users
-      const { error: deleteError } = await adminClient
+      const now = new Date().toISOString();
+
+      const { error: softDeleteError } = await adminClient
         .from("users")
-        .delete()
+        .update({
+          deleted_at: now,
+          updated_at: now,
+        })
         .eq("id", id);
 
-      if (deleteError) {
-        console.error("Error hard-deleting user:", deleteError);
+      if (softDeleteError) {
+        console.error("Error soft-deleting user before permanent ban:", softDeleteError);
         return NextResponse.json(
-          { success: false, error: "Failed to permanently delete user" },
+          { success: false, error: "Failed to ban user" },
           { status: 500 }
         );
       }
 
-      // Also delete from Supabase Auth so the email can't be used to log in
       const { error: authDeleteError } = await adminClient.auth.admin.deleteUser(id);
 
       if (authDeleteError) {
         console.error("Error deleting user from auth:", authDeleteError);
-        // User is already removed from public.users, log but don't fail
+        return NextResponse.json(
+          { success: false, error: "Failed to remove authentication access for this user" },
+          { status: 500 }
+        );
       }
 
-      return NextResponse.json({ success: true, message: "User permanently banned and removed" });
+      return NextResponse.json({ success: true, message: "User permanently banned and auth account removed" });
     } else {
       // Temporary ban: soft-delete by setting deleted_at
       const { data, error } = await adminClient
