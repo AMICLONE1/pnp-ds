@@ -3,7 +3,7 @@ import { Users } from "lucide-react";
 import {
     ScrollFade,
 } from "@/components/ui/animations";
-import { testimonialData } from "@/lib/utils/data.js"
+import { testimonialData } from "@/lib/utils/data"
 
 interface TestimonialProps {
     className?: string;

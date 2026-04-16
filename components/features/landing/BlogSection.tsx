@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Calendar, Clock, Sparkles } from "lucide-react";
 import { ScrollFade } from "@/components/ui/animations";
-import { blogData } from "@/lib/utils/data.js";
+import { blogData } from "@/lib/utils/data";
 
 type BlogPost = (typeof blogData)[number];
 

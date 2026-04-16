@@ -1,4 +1,4 @@
-import { blogData } from "@/lib/utils/data.js";
+import { blogData } from "@/lib/utils/data";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { LandingHeader } from "@/components/layout/LandingHeader";
@@ -11,8 +11,9 @@ import {
 } from "@/components/features/blog/BlogComponents";
 import { normalizeBlogHtml } from "@/lib/utils/blog-format";
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-    const post = blogData.find((p) => p.slug === params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = blogData.find((p: any) => p.slug === slug);
 
     if (!post) {
         notFound();
@@ -102,7 +103,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 }
 
 export function generateStaticParams() {
-    return blogData.map((post) => ({
+    return blogData.map((post: any) => ({
         slug: post.slug,
     }));
 }

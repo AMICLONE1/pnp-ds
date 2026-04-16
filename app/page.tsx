@@ -36,7 +36,7 @@ import {
   GradientMesh,
   DotPattern
 } from "@/components/ui/animations";
-import { faqData } from "../lib/utils/data.js"
+import { faqData } from "../lib/utils/data"
 import { Testimonials } from "@/components/ui/Testimonials";
 import { BlogSection } from "@/components/features/landing/BlogSection";
 

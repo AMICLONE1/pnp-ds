@@ -84,4 +84,4 @@ export const testimonialData = [
 import { blogData as rawBlogData } from "./blog-data";
 import { normalizeBlogPosts } from "./blog-format";
 
-export const blogData = normalizeBlogPosts(rawBlogData);
+export const blogData: any[] = normalizeBlogPosts(rawBlogData);

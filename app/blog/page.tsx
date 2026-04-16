@@ -11,13 +11,13 @@ import {
   Sparkles,
   Tag,
 } from "lucide-react";
-import { blogData } from "@/lib/utils/data.js";
+import { blogData } from "@/lib/utils/data";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 
 type BlogPost = (typeof blogData)[number];
 
-const categories = Array.from(new Set(blogData.map((post) => post.category)));
+const categories: string[] = Array.from(new Set(blogData.map((post: any) => post.category as string)));
 
 function BlogPreviewCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
   return (
@@ -78,8 +78,8 @@ function BlogPreviewCard({ post, featured = false }: { post: BlogPost; featured?
 }
 
 export default function BlogIndexPage() {
-  const featuredPost = blogData[0];
-  const restPosts = blogData.slice(1);
+  const featuredPost = blogData[0] as any;
+  const restPosts = blogData.slice(1) as any[];
 
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top_left,_rgba(255,183,0,0.12),_transparent_30%),linear-gradient(180deg,#ffffff_0%,#fbfaf6_100%)]">

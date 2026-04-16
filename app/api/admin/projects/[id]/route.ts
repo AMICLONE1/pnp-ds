@@ -10,16 +10,17 @@ import { createAdminClient } from "@/lib/supabase/admin";
  */
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const authResult = await verifyAdmin();
     if (!authResult.authorized) {
       return unauthorizedResponse(authResult.error || "FORBIDDEN");
     }
 
     const adminClient = createAdminClient();
-    const projectId = params.id;
+    const projectId = id;
 
     const { data: project, error: projectError } = await adminClient
       .from("projects")

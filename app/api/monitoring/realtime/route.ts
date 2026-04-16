@@ -188,7 +188,7 @@ export async function GET() {
         if (siteIds.length === 0) return;
 
         const latestReadings = await Promise.all(
-          siteIds.map(async (siteId) => {
+          siteIds.map(async (siteId: string) => {
             try {
               const readings = await client.fetchData(siteId, "today");
               return pickLatestReading(readings);

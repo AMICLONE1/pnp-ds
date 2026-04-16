@@ -9,9 +9,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const authResult = await verifyAdmin();
     if (!authResult.authorized) {
       return unauthorizedResponse(authResult.error || "FORBIDDEN");
@@ -38,7 +39,7 @@ export async function POST(
     const { data, error } = await adminClient
       .from("generations")
       .update(updates)
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single();
 
