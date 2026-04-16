@@ -1,24 +1,31 @@
 /**
  * Input Sanitization Utility
- * 
- * Sanitizes user inputs to prevent XSS and injection attacks
+ *
+ * Sanitizes user inputs to prevent XSS and injection attacks.
+ * Uses simple regex-based sanitization that works in all runtimes
+ * (Node.js, Edge, browser) without heavy dependencies like jsdom.
  */
-
-import DOMPurify from "isomorphic-dompurify";
 
 /**
- * Sanitize HTML content
- * isomorphic-dompurify handles both client and server automatically
+ * Strip HTML tags from a string
+ */
+function stripHtmlTags(input: string): string {
+  return input.replace(/<[^>]*>/g, "");
+}
+
+/**
+ * Sanitize HTML content — strips all tags (no DOMPurify needed since
+ * we never render user-supplied HTML)
  */
 export function sanitizeHtml(dirty: string): string {
-  return DOMPurify.sanitize(dirty);
+  return stripHtmlTags(dirty);
 }
 
 /**
  * Sanitize text input (removes HTML)
  */
 export function sanitizeText(input: string): string {
-  return sanitizeHtml(input).replace(/<[^>]*>/g, "");
+  return stripHtmlTags(input);
 }
 
 /**
@@ -86,4 +93,3 @@ export function sanitizeObject<T>(obj: T): T {
   }
   return obj;
 }
-
