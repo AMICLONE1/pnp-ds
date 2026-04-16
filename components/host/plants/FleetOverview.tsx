@@ -11,16 +11,31 @@ import {
 import { AnimatedNumber } from "@/components/host/plants/AnimatedNumber";
 import { LivePulse } from "@/components/host/plants/LivePulse";
 
-// Demo plants - replace with real API data
-const MOCK_PLANTS: any[] = [];
+interface Fleet {
+  totalCapacityKw: number;
+  todayKwh: number;
+  monthlyKwh: number;
+  lifetimeKwh: number;
+  avgEfficiency: number;
+  co2OffsetTons: number;
+  activePlants: number;
+  totalPlants: number;
+  onlinePlants: number;
+}
 
-export function FleetOverview(){
-  const totalCapacity = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.capacityKw, 0) : 0;
-  const totalToday = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.todayKwh, 0) : 0;
-  const totalMonthly = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.monthlyKwh, 0) : 0;
-  const avgEfficiency = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.efficiency, 0) / MOCK_PLANTS.length : 0;
-  const activePlants = MOCK_PLANTS.filter((p) => p.status === "ACTIVE").length;
-  const totalCo2 = MOCK_PLANTS.length > 0 ? MOCK_PLANTS.reduce((s, p) => s + p.co2OffsetTons, 0) : 0;
+interface FleetOverviewProps {
+  fleet: Fleet | null;
+  loading?: boolean;
+}
+
+export function FleetOverview({ fleet, loading }: FleetOverviewProps){
+  const totalCapacity = fleet?.totalCapacityKw ?? 0;
+  const totalToday = fleet?.todayKwh ?? 0;
+  const totalMonthly = fleet?.monthlyKwh ?? 0;
+  const avgEfficiency = fleet?.avgEfficiency ?? 0;
+  const totalPlants = fleet?.totalPlants ?? 0;
+  const onlinePlants = fleet?.onlinePlants ?? 0;
+  const totalCo2 = fleet?.co2OffsetTons ?? 0;
 
   const summaryStats = [
     { icon: Zap, label: "Total Capacity", value: totalCapacity, suffix: " kW", color: "text-gold-dark", bg: "bg-gold/10" },
@@ -54,7 +69,7 @@ export function FleetOverview(){
             <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 border border-green-200 rounded-full">
               <LivePulse />
               <span className="text-xs font-medium text-green-700">
-                {activePlants}/{MOCK_PLANTS.length} Plants Online
+                {loading ? "Loading…" : `${onlinePlants}/${totalPlants} Plants Online`}
               </span>
             </div>
           </div>

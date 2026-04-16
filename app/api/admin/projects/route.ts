@@ -321,9 +321,9 @@ export async function POST(request: NextRequest) {
         const state = formData.get("state") as string;
         const description = formData.get("description") as string || null;
         const status = formData.get("status") as string || "DRAFT";
-        const data_logger_serial_id = formData.get("data_logger_serial_id") as string;
         const logger_api_key = formData.get("logger_api_key") as string || null;
-        // Accept trillectric_site_ids as a comma-separated list OR JSON array OR repeated form field.
+        // Trillectric site IDs are the single source of truth for telemetry.
+        // Accept CSV, JSON array, or repeated form fields.
         const rawSiteIds = formData.getAll("trillectric_site_ids");
         const trillectric_site_ids: string[] = parseSiteIds(rawSiteIds);
         const host_business_name = formData.get("host_business_name") as string;
@@ -340,7 +340,7 @@ export async function POST(request: NextRequest) {
             !rate_per_kwh ||
             !location ||
             !state ||
-            !data_logger_serial_id ||
+            trillectric_site_ids.length === 0 ||
             !host_business_name ||
             !host_contact_name ||
             !host_contact_email ||
@@ -351,7 +351,7 @@ export async function POST(request: NextRequest) {
                 {
                     success: false,
                     error:
-                        "spv_id, name, total_kw, rate_per_kwh, location, state, data_logger_serial_id, host_business_name, host_contact_name, host_contact_email, host_contact_phone, and host_password are required",
+                        "spv_id, name, total_kw, rate_per_kwh, location, state, trillectric_site_ids (at least one), host_business_name, host_contact_name, host_contact_email, host_contact_phone, and host_password are required",
                 },
                 { status: 400 }
             );
@@ -366,7 +366,10 @@ export async function POST(request: NextRequest) {
 
         const adminClient = createAdminClient();
         const normalizedSpvId = String(spv_id).trim();
-        const normalizedLoggerSerial = String(data_logger_serial_id).trim().toUpperCase();
+        // Legacy data_logger_serial_id is derived from the first site ID so the
+        // column (still NOT NULL in older migrations) stays populated and the
+        // legacy unique-index check continues to catch duplicates across plants.
+        const normalizedLoggerSerial = trillectric_site_ids[0];
         const loggerSerialSupported = await supportsProjectLoggerSerial(adminClient);
 
         const { data: existingProject } = await adminClient
@@ -435,7 +438,7 @@ export async function POST(request: NextRequest) {
                 state: String(state).trim(),
                 description: description ? String(description).trim() : null,
                 status: status || "DRAFT",
-                host_id: createdHostAccount.authUserId,
+                host_id: createdHostAccount.hostId,
                 created_at: now,
                 updated_at: now,
                 logger_api_key: logger_api_key ? String(logger_api_key).trim() : null,
@@ -480,7 +483,7 @@ export async function POST(request: NextRequest) {
         const { data: agreement, error: agreementError } = await adminClient
             .from("ppa_agreements")
             .insert({
-                host_id: createdHostAccount.authUserId,
+                host_id: createdHostAccount.hostId,
                 project_id: project.id,
                 agreement_number: buildAgreementNumber(normalizedSpvId, String(name).trim()),
                 start_date: startDate.toISOString().split('T')[0],
@@ -512,7 +515,7 @@ export async function POST(request: NextRequest) {
                 ratePerKwh: Number(rate_per_kwh),
                 billingMonth: Number(seededBillingPeriod.month),
                 billingYear: Number(seededBillingPeriod.year),
-                hostId: createdHostAccount.authUserId,
+                hostId: createdHostAccount.hostId,
                 sequence: 1,
             });
 
@@ -529,7 +532,7 @@ export async function POST(request: NextRequest) {
             const { data: hostPaymentRow, error: hostPaymentError } = await adminClient
                 .from("host_payments")
                 .insert({
-                    host_id: createdHostAccount.authUserId,
+                    host_id: createdHostAccount.hostId,
                     ppa_agreement_id: agreement.id,
                     invoice_id: null,
                     billing_month: Number(seededBillingPeriod.month),

@@ -63,7 +63,6 @@ interface EditingProject {
     total_kw: number;
     rate_per_kwh: number;
     status: ProjectStatus;
-    data_logger_serial_id?: string;
     logger_api_key?: string;
     trillectric_site_ids?: string;
 }
@@ -77,7 +76,6 @@ interface NewProject {
     total_kw: number;
     rate_per_kwh: number;
     status: ProjectStatus;
-    data_logger_serial_id: string;
     logger_api_key?: string;
     trillectric_site_ids: string;
     host_business_name: string;
@@ -97,7 +95,6 @@ const emptyNewProject: NewProject = {
     total_kw: 0,
     rate_per_kwh: 0,
     status: "DRAFT",
-    data_logger_serial_id: "",
     logger_api_key: undefined,
     trillectric_site_ids: "",
     host_business_name: "",
@@ -183,7 +180,6 @@ export function useProjects(){
             total_kw: project.total_kw,
             rate_per_kwh: project.rate_per_kwh,
             status: project.status,
-            data_logger_serial_id: project.data_logger_serial_id || "",
             logger_api_key: project.logger_api_key || "",
             trillectric_site_ids: (project.trillectric_site_ids || []).join(", "),
         });
@@ -287,7 +283,7 @@ export function useProjects(){
             !newProject.name ||
             !newProject.location ||
             !newProject.state ||
-            !newProject.data_logger_serial_id ||
+            !newProject.trillectric_site_ids.trim() ||
             !newProject.host_business_name ||
             !newProject.host_contact_name ||
             !newProject.host_contact_email ||
@@ -326,14 +322,11 @@ export function useProjects(){
             formData.append("total_kw", String(newProject.total_kw));
             formData.append("rate_per_kwh", String(newProject.rate_per_kwh));
             formData.append("status", newProject.status);
-            formData.append("data_logger_serial_id", newProject.data_logger_serial_id);
             if (newProject.logger_api_key) {
                 formData.append("logger_api_key", newProject.logger_api_key);
             }
-            if (newProject.trillectric_site_ids && newProject.trillectric_site_ids.trim()) {
-                // API accepts a comma-separated string and normalises it into a TEXT[].
-                formData.append("trillectric_site_ids", newProject.trillectric_site_ids.trim());
-            }
+            // API normalises this CSV into a TEXT[].
+            formData.append("trillectric_site_ids", newProject.trillectric_site_ids.trim());
             formData.append("host_business_name", newProject.host_business_name);
             formData.append("host_contact_name", newProject.host_contact_name);
             formData.append("host_contact_email", newProject.host_contact_email);

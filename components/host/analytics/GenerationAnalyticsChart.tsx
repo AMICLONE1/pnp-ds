@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Chart as ChartJS,
@@ -8,11 +10,12 @@ import {
   Activity,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DAILY_GENERATION } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 
 export function GenerationAnalyticsChart(){
+      const { dailyGeneration: DAILY_GENERATION } = useAnalyticsData();
       const chartData = {
-        labels: DAILY_GENERATION.map((d) => `Feb ${d.day}`),
+        labels: DAILY_GENERATION.map((d) => `Day ${d.day}`),
         datasets: [
           {
             label: "Actual Generation (kWh)",

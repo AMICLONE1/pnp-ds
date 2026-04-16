@@ -12,7 +12,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
  */
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await verifyAdmin();
@@ -21,7 +21,7 @@ export async function GET(
     }
 
     const adminClient = createAdminClient();
-    const id = params.id;
+    const { id } = await params;
 
     // Try to find host by hosts.id first, then by hosts.user_id
     let { data: hostRow } = await adminClient
@@ -195,7 +195,7 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authResult = await verifyAdmin();
@@ -204,7 +204,7 @@ export async function PUT(
     }
 
     const adminClient = createAdminClient();
-    const id = params.id;
+    const { id } = await params;
     const body = await request.json();
 
     // Find host record

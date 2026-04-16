@@ -119,9 +119,6 @@ export function ProjectCard({ project, isSelected, onSelect }: ProjectCardProps)
                 <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-2xl font-heading font-bold text-black mb-0.5">
                   {project.name}
                 </h3>
-                <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[11px] font-semibold text-amber-600 mb-1">
-                  Currently not operational (Coming Soon)
-                </p>
                 <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600 flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-gold" />
                   {project.location}

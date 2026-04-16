@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   TrendingUp,
@@ -8,55 +10,17 @@ import {
   Leaf,
   
 } from "lucide-react";
-import { KPI_DATA } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 import { AnimatedNumber } from "@/components/host/analytics/AnimatedNumber";
 
 
 export function KPICards(){
+      const { kpi } = useAnalyticsData();
       const stats = [
-        {
-          icon: Zap,
-          label: "Total Generation",
-          value: KPI_DATA.totalGeneration,
-          suffix: " kWh",
-          color: "text-forest",
-          bgColor: "bg-forest/10",
-          trend: KPI_DATA.genTrend,
-          trendLabel: "vs last month",
-        },
-        {
-          icon: Gauge,
-          label: "Avg Efficiency",
-          value: KPI_DATA.avgEfficiency,
-          suffix: "%",
-          color: "text-green-600",
-          bgColor: "bg-green-100",
-          trend: KPI_DATA.effTrend,
-          trendLabel: "vs last month",
-          decimals: 1,
-        },
-        {
-          icon: Sun,
-          label: "Performance Ratio",
-          value: KPI_DATA.performanceRatio,
-          suffix: "%",
-          color: "text-gold-dark",
-          bgColor: "bg-gold/10",
-          trend: KPI_DATA.prTrend,
-          trendLabel: "vs last month",
-          decimals: 1,
-        },
-        {
-          icon: Leaf,
-          label: "Carbon Offset",
-          value: KPI_DATA.carbonOffset,
-          suffix: " tons",
-          color: "text-blue-600",
-          bgColor: "bg-blue-50",
-          trend: KPI_DATA.co2Trend,
-          trendLabel: "vs last month",
-          decimals: 1,
-        },
+        { icon: Zap, label: "Total Generation", value: kpi.totalGeneration, suffix: " kWh", color: "text-forest", bgColor: "bg-forest/10", trend: kpi.genTrend, trendLabel: "vs last 30d" },
+        { icon: Gauge, label: "Avg Efficiency", value: kpi.avgEfficiency, suffix: "%", color: "text-green-600", bgColor: "bg-green-100", trend: kpi.effTrend, trendLabel: "vs last 30d", decimals: 1 },
+        { icon: Sun, label: "Performance Ratio", value: kpi.performanceRatio, suffix: "%", color: "text-gold-dark", bgColor: "bg-gold/10", trend: kpi.prTrend, trendLabel: "vs last 30d", decimals: 1 },
+        { icon: Leaf, label: "Carbon Offset", value: kpi.carbonOffset, suffix: " tons", color: "text-blue-600", bgColor: "bg-blue-50", trend: kpi.co2Trend, trendLabel: "vs last 30d", decimals: 1 },
       ];
     
       return (

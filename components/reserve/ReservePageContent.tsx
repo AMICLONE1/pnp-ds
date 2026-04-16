@@ -1,30 +1,32 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type Project } from "@/components/reserve/ProjectCard";
 import { createClient } from "@/lib/supabase/client";
 import { calculateSolarSavings } from "@/lib/solar-constants";
 import {
+  ArrowRight,
+  BadgeCheck,
+  Building2,
+  Sparkles,
   Zap,
   TrendingUp,
+  MapPin,
   Sun,
   Shield,
   ChevronRight,
   Info,
-  Building2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import BenefitsBar from "@/components/reserve/BenefitsBar";
 import { ProjectListSkeleton } from "@/components/ui/skeletons/ProjectListSkeleton";
 import { Header } from "@/components/layout/header";
 import { ProjectCard } from "@/components/reserve/ProjectCard";
-import CapacitySelector from "@/components/reserve/CapacitySelector";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import PageHero from "@/components/reserve/PageHero";
 import { Footer } from "@/components/layout/footer";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import AllocationCard from "@/components/dashboard/AllocationCard";
-import { formatCurrency } from "@/lib/utils";
 
 
 export default function ReservePageContent(){
@@ -139,8 +141,13 @@ export default function ReservePageContent(){
     }
   }, [urlCapacity]);
 
+  const featuredProject = selectedProject ?? projects[0] ?? null;
+  const galleryProjects = projects.filter((project) => project.id !== featuredProject?.id);
+  const reserveButtonLabel = user ? `Reserve ${capacity} kW` : "Sign up to reserve";
+
   const handleReserve = () => {
-    if (!selectedProject) return;
+    const activeProject = featuredProject;
+    if (!activeProject) return;
 
     if (!user) {
       router.push("/signup?redirect=/reserve");
@@ -150,14 +157,10 @@ export default function ReservePageContent(){
     // Use shared calculation for reservation fee
     const savings = calculateSolarSavings(capacity);
     router.push(
-      `/reserve/payment?project=${selectedProject.id}&capacity=${capacity}&amount=${savings.reservationFee}`
+      `/reserve/payment?project=${activeProject.id}&capacity=${capacity}&amount=${savings.reservationFee}`
     );
   };
 
-  // Use shared solar constants for all calculations
-  const savings = calculateSolarSavings(capacity);
-  const reservationFee = savings.reservationFee;
-  const estimatedSavings = savings.monthlySavings;
     return(
         <div className="min-h-screen flex flex-col bg-white">
       {user ? <Header /> : <LandingHeader />}
@@ -248,49 +251,331 @@ export default function ReservePageContent(){
                 </p>
               </motion.div>
 
-              {/* Main grid */}
-              <div className="grid lg:grid-cols-3 gap-8">
-                {/* Projects list */}
-                <div className="lg:col-span-2 space-y-4">
-                  <AnimatePresence>
-                    {projects.map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        project={project}
-                        isSelected={selectedProject?.id === project.id}
-                        onSelect={() => setSelectedProject(project)}
-                      />
-                    ))}
-                  </AnimatePresence>
+              {projects.length === 0 ? (
+                <div className="mx-auto max-w-2xl text-center py-16 px-6 bg-white rounded-[2rem] border border-gray-200 shadow-sm">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                    <Sun className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-semibold text-black mb-2">
+                    No Projects Available
+                  </h3>
+                  <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500 max-w-md mx-auto">
+                    We&apos;re adding new solar projects soon. Check back later or contact us for updates.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-8 xl:grid-cols-[minmax(0,1.45fr)_360px]">
+                  <div className="space-y-6">
+                    <motion.section
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="relative overflow-hidden rounded-[2rem] border border-gold/20 bg-gradient-to-br from-white via-amber-50/40 to-white shadow-[0_24px_80px_rgba(255,180,0,0.12)]"
+                    >
+                      <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-gold via-amber-400 to-gold" />
+                      <div className="absolute -right-24 top-0 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
+                      <div className="absolute -left-20 bottom-0 h-48 w-48 rounded-full bg-amber-100/50 blur-3xl" />
 
-                  {projects.length === 0 && (
-                    <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                        <Sun className="w-8 h-8 text-gray-400" />
+                      <div className="relative p-6 md:p-8">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            style={{ fontFamily: "'Montserrat', sans-serif" }}
+                            className="rounded-full border border-gold/20 bg-gold/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-gold"
+                          >
+                            Featured project
+                          </span>
+                          <span
+                            style={{ fontFamily: "'Montserrat', sans-serif" }}
+                            className="rounded-full border border-gray-200 bg-white/80 px-3 py-1 text-xs font-semibold text-gray-600"
+                          >
+                            Currently not operational
+                          </span>
+                        </div>
+
+                        <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                          <div className="max-w-3xl">
+                            <h3
+                              style={{ fontFamily: "'Montserrat', sans-serif" }}
+                              className="text-3xl md:text-4xl font-heading font-bold text-black"
+                            >
+                              {featuredProject?.name}
+                            </h3>
+
+                            <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-600">
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 border border-gray-200">
+                                <MapPin className="w-4 h-4 text-gold" />
+                                {featuredProject?.location}
+                              </span>
+                              <span className="rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">
+                                {featuredProject?.state}
+                              </span>
+                              {featuredProject?.commission_date && (
+                                <span className="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700 border border-emerald-100">
+                                  Since {new Date(featuredProject.commission_date).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
+                                </span>
+                              )}
+                            </div>
+
+                            <p
+                              style={{ fontFamily: "'Montserrat', sans-serif" }}
+                              className="mt-5 max-w-3xl text-sm md:text-base text-gray-700 leading-relaxed"
+                            >
+                              {featuredProject?.description}
+                            </p>
+
+                            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                              {[
+                                {
+                                  label: "Available capacity",
+                                  value: `${Number(featuredProject?.available_capacity_kw || 0).toLocaleString()} kW`,
+                                  icon: Zap,
+                                },
+                                {
+                                  label: "Credit rate",
+                                  value: featuredProject?.rate_per_kwh ? `₹${featuredProject.rate_per_kwh}/unit` : "Contact team",
+                                  icon: TrendingUp,
+                                },
+                                {
+                                  label: "Generation guarantee",
+                                  value: "75%",
+                                  icon: Shield,
+                                },
+                              ].map((stat) => (
+                                <div
+                                  key={stat.label}
+                                  className="rounded-2xl border border-gray-200 bg-white/85 p-4 shadow-sm"
+                                >
+                                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                                    <stat.icon className="w-4 h-4 text-gold" />
+                                    {stat.label}
+                                  </div>
+                                  <div className="mt-2 text-lg font-bold text-black">
+                                    {stat.value}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            <div className="mt-6 flex flex-wrap gap-3">
+                              <motion.button
+                                type="button"
+                                onClick={handleReserve}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-gold via-amber-500 to-gold px-6 py-3 text-sm font-bold text-black shadow-lg shadow-gold/20 transition-all duration-300 hover:shadow-xl hover:shadow-gold/25"
+                              >
+                                <Sparkles className="w-4 h-4" />
+                                {reserveButtonLabel}
+                                <ArrowRight className="w-4 h-4" />
+                              </motion.button>
+                              <button
+                                type="button"
+                                onClick={() => document.getElementById("project-gallery")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                                className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition-colors hover:border-gold/30 hover:text-gold"
+                              >
+                                Browse gallery
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="w-full max-w-sm rounded-[1.75rem] border border-gold/15 bg-white/90 p-5 shadow-lg shadow-gold/10">
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-500">
+                                Spotlight
+                              </p>
+                              <div className="mt-2 text-3xl font-bold text-gold">
+                                {Number(featuredProject?.available_capacity_kw || 0).toLocaleString()}
+                                <span className="text-base text-gray-400 ml-1">kW</span>
+                              </div>
+                              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-2 text-sm text-gray-600">
+                                Capacity currently visible for this verified project.
+                              </p>
+                            </div>
+
+                            <div className="mt-4 space-y-3">
+                              <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm">
+                                <span className="text-gray-500">Location</span>
+                                <span className="font-semibold text-black">{featuredProject?.location}</span>
+                              </div>
+                              <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm">
+                                <span className="text-gray-500">State</span>
+                                <span className="font-semibold text-black">{featuredProject?.state}</span>
+                              </div>
+                              <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm">
+                                <span className="text-gray-500">Credit rate</span>
+                                <span className="font-semibold text-gold">
+                                  {featuredProject?.rate_per_kwh ? `₹${featuredProject.rate_per_kwh}/unit` : "TBD"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-semibold text-black mb-2">
-                        No Projects Available
-                      </h3>
-                      <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500 max-w-md mx-auto">
-                        We&apos;re adding new solar projects soon. Check back later or contact us for updates.
-                      </p>
-                    </div>
-                  )}
-                </div>
+                    </motion.section>
 
-                {/* Capacity selector */}
-                <div className="lg:col-span-1">
-                  <CapacitySelector
-                    selectedProject={selectedProject}
-                    capacity={capacity}
-                    setCapacity={setCapacity}
-                    monthlyFee={estimatedSavings}
-                    estimatedSavings={estimatedSavings}
-                    onReserve={handleReserve}
-                    isLoggedIn={!!user}
-                  />
+                    <section id="project-gallery" className="space-y-4">
+                      <div className="flex items-end justify-between gap-3">
+                        <div>
+                          <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl md:text-2xl font-heading font-bold text-black">
+                            Other verified projects
+                          </h3>
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600 mt-1">
+                            Click any card to update the spotlight above.
+                          </p>
+                        </div>
+                        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                          {galleryProjects.length} remaining
+                        </p>
+                      </div>
+
+                      {galleryProjects.length > 0 ? (
+                        <AnimatePresence>
+                          <div className="grid gap-5 md:grid-cols-2">
+                            {galleryProjects.map((project) => (
+                              <ProjectCard
+                                key={project.id}
+                                project={project}
+                                isSelected={false}
+                                onSelect={() => setSelectedProject(project)}
+                              />
+                            ))}
+                          </div>
+                        </AnimatePresence>
+                      ) : (
+                        <div className="rounded-[1.75rem] border border-dashed border-gray-200 bg-white/80 px-6 py-10 text-center shadow-sm">
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-black">
+                            This is the only verified project currently available.
+                          </p>
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-2 text-sm text-gray-600">
+                            More projects will appear here as soon as they are approved.
+                          </p>
+                        </div>
+                      )}
+                    </section>
+                  </div>
+
+                  <aside className="space-y-4 xl:sticky xl:top-24 self-start">
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-2xl"
+                    >
+                      <div className="border-b border-gold/15 bg-gradient-to-br from-gold/10 via-amber-50 to-white px-5 py-4">
+                        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold">
+                          Project overview
+                        </p>
+                        <h3 style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-2 text-2xl font-bold text-black">
+                          {featuredProject?.name || "Select a project"}
+                        </h3>
+                        <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-1 text-sm text-gray-600">
+                          {featuredProject?.location || "Choose a project from the gallery to continue"}
+                        </p>
+                      </div>
+
+                      <div className="space-y-4 p-5">
+                        {featuredProject ? (
+                          <>
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                              <div className="flex items-center justify-between gap-3">
+                                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-600">
+                                  Available capacity
+                                </span>
+                                <span className="text-2xl font-bold text-gold">
+                                  {Number(featuredProject.available_capacity_kw || 0).toLocaleString()} kW
+                                </span>
+                              </div>
+                              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-2 text-xs text-gray-500">
+                                A verified project is ready to be reviewed and reserved.
+                              </p>
+                            </div>
+
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm">
+                                <span className="text-gray-500">Credit rate</span>
+                                <span className="font-semibold text-gold">
+                                  {featuredProject.rate_per_kwh ? `₹${featuredProject.rate_per_kwh}/unit` : "TBD"}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm">
+                                <span className="text-gray-500">State</span>
+                                <span className="font-semibold text-black">{featuredProject.state}</span>
+                              </div>
+                              <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm">
+                                <span className="text-gray-500">Status</span>
+                                <span className="font-semibold text-amber-600">Coming soon</span>
+                              </div>
+                            </div>
+
+                            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
+                              <div className="flex items-center gap-2 font-semibold text-emerald-800">
+                                <BadgeCheck className="w-4 h-4" />
+                                Verified listing
+                              </div>
+                              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-2 text-sm text-emerald-900/90 leading-relaxed">
+                                Only vetted solar projects with available capacity blocks are shown here.
+                              </p>
+                            </div>
+
+                            <motion.button
+                              type="button"
+                              onClick={handleReserve}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gold via-amber-500 to-gold px-6 py-4 text-base font-bold text-black shadow-xl shadow-gold/20 transition-all duration-300 hover:shadow-2xl hover:shadow-gold/25"
+                            >
+                              <Sparkles className="w-5 h-5" />
+                              {reserveButtonLabel}
+                              <ArrowRight className="w-5 h-5" />
+                            </motion.button>
+
+                            {!user && (
+                              <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-center text-xs text-gray-600 font-medium">
+                                Already have an account?{" "}
+                                <Link style={{ fontFamily: "'Montserrat', sans-serif" }} href="/login?redirect=/reserve" className="text-gold hover:underline font-semibold">
+                                  Log in
+                                </Link>
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <div className="py-10 text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                              <Sun className="w-8 h-8 text-gray-400" />
+                            </div>
+                            <h4 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg font-semibold text-black mb-2">
+                              Select a project
+                            </h4>
+                            <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm text-gray-500">
+                              Choose a solar project from the gallery to continue.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.25 }}
+                      className="rounded-[2rem] border border-emerald-200 bg-gradient-to-br from-emerald-50 via-green-50 to-white p-5 shadow-lg"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm">
+                          <BadgeCheck className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold text-emerald-900">
+                            Reservation flow is curated
+                          </p>
+                          <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="mt-1 text-sm text-emerald-900/80 leading-relaxed">
+                            We only surface verified projects and keep the next step simple: pick a project, review the summary, and continue.
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </aside>
                 </div>
-              </div>
+              )}
 
               {/* Enhanced FAQ section */}
               <motion.div

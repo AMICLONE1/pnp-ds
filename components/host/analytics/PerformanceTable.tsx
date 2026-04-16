@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Gauge,
@@ -5,9 +7,10 @@ import {
   MapPin,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PLANTS } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 
 export function PerformanceTable(){
+    const { plants: PLANTS } = useAnalyticsData();
     return (
     <motion.div
         initial={{ opacity: 0, y: 20 }}

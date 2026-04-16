@@ -20,6 +20,7 @@ import { GenerationAnalyticsChart } from "@/components/host/analytics/Generation
 import { PlantComparison } from "@/components/host/analytics/PlantComparison";
 import { WeeklyPatternChart } from "@/components/host/analytics/WeeklyPatternChart";
 import { MonthlyBreakdownChart } from "@/components/host/analytics/MonthlyBreakdownChart";
+import { HourlyDistributionChart } from "@/components/host/HourlyDistributionChart";
 import { PerformanceTable } from "@/components/host/analytics/PerformanceTable";
 import { EnvironmentalImpact } from "@/components/host/analytics/EnvironmentalImpact";
 import { IrradianceCorrelationChart } from "@/components/host/analytics/IrradianceCorrelationChart";
@@ -37,39 +38,37 @@ ChartJS.register(
   Filler
 );
 
-// ─── Main Analytics Page ────────────────────────────────────────────────────
-
 export default function HostAnalyticsPage() {
   const [period, setPeriod] = useState("30D");
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-[1600px] mx-auto">
-      {/* Header */}
+    <div className="p-4 sm:p-6 lg:p-8 space-y-5 sm:space-y-6 max-w-[1600px] mx-auto">
       <AnalyticsHeader period={period} onPeriodChange={setPeriod} />
 
-      {/* KPI Cards */}
       <KPICards />
 
-      {/* Generation vs Expected Chart */}
+      {/* Primary charts: generation trend + irradiance correlation */}
       <GenerationAnalyticsChart />
 
-      {/* Plant Comparison: Bar + Doughnut */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <IrradianceCorrelationChart />
+        <HourlyDistributionChart />
+      </div>
+
+      {/* Plant comparison */}
       <PlantComparison />
 
-      {/* Weekly Pattern + Monthly Breakdown */}
+      {/* Temporal patterns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <WeeklyPatternChart />
         <MonthlyBreakdownChart />
       </div>
 
-      {/* Performance Table */}
+      {/* Fleet performance table */}
       <PerformanceTable />
 
-      {/* Environmental Impact */}
+      {/* Environmental impact */}
       <EnvironmentalImpact />
-
-      {/* Irradiance Correlation */}
-      <IrradianceCorrelationChart />
     </div>
   );
 }

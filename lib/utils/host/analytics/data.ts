@@ -1,56 +1,146 @@
-export const PLANTS = [
-  { id: "1", name: "Vedvyas Solar Park", location: "Cuttack, Odisha", capacityKw: 500, efficiency: 93.2, prRatio: 82.1, availability: 98.5, avgDailyGen: 1875, peakGen: 2340, color: "#0D2818" },
-  { id: "2", name: "Sunrise Energy Hub", location: "Bhubaneswar, Odisha", capacityKw: 600, efficiency: 91.8, prRatio: 79.6, availability: 97.2, avgDailyGen: 1520, peakGen: 2180, color: "#1B5E3E" },
-  { id: "3", name: "Green Valley Plant", location: "Rourkela, Odisha", capacityKw: 400, efficiency: 88.4, prRatio: 76.3, availability: 94.8, avgDailyGen: 855, peakGen: 1420, color: "#FFB800" },
-];
- 
-export const KPI_DATA = {
-  totalGeneration: 127515,
-  avgEfficiency: 91.1,
-  performanceRatio: 79.3,
-  carbonOffset: 127.5,
-  genTrend: 8.2,
-  effTrend: 1.4,
-  prTrend: -0.8,
-  co2Trend: 12.3,
-};
- 
- // 30 days of generation data (actual vs expected)
-export const DAILY_GENERATION = Array.from({ length: 30 }, (_, i) => {
-  const base = 3800 + Math.sin(i * 0.2) * 400;
-  const weather = Math.random() * 600 - 200;
-  const actual = Math.max(2800, base + weather);
-  const expected = 4200 + Math.sin(i * 0.15) * 200;
-  return { day: i + 1, actual: Math.round(actual), expected: Math.round(expected) };
-});
- 
-export const WEEKLY_PATTERN = [
-  { day: "Mon", avg: 4120 },
-  { day: "Tue", avg: 4350 },
-  { day: "Wed", avg: 4480 },
-  { day: "Thu", avg: 4290 },
-  { day: "Fri", avg: 4510 },
-  { day: "Sat", avg: 4180 },
-  { day: "Sun", avg: 3950 },
-];
- 
-export const MONTHLY_BREAKDOWN = [
-  { month: "Sep", actual: 118200, expected: 126000 },
-  { month: "Oct", actual: 125400, expected: 130000 },
-  { month: "Nov", actual: 121800, expected: 128000 },
-  { month: "Dec", actual: 134500, expected: 132000 },
-  { month: "Jan", actual: 130200, expected: 131000 },
-  { month: "Feb", actual: 127515, expected: 129000 },
-];
+"use client";
 
-export const IRRADIANCE_DATA = Array.from({ length: 24 }, (_, i) => {
-  const irradiance = i < 6 || i > 18 ? 0 : Math.sin(((i - 6) / 12) * Math.PI) * 950 + Math.random() * 80;
-  const generation = irradiance > 50 ? irradiance * 0.42 + Math.random() * 30 - 15 : 0;
-  return { hour: `${i.toString().padStart(2, "0")}:00`, irradiance: Math.round(Math.max(0, irradiance)), generation: Math.round(Math.max(0, generation)) };
-});
- 
-export const ENV_IMPACT = {
-  co2Tons: 127.5,
-  treesEquivalent: 5842,
-  homesPowered: 312,
+// ============================================
+// Real-data hook for host analytics
+//
+// Previously this file exported hardcoded PLANTS/KPI_DATA constants for
+// UI prototyping. Now it fetches /api/host/plants (which fans out to
+// Trillectric per-plant) and exposes the same field names so every
+// analytics component can stay close to its existing shape.
+// ============================================
+
+import { useEffect, useState } from "react";
+
+export interface AnalyticsPlant {
+  id: string;
+  name: string;
+  location: string;
+  capacityKw: number;
+  efficiency: number;
+  prRatio: number;
+  availability: number;
+  avgDailyGen: number;
+  peakGen: number;
+  color: string;
+}
+
+export interface AnalyticsKPI {
+  totalGeneration: number;
+  avgEfficiency: number;
+  performanceRatio: number;
+  carbonOffset: number;
+  genTrend: number;
+  effTrend: number;
+  prTrend: number;
+  co2Trend: number;
+}
+
+export interface EnvImpact {
+  co2Tons: number;
+  treesEquivalent: number;
+  homesPowered: number;
+}
+
+export interface MonthlyBreakdownRow {
+  month: string;
+  actual: number;
+  expected: number;
+}
+
+export interface DailyGenerationRow {
+  day: number;
+  actual: number;
+  expected: number;
+}
+
+export interface WeeklyPatternRow {
+  day: string;
+  avg: number;
+}
+
+export interface IrradianceRow {
+  hour: string;
+  irradiance: number;
+  generation: number;
+}
+
+export interface AnalyticsBundle {
+  plants: AnalyticsPlant[];
+  kpi: AnalyticsKPI;
+  envImpact: EnvImpact;
+  dailyGeneration: DailyGenerationRow[];
+  weeklyPattern: WeeklyPatternRow[];
+  monthlyBreakdown: MonthlyBreakdownRow[];
+  irradiance: IrradianceRow[];
+  loading: boolean;
+  error: string | null;
+}
+
+const PALETTE = ["#0D2818", "#1B5E3E", "#FFB800", "#2E7D32", "#FB8C00", "#6A1B9A"];
+
+const EMPTY: AnalyticsBundle = {
+  plants: [],
+  kpi: {
+    totalGeneration: 0,
+    avgEfficiency: 0,
+    performanceRatio: 0,
+    carbonOffset: 0,
+    genTrend: 0,
+    effTrend: 0,
+    prTrend: 0,
+    co2Trend: 0,
+  },
+  envImpact: { co2Tons: 0, treesEquivalent: 0, homesPowered: 0 },
+  dailyGeneration: [],
+  weeklyPattern: [],
+  monthlyBreakdown: [],
+  irradiance: [],
+  loading: true,
+  error: null,
 };
+
+export function useAnalyticsData(): AnalyticsBundle {
+  const [bundle, setBundle] = useState<AnalyticsBundle>(EMPTY);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/host/analytics", { credentials: "include" });
+        const json = await res.json();
+        if (cancelled) return;
+        if (!json.success) {
+          setBundle({ ...EMPTY, loading: false, error: String(json.error || "Failed to load") });
+          return;
+        }
+        const data = json.data;
+        setBundle({
+          plants: (data.plants || []).map((p: Omit<AnalyticsPlant, "color">, i: number) => ({
+            ...p,
+            color: PALETTE[i % PALETTE.length],
+          })),
+          kpi: data.kpi,
+          envImpact: data.envImpact,
+          dailyGeneration: data.dailyGeneration,
+          weeklyPattern: data.weeklyPattern,
+          monthlyBreakdown: data.monthlyBreakdown,
+          irradiance: data.irradiance,
+          loading: false,
+          error: null,
+        });
+      } catch (e) {
+        if (cancelled) return;
+        setBundle({
+          ...EMPTY,
+          loading: false,
+          error: e instanceof Error ? e.message : "Failed to load analytics",
+        });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return bundle;
+}

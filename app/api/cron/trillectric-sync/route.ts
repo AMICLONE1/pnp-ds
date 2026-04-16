@@ -45,7 +45,23 @@ interface ProjectRow {
   host_id: string | null;
   data_logger_serial_id: string | null;
   logger_api_key: string | null;
+  trillectric_site_ids: string[] | null;
   status: string;
+}
+
+/**
+ * Resolve the effective Trillectric site IDs for a project. Prefers the
+ * new TEXT[] column; falls back to the legacy single serial so plants
+ * predating the migration still sync.
+ */
+function resolveSiteIds(project: ProjectRow): string[] {
+  const fromArray = Array.isArray(project.trillectric_site_ids)
+    ? project.trillectric_site_ids.filter(
+        (s): s is string => typeof s === "string" && s.length > 0
+      )
+    : [];
+  if (fromArray.length > 0) return fromArray;
+  return project.data_logger_serial_id ? [project.data_logger_serial_id] : [];
 }
 
 function verifyCronAuth(request: Request): boolean {
@@ -77,10 +93,9 @@ export async function GET(request: Request) {
     let query = adminClient
       .from("projects")
       .select(
-        "id, name, total_kw, host_id, data_logger_serial_id, logger_api_key, status"
+        "id, name, total_kw, host_id, data_logger_serial_id, logger_api_key, trillectric_site_ids, status"
       )
       .eq("status", "ACTIVE")
-      .not("data_logger_serial_id", "is", null)
       .is("deleted_at", null);
 
     if (projectIdFilter) {
@@ -111,7 +126,9 @@ export async function GET(request: Request) {
 
     // Sequential processing to respect API rate limits
     for (const project of projects as ProjectRow[]) {
-      const result = await syncProject(adminClient, project);
+      const siteIds = resolveSiteIds(project);
+      if (siteIds.length === 0) continue;
+      const result = await syncProject(adminClient, project, siteIds);
       results.push(result);
     }
 
@@ -135,12 +152,13 @@ export async function GET(request: Request) {
 
 async function syncProject(
   adminClient: SupabaseClient,
-  project: ProjectRow
+  project: ProjectRow,
+  siteIds: string[]
 ): Promise<ProjectSyncResult> {
   const result: ProjectSyncResult = {
     projectId: project.id,
     projectName: project.name,
-    siteId: project.data_logger_serial_id ?? "",
+    siteId: siteIds.join(","),
     status: "SUCCESS",
     readingsFetched: 0,
     readingsInserted: 0,
@@ -149,12 +167,6 @@ async function syncProject(
     creditsDistributed: 0,
   };
 
-  if (!project.data_logger_serial_id) {
-    result.status = "SKIPPED";
-    result.error = "No data_logger_serial_id";
-    return result;
-  }
-
   // Create sync_logs entry
   const { data: syncLog } = await adminClient
     .from("sync_logs")
@@ -162,7 +174,7 @@ async function syncProject(
       project_id: project.id,
       sync_type: "TRILLECTRIC_FETCH",
       status: "STARTED",
-      metadata: { siteId: project.data_logger_serial_id },
+      metadata: { siteIds },
     })
     .select("id")
     .single();
@@ -170,14 +182,44 @@ async function syncProject(
   const syncLogId = syncLog?.id as string | undefined;
 
   try {
-    // 1. Fetch from Trillectric
+    // 1. Fetch from Trillectric for every bound site ID. We fan out in
+    //    parallel and tolerate per-site failures so one bad inverter
+    //    doesn't block the whole plant's sync. Readings are then
+    //    concatenated — aggregateDaily and the rollup are already
+    //    correct for multi-inverter input because EnergyToday is
+    //    cumulative per-site and we sum across sites below.
     const client = getTrillectricClient();
-    const readings: TrillectricReading[] = await client.fetchData(
-      project.data_logger_serial_id,
-      "today",
-      project.logger_api_key ?? undefined
+    const siteErrors: string[] = [];
+    const siteReadings = await Promise.all(
+      siteIds.map(async (siteId) => {
+        try {
+          const data = await client.fetchData(
+            siteId,
+            "today",
+            project.logger_api_key ?? undefined
+          );
+          return { siteId, readings: data };
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          siteErrors.push(`${siteId}: ${msg}`);
+          console.error(
+            `[trillectric-sync] project ${project.id} site ${siteId} failed:`,
+            msg
+          );
+          return { siteId, readings: [] as TrillectricReading[] };
+        }
+      })
+    );
+
+    const readings: TrillectricReading[] = siteReadings.flatMap(
+      (s) => s.readings
     );
     result.readingsFetched = readings.length;
+
+    if (siteErrors.length > 0 && readings.length === 0) {
+      // Every site failed — surface as a hard failure.
+      throw new Error(`All sites failed: ${siteErrors.join("; ")}`);
+    }
 
     if (readings.length === 0) {
       result.status = "SUCCESS";
@@ -204,8 +246,11 @@ async function syncProject(
     }
     result.readingsInserted = count ?? 0;
 
-    // 3. Aggregate daily
-    const dailyRows = aggregateDaily(readings, project.id);
+    // 3. Aggregate daily — per-site first, then sum across sites.
+    //    EnergyToday is a per-inverter cumulative counter, so we take the
+    //    latest per site (via aggregateDaily) and then sum those into one
+    //    row per date for the whole plant.
+    const dailyRows = aggregatePlantDaily(siteReadings, project.id);
     if (dailyRows.length > 0) {
       const { error: dailyError } = await adminClient
         .from("daily_generations")
@@ -230,7 +275,7 @@ async function syncProject(
       project.id,
       month,
       year,
-      project.data_logger_serial_id
+      siteIds.join(",")
     );
     result.monthlyKwh = monthlyKwh;
 
@@ -282,6 +327,65 @@ async function syncProject(
 
     return result;
   }
+}
+
+/**
+ * Aggregate multi-site readings into one daily_generations row per date
+ * for the whole plant. Per site we take the latest EnergyToday of each
+ * day (since it's cumulative), then sum across sites. Peak power and
+ * reading counts are summed; temperature is averaged across sites.
+ */
+function aggregatePlantDaily(
+  siteReadings: { siteId: string; readings: TrillectricReading[] }[],
+  projectId: string
+) {
+  const byDate = new Map<
+    string,
+    {
+      date: string;
+      kwh: number;
+      peak: number;
+      tempSum: number;
+      tempCount: number;
+      count: number;
+    }
+  >();
+
+  for (const { readings } of siteReadings) {
+    if (!readings.length) continue;
+    const perSite = aggregateDaily(readings, projectId);
+    for (const row of perSite) {
+      const existing = byDate.get(row.date) || {
+        date: row.date,
+        kwh: 0,
+        peak: 0,
+        tempSum: 0,
+        tempCount: 0,
+        count: 0,
+      };
+      existing.kwh += Number(row.kwh || 0);
+      if ((row.peak_power_w ?? 0) > existing.peak) {
+        existing.peak = Number(row.peak_power_w || 0);
+      }
+      if (row.avg_temperature != null) {
+        existing.tempSum += Number(row.avg_temperature);
+        existing.tempCount += 1;
+      }
+      existing.count += row.reading_count;
+      byDate.set(row.date, existing);
+    }
+  }
+
+  return Array.from(byDate.values()).map((b) => ({
+    project_id: projectId,
+    date: b.date,
+    kwh: Math.round(b.kwh * 100) / 100,
+    peak_power_w: b.peak > 0 ? Math.round(b.peak) : null,
+    avg_temperature:
+      b.tempCount > 0 ? Math.round((b.tempSum / b.tempCount) * 10) / 10 : null,
+    reading_count: b.count,
+    source: "TRILLECTRIC",
+  }));
 }
 
 /** Sum daily_generations for a month and upsert into generations table */

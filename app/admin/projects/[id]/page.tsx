@@ -218,7 +218,7 @@ export default function ProjectDetailPage() {
                 <MiniInfo icon={<Zap className="w-3.5 h-3.5" />} label="Capacity" value={`${project.total_kw} kW`} />
                 <MiniInfo icon={<IndianRupee className="w-3.5 h-3.5" />} label="Rate" value={`\u20B9${project.rate_per_kwh}/kWh`} />
                 <MiniInfo icon={<MapPin className="w-3.5 h-3.5" />} label="Location" value={project.location} />
-                <MiniInfo icon={<Activity className="w-3.5 h-3.5" />} label="Logger" value={project.data_logger_serial_id || "\u2014"} />
+                <MiniInfo icon={<Activity className="w-3.5 h-3.5" />} label="Sites" value={(project.trillectric_site_ids && project.trillectric_site_ids.length > 0) ? project.trillectric_site_ids.join(", ") : "\u2014"} />
               </div>
             </div>
           </div>

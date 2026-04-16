@@ -43,7 +43,6 @@ interface NewProject {
     total_kw: number;
     rate_per_kwh: number;
     status: ProjectStatus;
-    data_logger_serial_id: string;
     trillectric_site_ids: string;
     host_business_name: string;
     host_contact_name: string;
@@ -61,7 +60,6 @@ const emptyNewProject: NewProject = {
     total_kw: 0,
     rate_per_kwh: 0,
     status: "DRAFT",
-    data_logger_serial_id: "",
     trillectric_site_ids: "",
     host_business_name: "",
     host_contact_name: "",
@@ -325,9 +323,9 @@ export default function AdminProjectsPage() {
                                                             Host: {project.host.business_name}
                                                         </p>
                                                     )}
-                                                    {project.data_logger_serial_id && (
+                                                    {project.trillectric_site_ids && project.trillectric_site_ids.length > 0 && (
                                                         <p className="text-[11px] text-gray-400">
-                                                            Logger: {project.data_logger_serial_id}
+                                                            Sites: {project.trillectric_site_ids.join(", ")}
                                                         </p>
                                                     )}
                                                 </div>
@@ -530,9 +528,9 @@ export default function AdminProjectsPage() {
                                                     Host: {project.host.business_name}
                                                 </p>
                                             )}
-                                            {project.data_logger_serial_id && (
+                                            {project.trillectric_site_ids && project.trillectric_site_ids.length > 0 && (
                                                 <p className="text-[11px] text-gray-400">
-                                                    Logger: {project.data_logger_serial_id}
+                                                    Sites: {project.trillectric_site_ids.join(", ")}
                                                 </p>
                                             )}
                                         </div>
@@ -840,23 +838,6 @@ export default function AdminProjectsPage() {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                        Data Logger Serial ID
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={editingProject.data_logger_serial_id || ""}
-                                        onChange={(e) =>
-                                            setEditingProject({
-                                                ...editingProject,
-                                                data_logger_serial_id: e.target.value,
-                                            })
-                                        }
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
-                                    />
-                                </div>
-
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
                                         Trillectric Site IDs
@@ -1158,23 +1139,9 @@ export default function AdminProjectsPage() {
                                                 className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
                                             />
                                         </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                Logger Serial ID <span className="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                placeholder="TLX-VEV-001"
-                                                value={newProject.data_logger_serial_id}
-                                                onChange={(e) =>
-                                                    setNewProject({ ...newProject, data_logger_serial_id: e.target.value })
-                                                }
-                                                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50"
-                                            />
-                                        </div>
                                         <div className="md:col-span-2">
                                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                Trillectric Site IDs
+                                                Trillectric Site IDs <span className="text-red-500">*</span>
                                             </label>
                                             <input
                                                 type="text"

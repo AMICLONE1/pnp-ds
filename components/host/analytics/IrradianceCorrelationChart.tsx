@@ -1,3 +1,5 @@
+"use client";
+
   import { motion } from "framer-motion";
   import {
     Chart as ChartJS,
@@ -9,9 +11,10 @@
     Droplets,
   } from "lucide-react";
   import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-  import { IRRADIANCE_DATA } from "@/lib/utils/host/analytics/data";
+  import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 
 export function IrradianceCorrelationChart(){
+  const { irradiance: IRRADIANCE_DATA } = useAnalyticsData();
   const chartData = {
     labels: IRRADIANCE_DATA.map((d) => d.hour),
     datasets: [

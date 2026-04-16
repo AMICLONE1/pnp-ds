@@ -49,9 +49,10 @@ function createPdfBuffer(build: (doc: any) => void) {
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const authResult = await verifyHost();
     const host = authResult.host;
 
@@ -59,7 +60,6 @@ export async function GET(
       return hostUnauthorizedResponse(authResult.error || "UNAUTHORIZED");
     }
 
-    const { id } = params;
     const adminClient = createAdminClient();
 
     const [{ data: invoiceRows, error: invoiceError }, { data: paymentRows }, { data: hostRows }] = await Promise.all([

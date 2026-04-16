@@ -1,14 +1,17 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Leaf,
   TreePine,
   Home,
 } from "lucide-react";
-import { ENV_IMPACT } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 import { AnimatedNumber } from "@/components/host/analytics/AnimatedNumber";
 
 
 export function EnvironmentalImpact(){
+    const { envImpact: ENV_IMPACT } = useAnalyticsData();
     const impacts = [
     {
         icon: Leaf,

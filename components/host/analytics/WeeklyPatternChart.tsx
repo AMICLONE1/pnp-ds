@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Chart as ChartJS,
@@ -8,10 +10,11 @@ import {
   Calendar,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { WEEKLY_PATTERN } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 
 export function WeeklyPatternChart(){
-  const maxVal = Math.max(...WEEKLY_PATTERN.map((d) => d.avg));
+  const { weeklyPattern: WEEKLY_PATTERN } = useAnalyticsData();
+  const maxVal = WEEKLY_PATTERN.length > 0 ? Math.max(...WEEKLY_PATTERN.map((d) => d.avg), 1) : 1;
   const chartData = {
     labels: WEEKLY_PATTERN.map((d) => d.day),
     datasets: [

@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Chart as ChartJS,
@@ -8,9 +10,10 @@ import {
   BarChart3,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MONTHLY_BREAKDOWN } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 
 export function MonthlyBreakdownChart(){
+      const { monthlyBreakdown: MONTHLY_BREAKDOWN } = useAnalyticsData();
       const chartData = {
         labels: MONTHLY_BREAKDOWN.map((d) => d.month),
         datasets: [

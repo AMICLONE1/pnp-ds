@@ -22,6 +22,26 @@ export interface HostBillingSummary {
   paymentStatus: HostBillingStatus;
   isLiveData: boolean;
   liveSource: "generation" | "fallback";
+  history?: Array<{
+    id: string;
+    period: string;
+    amount: number;
+    status: "PAID" | "PENDING" | "OVERDUE";
+    paidAt: string | null;
+  }>;
+  hasBilledPeriod?: boolean;
+  accumulating?: {
+    month: number;
+    year: number;
+    label: string;
+    generationKwh: number;
+    estimatedAmount: number;
+    ratePerKwh: number;
+    daysInMonth: number;
+    dayOfMonth: number;
+    nextInvoiceDate: string;
+    ppaStartDate: string;
+  };
 }
 
 const MONTH_LABELS = [

@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Chart as ChartJS,
@@ -9,9 +11,10 @@ import {
   Sun,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PLANTS } from "@/lib/utils/host/analytics/data";
+import { useAnalyticsData } from "@/lib/utils/host/analytics/data";
 
 export function PlantComparison(){
+      const { plants: PLANTS } = useAnalyticsData();
       const barData = {
         labels: PLANTS.map((p) => p.name.split(" ").slice(0, 2).join(" ")),
         datasets: [
