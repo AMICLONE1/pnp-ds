@@ -96,7 +96,7 @@ export async function middleware(request: NextRequest) {
   // Rate limiting for API routes
   let rateLimitResult: { allowed: boolean; remaining: number; resetTime: number } | null = null;
   if (pathname.startsWith("/api/")) {
-    const identifier = request.ip || request.headers.get("x-forwarded-for") || "unknown";
+    const identifier = request.headers.get("x-forwarded-for") || "unknown";
     const path = request.nextUrl.pathname;
 
     rateLimitResult = checkRateLimit(identifier, path);
