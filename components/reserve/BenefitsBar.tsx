@@ -2,7 +2,6 @@ import {
   Zap,
   Shield,
   Clock,
-  Users,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -12,12 +11,11 @@ export default function BenefitsBar(){
     { icon: Clock, label: "5-min setup", description: "Quick & easy" },
     { icon: Shield, label: "75% guaranteed", description: "Protected returns" },
     { icon: Zap, label: "Zero installation", description: "No roof needed" },
-    { icon: Users, label: "10,000+ users", description: "Trusted platform" },
   ];
     return (
         <div className="bg-gradient-to-r from-offwhite to-white py-8 border-b border-gray-100">
         <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {benefits.map((benefit, index) => (
                 <motion.div
                 key={index}

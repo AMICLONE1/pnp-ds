@@ -17,7 +17,6 @@ import {
   Info,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import BenefitsBar from "@/components/reserve/BenefitsBar";
 import { ProjectListSkeleton } from "@/components/ui/skeletons/ProjectListSkeleton";
 import { Header } from "@/components/layout/header";
 import { ProjectCard } from "@/components/reserve/ProjectCard";
@@ -27,6 +26,7 @@ import PageHero from "@/components/reserve/PageHero";
 import { Footer } from "@/components/layout/footer";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import AllocationCard from "@/components/dashboard/AllocationCard";
+import PricingSection from "@/components/reserve/PricingSection";
 
 
 export default function ReservePageContent(){
@@ -167,9 +167,6 @@ export default function ReservePageContent(){
 
       {/* Hero */}
       <PageHero />
-
-      {/* Benefits bar */}
-      <BenefitsBar />
 
       {/* Main content */}
       <main className="flex-1 py-12 md:py-16">
@@ -576,6 +573,9 @@ export default function ReservePageContent(){
                   </aside>
                 </div>
               )}
+
+              {/* Pricing section */}
+              <PricingSection />
 
               {/* Enhanced FAQ section */}
               <motion.div

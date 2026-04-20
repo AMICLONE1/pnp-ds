@@ -4,7 +4,16 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Phone, MapPin, Send, MessageSquare } from "lucide-react";
+import Link from "next/link";
+import { Mail, Phone, MapPin, Send, MessageSquare, Scale } from "lucide-react";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  SUPPORT_PHONE_TEL,
+  COMPANY_LEGAL_NAME,
+  COMPANY_FULL_ADDRESS,
+  GRIEVANCE_OFFICER_NAME,
+} from "@/lib/contact";
 
 export default function ContactSection(){
     const [formData, setFormData] = useState({
@@ -79,7 +88,7 @@ export default function ContactSection(){
                             </div>
                             <div>
                             <h3 className="font-semibold text-black mb-1">Email</h3>
-                            <a href="mailto:info@powernetpro.com" className="text-black hover:underline">info@powernetpro.com</a>
+                            <a href={`mailto:${SUPPORT_EMAIL}`} className="text-black hover:underline">{SUPPORT_EMAIL}</a>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -88,8 +97,8 @@ export default function ContactSection(){
                             </div>
                             <div>
                             <h3 className="font-semibold text-black mb-1">Phone</h3>
-                            <a href="tel:+918805881601" className="text-black hover:underline">+91 8805 881 601</a>
-                            <p className="text-sm text-gray-600 mt-1">Mon - Fri, 9:00 AM - 6:00 PM IST</p>
+                            <a href={`tel:${SUPPORT_PHONE_TEL}`} className="text-black hover:underline">{SUPPORT_PHONE}</a>
+                            <p className="text-sm text-gray-600 mt-1">Mon - Sat, 9:00 AM - 6:00 PM IST</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -98,7 +107,22 @@ export default function ContactSection(){
                             </div>
                             <div>
                             <h3 className="font-semibold text-black mb-1">Address</h3>
-                            <p className="text-black">Kothrud, Pune<br />Maharashtra<br />Bharat</p>
+                            <p className="font-semibold text-black">{COMPANY_LEGAL_NAME}</p>
+                            <p className="text-black">{COMPANY_FULL_ADDRESS}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 bg-gold/10 rounded-xl flex items-center justify-center">
+                            <Scale className="h-6 w-6 text-gold" />
+                            </div>
+                            <div>
+                            <h3 className="font-semibold text-black mb-1">For Complaints &amp; Grievances</h3>
+                            <p className="text-black text-sm">Grievance Officer: {GRIEVANCE_OFFICER_NAME}</p>
+                            <a href={`mailto:${SUPPORT_EMAIL}`} className="text-black hover:underline text-sm">{SUPPORT_EMAIL}</a>
+                            <p className="text-sm mt-1">
+                                See our full{" "}
+                                <Link href="/grievance" className="text-gold hover:underline font-semibold">Grievance Redressal Policy</Link>
+                            </p>
                             </div>
                         </div>
                         </CardContent>
@@ -135,7 +159,7 @@ export default function ContactSection(){
                                 <Send className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="text-lg font-semibold text-green-800 mb-2">Message Sent Successfully!</h3>
-                            <p className="text-green-700">We&apos;ve sent your message to info@powernetpro.com and will get back to you soon.</p>
+                            <p className="text-green-700">We&apos;ve sent your message to {SUPPORT_EMAIL} and will get back to you soon.</p>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-4">

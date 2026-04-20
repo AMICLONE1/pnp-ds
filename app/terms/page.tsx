@@ -1,9 +1,125 @@
-"use client";
-
+import type { ComponentType, ReactNode } from "react";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Scale, AlertCircle, CheckCircle, IndianRupee, Shield, Users, Zap, CreditCard, TrendingUp, BarChart3, Phone, Mail, MapPin, Info, Gavel, Globe, RefreshCw, XCircle, Lock } from "lucide-react";
+import {
+  AlertCircle,
+  CreditCard,
+  FileText,
+  Gavel,
+  Globe,
+  IndianRupee,
+  Info,
+  Lock,
+  Mail,
+  RefreshCw,
+  Scale,
+  Shield,
+  Users,
+  XCircle,
+} from "lucide-react";
+import { SUPPORT_EMAIL } from "@/lib/contact";
+
+type SectionCardProps = {
+  icon: ComponentType<{ className?: string }>;
+  title: string;
+  description?: string;
+  children: ReactNode;
+};
+
+type ListProps = {
+  items: ReactNode[];
+};
+
+const definitions = [
+  ["Capacity Reservation", "means the virtual allocation of solar generation capacity (measured in kilowatts, kW) selected and paid for by a Subscriber through the Platform."],
+  ["Credit", "means the monetary or unit-based value attributed to the electricity generated from a Subscriber’s reserved solar capacity, which may be applied as an electricity bill offset (Option 1) or converted to cash (Option 2)."],
+  ["Credit Ledger", "means the digital record maintained on the Platform tracking each Subscriber’s credit allocation, redemption, and balance."],
+  ["DISCOM", "means the electricity distribution company that supplies electricity to the User’s premises."],
+  ["Escrow Account", "means the regulated escrow account established with a scheduled commercial bank or NBFC for securing Subscriber reservation fees and funding bill settlement operations."],
+  ["Host", "means the commercial property owner or housing society that provides rooftop or premises space for the installation of solar capacity under a Power Purchase Agreement with PowerNetPro."],
+  ["KYC", "means Know Your Customer verification, comprising identity verification through Aadhaar and PAN as required by applicable law and Platform policy."],
+  ["Option 1", "means the bill offset mode of credit redemption, where Credits are applied to offset the Subscriber’s electricity bill through the BBPS system."],
+  ["Option 2", "means the cash conversion mode of credit redemption, where Credits are converted to their INR equivalent and disbursed to the Subscriber’s verified bank account via NEFT/IMPS."],
+  ["Reservation Agreement", "means the agreement entered into between PowerNetPro and a Subscriber upon confirmation of a Capacity Reservation, setting out the specific terms of the reservation including capacity, fees, credit rate, and tenure."],
+  ["Reservation Fee", "means the one-time fee payable by the Subscriber for reserving solar capacity through the Platform."],
+  ["Subscriber", "means an individual or entity that has completed registration, KYC verification, and a Capacity Reservation on the Platform."],
+];
+
+const eligibilityItems = [
+  "You must be at least eighteen (18) years of age.",
+  "You must be a citizen or legal resident of India.",
+  "You must possess a valid electricity connection with a recognised DISCOM in India.",
+  "You must be competent to enter into a binding contract under the Indian Contract Act, 1872.",
+  "You must not have been previously suspended, terminated, or barred from using the Platform.",
+];
+
+const userObligations = [
+  "Provide accurate, current, and complete information during registration, KYC verification, and at all times during your use of the Platform.",
+  "Maintain the security and confidentiality of your account credentials and promptly notify us of any unauthorised access.",
+  "Use the Platform only for lawful purposes and in compliance with these Terms and all applicable laws.",
+  "Not engage in any activity that could damage, disable, overburden, or impair the Platform or interfere with any other party’s use of the Platform.",
+  "Not attempt to gain unauthorised access to any part of the Platform, its servers, databases, or connected systems.",
+  "Not reverse engineer, decompile, disassemble, or attempt to derive the source code of the Platform or any underlying technology.",
+  "Not use automated tools, bots, scrapers, or other means to access, collect data from, or interact with the Platform without our express written permission.",
+  "Not impersonate any person or entity, or falsely state or misrepresent your affiliation with any person or entity.",
+  "Not upload, transmit, or distribute any viruses, malware, or other harmful code through the Platform.",
+  "Not use the Platform for any fraudulent or illegal purpose, including money laundering, tax evasion, or identity theft.",
+  "Promptly inform PowerNetPro of any changes to your electricity connection, DISCOM, residential address, or bank account details.",
+];
+
+const indemnificationItems = [
+  "Your breach of any provision of these Terms.",
+  "Your violation of any applicable law, regulation, or third-party right.",
+  "Your use or misuse of the Platform.",
+  "Any false, inaccurate, or misleading information provided by you, including KYC documentation.",
+  "Any unauthorised access to or use of your account resulting from your failure to safeguard your credentials.",
+];
+
+const arbitrationItems = [
+  "The arbitration shall be conducted by a sole arbitrator appointed by mutual agreement of the parties. If the parties are unable to agree on a sole arbitrator within fifteen (15) days, the arbitrator shall be appointed pursuant to Section 11 of the Arbitration and Conciliation Act, 1996.",
+  "The seat and venue of arbitration shall be Pune, Maharashtra, India.",
+  "The language of arbitration proceedings shall be English.",
+  "The arbitrator’s award shall be final and binding on both parties.",
+  "Each party shall bear its own costs of arbitration, and the arbitrator’s fees shall be borne equally by both parties unless the arbitrator orders otherwise.",
+];
+
+function SectionCard({ icon: Icon, title, description, children }: SectionCardProps) {
+  return (
+    <Card className="shadow-lg border-2 border-gold/20">
+      <CardHeader className="bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10 border-b border-gold/20">
+        <CardTitle className="text-2xl font-heading font-bold text-black flex items-center gap-2">
+          <Icon className="h-6 w-6 text-gold" />
+          {title}
+        </CardTitle>
+        {description ? <p className="text-gray-600">{description}</p> : null}
+      </CardHeader>
+      <CardContent className="p-8 space-y-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
+
+function BulletList({ items }: ListProps) {
+  return (
+    <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
+      {items.map((item) => (
+        <li key={typeof item === "string" ? item : String(item)}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+
+function NumberedList({ items }: ListProps) {
+  return (
+    <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+      {items.map((item) => (
+        <li key={typeof item === "string" ? item : String(item)}>{item}</li>
+      ))}
+    </ol>
+  );
+}
 
 export default function TermsPage() {
   return (
@@ -20,831 +136,370 @@ export default function TermsPage() {
                 Terms of Service
               </h1>
               <p className="text-lg text-gray-600">
-                Last Updated: January 2026 | Version: 1.0
+                PowerNetPro Pvt. Ltd. | www.powernetpro.com | Effective Date: April 18, 2026
               </p>
             </div>
 
-            <Card className="shadow-lg border-2 border-gold/20 mb-6">
-              <CardHeader className="bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10 border-b border-gold/20">
-                <CardTitle className="text-2xl font-heading font-bold text-black">
-                  Welcome to PowerNetPro
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                <p className="text-gray-700 leading-relaxed mb-4">
-                  Thank you for choosing PowerNetPro! We&apos;re committed to making digital solar energy accessible, transparent, and beneficial for everyone. These Terms of Service explain your rights and our commitments in simple, straightforward language.
+            <div className="space-y-6">
+              <SectionCard icon={FileText} title="1. Introduction and Acceptance">
+                <p className="text-gray-700 leading-relaxed">
+                  These Terms of Service (“Terms”) constitute a legally binding agreement between you (“User,” “you,” or “your”) and PowerNetPro Pvt. Ltd. (“PowerNetPro,” “we,” “our,” or “us”), a Private Limited Company incorporated under the Companies Act, 2013, with its registered office in Pune, Maharashtra, India.
                 </p>
                 <p className="text-gray-700 leading-relaxed">
-                  By using PowerNetPro, you agree to these terms. Please read them carefully.
+                  These Terms govern your access to and use of the website www.powernetpro.com, associated digital platforms, mobile applications (when available), and all services provided therethrough (collectively, the “Platform”). By accessing, browsing, registering on, or using the Platform in any manner, you acknowledge that you have read, understood, and agree to be bound by these Terms, our Privacy Policy, our Cookie Policy, and our Refund Policy, which are incorporated herein by reference.
                 </p>
-              </CardContent>
-            </Card>
+                <p className="text-gray-700 leading-relaxed">
+                  If you do not agree with any provision of these Terms, you must immediately cease all use of the Platform and refrain from registering for or using any services offered through it.
+                </p>
+              </SectionCard>
 
-            <Card className="shadow-lg border-2 border-gold/20">
-              <CardHeader className="bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10 border-b border-gold/20">
-                <CardTitle className="text-2xl font-heading font-bold text-black">
-                  Terms and Conditions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8 space-y-10" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                {/* Section 1 */}
+              <SectionCard icon={Scale} title="2. Definitions">
+                <p className="text-gray-700 leading-relaxed">In these Terms, unless the context otherwise requires:</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse border border-gold/30 mt-4">
+                    <thead>
+                      <tr className="bg-gold/10">
+                        <th className="border border-gold/30 p-3 text-left font-semibold text-black">Term</th>
+                        <th className="border border-gold/30 p-3 text-left font-semibold text-black">Definition</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {definitions.map(([term, definition], index) => (
+                        <tr key={term} className={index % 2 === 1 ? "bg-gold/5" : "bg-white"}>
+                          <td className="border border-gold/30 p-3 text-gray-700 align-top font-semibold">“{term}”</td>
+                          <td className="border border-gold/30 p-3 text-gray-700 align-top">{definition}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={Shield} title="3. Eligibility">
+                <p className="text-gray-700 leading-relaxed">To access and use the Platform, you must satisfy all of the following eligibility requirements:</p>
+                <BulletList items={eligibilityItems} />
+                <p className="text-gray-700 leading-relaxed">
+                  If you are registering on behalf of a business entity (such as a company, LLP, partnership firm, or proprietorship), you represent and warrant that you have the legal authority to bind that entity to these Terms.
+                </p>
+              </SectionCard>
+
+              <SectionCard icon={Lock} title="4. Account Registration and KYC">
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Info className="h-6 w-6 text-gold" />
-                    1. About Us & Our Services
-                  </h2>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">4.1 Registration</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    <strong>PowerNetPro Private Limited</strong> (&quot;PowerNetPro&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is a company registered under the Companies Act, 2013, with our registered office at <strong>Kothrud, Pune, Maharashtra, Bharat</strong>.
+                    To use the Platform’s services, you must create an account by providing accurate and complete registration information, including your full name, date of birth, email address, mobile phone number, residential address, and preferred DISCOM. Registration is initiated through mobile number OTP verification.
                   </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must immediately notify PowerNetPro of any unauthorised access to or use of your account.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">4.2 KYC Verification</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    Our platform at <strong>www.powernetpro.com</strong> (the &quot;Platform&quot;) enables you to:
+                    Completion of KYC verification is mandatory before you can make a Capacity Reservation. KYC verification may be completed through Aadhaar-based e-KYC via DigiLocker API (real-time verification) or manual document upload (Aadhaar front/back and PAN card), subject to administrative review within forty-eight (48) business hours. PAN validation is conducted against the Income Tax database through NSDL/CDSL API integration.
                   </p>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    <li>Reserve digital solar capacity from our renewable energy projects</li>
-                    <li>Earn monthly credits from clean solar energy generation</li>
-                    <li>Use those credits to offset your electricity bills</li>
-                    <li>Monitor your solar generation and credit balance in real-time</li>
-                    <li>Contribute to a sustainable energy future</li>
-                  </ul>
-                  <p className="text-gray-700 leading-relaxed mt-4">
-                    <strong>This is a legally binding agreement.</strong> By clicking &quot;I Agree,&quot; creating an account, or using our services, you confirm that you have read and understood these terms, you are at least 18 years old, you have the legal capacity to enter into this agreement, and all information you provide is accurate and truthful.
+                  <p className="text-gray-700 leading-relaxed">
+                    You represent and warrant that all KYC documents and information provided by you are genuine, accurate, and belong to you. Provision of false, misleading, or fraudulent KYC information constitutes grounds for immediate account termination and may result in legal action.
                   </p>
                 </div>
-
-                {/* Section 2 */}
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">2. Key Definitions (In Plain English)</h2>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gold/30 mt-4">
-                      <thead>
-                        <tr className="bg-gold/10">
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Term</th>
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Definition</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Digital Solar Capacity</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">The amount of solar power capacity (measured in kilowatts) that you reserve from our solar installations</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Credits or Monthly Credits</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">The monetary value you earn from your reserved solar capacity&apos;s electricity generation</td>
-                        </tr>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Credit Balance</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">The total usable credits available in your account</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Projects or Solar Installations</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Physical solar power systems owned and operated by PowerNetPro</td>
-                        </tr>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Reservation</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Your subscription to a specific amount of solar capacity</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Dashboard</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Your personal portal where you track generation, credits, and bills</td>
-                        </tr>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>DISCOM</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Distribution Company - your local electricity utility provider</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700"><strong>Activation</strong></td>
-                          <td className="border border-gold/30 p-3 text-gray-700">When your reserved capacity starts generating credits (within 24-48 hours of payment)</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Section 3 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Zap className="h-6 w-6 text-gold" />
-                    3. How Digital Solar Reservation Works
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">3.1 Registration Process</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">To get started:</p>
-                  <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
-                    <li>Create an account by providing accurate information (name, email, phone, address)</li>
-                    <li>Verify your email and phone number</li>
-                    <li>Link your utility account (DISCOM details and electricity bill information)</li>
-                    <li>Choose your desired solar capacity reservation</li>
-                    <li>Complete payment through our secure gateway</li>
-                  </ol>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">3.2 Reservation Details</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">When you reserve digital solar capacity, you receive:</p>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    <li>A specific allocation of solar panels from our operational projects</li>
-                    <li>Monthly credits based on actual electricity generation from your allocation</li>
-                    <li>Real-time monitoring of your panel performance</li>
-                    <li>Transparent billing and credit deployment</li>
-                    <li>Access to your personalized dashboard 24/7</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">Activation Timeline:</h3>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    <li>Standard activation: 24-48 hours from successful payment</li>
-                    <li>You&apos;ll receive email and SMS confirmation once activated</li>
-                    <li>If activation takes longer than 48 hours, contact support immediately</li>
-                    <li>If we fail to activate within 72 hours, you&apos;re eligible for a full refund automatically</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">3.3 What We Guarantee</h3>
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
-                    <p className="font-semibold text-black mb-2">What We Guarantee:</p>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      <li>✓ Your reserved capacity will be from real, operational solar panels</li>
-                      <li>✓ You&apos;ll receive transparent monthly reports</li>
-                      <li>✓ Credits will be calculated fairly based on actual generation</li>
-                      <li>✓ We&apos;ll maintain and service the physical solar infrastructure</li>
-                      <li>✓ You can monitor your generation data in real-time</li>
-                    </ul>
-                  </div>
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <p className="font-semibold text-black mb-2">What We Don&apos;t Guarantee:</p>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      <li>Exact monthly generation amounts (weather varies)</li>
-                      <li>Consistent month-to-month credit values (seasonal variations occur)</li>
-                      <li>Protection from DISCOM policy changes (government decisions are beyond our control)</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Section 4 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <IndianRupee className="h-6 w-6 text-gold" />
-                    4. Pricing, Payments & Fees
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">4.1 Transparent Pricing Structure</h3>
-                  <div className="bg-gold/5 rounded-xl p-4 border border-gold/20 mb-4">
-                    <p className="text-gray-700 mb-2"><strong>Reservation Cost:</strong></p>
-                    <p className="text-gray-700 mb-4">Clearly displayed per kilowatt (kW) on our website</p>
-                    <p className="text-gray-700 mb-2"><strong>Setup Fee:</strong></p>
-                    <p className="text-gray-700 mb-2">One-time onboarding fee: ₹500 (flat rate, regardless of reservation size)</p>
-                    <p className="text-gray-700">Covers account setup, verification, DISCOM integration, and initial monitoring configuration</p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed mb-3"><strong>No Hidden Charges:</strong></p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>No monthly subscription fees</li>
-                    <li>No maintenance fees</li>
-                    <li>No credit usage fees</li>
-                    <li>No dashboard access fees</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">4.2 Payment Methods Accepted</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We accept:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>UPI (Google Pay, PhonePe, Paytm, etc.)</li>
-                    <li>Credit cards (Visa, Mastercard, Amex, RuPay)</li>
-                    <li>Debit cards (all major banks)</li>
-                    <li>Net banking</li>
-                    <li>Digital wallets</li>
-                  </ul>
-                  <p className="text-gray-700 leading-relaxed mt-4">
-                    All payments are processed through RBI-approved, PCI-DSS compliant gateways. We never store your complete card details.
-                  </p>
-                </div>
-
-                {/* Section 5 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Shield className="h-6 w-6 text-gold" />
-                    5. Your Account & Security
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">5.1 Account Creation & Verification</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We take security seriously. To prevent fraud and ensure service quality, we verify:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Email address (via confirmation link)</li>
-                    <li>Phone number (via OTP)</li>
-                    <li>Utility account ownership (via bill upload or DISCOM API verification)</li>
-                    <li>Payment source (via gateway authentication)</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">5.2 Your Responsibilities</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">You are responsible for:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Keeping your login credentials confidential</li>
-                    <li>Not sharing your account with others</li>
-                    <li>Notifying us immediately of any unauthorized access</li>
-                    <li>Providing accurate and up-to-date information</li>
-                    <li>Maintaining a valid email address and phone number</li>
-                    <li>Ensuring your utility account information is current</li>
-                  </ul>
-                </div>
-
-                {/* Section 6 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <CreditCard className="h-6 w-6 text-gold" />
-                    6. How Credits Work
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">6.1 Earning Credits</h3>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">4.3 Bank Account Linkage</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    Credits are earned based on actual electricity generated by your reserved solar capacity. Generation happens daily; credits accumulated monthly.
+                    If you wish to receive cash conversion payouts under Option 2, you must link a verified bank account. Verification is conducted through penny-drop verification (INR 1 credit and immediate reversal to confirm account validity). You represent that the bank account belongs to you and that you are the authorised account holder.
                   </p>
-                  <div className="bg-gold/5 rounded-xl p-4 border border-gold/20 mb-4">
-                    <p className="font-semibold text-black mb-2">Example:</p>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      <li>Your reservation: 5 kW</li>
-                      <li>Monthly generation: 600 kWh</li>
-                      <li>Credit rate: ₹5 per kWh</li>
-                      <li>Monthly credits earned: 600 × ₹5 = ₹3,000</li>
-                    </ul>
-                  </div>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">6.2 Using Your Credits</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">What you can do with credits:</p>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    <li><strong>Pay electricity bills:</strong> Apply credits to offset your DISCOM bill (full or partial)</li>
-                    <li><strong>Accumulate:</strong> Let credits build up for larger future bills</li>
-                    <li><strong>Transfer:</strong> Gift credits to family members (one-time ₹100 fee)</li>
-                    <li><strong>Partial refund:</strong> If you cancel, get 60% as cash</li>
-                  </ul>
                 </div>
+              </SectionCard>
 
-                {/* Section 7 */}
+              <SectionCard icon={Globe} title="5. Services Provided">
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <TrendingUp className="h-6 w-6 text-gold" />
-                    7. Solar Generation & Performance
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">7.1 How We Calculate Generation</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">Our Process:</p>
-                  <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
-                    <li>Each reservation is linked to specific panels in operational projects</li>
-                    <li>Generation monitored via certified inverter systems</li>
-                    <li>Data logged every 15 minutes</li>
-                    <li>Daily generation recorded and attributed to your account pro-rata</li>
-                    <li>Monthly totals calculated and converted to credits</li>
-                  </ol>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.2 Production Estimates & Confidence Levels</h3>
-                  <div className="space-y-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                      <p className="font-semibold text-black mb-2"><strong>P50 Production Level (50% confidence):</strong></p>
-                      <p className="text-gray-700">There&apos;s a 50% probability that annual generation will meet or exceed this level. Used for standard projections.</p>
-                      <p className="text-gray-700 mt-2">Example: 5kW system, P50 = 7,500 kWh/year</p>
-                    </div>
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                      <p className="font-semibold text-black mb-2"><strong>P90 Production Level (90% confidence):</strong></p>
-                      <p className="text-gray-700">There&apos;s a 90% probability that annual generation will meet or exceed this level. More conservative estimate.</p>
-                      <p className="text-gray-700 mt-2">Example: 5kW system, P90 = 6,500 kWh/year</p>
-                    </div>
-                  </div>
-                  <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mt-4">
-                    <p className="font-semibold text-black mb-2"><strong>Our Performance Guarantee:</strong></p>
-                    <p className="text-gray-700">If annual generation falls below P90 levels, we&apos;ll add bonus credits to bring you up to P90 levels. No questions asked, automatic adjustment.</p>
-                  </div>
-                </div>
-
-                {/* Section 8 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">8. Bill Payment Services</h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">8.1 How Bill Payment Works</h3>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">5.1 Digital Solar Platform</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    PowerNetPro partners with Bharat Bill Payment System (BBPS) to facilitate credit application to your utility bills.
+                    PowerNetPro operates a digital solar platform that enables Subscribers to reserve virtual solar capacity within commercial-scale solar installations deployed on Host properties. The Platform facilitates the following services:
                   </p>
-                  <p className="text-gray-700 leading-relaxed mb-3"><strong>The Process:</strong></p>
-                  <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
-                    <li>You receive your monthly DISCOM bill</li>
-                    <li>Choose to pay using PowerNetPro credits (manual or auto-pay)</li>
-                    <li>We process payment to your DISCOM via BBPS</li>
-                    <li>If credits are insufficient, you pay the remaining balance</li>
-                    <li>DISCOM receives payment and updates your account</li>
-                    <li>You receive payment confirmation from both DISCOM and PowerNetPro</li>
-                  </ol>
+                  <BulletList
+                    items={[
+                      "Browsing and selecting available solar capacity reservations across active installations.",
+                      "Reserving solar capacity (minimum threshold of 1.5 kW) through a one-time Reservation Fee.",
+                      "Real-time monitoring of solar generation from reserved capacity through an online dashboard.",
+                      "Receiving electricity bill credits (at a rate of INR 6.50 to INR 7.00 per unit) based on actual generation from reserved capacity.",
+                      "Redeeming Credits through Option 1 (bill offset via BBPS) or Option 2 (cash conversion to bank account).",
+                      "Viewing monthly credit statements, generation reports, and environmental impact data.",
+                    ]}
+                  />
                 </div>
-
-                {/* Section 9 */}
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <BarChart3 className="h-6 w-6 text-gold" />
-                    9. Service Level Agreement (SLA) - Our Commitments
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">9.1 Platform Uptime Guarantee</h3>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">5.2 Nature of Services</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    We guarantee 99.5% platform availability (excluding scheduled maintenance):
+                    PowerNetPro does not sell electricity directly to Subscribers. The Platform provides an Energy-as-a-Service model wherein Subscribers receive financial credits proportional to the solar energy generated from their reserved capacity. The actual electricity generated is consumed on-site by the Host, who pays PowerNetPro a pre-agreed per-unit tariff. PowerNetPro does not currently operate under a Virtual Net Metering (VNM) model.
                   </p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>This means maximum 3.6 hours downtime per month</li>
-                    <li>Monitored 24/7 by automated systems</li>
-                    <li>Real-time status page available at status.powernetpro.com</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">9.2 Customer Support SLA</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gold/30 mt-4">
-                      <thead>
-                        <tr className="bg-gold/10">
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Issue Type</th>
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Response Time</th>
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Resolution Time</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700">Critical (account locked, payment failure)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">2 hours</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">8 hours</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700">High (credit errors, data discrepancies)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">4 hours</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">24 hours</td>
-                        </tr>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700">Medium (general inquiries, bill questions)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">8 hours</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">48 hours</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700">Low (feature requests, feedback)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">24 hours</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">5 business days</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Section 10 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">10. What PowerNetPro is Responsible For</h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">10.1 Our Direct Obligations</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We take full responsibility for:</p>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    <li><strong>Platform Performance</strong> - Website uptime, dashboard accuracy, data security</li>
-                    <li><strong>Solar Capacity Allocation</strong> - Ensuring your reserved capacity is real and operational</li>
-                    <li><strong>Credit Management</strong> - Accurate calculation and timely deployment</li>
-                    <li><strong>Customer Service</strong> - Responsive support within SLA timelines</li>
-                    <li><strong>Infrastructure Maintenance</strong> - Solar panel cleaning and maintenance</li>
-                    <li><strong>Financial Integrity</strong> - Holding customer funds in separate escrow accounts</li>
-                  </ul>
-                </div>
-
-                {/* Section 11 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <AlertCircle className="h-6 w-6 text-gold" />
-                    11. Limitations of Liability (Fair & Balanced)
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">11.1 What We&apos;re NOT Liable For</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We cannot be held responsible for:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Government & Regulatory Changes (DISCOM policy modifications, tax changes)</li>
-                    <li>Utility Company Actions (service interruptions, billing errors by DISCOM)</li>
-                    <li>Force Majeure Events (natural disasters, pandemics, war)</li>
-                    <li>User Actions & Errors (incorrect information, unauthorized access)</li>
-                    <li>Third-Party Websites & Services</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">11.2 Liability Cap</h3>
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <p className="font-semibold text-black mb-2"><strong>Maximum Liability:</strong></p>
-                    <p className="text-gray-700">Our total liability to you for all claims combined will not exceed:</p>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4 mt-2">
-                      <li>The total amount you paid for your digital solar reservation, OR</li>
-                      <li>₹5,00,000 (Five Lakh Rupees), whichever is HIGHER</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Section 12 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Users className="h-6 w-6 text-gold" />
-                    12. Your Rights & Responsibilities
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">12.1 Your Rights</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">As a PowerNetPro customer, you have the right to:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li><strong>Transparency & Information</strong> - Access all your account data 24/7</li>
-                    <li><strong>Control & Flexibility</strong> - Pause your account for up to 6 months</li>
-                    <li><strong>Fair Treatment</strong> - Non-discriminatory service access</li>
-                    <li><strong>Refunds & Cancellation</strong> - 30-day satisfaction guarantee (100% refund)</li>
-                    <li><strong>Recourse & Resolution</strong> - File complaints through multiple channels</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">12.2 Your Responsibilities</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">To maintain your account and receive services, you must:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Provide accurate information</li>
-                    <li>Maintain account security</li>
-                    <li>Comply with terms</li>
-                    <li>Meet financial responsibilities</li>
-                    <li>Communicate and cooperate</li>
-                  </ul>
-                </div>
-
-                {/* Section 13 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">13. Intellectual Property Rights</h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">13.1 PowerNetPro Ownership</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We own all rights to:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>The PowerNetPro name, logo, and branding</li>
-                    <li>Website design, layout, and user interface</li>
-                    <li>Software, code, and algorithms</li>
-                    <li>Dashboard features and functionality</li>
-                    <li>Original content, graphics, and images</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">13.2 Your Limited License</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We grant you a limited, non-exclusive, non-transferable license to:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Access and use the platform for personal purposes</li>
-                    <li>View and download your account reports</li>
-                    <li>Use dashboard features and tools</li>
-                    <li>Access mobile apps (when available)</li>
-                  </ul>
-                </div>
-
-                {/* Section 14 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <RefreshCw className="h-6 w-6 text-gold" />
-                    14. Refund Policy - Transparent & Fair
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">14.1 30-Day Satisfaction Guarantee</h3>
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
-                    <p className="text-gray-700 mb-2"><strong>No questions asked, full refund within 30 days:</strong></p>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      <li>Cancel anytime within 30 days of reservation activation</li>
-                      <li>100% refund of your reservation amount</li>
-                      <li>Processing time: 5-7 business days</li>
-                      <li>Refund to original payment method</li>
-                      <li>Setup fee (₹500) also fully refunded</li>
-                    </ul>
-                  </div>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">14.2 Tiered Refund Structure (After 30 Days)</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gold/30 mt-4">
-                      <thead>
-                        <tr className="bg-gold/10">
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Time Since Activation</th>
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Refund %</th>
-                          <th className="border border-gold/30 p-3 text-left font-semibold text-black">Deductions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700">31-90 days (1-3 months)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">90%</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Setup fee only (₹500)</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700">91-180 days (3-6 months)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">85%</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Setup fee + 15% admin fee</td>
-                        </tr>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700">181-365 days (6-12 months)</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">80%</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Setup fee + 20% admin fee</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700">1-2 years</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">75%</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Setup fee + 25% admin fee</td>
-                        </tr>
-                        <tr>
-                          <td className="border border-gold/30 p-3 text-gray-700">2-3 years</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">70%</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Setup fee + 30% admin fee</td>
-                        </tr>
-                        <tr className="bg-gold/5">
-                          <td className="border border-gold/30 p-3 text-gray-700">3+ years</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">65%</td>
-                          <td className="border border-gold/30 p-3 text-gray-700">Setup fee + 35% admin fee</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Section 15 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <XCircle className="h-6 w-6 text-gold" />
-                    15. Account Termination
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">15.1 You Can Cancel Anytime</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">You have the right to cancel your account at any time:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Through your dashboard (self-service cancellation)</li>
-                    <li>By emailing <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
-                    <li>By calling our customer support line</li>
-                  </ul>
-                  <p className="text-gray-700 leading-relaxed mt-4">
-                    Refunds are calculated based on Section 14 (Refund Policy). You&apos;ll receive the appropriate refund amount based on how long you&apos;ve been a customer.
-                  </p>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">15.2 We Can Terminate Your Account If</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We reserve the right to terminate accounts for:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Fraudulent activity or misrepresentation</li>
-                    <li>Violation of these Terms of Service</li>
-                    <li>Non-payment of outstanding balances</li>
-                    <li>Illegal use of our platform</li>
-                    <li>Harassment of staff or other customers</li>
-                  </ul>
-                  <p className="text-gray-700 leading-relaxed mt-4">
-                    We will provide 30 days&apos; written notice (except for fraud or illegal activity, which may be immediate).
+                  <p className="text-gray-700 leading-relaxed">
+                    Credits received by Subscribers represent a financial value derived from the generation performance of the solar installation and are not a direct supply of electricity to the Subscriber’s premises.
                   </p>
                 </div>
+              </SectionCard>
 
-                {/* Section 16 */}
+              <SectionCard icon={IndianRupee} title="6. Capacity Reservation and Fees">
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Lock className="h-6 w-6 text-gold" />
-                    16. Privacy & Data Protection
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.1 Our Commitment to Your Privacy</h3>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">6.1 Reservation Process</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    We take data protection seriously. Your personal information is handled according to:
+                    Once KYC verification is complete, you may browse available solar capacity tiers on the Platform. Each tier displays the capacity allocation (in kW), estimated monthly credit generation (in kWh), equivalent bill savings estimate, annual and fifteen-year savings projections, and the one-time Reservation Fee.
                   </p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Information Technology Act, 2000 (India)</li>
-                    <li>Digital Personal Data Protection Act, 2023 (DPDPA)</li>
-                    <li>Our Privacy Policy (available at <a href="/privacy" className="text-gold hover:underline">www.powernetpro.com/privacy</a>)</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">16.2 What Data We Collect & Why</h3>
-                  <div className="ml-4 space-y-3">
-                    <div>
-                      <p className="font-semibold text-black mb-1">Personal Information:</p>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>Name, email, phone number</li>
-                        <li>Address and utility account details</li>
-                        <li>Payment information (processed securely)</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-1">Usage Data:</p>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>Dashboard activity and preferences</li>
-                        <li>Generation and credit data</li>
-                        <li>Bill payment history</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">16.3 Your Data Rights</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">Under DPDPA, you have the right to:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Access your personal data</li>
-                    <li>Correct inaccurate information</li>
-                    <li>Request deletion (subject to legal requirements)</li>
-                    <li>Data portability (export your data)</li>
-                    <li>Withdraw consent (may affect service delivery)</li>
-                  </ul>
+                  <p className="text-gray-700 leading-relaxed">
+                    Upon selecting a capacity tier, you will be presented with a Reservation Agreement detailing the specific terms of your reservation. By confirming the reservation and making payment, you accept the terms of the Reservation Agreement.
+                  </p>
                 </div>
-
-                {/* Section 17 */}
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">17. Force Majeure (Events Beyond Our Control)</h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">17.1 What is Force Majeure?</h3>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">6.2 Reservation Fee</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    Force majeure events are circumstances beyond our reasonable control that prevent us from fulfilling our obligations. These include:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Natural disasters (floods, earthquakes, cyclones)</li>
-                    <li>Pandemics and health emergencies</li>
-                    <li>War, terrorism, civil unrest</li>
-                    <li>Government actions (policy changes, regulations)</li>
-                    <li>Utility company failures or grid outages</li>
-                    <li>Cyberattacks or security breaches</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">17.2 Our Obligations During Force Majeure</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">During force majeure events, we will:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Notify you within 48 hours of becoming aware</li>
-                    <li>Make reasonable efforts to minimize impact</li>
-                    <li>Resume services as soon as reasonably possible</li>
-                    <li>Provide regular updates on the situation</li>
-                    <li>Not charge you for services we cannot deliver</li>
-                  </ul>
-                </div>
-
-                {/* Section 18 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Gavel className="h-6 w-6 text-gold" />
-                    18. Dispute Resolution (Fair & Transparent Process)
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">18.1 Step 1: Direct Communication</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">First, contact our customer support team:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
-                    <li>Phone: <a href="tel:+918805881601" className="text-gold hover:underline">+91 8805 881 601</a></li>
-                    <li>Live Chat: Available on dashboard</li>
-                  </ul>
-                  <p className="text-gray-700 leading-relaxed mt-4">Most issues are resolved at this stage within 48 hours.</p>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">18.2 Step 2: Internal Escalation</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">If not resolved, escalate to our management team:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Email: escalation@powernetpro.com</li>
-                    <li>Response time: 5 business days</li>
-                    <li>Written response with resolution plan</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">18.3 Step 3: Mediation</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">If still unresolved, we agree to mediation through:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>An independent mediator agreed upon by both parties</li>
-                    <li>Costs shared equally</li>
-                    <li>Mediation must be completed within 60 days</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">18.4 Step 4: Arbitration</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">If mediation fails:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Disputes will be resolved through binding arbitration</li>
-                    <li>Arbitration under the Arbitration and Conciliation Act, 2015 (India)</li>
-                    <li>Language: English</li>
-                    <li>Arbitrator: Single arbitrator appointed by mutual agreement</li>
-                  </ul>
-                </div>
-
-                {/* Section 19 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Globe className="h-6 w-6 text-gold" />
-                    19. Geographic Coverage & Service Availability
-                  </h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">19.1 Current Service Areas</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">PowerNetPro currently serves customers in:</p>
-                  <div className="bg-gold/5 rounded-xl p-4 border border-gold/20 mb-4">
-                    <p className="font-semibold text-black mb-2">Supported States & DISCOMs:</p>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      <li>Maharashtra (MSEB, BEST, Tata Power, Adani Electricity)</li>
-                      <li>Delhi (BSES, TPDDL)</li>
-                      <li>Karnataka (BESCOM, MESCOM, HESCOM)</li>
-                      <li>Tamil Nadu (TANGEDCO)</li>
-                      <li>Gujarat (Torrent Power, DGVCL, MGVCL, PGVCL, UGVCL)</li>
-                      <li>More states being added regularly</li>
-                    </ul>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">Check our website for the most up-to-date list of supported DISCOMs.</p>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">19.2 Expansion Plans</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We&apos;re actively expanding to serve more states and DISCOMs. If your area isn&apos;t covered yet:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Join our waitlist on the website</li>
-                    <li>We&apos;ll notify you when service becomes available</li>
-                    <li>Priority access for early waitlist members</li>
-                  </ul>
-                </div>
-
-                {/* Section 20 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">20. Amendments to Terms</h2>
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">20.1 We May Update These Terms</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We may update these Terms of Service from time to time to:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Reflect changes in our services</li>
-                    <li>Comply with legal requirements</li>
-                    <li>Improve clarity and transparency</li>
-                    <li>Address customer feedback</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">20.2 How We&apos;ll Notify You</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">We&apos;ll notify you of material changes through:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>Email to your registered address (30 days advance notice)</li>
-                    <li>In-app notification on your dashboard</li>
-                    <li>SMS for critical changes</li>
-                    <li>Updated &quot;Last Updated&quot; date on this page</li>
-                  </ul>
-                  <p className="text-gray-700 leading-relaxed mt-4">
-                    Material changes include: pricing modifications, refund policy changes, liability limitations, or service scope changes.
-                  </p>
-
-                  <h3 className="text-xl font-semibold text-black mb-3 mt-6">20.3 Your Options</h3>
-                  <p className="text-gray-700 leading-relaxed mb-3">If you don&apos;t agree with updated terms:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                    <li>You can cancel your account within 30 days of the change</li>
-                    <li>You&apos;ll receive a refund per Section 14 (Refund Policy)</li>
-                    <li>Continued use after 30 days means you accept the new terms</li>
-                  </ul>
-                </div>
-
-                {/* Section 21 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">21. General Provisions</h2>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="font-semibold text-black mb-1">21.1 Entire Agreement</p>
-                      <p className="text-gray-700">These Terms of Service, together with our Privacy Policy, constitute the entire agreement between you and PowerNetPro regarding your use of our services.</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-1">21.2 Severability</p>
-                      <p className="text-gray-700">If any provision of these terms is found to be invalid or unenforceable, the remaining provisions will continue in full force and effect.</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-1">21.3 Governing Law & Jurisdiction</p>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>These terms are governed by the laws of India</li>
-                        <li>Any disputes will be subject to the exclusive jurisdiction of courts in Pune, India</li>
-                        <li>We comply with all applicable Indian laws and regulations</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-1">21.4 Assignment</p>
-                      <p className="text-gray-700">You may not transfer or assign your account or rights under these terms without our written consent. We may assign our rights and obligations to a successor entity (with notice to you).</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-1">21.5 Waiver</p>
-                      <p className="text-gray-700">Our failure to enforce any provision of these terms does not constitute a waiver of that provision or any other provision.</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-1">21.6 Language</p>
-                      <p className="text-gray-700">These terms are provided in English. If translated into other languages, the English version will prevail in case of any discrepancies.</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section 22 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <Phone className="h-6 w-6 text-gold" />
-                    22. Contact Information
-                  </h2>
-                  <div className="bg-gold/5 rounded-xl p-6 space-y-4 border border-gold/20">
-                    <div>
-                      <p className="font-semibold text-black mb-2">Customer Support</p>
-                      <p className="text-gray-700 mb-2">For service issues, billing questions, technical support:</p>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>Phone: <a href="tel:+918805881601" className="text-gold hover:underline">+91 8805 881 601</a> (Monday-Saturday, 9 AM - 7 PM IST)</li>
-                        <li>Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
-                        <li>Live Chat: Available on dashboard during business hours</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-black mb-2">Legal & Compliance</p>
-                      <p className="text-gray-700 mb-2">For legal notices, privacy concerns, regulatory matters:</p>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        <li>Email: <a href="mailto:info@powernetpro.com" className="text-gold hover:underline">info@powernetpro.com</a></li>
-                        <li>Address: Kothrud, Pune, Maharashtra, Bharat</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section 23 */}
-                <div>
-                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                    <CheckCircle className="h-6 w-6 text-gold" />
-                    23. Acknowledgment & Acceptance
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    By clicking &quot;I Agree,&quot; creating an account, or using PowerNetPro services, you acknowledge that:
-                  </p>
-                  <div className="bg-gold/5 rounded-xl p-4 border border-gold/20">
-                    <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                      <li>✓ You have read and understood these Terms of Service in full</li>
-                      <li>✓ You agree to be legally bound by these terms</li>
-                      <li>✓ You have the legal capacity to enter into this agreement</li>
-                      <li>✓ You provide accurate and truthful information</li>
-                      <li>✓ You understand the risks and limitations described</li>
-                      <li>✓ You&apos;ve had the opportunity to seek independent legal advice</li>
-                      <li>✓ You accept responsibility for your account security and usage</li>
-                    </ul>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed mt-4">
-                    If you do not agree with these terms, please do not use PowerNetPro services.
+                    The Reservation Fee is a one-time payment in the range of INR 35,000 to INR 40,000 per kW (subject to applicable government subsidies and promotions). The Reservation Fee is processed through Razorpay and routed to the Escrow Account. The Reservation Fee is payable through UPI, net banking, credit card, debit card, or other payment methods supported by Razorpay.
                   </p>
                 </div>
-
-                {/* Section 24 */}
                 <div>
-                  <h2 className="text-2xl font-bold text-black mb-4">24. Our Commitment to You</h2>
-                  <div className="bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10 rounded-xl p-6 border border-gold/20">
-                    <p className="text-gray-700 leading-relaxed mb-4">At PowerNetPro, we promise:</p>
-                    <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                      <li><strong>Transparency:</strong> Clear communication, honest disclosures, no hidden terms</li>
-                      <li><strong>Fairness:</strong> Customer-friendly policies, reasonable limitations, balanced rights</li>
-                      <li><strong>Accountability:</strong> We own our responsibilities and make things right</li>
-                      <li><strong>Protection:</strong> Your investment is secured, your data is protected</li>
-                      <li><strong>Performance:</strong> We deliver on our commitments or compensate you</li>
-                      <li><strong>Sustainability:</strong> Together, we&apos;re building a cleaner energy future</li>
-                    </ul>
-                    <p className="text-gold font-bold text-xl mt-6 text-center">
-                      Thank you for choosing PowerNetPro. Let&apos;s power India with sunshine!
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">6.3 Reservation Tenure</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    Each Capacity Reservation has a tenure of fifteen (15) years from the date of activation. At the end of the tenure, the solar plant and associated equipment are transferred to the Host as per the terms of the Power Purchase Agreement. Your credit entitlements shall cease upon expiry of the reservation tenure.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">6.4 Reservation Activation</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Your Capacity Reservation shall be activated upon confirmation of Reservation Fee receipt in the Escrow Account and commissioning of the associated solar installation. The activation date, unique Reservation ID, and credit generation schedule shall be communicated to you through the Platform, email, and SMS.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={CreditCard} title="7. Credit System">
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">7.1 Credit Allocation</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Credits are allocated to your account on a monthly basis, based on the actual solar energy generated from your reserved capacity. The Platform calculates per-user generation based on capacity reservation ratios and allocates credits accordingly. Credits are allocated at a rate of INR 6.50 to INR 7.00 per unit of electricity generated, as specified in your Reservation Agreement.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">7.2 Credit Redemption – Option 1 (Bill Offset)</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    Under Option 1, you may apply your accumulated Credits to offset your electricity bill. The Platform fetches your electricity bill data through the BBPS API, calculates the credit-equivalent value at the applicable DISCOM tariff, and processes the bill payment from the operational sub-account of the Escrow Account. Credits used for bill offset are debited from your Credit Ledger.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">7.3 Credit Redemption – Option 2 (Cash Conversion)</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    Under Option 2, you may convert your accumulated Credits to their INR equivalent and receive a cash payout to your verified bank account via NEFT/IMPS. Tax Deducted at Source (TDS) shall be deducted on cash conversion payouts as applicable under the Income Tax Act, 1961. PowerNetPro shall generate annual Form 16A for TDS deducted on your payouts.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">7.4 Credit Validity</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Credits are valid for the duration of your Reservation tenure (fifteen years). Accumulated Credits that are not redeemed before the expiry of your Reservation tenure shall lapse and cannot be recovered, refunded, or transferred.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={Users} title="8. User Obligations">
+                <p className="text-gray-700 leading-relaxed">As a User of the Platform, you agree to:</p>
+                <BulletList items={userObligations} />
+              </SectionCard>
+
+              <SectionCard icon={Info} title="9. Intellectual Property">
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">9.1 Ownership</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    All intellectual property rights in and to the Platform, including but not limited to the website design, user interface, source code, algorithms, software, databases, text, graphics, logos, trademarks, service marks, trade names, and all content published on the Platform, are the exclusive property of PowerNetPro Pvt. Ltd. or its licensors and are protected under applicable Indian and international intellectual property laws.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">9.2 Limited Licence</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Subject to your compliance with these Terms, PowerNetPro grants you a limited, non-exclusive, non-transferable, non-sublicensable, revocable licence to access and use the Platform solely for your personal, non-commercial purposes as a registered User. This licence does not include the right to modify, reproduce, distribute, publicly display, or create derivative works of any Platform content.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">9.3 Restrictions</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    You shall not, without the prior written consent of PowerNetPro, copy, reproduce, distribute, transmit, display, perform, publish, license, create derivative works from, transfer, or sell any content, information, software, products, or services obtained from or through the Platform.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">9.4 User-Generated Content</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    If you submit any content to the Platform (such as feedback, reviews, or suggestions), you grant PowerNetPro a non-exclusive, royalty-free, perpetual, irrevocable, worldwide licence to use, reproduce, modify, and distribute such content in connection with the operation and promotion of the Platform.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={AlertCircle} title="10. Disclaimers and Limitation of Liability">
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">10.1 Service Disclaimer</h3>
+                  <p className="text-gray-700 leading-relaxed uppercase">
+                    THE PLATFORM AND ALL SERVICES ARE PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS, WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">10.2 Generation and Credit Disclaimer</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    PowerNetPro does not guarantee specific levels of solar energy generation or credit amounts. Solar generation is subject to natural variability including weather conditions, seasonal fluctuations, equipment performance, grid curtailment, and force majeure events. Estimated generation and savings figures provided on the Platform are illustrative projections and not guaranteed outcomes.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">10.3 Third-Party Services</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    The Platform integrates with third-party services including Razorpay, DigiLocker, BBPS, and banking partners. PowerNetPro is not responsible for the availability, accuracy, performance, or security of any third-party service. Any issues arising from third-party services should be directed to the respective service provider.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">10.4 Limitation of Liability</h3>
+                  <div className="space-y-4 text-gray-700 leading-relaxed uppercase">
+                    <p>
+                      TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL POWERNETPRO, ITS PARTNERS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, GOODWILL, OR BUSINESS OPPORTUNITY, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE PLATFORM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+                    </p>
+                    <p>
+                      THE TOTAL AGGREGATE LIABILITY OF POWERNETPRO FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR YOUR USE OF THE PLATFORM SHALL NOT EXCEED THE TOTAL AMOUNT OF RESERVATION FEES PAID BY YOU TO POWERNETPRO IN THE TWELVE (12) MONTHS PRECEDING THE DATE OF THE CLAIM.
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">10.5 Regulatory and Policy Changes</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    PowerNetPro’s business model is subject to regulatory frameworks including net metering policies, DISCOM regulations, and state electricity commission directives. Changes in these regulatory frameworks may affect credit rates, service availability, or operational model. PowerNetPro shall not be liable for any adverse impact resulting from regulatory or policy changes beyond its control.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={Shield} title="11. Indemnification">
+                <p className="text-gray-700 leading-relaxed mb-2">
+                  You agree to indemnify, defend, and hold harmless PowerNetPro, its designated partners, employees, agents, contractors, and affiliates from and against any and all claims, liabilities, damages, losses, costs, and expenses (including reasonable legal fees) arising out of or in connection with:
+                </p>
+                <BulletList items={indemnificationItems} />
+              </SectionCard>
+
+              <SectionCard icon={XCircle} title="12. Suspension and Termination">
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">12.1 Suspension</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    PowerNetPro reserves the right to suspend your access to the Platform, in whole or in part, at any time and without prior notice, if we reasonably believe that you have violated any provision of these Terms, you have provided false or fraudulent KYC information, your account has been compromised or is being used for unauthorised purposes, your actions pose a risk to the Platform, other Users, or third parties, or if required by law, regulation, or court order.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">12.2 Termination by PowerNetPro</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    PowerNetPro may terminate your account and Reservation Agreement upon written notice if you commit a material breach of these Terms and fail to cure such breach within thirty (30) days of receiving written notice, you are found to have engaged in fraudulent or illegal activity, or continued provision of services becomes impracticable due to regulatory changes or force majeure events extending beyond one hundred and eighty (180) days.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">12.3 Termination by User</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    You may request termination of your account and cancellation of your Capacity Reservation at any time through the account settings on the Platform or by contacting our customer support team. Termination and refund shall be processed in accordance with our Refund Policy.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">12.4 Consequences of Termination</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Upon termination of your account, all unused Credits in your account shall lapse immediately and cannot be recovered, refunded, or converted to cash. Any refund of the Reservation Fee shall be processed in accordance with the Refund Policy. Your obligation to pay any outstanding amounts to PowerNetPro shall survive termination.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={RefreshCw} title="13. Force Majeure">
+                <p className="text-gray-700 leading-relaxed">
+                  PowerNetPro shall not be liable for any failure or delay in performance of its obligations under these Terms if such failure or delay results from circumstances beyond its reasonable control, including but not limited to natural disasters (earthquakes, floods, cyclones), acts of God, epidemics or pandemics, war, terrorism, civil unrest, government actions or restrictions, regulatory changes affecting net metering or solar energy policies, power grid failures or DISCOM outages, equipment failures beyond normal operational parameters, cyberattacks or data security incidents affecting critical infrastructure, or strikes, lockouts, or industrial disputes.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  In the event of a force majeure event, PowerNetPro shall notify affected Users as soon as reasonably practicable and shall use reasonable efforts to mitigate the impact and resume services at the earliest opportunity.
+                </p>
+              </SectionCard>
+
+              <SectionCard icon={Gavel} title="14. Dispute Resolution">
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">14.1 Informal Resolution</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    In the event of any dispute, claim, or controversy arising out of or relating to these Terms or the Platform (“Dispute”), you agree to first attempt to resolve the Dispute informally by contacting PowerNetPro’s customer support team. PowerNetPro shall use reasonable efforts to resolve the Dispute within thirty (30) days of receipt of your written complaint.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">14.2 Arbitration</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    If the Dispute is not resolved through informal resolution within thirty (30) days, the Dispute shall be referred to and finally resolved by arbitration in accordance with the Arbitration and Conciliation Act, 1996, as amended from time to time.
+                  </p>
+                  <BulletList items={arbitrationItems} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">14.3 Governing Law</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    These Terms shall be governed by and construed in accordance with the laws of India, including the Indian Contract Act, 1872, the Information Technology Act, 2000, the Consumer Protection Act, 2019, and other applicable legislation. Subject to Section 14.2, the courts at Pune, Maharashtra shall have exclusive jurisdiction over any matters arising from these Terms.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={RefreshCw} title="15. Modifications to Terms">
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  PowerNetPro reserves the right to modify, amend, or update these Terms at any time. When material changes are made, we will provide notice through a prominent notification on the Platform, email notification to your registered email address, or SMS notification to your registered mobile number, at least fifteen (15) days before the changes take effect.
+                </p>
+                <p className="text-gray-700 leading-relaxed">
+                  Your continued use of the Platform after the effective date of the revised Terms constitutes your acceptance of the modifications. If you do not agree with the revised Terms, you must discontinue use of the Platform and may request account termination in accordance with Section 12.3.
+                </p>
+              </SectionCard>
+
+              <SectionCard icon={FileText} title="16. Miscellaneous">
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-1">16.1 Entire Agreement</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    These Terms, together with the Privacy Policy, Cookie Policy, Refund Policy, and any Reservation Agreement, constitute the entire agreement between you and PowerNetPro concerning the Platform and supersede all prior agreements, understandings, negotiations, and discussions, whether oral or written.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.2 Severability</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    If any provision of these Terms is found to be invalid, illegal, or unenforceable by a court of competent jurisdiction, such provision shall be modified to the minimum extent necessary to make it valid and enforceable, or if modification is not possible, severed from these Terms. The remaining provisions shall continue in full force and effect.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.3 Waiver</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    No failure or delay by PowerNetPro in exercising any right, power, or remedy under these Terms shall operate as a waiver thereof. A single or partial exercise of any right shall not preclude further exercise of any right or that or any other right.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.4 Assignment</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    You may not assign, transfer, or delegate your rights or obligations under these Terms without the prior written consent of PowerNetPro. PowerNetPro may assign its rights and obligations under these Terms to any affiliate, successor, or acquiring entity without your consent, provided that the assignee agrees to be bound by these Terms.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.5 Notices</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    All notices required or permitted under these Terms shall be in writing and shall be deemed delivered when sent to the email address associated with your account (for notices to you) or to <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:underline font-semibold">{SUPPORT_EMAIL}</a> (for notices to PowerNetPro). For formal legal notices, written communication sent via registered post or courier to the registered office address shall also be accepted.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.6 No Agency</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Nothing in these Terms creates any agency, partnership, joint venture, or employment relationship between you and PowerNetPro. You do not have authority to bind PowerNetPro in any manner whatsoever.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-black mb-3 mt-4">16.7 Survival</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    The following provisions shall survive any termination or expiration of these Terms: Sections 9 (Intellectual Property), 10 (Disclaimers and Limitation of Liability), 11 (Indemnification), 14 (Dispute Resolution), and any other provisions that by their nature should survive.
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard icon={Mail} title="17. Contact Information">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  For questions, concerns, or notices relating to these Terms of Service, please contact us at:
+                </p>
+                <div className="bg-gold/5 rounded-xl p-6 space-y-3 border border-gold/20">
+                  <p className="text-gray-700"><strong>PowerNetPro Pvt. Ltd.</strong></p>
+                  <p className="text-gray-700">Registered Address: Pune, Maharashtra, India</p>
+                  <p className="text-gray-700">Email: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:underline font-semibold">{SUPPORT_EMAIL}</a></p>
+                  <p className="text-gray-700">Customer Support: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:underline font-semibold">{SUPPORT_EMAIL}</a></p>
+                  <p className="text-gray-700">Website: www.powernetpro.com</p>
+                </div>
+                <div className="border-t border-gold/20 pt-4 text-sm text-gray-600 text-center">
+                  © 2026 PowerNetPro Pvt. Ltd.. All rights reserved.
+                </div>
+              </SectionCard>
+            </div>
           </div>
         </section>
       </main>

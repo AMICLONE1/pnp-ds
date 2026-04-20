@@ -16,6 +16,15 @@ import {
 } from "lucide-react";
 import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  SUPPORT_PHONE_TEL,
+  COMPANY_LEGAL_NAME,
+  COMPANY_CIN,
+  COMPANY_DIPP,
+  COMPANY_FULL_ADDRESS,
+} from "@/lib/contact";
 
 const founders = [
   {
@@ -382,6 +391,69 @@ export default function AboutPage() {
                 </motion.div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Company Registration Details */}
+        <section className="py-16 sm:py-20 bg-gray-50 relative overflow-hidden">
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="max-w-3xl mx-auto"
+            >
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/20 rounded-full mb-4">
+                  <Building2 className="w-4 h-4 text-gold" />
+                  <span
+                    className="text-sm font-semibold text-black"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    Company Registration
+                  </span>
+                </div>
+                <h2
+                  className="text-2xl sm:text-3xl font-bold text-black font-heading"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  Company Registration Details
+                </h2>
+              </div>
+
+              <div
+                className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-3"
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
+              >
+                <p className="text-gray-700">
+                  <strong className="text-black">Legal Name:</strong> {COMPANY_LEGAL_NAME}
+                </p>
+                <p className="text-gray-700">
+                  <strong className="text-black">Corporate Identification Number (CIN):</strong> {COMPANY_CIN}
+                </p>
+                <p className="text-gray-700">
+                  <strong className="text-black">Startup India Recognition (DIPP):</strong> {COMPANY_DIPP}
+                </p>
+                <p className="text-gray-700">
+                  <strong className="text-black">Registered Office:</strong> {COMPANY_FULL_ADDRESS}
+                </p>
+                <p className="text-gray-700">
+                  <strong className="text-black">Email:</strong>{" "}
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:underline">{SUPPORT_EMAIL}</a>
+                </p>
+                <p className="text-gray-700">
+                  <strong className="text-black">Phone:</strong>{" "}
+                  <a href={`tel:${SUPPORT_PHONE_TEL}`} className="text-gold hover:underline">{SUPPORT_PHONE}</a>
+                </p>
+
+                <p
+                  className="text-gray-600 leading-relaxed pt-4 border-t border-gray-100 mt-4 text-sm"
+                >
+                  {COMPANY_LEGAL_NAME} is a company registered under the Companies Act, 2013, recognized by Startup India under the Department for Promotion of Industry and Internal Trade (DPIIT).
+                </p>
+              </div>
+            </motion.div>
           </div>
         </section>
 

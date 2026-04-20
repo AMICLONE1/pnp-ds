@@ -5,6 +5,15 @@ import { Sun, ArrowRight, Mail, MapPin, Phone, Linkedin, Instagram, ArrowUpRight
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  SUPPORT_PHONE_TEL,
+  COMPANY_LEGAL_NAME,
+  COMPANY_CIN,
+  COMPANY_DIPP,
+  COMPANY_FULL_ADDRESS,
+} from "@/lib/contact";
 
 const footerLinks = {
   product: [
@@ -18,7 +27,7 @@ const footerLinks = {
     { label: "About Us", href: "/about" },
     { label: "Help Center", href: "/help" },
     { label: "Contact", href: "/contact" },
-    { label: "Refund Policy", href: "/refund" },
+    { label: "Refund & Cancellation Policy", href: "/refund" },
     // { label: "Careers", href: "/careers", badge: "Hiring" },
   ],
   resources: [
@@ -31,6 +40,8 @@ const footerLinks = {
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
     { label: "Cookie Policy", href: "/cookies" },
+    { label: "Grievance Redressal", href: "/grievance" },
+    { label: "Service Delivery Policy", href: "/service-delivery" },
   ],
 };
 
@@ -75,7 +86,7 @@ export function Footer() {
                 <span className="text-gold">saving?</span>
               </h2>
               <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 text-sm md:text-base mb-6 max-w-xl mx-auto">
-                Join thousands of Indian families saving on electricity bills.
+                Start saving on your electricity bills today.
                 Get exclusive updates and tips delivered to your inbox.
               </p>
 
@@ -129,6 +140,12 @@ export function Footer() {
               </span>
             </Link>
 
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="mb-4 space-y-0.5">
+              <p className="text-sm font-semibold text-black">{COMPANY_LEGAL_NAME}</p>
+              <p className="text-xs text-gray-500">CIN: {COMPANY_CIN}</p>
+              <p className="text-xs text-gray-500">DIPP: {COMPANY_DIPP}</p>
+            </div>
+
             <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-600 text-sm mb-5 max-w-xs leading-relaxed">
               Digital Solar platform enabling you to save on power bills without installation.
               Reserve solar capacity and offset your electricity bills with credits.
@@ -136,19 +153,19 @@ export function Footer() {
 
             {/* Contact Info */}
             <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="space-y-2.5 mb-5">
-              <a href="mailto:info@powernetpro.com" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
                 <Mail className="w-4 h-4 text-gold" />
-                info@powernetpro.com
+                {SUPPORT_EMAIL}
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <a href="tel:+918805881601" className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
+              <a href={`tel:${SUPPORT_PHONE_TEL}`} className="flex items-center gap-2.5 text-gray-600 hover:text-black transition-colors text-sm group">
                 <Phone className="w-4 h-4 text-gold" />
-                +91 8805 881 601
+                {SUPPORT_PHONE}
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <div className="flex items-start gap-2.5 text-gray-600 text-sm">
-                <MapPin className="w-4 h-4 text-gold mt-0.5" />
-                <span>Kothrud, Pune, Maharashtra, Bharat</span>
+                <MapPin className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" />
+                <span>{COMPANY_FULL_ADDRESS}</span>
               </div>
             </div>
 
@@ -254,7 +271,7 @@ export function Footer() {
         <div className="container mx-auto px-4 lg:px-8 py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-3">
             <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-gray-500 text-sm text-center md:text-left">
-              &copy; {new Date().getFullYear()} PowerNetPro. All rights reserved. Made with 💚 in India.
+              &copy; {new Date().getFullYear()} {COMPANY_LEGAL_NAME}. All rights reserved.
             </p>
 
             <div className="flex items-center gap-5">

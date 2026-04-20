@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { COMPANY_CIN, COMPANY_DIPP } from "@/lib/contact";
 
 // Import new modern components
 import { HeroSection } from "@/components/features/landing/HeroSection";
@@ -153,10 +154,9 @@ export default function HomePage() {
                   transition={{ delay: 0.3, duration: 0.4 }}
                 >
                   {[
-                    { icon: CheckCircle, title: "Regulatory Compliant", desc: "MERC/CERC aligned" },
-                    // { icon: Shield, title: "ISO 27001 Ready", desc: "Security certified" },
-                    { icon: Award, title: "Make in India", desc: "Proudly Indian" },
-                    { icon: Users, title: "Startup India", desc: "Recognized startup" },
+                    { icon: CheckCircle, title: "Regulatory Compliant", desc: `MERC/CERC aligned | CIN: ${COMPANY_CIN}` },
+                    { icon: Users, title: "Startup India Recognized", desc: `DIPP: ${COMPANY_DIPP}` },
+                    { icon: Award, title: "Proudly Indian", desc: "Registered under Companies Act, 2013 | Made in Bharat" },
                   ].map((item, index) => (
                     <motion.div
                       key={index}
@@ -293,19 +293,8 @@ export default function HomePage() {
                 </div>
               </FloatingElement>
 
-              {/* Live signup counter */}
-              <div className="inline-flex items-center gap-2 bg-gold/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-gold"></span>
-                </span>
-                <span className="text-black font-medium text-sm">
-                  3 people signed up in the last hour
-                </span>
-              </div>
-
               <h2 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-heading font-bold mb-6 text-black">
-                Join Families Who<br />Switched To Digital Solar This Month
+                Join the <br />Digital Solar Movement
               </h2>
               <p style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-lg sm:text-xl md:text-2xl text-black/80 mb-8 md:mb-10 max-w-2xl mx-auto">
                 Most people finish setup during their coffee break. ☕

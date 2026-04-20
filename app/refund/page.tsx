@@ -1,135 +1,234 @@
-"use client";
-
-import { Header } from "@/components/layout/header";
+import { LandingHeader } from "@/components/layout/LandingHeader";
 import { Footer } from "@/components/layout/footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, Clock, IndianRupee } from "lucide-react";
-import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  RefreshCw,
+  FileText,
+  Clock,
+  IndianRupee,
+  ListOrdered,
+  AlertCircle,
+  Wallet,
+  Mail,
+  Scale,
+  XCircle,
+} from "lucide-react";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  SUPPORT_PHONE_TEL,
+  COMPANY_LEGAL_NAME,
+  GRIEVANCE_OFFICER_NAME,
+  RESERVATION_RATE_PER_KW,
+  SETUP_FEE,
+} from "@/lib/contact";
+
+const RATE = RESERVATION_RATE_PER_KW;
+const TWO_KW = 2 * RATE;
+
+const formatINR = (value: number) => `₹${value.toLocaleString("en-IN")}`;
 
 export default function RefundPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <Link href="/dashboard">
-            <Button variant="outline" className="mb-6">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          </Link>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-white via-white to-gold/10">
+      <LandingHeader />
 
-          <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4 text-black">
-              Refund Policy
-            </h1>
-            <p className="text-xl text-black">
-              Exit anytime and get a refund based on your reservation tenure
-            </p>
-          </div>
-
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="h-6 w-6 text-green-600" />
-                Exit Anytime
-              </CardTitle>
-              <CardDescription>
-                One of the key highlights of Digital Solar from rooftop installations
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-black">
-                Unlike traditional rooftop solar which is fixed to your property, Digital Solar
-                allows you to exit your reservation at any time. This flexibility is perfect for:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-black ml-4">
-                <li>Relocating to a different city or state</li>
-                <li>Moving to an area not serviceable by us</li>
-                <li>Changing financial circumstances</li>
-                <li>Any other personal reasons</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <IndianRupee className="h-6 w-6 text-black" />
-                Refund Calculation
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-black">
-                Your refund is calculated based on:
-              </p>
-              <div className="bg-white p-4 rounded-lg space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-black">Original Reservation Fee:</span>
-                  <span className="font-semibold">₹X,XXX</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-black">Credits Generated (Used):</span>
-                  <span className="font-semibold text-green-600">-₹X,XXX</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-black">Pro-rated Refund:</span>
-                  <span className="font-semibold text-black">₹X,XXX</span>
-                </div>
+      <main className="flex-1">
+        <section className="pt-24 pb-12 md:pt-32 md:pb-16">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-gold/20 to-amber-100 mb-6">
+                <RefreshCw className="h-8 w-8 text-gold" />
               </div>
-              <p className="text-sm text-black">
-                The refund amount ensures you keep all the gains from credits generated thus far,
-                with the same XIRR (time-weighted returns) as if you had held the reservation
-                for the full term.
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-black mb-4">
+                Refund &amp; Cancellation Policy
+              </h1>
+              <p className="text-lg text-gray-600">
+                Last Updated: April 2026
               </p>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-6 w-6 text-gold" />
-                Refund Process
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ol className="list-decimal list-inside space-y-3 text-black">
-                <li>
-                  Request exit from your dashboard or contact support
-                </li>
-                <li>
-                  We calculate your refund based on tenure and credits used
-                </li>
-                <li>
-                  Refund is processed within 7-10 business days
-                </li>
-                <li>
-                  Amount is credited to your original payment method
-                </li>
-              </ol>
-            </CardContent>
-          </Card>
+            <Card className="shadow-lg border-2 border-gold/20 mb-6">
+              <CardContent className="p-8" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <p className="text-gray-700 leading-relaxed">
+                  {COMPANY_LEGAL_NAME} (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is committed to transparency in all financial matters. This policy explains how cancellations and refunds are handled for our Digital Solar reservation service.
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Request Refund</CardTitle>
-              <CardDescription>
-                Ready to exit? Request your refund here
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/dashboard">
-                <Button variant="primary" className="w-full">
-                  Go to Dashboard
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
+            <Card className="shadow-lg border-2 border-gold/20">
+              <CardHeader className="bg-gradient-to-r from-gold/10 via-amber-50/30 to-gold/10 border-b border-gold/20">
+                <CardTitle className="text-2xl font-heading font-bold text-black">
+                  Refund &amp; Cancellation Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8 space-y-10" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                {/* Section 1 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <FileText className="h-6 w-6 text-gold" />
+                    1. Your Right to Cancel
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed">
+                    You may cancel your Digital Solar reservation at any time. There are no lock-in penalties. Cancellation can be initiated by logging into your dashboard and clicking &lsquo;Cancel Reservation&rsquo;, emailing us at{" "}
+                    <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:underline font-semibold">{SUPPORT_EMAIL}</a>, or calling{" "}
+                    <a href={`tel:${SUPPORT_PHONE_TEL}`} className="text-gold hover:underline font-semibold">{SUPPORT_PHONE}</a>.
+                  </p>
+                </div>
+
+                {/* Section 2 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <Clock className="h-6 w-6 text-gold" />
+                    2. 30-Day Full Refund Guarantee
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed">
+                    If you cancel within 30 days of your reservation activation, you will receive a 100% refund of your reservation amount, including the setup fee of {formatINR(SETUP_FEE)}. No questions asked. Refund will be processed within 5&ndash;7 business days to your original payment method.
+                  </p>
+                </div>
+
+                {/* Section 3 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <IndianRupee className="h-6 w-6 text-gold" />
+                    3. Refund After 30 Days
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    If you cancel after 30 days, your refund is calculated as follows:
+                  </p>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gold/20 text-sm">
+                      <thead className="bg-gold/10">
+                        <tr>
+                          <th className="border border-gold/20 px-4 py-2 text-left font-semibold text-black">Time Since Activation</th>
+                          <th className="border border-gold/20 px-4 py-2 text-left font-semibold text-black">Refund Percentage</th>
+                          <th className="border border-gold/20 px-4 py-2 text-left font-semibold text-black">Deductions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-gray-700">
+                        <tr>
+                          <td className="border border-gold/20 px-4 py-2">31&ndash;90 days (1&ndash;3 months)</td>
+                          <td className="border border-gold/20 px-4 py-2">90% refund</td>
+                          <td className="border border-gold/20 px-4 py-2">Only setup fee ({formatINR(SETUP_FEE)}) deducted</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gold/20 px-4 py-2">91&ndash;180 days (3&ndash;6 months)</td>
+                          <td className="border border-gold/20 px-4 py-2">85% refund</td>
+                          <td className="border border-gold/20 px-4 py-2">Setup fee + 15% admin fee deducted</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gold/20 px-4 py-2">181&ndash;365 days (6&ndash;12 months)</td>
+                          <td className="border border-gold/20 px-4 py-2">80% refund</td>
+                          <td className="border border-gold/20 px-4 py-2">Setup fee + 20% admin fee deducted</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gold/20 px-4 py-2">1&ndash;2 years</td>
+                          <td className="border border-gold/20 px-4 py-2">75% refund</td>
+                          <td className="border border-gold/20 px-4 py-2">Setup fee + 25% admin fee deducted</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gold/20 px-4 py-2">2&ndash;3 years</td>
+                          <td className="border border-gold/20 px-4 py-2">70% refund</td>
+                          <td className="border border-gold/20 px-4 py-2">Setup fee + 30% admin fee deducted</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gold/20 px-4 py-2">3+ years</td>
+                          <td className="border border-gold/20 px-4 py-2">65% refund</td>
+                          <td className="border border-gold/20 px-4 py-2">Setup fee + 35% admin fee deducted</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="bg-gold/5 rounded-xl p-4 border border-gold/20 mt-4">
+                    <p className="text-gray-700 leading-relaxed">
+                      <strong>Example:</strong> If you reserved 2 kW at {formatINR(RATE)}/kW (total {formatINR(TWO_KW)}) and cancel after 4 months, your refund would be 85% of the reservation amount minus the {formatINR(SETUP_FEE)} setup fee.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Section 4 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <ListOrdered className="h-6 w-6 text-gold" />
+                    4. Refund Process
+                  </h2>
+                  <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+                    <li><strong>Step 1:</strong> Submit your cancellation request via dashboard, email, or phone.</li>
+                    <li><strong>Step 2:</strong> We will acknowledge your request within 48 hours.</li>
+                    <li><strong>Step 3:</strong> Your refund amount is calculated based on the table above.</li>
+                    <li><strong>Step 4:</strong> Refund is processed within 5&ndash;7 business days.</li>
+                    <li><strong>Step 5:</strong> Amount is credited to your original payment method (UPI, bank account, or card).</li>
+                  </ol>
+                </div>
+
+                {/* Section 5 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <XCircle className="h-6 w-6 text-gold" />
+                    5. Non-Refundable Scenarios
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    Refunds will NOT be issued in the following cases:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
+                    <li>Account terminated by PowerNetPro due to fraud, misrepresentation, or violation of Terms of Service.</li>
+                    <li>Credits already used for bill payment or cash conversion cannot be refunded (they have already been consumed).</li>
+                  </ul>
+                </div>
+
+                {/* Section 6 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <Wallet className="h-6 w-6 text-gold" />
+                    6. Credits Earned Before Cancellation
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed">
+                    Any credits earned and used before your cancellation date are yours to keep. The refund calculation only applies to the unused portion of your reservation fee.
+                  </p>
+                </div>
+
+                {/* Section 7 */}
+                <div>
+                  <h2 className="text-2xl font-bold text-black mb-4 flex items-center gap-2">
+                    <Mail className="h-6 w-6 text-gold" />
+                    7. Contact for Refund Queries
+                  </h2>
+                  <div className="bg-gold/5 rounded-xl p-6 space-y-2 border border-gold/20">
+                    <p className="text-gray-700">
+                      <strong>Email:</strong>{" "}
+                      <a href={`mailto:${SUPPORT_EMAIL}`} className="text-gold hover:underline">{SUPPORT_EMAIL}</a>
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Phone:</strong>{" "}
+                      <a href={`tel:${SUPPORT_PHONE_TEL}`} className="text-gold hover:underline">{SUPPORT_PHONE}</a>
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Grievance Officer:</strong> {GRIEVANCE_OFFICER_NAME} (see{" "}
+                      <a href="/grievance" className="text-gold hover:underline">Grievance Redressal</a>{" "}
+                      page)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 pt-4 border-t border-gold/20">
+                  <Scale className="h-5 w-5 text-gold mt-1 flex-shrink-0" />
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    This policy is governed by the laws of India and is compliant with the Consumer Protection (E-Commerce) Rules, 2020.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-gold/20 text-center">
+                  <p className="text-sm text-gray-600">
+                    &copy; 2026 {COMPANY_LEGAL_NAME}. All rights reserved.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
 }
-

@@ -76,7 +76,7 @@ export function ProblemSolution({ className = "" }: ProblemSolutionProps) {
           <p className="text-lg md:text-xl text-black/80 max-w-2xl mx-auto"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            See why 1,247 families made the switch this month
+            See why Indian families are switching to Digital Solar
           </p>
         </motion.div>
 

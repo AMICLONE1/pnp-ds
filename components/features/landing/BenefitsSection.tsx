@@ -593,7 +593,7 @@ export function BenefitsSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Traditional solar has barriers. We removed them all. Here&apos;s why thousands of Indian families are choosing Digital Solar.
+            Traditional solar has barriers. We removed them all. Here&apos;s why Indian families are choosing Digital Solar.
           </motion.p>
         </motion.div>
 

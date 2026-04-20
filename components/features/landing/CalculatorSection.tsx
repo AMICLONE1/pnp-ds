@@ -390,6 +390,15 @@ export function CalculatorSection() {
                   </span>
                 </div>
               </div>
+
+              {/* Disclaimer */}
+              <div
+                className="mt-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-xs leading-relaxed text-gray-600"
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
+              >
+                <span className="font-semibold text-gray-800">Disclaimer:</span>{" "}
+                Savings shown above are estimates based on current DISCOM tariff rates and average solar generation data. Actual savings may vary depending on weather conditions, DISCOM tariff changes, seasonal variations, and your actual electricity consumption. These projections are illustrative and do not constitute a financial guarantee. Past performance of solar generation is not indicative of future results. Please review our Terms of Service for complete details.
+              </div>
             </div>
           </div>
         </motion.div>

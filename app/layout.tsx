@@ -4,6 +4,7 @@ import "./globals.css";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LoadingProvider } from "@/components/providers/LoadingProvider";
 import { ToastProvider } from "@/components/ui/toast";
+import CookieConsentBanner from "@/components/layout/CookieConsentBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,8 +19,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "PowerNetPro - Save ₹2,000/month on Electricity Bills | Digital Solar",
-  description: "Reserve solar capacity from community projects. No installation required. Credits automatically applied to your bills. Join 1,000+ homeowners saving ₹50,000+ annually.",
+  title: "PowerNetPro - Digital Solar Platform for Indian Households",
+  description: "Reserve solar capacity from community projects. No installation required. Credits automatically applied to your electricity bills.",
   keywords: ["solar energy", "digital solar", "electricity savings", "renewable energy", "solar credits", "community solar"],
   authors: [{ name: "PowerNetPro" }],
   icons: {
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PowerNetPro - Digital Solar Platform",
-    description: "Save ₹2,000/month on electricity bills. No installation required.",
+    description: "Start saving on your electricity bills today. No installation required.",
   },
 };
 
@@ -45,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="smooth-scroll" suppressHydrationWarning>
+    <html lang="en" className="smooth-scroll" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="theme-color" content="#0D2818" />
@@ -57,6 +58,7 @@ export default function RootLayout({
           <ToastProvider>
             <ErrorBoundary>
               {children}
+              <CookieConsentBanner />
             </ErrorBoundary>
           </ToastProvider>
         </LoadingProvider>

@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { SUPPORT_EMAIL } from "./contact";
 
 // Lazy initialization to avoid build-time errors when RESEND_API_KEY is not set
 let resendClient: Resend | null = null;
@@ -17,7 +18,7 @@ function getResendClient(): Resend | null {
 // Free tier: only sends to your Resend account email via onboarding@resend.dev
 // To send to any user: verify your domain in Resend dashboard and change to e.g. "PNP Digital Solar <hello@yourdomain.com>"
 const FROM_EMAIL = "PNP Digital Solar <onboarding@resend.dev>";
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "info@powernetpro.com";
+export const CONTACT_EMAIL = SUPPORT_EMAIL;
 
 export function buildContactMailtoUrl(input: {
   name: string;

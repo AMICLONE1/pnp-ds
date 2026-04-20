@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { buildContactMailtoUrl, sendContactMessageNotification } from "@/lib/email";
 import { sanitizePhone, sanitizeText } from "@/lib/security/inputSanitizer";
+import { SUPPORT_EMAIL } from "@/lib/contact";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
         success: true,
         deliveryMode: "mailto",
         mailtoUrl: buildContactMailtoUrl(payload),
-        message: "Your email app will open with info@powernetpro.com filled in.",
+        message: `Your email app will open with ${SUPPORT_EMAIL} filled in.`,
       });
     }
 
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
             code: "EMAIL_FALLBACK",
             message: "Opening your email app instead.",
           },
-          message: "Your email app will open with info@powernetpro.com filled in.",
+          message: `Your email app will open with ${SUPPORT_EMAIL} filled in.`,
         },
         { status: 200 }
       );
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       deliveryMode: "resend",
-      message: "Your message has been sent to info@powernetpro.com.",
+      message: `Your message has been sent to ${SUPPORT_EMAIL}.`,
     });
   } catch (error: unknown) {
     console.error("Contact API error:", error);

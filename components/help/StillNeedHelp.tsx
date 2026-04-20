@@ -7,6 +7,7 @@ import {
   Phone,
   Mail
 } from "lucide-react";
+import { SUPPORT_EMAIL } from "@/lib/contact";
 
 export default function StillNeedHelp(){
     return(
@@ -37,7 +38,7 @@ export default function StillNeedHelp(){
                             Contact Support
                           </Button>
                         </a>
-                        <a href="mailto:info@powernetpro.com">
+                        <a href={`mailto:${SUPPORT_EMAIL}`}>
                           <Button variant="outline" className="border-white/30 text-black hover:bg-white/10">
                             <Mail className="h-4 w-4 mr-2" />
                             Email Us
