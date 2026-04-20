@@ -77,7 +77,7 @@ async function getUserAndRole(request: NextRequest) {
   return { user, role: userData?.role ?? null };
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Skip middleware for static files and Next.js internals
   const pathname = request.nextUrl.pathname;
   if (
@@ -251,4 +251,3 @@ export const config = {
     "/((?!_next/static|_next/image|_next/webpack-hmr|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|js|css|woff|woff2|ttf|eot)$).*)",
   ],
 };
-

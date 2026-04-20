@@ -1,6 +1,37 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const SUPABASE_AUTH_COOKIE_PREFIX = "sb-";
+
+function getSupabaseAuthCookies(request: NextRequest) {
+  return request.cookies
+    .getAll()
+    .filter(({ name }) => name.startsWith(SUPABASE_AUTH_COOKIE_PREFIX));
+}
+
+function hasSupabaseAuthCookies(request: NextRequest) {
+  return getSupabaseAuthCookies(request).length > 0;
+}
+
+function clearSupabaseAuthCookies(request: NextRequest, response: NextResponse) {
+  for (const { name } of getSupabaseAuthCookies(request)) {
+    request.cookies.delete(name);
+    response.cookies.delete(name);
+  }
+}
+
+function isMissingRefreshTokenError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const authError = error as { code?: string; message?: string };
+  return (
+    authError.code === "refresh_token_not_found" ||
+    /Refresh Token Not Found/i.test(authError.message ?? "")
+  );
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -17,6 +48,10 @@ export async function updateSession(request: NextRequest) {
     supabaseUrl === 'your-project-url' ||
     supabaseKey === 'your-anon-key') {
     // Just pass through without any Supabase operations
+    return supabaseResponse;
+  }
+
+  if (!hasSupabaseAuthCookies(request)) {
     return supabaseResponse;
   }
 
@@ -54,10 +89,13 @@ export async function updateSession(request: NextRequest) {
     const { data: { user: userData }, error } = await supabase.auth.getUser();
     if (!error && userData) {
       user = userData;
+    } else if (error && isMissingRefreshTokenError(error)) {
+      clearSupabaseAuthCookies(request, supabaseResponse);
     }
   } catch {
     // Silently handle auth errors - don't break the request
     // This allows public routes to still work
+    clearSupabaseAuthCookies(request, supabaseResponse);
     user = null;
   }
 

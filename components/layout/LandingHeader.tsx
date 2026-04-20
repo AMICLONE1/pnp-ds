@@ -166,8 +166,8 @@ export function LandingHeader() {
     const checkUser = async () => {
       try {
         const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
       } catch (error) {
         console.error("Error checking user:", error);
       } finally {
