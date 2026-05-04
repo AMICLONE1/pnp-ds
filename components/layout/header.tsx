@@ -6,9 +6,10 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/features/notifications/NotificationBell";
-import { Sun, Menu, X, ChevronDown, ArrowRight, Zap, Mail } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Zap, Mail } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ui/Logo";
 
 interface NavItem {
   label: string;
@@ -138,31 +139,16 @@ export function Header() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-3 group"
+              className="flex items-center group"
               data-cursor-hover
             >
               <motion.div
-                className={cn(
-                  "relative w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-colors duration-300",
-                  needsSolidHeader ? "bg-white" : "bg-white/10 backdrop-blur-md"
-                )}
-                whileHover={{ scale: 1.05, rotate: 5 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center"
               >
-                <Sun className="h-5 w-5 text-gold" />
-                <motion.div
-                  className="absolute inset-0 rounded-xl bg-gold/20"
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{ scale: 1.2, opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
+                <Logo priority className="h-10 md:h-12" />
               </motion.div>
-              <span className={cn(
-                "text-lg md:text-xl font-heading font-bold transition-colors duration-300",
-                "text-black"
-              )}>
-                PowerNet<span className="text-gold">Pro</span>
-              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -361,11 +347,8 @@ export function Header() {
               <div className="flex flex-col h-full">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                  <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                    <Sun className="h-6 w-6 text-gold" />
-                    <span className="text-xl font-heading font-bold text-black">
-                      PowerNet<span className="text-gold">Pro</span>
-                    </span>
+                  <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
+                    <Logo className="h-8" />
                   </Link>
                   <button
                     onClick={() => setMobileMenuOpen(false)}

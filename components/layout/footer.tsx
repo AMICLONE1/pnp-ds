@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Sun, ArrowRight, Mail, MapPin, Phone, Linkedin, Instagram, ArrowUpRight } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Phone, Linkedin, Instagram, ArrowUpRight } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -134,10 +135,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 lg:gap-8">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
-              <span className="text-lg font-heading font-bold text-black">
-                PowerNet<span className="text-gold">Pro</span>
-              </span>
+            <Link href="/" className="inline-flex items-center mb-4 group">
+              <Logo className="h-8" />
             </Link>
 
             <div style={{ fontFamily: "'Montserrat', sans-serif" }} className="mb-4 space-y-0.5">

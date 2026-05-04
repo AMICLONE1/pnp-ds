@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Sun, User, LogOut, Menu, X, ArrowRight } from "lucide-react";
+import { User, LogOut, Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, usePathname } from "next/navigation";
+import { Logo } from "@/components/ui/Logo";
 
 const hostNavLinks = [
   { label: "Benefits", href: "#benefits" },
@@ -98,8 +99,8 @@ export function HostHeader() {
         <header className="bg-white border-b border-gray-200 shadow-sm">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
             <div className="flex h-14 items-center justify-between gap-3">
-              <Link href="/host-landing" className="text-base font-bold text-black whitespace-nowrap" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                PowerNet<span className="text-gold">Pro</span>
+              <Link href="/host-landing" className="flex items-center whitespace-nowrap">
+                <Logo className="h-9 sm:h-10" />
               </Link>
 
               <nav className="hidden lg:flex items-center gap-1">
@@ -161,9 +162,7 @@ export function HostHeader() {
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                <span className="text-lg font-bold text-black">
-                  PowerNet<span className="text-gold">Pro</span>
-                </span>
+                <Logo className="h-9 sm:h-10" />
                 <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg hover:bg-gray-100" aria-label="Close menu">
                   <X className="h-6 w-6 text-black" />
                 </button>
@@ -317,10 +316,8 @@ export function LandingHeader() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
             <div className="flex h-14 md:h-20 items-center justify-between gap-3">
               <div className="flex items-center justify-start min-w-0">
-                <Link href="/" className="flex items-center gap-3 group">
-                  <span className="text-base sm:text-lg md:text-xl font-heading font-bold text-black whitespace-nowrap">
-                    PowerNet<span className="text-gold">Pro</span>
-                  </span>
+                <Link href="/" className="flex items-center group">
+                  <Logo priority className="h-10 md:h-12" />
                 </Link>
               </div>
 
@@ -448,9 +445,7 @@ export function LandingHeader() {
               className="fixed top-0 right-0 bottom-0 w-[85%] max-w-[340px] bg-white z-[70] lg:hidden shadow-2xl flex flex-col"
             >
               <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                <span className="text-lg font-heading font-bold text-black">
-                  PowerNet<span className="text-gold">Pro</span>
-                </span>
+                <Logo className="h-9 sm:h-10" />
                 <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg hover:bg-gray-100" aria-label="Close menu">
                   <X className="h-6 w-6 text-black" />
                 </button>

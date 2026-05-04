@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Logo } from "@/components/ui/Logo";
 
 type Dot = { left: number; top: number; duration: number; delay: number };
 
@@ -56,16 +57,14 @@ export function PageLoader() {
 
       {/* Main Content - Only Text */}
       <div className="relative z-10 flex flex-col items-center gap-8 px-4 max-w-4xl">
-        {/* PowerNetPro Brand Name */}
+        {/* PowerNetPro Brand Logo */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center"
         >
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-black mb-2">
-            PowerNet<span className="text-gold">Pro</span>
-          </h1>
+          <Logo priority className="h-16 md:h-20 lg:h-24" />
         </motion.div>
 
         {/* Quote */}

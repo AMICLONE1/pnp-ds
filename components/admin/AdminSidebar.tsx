@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { Logo } from "@/components/ui/Logo";
 
 interface NavGroup {
   label: string;
@@ -82,14 +83,9 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col shrink-">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-        <Link href="/admin" className="flex items-center gap-3" onClick={handleNavClick}>
-          <div className="w-10 h-10 bg-gradient-to-br from-[#0D2818] to-[#1a4a2e] rounded-xl flex items-center justify-center">
-            <Zap className="w-6 h-6 text-gold" />
-          </div>
-          <div>
-            <h1 className="text-black font-bold text-lg">PowerNetPro</h1>
-            <p className="text-gray-500 text-xs font-medium">ADMIN CONSOLE</p>
-          </div>
+        <Link href="/admin" className="flex flex-col gap-1.5" onClick={handleNavClick}>
+          <Logo className="h-7" />
+          <p className="text-gray-500 text-[10px] font-semibold tracking-[0.18em]">ADMIN CONSOLE</p>
         </Link>
         {/* Close button - visible only on mobile */}
         {onClose && (
