@@ -63,7 +63,7 @@ export default function PageHero(){
 
             {/* Enhanced heading */}
             <motion.h1 
-              className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-black mb-6 leading-tight"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-black mb-6 leading-tight"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

@@ -24,6 +24,7 @@ export interface HostBillingSummary {
   liveSource: "generation" | "fallback";
   history?: Array<{
     id: string;
+    invoiceId?: string | null;
     period: string;
     amount: number;
     status: "PAID" | "PENDING" | "OVERDUE";

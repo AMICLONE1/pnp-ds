@@ -1,27 +1,19 @@
-import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { calculateAllocationPrice } from "@/lib/pricing";
 import { verifyPassword } from "@/lib/security/passwordHash";
+import { fetchCashfreeOrder, fetchCashfreePayments } from "@/lib/payments/cashfree";
 
 const completeSchema = z.object({
-  razorpay_order_id: z.string().min(1),
-  razorpay_payment_id: z.string().min(1),
-  razorpay_signature: z.string().min(1),
+  order_id: z.string().min(1),
   password: z.string().min(8).max(128),
 });
 
 /**
- * Final step of the signup flow. Called by the Razorpay handler after a
- * successful payment. The browser passes back the user's plaintext password
- * (re-supplied from in-memory state on the same page) so we can hand it to
- * supabase.auth.admin.createUser. We re-verify it against the stored hash from
- * /init to make sure the session hasn't been tampered with.
- *
- * On success: creates auth user, allocation, capacity_block, payment row, then
- * deletes the pending_signups row. Returns success — the client then signs in
- * via /api/auth/login and is redirected to /dashboard.
+ * Final step of the signup flow. Called by the browser after Cashfree Drop-in
+ * reports success. We re-fetch the order from Cashfree (don't trust the client),
+ * then create the auth user, allocation, capacity_block, payment row.
  */
 export async function POST(request: Request) {
   try {
@@ -32,34 +24,23 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, password } = parsed.data;
+    const { order_id, password } = parsed.data;
 
-    const allowMock = process.env.NODE_ENV !== "production";
-    const isMock =
-      allowMock &&
-      (razorpay_payment_id.startsWith("mock_payment_") || razorpay_signature === "mock_signature");
-
-    // 1. Verify Razorpay signature (HMAC-SHA256, constant-time compare).
-    if (!isMock) {
-      const secret = process.env.RAZORPAY_KEY_SECRET;
-      if (!secret) {
-        return NextResponse.json(
-          { success: false, error: "Payment gateway not configured" },
-          { status: 503 }
-        );
-      }
-      const expected = crypto
-        .createHmac("sha256", secret)
-        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-        .digest("hex");
-      const a = Buffer.from(expected, "utf8");
-      const b = Buffer.from(razorpay_signature, "utf8");
-      if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-        return NextResponse.json(
-          { success: false, error: "Invalid payment signature" },
-          { status: 400 }
-        );
-      }
+    // 1. Verify with Cashfree directly.
+    const order = await fetchCashfreeOrder(order_id);
+    if (order.order_status !== "PAID") {
+      return NextResponse.json(
+        { success: false, error: `Payment is ${order.order_status}` },
+        { status: 400 }
+      );
+    }
+    const payments = await fetchCashfreePayments(order_id);
+    const successful = payments.find((p) => p.payment_status === "SUCCESS");
+    if (!successful) {
+      return NextResponse.json(
+        { success: false, error: "No successful payment found for this order" },
+        { status: 400 }
+      );
     }
 
     const admin = createAdminClient();
@@ -68,7 +49,7 @@ export async function POST(request: Request) {
     const { data: pending, error: pendingErr } = await admin
       .from("pending_signups")
       .select("*")
-      .eq("razorpay_order_id", razorpay_order_id)
+      .eq("gateway_order_id", order_id)
       .maybeSingle();
 
     if (pendingErr || !pending) {
@@ -86,9 +67,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Verify the plaintext password the client just supplied matches the
-    //    hash recorded during /init. This stops a hijacked tab from completing
-    //    someone else's signup with a different password.
+    // 3. Verify password matches the hash we stored at /init.
     const passwordOk = await verifyPassword(password, pending.password_hash);
     if (!passwordOk) {
       return NextResponse.json(
@@ -97,7 +76,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Re-verify pricing (defense against tampered amount in pending row).
+    // 4. Re-verify pricing.
     const expectedPrice = calculateAllocationPrice(Number(pending.capacity_kw));
     if (Math.abs(expectedPrice.total - Number(pending.amount_inr)) > 0.01) {
       return NextResponse.json(
@@ -120,8 +99,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6. Create the auth user. From here on, any failure must roll back the
-    //    auth user so we don't leave an orphan.
+    // 6. Create the auth user.
     const { data: authData, error: authError } = await admin.auth.admin.createUser({
       email: pending.email,
       password,
@@ -147,8 +125,6 @@ export async function POST(request: Request) {
     };
 
     try {
-      // 7. Mirror into public.users. The table stores Aadhaar / PAN in
-      //    dedicated columns rather than a generic kyc_document_* pair.
       const kycType = (pending.kyc_type || "").toLowerCase();
       const { error: mirrorErr } = await admin.from("users").insert({
         id: userId,
@@ -164,8 +140,6 @@ export async function POST(request: Request) {
       });
       if (mirrorErr && !mirrorErr.message?.includes("duplicate")) throw mirrorErr;
 
-      // 8. Create a fresh capacity_block sized exactly to the requested kW.
-      //    The DB trigger enforce_project_capacity_trigger guards total project capacity.
       const { data: block, error: blockErr } = await admin
         .from("capacity_blocks")
         .insert({
@@ -178,29 +152,28 @@ export async function POST(request: Request) {
         .single();
       if (blockErr || !block) throw blockErr || new Error("block insert failed");
 
-      // 9. Create payment row first (allocation FK depends on payment_id).
       const { data: payment, error: payErr } = await admin
         .from("payments")
         .insert({
           user_id: userId,
           amount: Number(pending.amount_inr),
           type: "ALLOCATION",
-          gateway: "RAZORPAY",
+          gateway: "CASHFREE",
           status: "COMPLETED",
-          gateway_order_id: razorpay_order_id,
-          gateway_payment_id: razorpay_payment_id,
+          gateway_order_id: order_id,
+          gateway_payment_id: successful.cf_payment_id,
           metadata: {
             payment_type: "ALLOCATION",
             capacity_kw: Number(pending.capacity_kw),
             project_id: pending.project_id,
-            razorpay_signature,
+            cf_payment_id: successful.cf_payment_id,
+            payment_method: successful.payment_method,
           },
         })
         .select("id")
         .single();
       if (payErr || !payment) throw payErr || new Error("payment insert failed");
 
-      // 10. Create allocation linked to block + payment.
       const { error: allocErr } = await admin.from("allocations").insert({
         user_id: userId,
         capacity_block_id: block.id,
@@ -209,7 +182,6 @@ export async function POST(request: Request) {
       });
       if (allocErr) throw allocErr;
 
-      // 11. Wipe the pending row.
       await admin.from("pending_signups").delete().eq("id", pending.id);
 
       return NextResponse.json({
@@ -227,7 +199,7 @@ export async function POST(request: Request) {
   } catch (err: any) {
     console.error("signup/complete error:", err);
     return NextResponse.json(
-      { success: false, error: "Server error" },
+      { success: false, error: err?.message || "Server error" },
       { status: 500 }
     );
   }

@@ -1,13 +1,11 @@
-import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { fetchCashfreeOrder, fetchCashfreePayments } from "@/lib/payments/cashfree";
 
 const verifyPaymentSchema = z.object({
-  razorpay_order_id: z.string().min(1),
-  razorpay_payment_id: z.string().min(1),
-  razorpay_signature: z.string().min(1),
+  order_id: z.string().min(1),
 });
 
 export async function POST(request: Request) {
@@ -21,10 +19,7 @@ export async function POST(request: Request) {
 
     if (authError || !user) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "UNAUTHORIZED", message: "Not authenticated" },
-        },
+        { success: false, error: { code: "UNAUTHORIZED", message: "Not authenticated" } },
         { status: 401 }
       );
     }
@@ -44,65 +39,23 @@ export async function POST(request: Request) {
       );
     }
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body.data;
-    const allowMockPayments = process.env.NODE_ENV !== "production";
-    const isMockPayment =
-      allowMockPayments &&
-      (razorpay_payment_id.startsWith("mock_payment_") || razorpay_signature === "mock_signature");
-
-    if (!isMockPayment) {
-      if (!process.env.RAZORPAY_KEY_SECRET) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "PAYMENT_GATEWAY_UNAVAILABLE",
-              message: "Payment gateway is not configured",
-            },
-          },
-          { status: 503 }
-        );
-      }
-
-      const text = `${razorpay_order_id}|${razorpay_payment_id}`;
-      const generatedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-        .update(text)
-        .digest("hex");
-
-      // Constant-time compare to avoid signature timing oracles.
-      const a = Buffer.from(generatedSignature, "utf8");
-      const b = Buffer.from(razorpay_signature, "utf8");
-      if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: { code: "INVALID_SIGNATURE", message: "Invalid payment signature" },
-          },
-          { status: 400 }
-        );
-      }
-    }
+    const { order_id } = body.data;
 
     const { data: payment, error: paymentFetchError } = await supabase
       .from("payments")
       .select("id, amount, type, bill_id, status, metadata")
-      .eq("gateway_order_id", razorpay_order_id)
+      .eq("gateway_order_id", order_id)
       .eq("user_id", user.id)
       .single();
 
     if (paymentFetchError || !payment) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "PAYMENT_NOT_FOUND", message: "Payment order not found" },
-        },
+        { success: false, error: { code: "PAYMENT_NOT_FOUND", message: "Payment order not found" } },
         { status: 404 }
       );
     }
 
-    // Idempotency: if this payment is already COMPLETED, return success without
-    // re-running the activation side-effects (prevents replay double-credits).
+    // Idempotency: already activated, return success.
     if (payment.status === "COMPLETED") {
       return NextResponse.json({ success: true, data: payment });
     }
@@ -120,14 +73,42 @@ export async function POST(request: Request) {
       );
     }
 
+    // Authoritative status comes from Cashfree directly. We don't trust the
+    // client to claim success — we re-fetch the order and its payment(s).
+    const order = await fetchCashfreeOrder(order_id);
+
+    if (order.order_status !== "PAID") {
+      return NextResponse.json({
+        success: false,
+        error: {
+          code: "PAYMENT_NOT_COMPLETED",
+          message: `Payment is ${order.order_status}`,
+        },
+        data: { order_status: order.order_status },
+      }, { status: 400 });
+    }
+
+    const payments = await fetchCashfreePayments(order_id);
+    const successful = payments.find((p) => p.payment_status === "SUCCESS");
+
+    if (!successful) {
+      return NextResponse.json(
+        { success: false, error: { code: "PAYMENT_NOT_COMPLETED", message: "No successful payment found for this order" } },
+        { status: 400 }
+      );
+    }
+
     const existingMetadata = (payment.metadata || {}) as Record<string, unknown>;
     const { data: verifiedPayment, error: paymentUpdateError } = await supabase
       .from("payments")
       .update({
-        gateway_payment_id: razorpay_payment_id,
+        gateway_payment_id: successful.cf_payment_id,
         metadata: {
           ...existingMetadata,
-          razorpay_signature,
+          cf_payment_id: successful.cf_payment_id,
+          payment_method: successful.payment_method,
+          payment_time: successful.payment_time,
+          bank_reference: successful.bank_reference,
         },
         status: "COMPLETED",
       })
@@ -152,10 +133,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             success: false,
-            error: {
-              code: "MISSING_METADATA",
-              message: "Allocation reference missing from payment metadata",
-            },
+            error: { code: "MISSING_METADATA", message: "Allocation reference missing from payment metadata" },
           },
           { status: 400 }
         );
@@ -164,10 +142,7 @@ export async function POST(request: Request) {
       const { data: allocation, error: allocationError } = await supabase
         .from("allocations")
         .select(
-          `id, capacity_block_id, payment_id, capacity_block:capacity_blocks(
-            id,
-            status
-          )`
+          `id, capacity_block_id, payment_id, capacity_block:capacity_blocks(id, status)`
         )
         .eq("id", allocationId)
         .eq("user_id", user.id)
@@ -175,23 +150,14 @@ export async function POST(request: Request) {
 
       if (allocationError || !allocation) {
         return NextResponse.json(
-          {
-            success: false,
-            error: { code: "DB_ERROR", message: "Failed to fetch allocation details" },
-          },
+          { success: false, error: { code: "DB_ERROR", message: "Failed to fetch allocation details" } },
           { status: 500 }
         );
       }
 
       if (allocation.payment_id && allocation.payment_id !== verifiedPayment.id) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "ALREADY_LINKED",
-              message: "Allocation already linked to another payment",
-            },
-          },
+          { success: false, error: { code: "ALREADY_LINKED", message: "Allocation already linked to another payment" } },
           { status: 409 }
         );
       }
@@ -212,7 +178,6 @@ export async function POST(request: Request) {
 
       if (capacityBlock && capacityBlock.status !== "ALLOCATED") {
         let adminClient;
-
         try {
           adminClient = createAdminClient();
         } catch (error: any) {
@@ -240,23 +205,14 @@ export async function POST(request: Request) {
 
       if (!billId) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "MISSING_METADATA",
-              message: "Bill reference missing from payment record",
-            },
-          },
+          { success: false, error: { code: "MISSING_METADATA", message: "Bill reference missing from payment record" } },
           { status: 400 }
         );
       }
 
       const { error: billUpdateError } = await supabase
         .from("bills")
-        .update({
-          status: "PAID",
-          paid_at: new Date().toISOString(),
-        })
+        .update({ status: "PAID", paid_at: new Date().toISOString() })
         .eq("id", billId)
         .eq("user_id", user.id);
 
@@ -265,19 +221,13 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      data: verifiedPayment,
-    });
+    return NextResponse.json({ success: true, data: verifiedPayment });
   } catch (error: any) {
     console.error("Payment verification error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: {
-          code: "SERVER_ERROR",
-          message: error.message || "Failed to verify payment",
-        },
+        error: { code: "SERVER_ERROR", message: error.message || "Failed to verify payment" },
       },
       { status: 500 }
     );

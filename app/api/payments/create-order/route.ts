@@ -2,26 +2,29 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { calculateAllocationPrice } from "@/lib/pricing";
+import {
+  buildAllowedPaymentMethods,
+  createCashfreeOrder,
+  getCashfreeMode,
+  getPublicAppId,
+  isCashfreeConfigured,
+} from "@/lib/payments/cashfree";
 
 const createPaymentSchema = z.object({
   allocation_id: z.string().uuid().optional(),
   bill_id: z.string().uuid().optional(),
   payment_type: z.enum(["ALLOCATION", "MONTHLY", "BILL"]),
+  customer_phone: z.string().regex(/^[6-9]\d{9}$/).optional(),
+  customer_email: z.string().email().optional(),
+  customer_name: z.string().min(1).max(120).optional(),
 });
 
-function initRazorpay() {
-  try {
-    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
-      const Razorpay = require("razorpay");
-      return new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET,
-      });
-    }
-  } catch (error) {
-    console.warn("Razorpay not configured:", error);
-  }
-  return null;
+function getAppOrigin(request: Request) {
+  return (
+    process.env.NEXT_PUBLIC_APP_URL ||
+    request.headers.get("origin") ||
+    "http://localhost:3000"
+  );
 }
 
 export async function POST(request: Request) {
@@ -35,10 +38,7 @@ export async function POST(request: Request) {
 
     if (authError || !user) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "UNAUTHORIZED", message: "Not authenticated" },
-        },
+        { success: false, error: { code: "UNAUTHORIZED", message: "Not authenticated" } },
         { status: 401 }
       );
     }
@@ -58,7 +58,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const { allocation_id, bill_id, payment_type } = body.data;
+    const { allocation_id, bill_id, payment_type, customer_phone, customer_email, customer_name } =
+      body.data;
 
     if (payment_type === "MONTHLY") {
       return NextResponse.json(
@@ -74,9 +75,7 @@ export async function POST(request: Request) {
     }
 
     let amount = 0;
-    const paymentMetadata: Record<string, unknown> = {
-      payment_type,
-    };
+    const paymentMetadata: Record<string, unknown> = { payment_type };
     let billIdToPersist: string | null = null;
 
     if (payment_type === "ALLOCATION") {
@@ -84,10 +83,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             success: false,
-            error: {
-              code: "VALIDATION_ERROR",
-              message: "allocation_id is required for allocation payments",
-            },
+            error: { code: "VALIDATION_ERROR", message: "allocation_id is required for allocation payments" },
           },
           { status: 400 }
         );
@@ -102,35 +98,24 @@ export async function POST(request: Request) {
 
       if (allocationError || !allocation) {
         return NextResponse.json(
-          {
-            success: false,
-            error: { code: "ALLOCATION_NOT_FOUND", message: "Allocation not found" },
-          },
+          { success: false, error: { code: "ALLOCATION_NOT_FOUND", message: "Allocation not found" } },
           { status: 404 }
         );
       }
 
       if (allocation.payment_id) {
         return NextResponse.json(
-          {
-            success: false,
-            error: { code: "ALREADY_LINKED", message: "Allocation already has a linked payment" },
-          },
+          { success: false, error: { code: "ALREADY_LINKED", message: "Allocation already has a linked payment" } },
           { status: 409 }
         );
       }
 
-      // Server-authoritative price: setup cost (with bulk discount) + platform fee + GST.
-      // Mirrors lib/pricing.ts so client and server agree on the total.
       const price = calculateAllocationPrice(Number(allocation.capacity_kw));
       amount = price.total;
 
       if (!Number.isFinite(amount) || amount <= 0) {
         return NextResponse.json(
-          {
-            success: false,
-            error: { code: "INVALID_AMOUNT", message: "Could not calculate allocation payment amount" },
-          },
+          { success: false, error: { code: "INVALID_AMOUNT", message: "Could not calculate allocation payment amount" } },
           { status: 400 }
         );
       }
@@ -143,13 +128,7 @@ export async function POST(request: Request) {
     if (payment_type === "BILL") {
       if (!bill_id) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "VALIDATION_ERROR",
-              message: "bill_id is required for bill payments",
-            },
-          },
+          { success: false, error: { code: "VALIDATION_ERROR", message: "bill_id is required for bill payments" } },
           { status: 400 }
         );
       }
@@ -163,26 +142,14 @@ export async function POST(request: Request) {
 
       if (billError || !bill) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "BILL_NOT_FOUND",
-              message: "Bill not found",
-            },
-          },
+          { success: false, error: { code: "BILL_NOT_FOUND", message: "Bill not found" } },
           { status: 404 }
         );
       }
 
       if (bill.status === "PAID") {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "ALREADY_PAID",
-              message: "Bill is already paid",
-            },
-          },
+          { success: false, error: { code: "ALREADY_PAID", message: "Bill is already paid" } },
           { status: 400 }
         );
       }
@@ -192,13 +159,7 @@ export async function POST(request: Request) {
 
       if (!Number.isFinite(amount) || amount <= 0) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "NO_PAYMENT_REQUIRED",
-              message: "No payment is required for this bill",
-            },
-          },
+          { success: false, error: { code: "NO_PAYMENT_REQUIRED", message: "No payment is required for this bill" } },
           { status: 400 }
         );
       }
@@ -207,13 +168,43 @@ export async function POST(request: Request) {
       paymentMetadata.credits_applied = bill.credits_applied || 0;
     }
 
+    if (!isCashfreeConfigured()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "PAYMENT_GATEWAY_UNAVAILABLE", message: "Payment gateway is not configured" },
+        },
+        { status: 503 }
+      );
+    }
+
+    // Resolve customer details. Prefer Cashfree-required fields from request,
+    // fall back to Supabase user metadata. Phone is required by Cashfree.
+    const phone =
+      customer_phone ||
+      (user.user_metadata?.phone as string | undefined) ||
+      (user.phone as string | undefined);
+
+    if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "PHONE_REQUIRED",
+            message: "A 10-digit Indian mobile number is required to start payment",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
     const { data: payment, error: paymentError } = await supabase
       .from("payments")
       .insert({
         user_id: user.id,
         amount,
         type: payment_type,
-        gateway: "RAZORPAY",
+        gateway: "CASHFREE",
         status: "PENDING",
         bill_id: billIdToPersist,
         metadata: paymentMetadata,
@@ -223,82 +214,66 @@ export async function POST(request: Request) {
 
     if (paymentError) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "DB_ERROR", message: paymentError.message },
-        },
+        { success: false, error: { code: "DB_ERROR", message: paymentError.message } },
         { status: 500 }
       );
     }
 
-    const razorpayInstance = initRazorpay();
-    if (!razorpayInstance) {
-      if (process.env.NODE_ENV === "production") {
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "PAYMENT_GATEWAY_UNAVAILABLE",
-              message: "Payment gateway is not configured",
-            },
-          },
-          { status: 503 }
-        );
-      }
+    const orderId = `pnp_${payment.id}`;
+    const origin = getAppOrigin(request);
 
-      const mockOrderId = `order_mock_${Date.now()}`;
+    try {
+      const order = await createCashfreeOrder({
+        order_id: orderId,
+        order_amount: Math.round(amount * 100) / 100,
+        order_currency: "INR",
+        customer_details: {
+          customer_id: user.id,
+          customer_phone: phone,
+          customer_email: customer_email || user.email || "customer@powernetpro.local",
+          customer_name: customer_name || (user.user_metadata?.name as string) || "Customer",
+        },
+        order_meta: {
+          return_url: `${origin}/reserve/payment/return?order_id={order_id}`,
+          notify_url: `${origin}/api/payments/webhook`,
+          payment_methods: buildAllowedPaymentMethods(),
+          invoice_date: new Date().toISOString(),
+          invoice_id: `pnp_${payment.id}`,
+        },
+        order_note:
+          payment_type === "ALLOCATION"
+            ? "PNP capacity allocation"
+            : "PNP electricity bill",
+        order_tags: {
+          payment_id: String(payment.id),
+          payment_type,
+        },
+      });
 
       await supabase
         .from("payments")
-        .update({
-          gateway_order_id: mockOrderId,
-        })
+        .update({ gateway_order_id: order.order_id })
         .eq("id", payment.id);
 
       return NextResponse.json({
         success: true,
         data: {
-          order_id: mockOrderId,
-          amount: Math.round(amount * 100),
-          currency: "INR",
+          order_id: order.order_id,
+          payment_session_id: order.payment_session_id,
+          amount: order.order_amount,
+          currency: order.order_currency,
           payment_id: payment.id,
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
-          mock: true,
+          app_id: getPublicAppId(),
+          mode: getCashfreeMode(),
         },
       });
+    } catch (gatewayError: any) {
+      await supabase
+        .from("payments")
+        .update({ status: "FAILED", metadata: { ...paymentMetadata, gateway_error: gatewayError?.message } })
+        .eq("id", payment.id);
+      throw gatewayError;
     }
-
-    const order = await razorpayInstance.orders.create({
-      amount: Math.round(amount * 100),
-      currency: "INR",
-      receipt: `order_${payment.id}`,
-      notes: {
-        payment_id: payment.id,
-        user_id: user.id,
-        payment_type,
-        allocation_id: allocation_id || "",
-        bill_id: bill_id || "",
-      },
-    });
-
-    await supabase
-      .from("payments")
-      .update({
-        gateway_order_id: order.id,
-      })
-      .eq("id", payment.id);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        order_id: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        payment_id: payment.id,
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        mock: false,
-      },
-    });
   } catch (error: any) {
     console.error("Payment error:", error);
     return NextResponse.json(

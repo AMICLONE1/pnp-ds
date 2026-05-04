@@ -129,7 +129,7 @@ export default function ConnectPage() {
               <Zap className="h-4 w-4" />
               Quick Setup • Takes 2 minutes
             </div>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-3 text-black">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold mb-3 text-black">
               Connect Your <span className="text-black">Utility</span>
             </h1>
             <p className="text-black max-w-xl mx-auto">

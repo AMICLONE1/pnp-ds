@@ -103,7 +103,7 @@ export default function PrivacyPage() {
                     <li><strong>(b) KYC (Know Your Customer) Verification Data:</strong> Aadhaar number (for e-KYC via DigiLocker API), PAN card number (validated against the Income Tax database), Aadhaar front and back images (for manual KYC upload), and optionally, facial liveness check data for manual KYC verification.</li>
                     <li><strong>(c) Electricity Connection Details:</strong> Consumer number, DISCOM name, billing address, and electricity bill data fetched through the Bharat Bill Payment System (BBPS) API.</li>
                     <li><strong>(d) Bank Account Information:</strong> Bank account number, IFSC code, and account holder name (verified through penny-drop verification) for cash conversion payouts under Option 2.</li>
-                    <li><strong>(e) Payment Information:</strong> Transaction details processed through Razorpay payment gateway, including Razorpay order IDs, payment status, and payment confirmation details. PowerNetPro does not store credit card, debit card, or net banking credentials; all card data handling is delegated entirely to Razorpay in compliance with PCI-DSS standards.</li>
+                    <li><strong>(e) Payment Information:</strong> Transaction details processed through Cashfree payment gateway, including Cashfree order IDs, payment status, and payment confirmation details. PowerNetPro does not store credit card, debit card, or net banking credentials; all card data handling is delegated entirely to Cashfree in compliance with PCI-DSS standards.</li>
                     <li><strong>(f) Communication Data:</strong> Queries, complaints, feedback, and correspondence submitted through customer support channels, email, or the Platform&rsquo;s contact forms.</li>
                   </ul>
 
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
                     <li><strong>(a) DigiLocker:</strong> Aadhaar-based e-KYC verification data, as authorised by you during the verification process.</li>
                     <li><strong>(b) NSDL/CDSL:</strong> PAN verification results confirming the validity of your PAN card details.</li>
                     <li><strong>(c) BBPS (Bharat Bill Payment System):</strong> Electricity bill data including bill amount, due date, consumption details, and payment status for DISCOM accounts linked by you.</li>
-                    <li><strong>(d) Razorpay:</strong> Payment confirmation data, transaction status, and refund processing information.</li>
+                    <li><strong>(d) Cashfree:</strong> Payment confirmation data, transaction status, and refund processing information.</li>
                   </ul>
                 </div>
 
@@ -210,7 +210,7 @@ export default function PrivacyPage() {
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-4">5.1 Third-Party Service Providers</h3>
                   <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    <li><strong>Razorpay:</strong> For processing payment transactions, managing escrow accounts, and handling refunds. Razorpay operates as an independent Data Processor and maintains its own privacy policy and PCI-DSS compliance.</li>
+                    <li><strong>Cashfree:</strong> For processing payment transactions, managing escrow accounts, and handling refunds. Cashfree operates as an independent Data Processor and maintains its own privacy policy and PCI-DSS compliance.</li>
                     <li><strong>DigiLocker / UIDAI:</strong> For Aadhaar-based e-KYC verification, as authorised by you during the onboarding process.</li>
                     <li><strong>NSDL / CDSL:</strong> For PAN card validation against the Income Tax database.</li>
                     <li><strong>BBPS (NPCI):</strong> For fetching your electricity bill data and processing bill payments on your behalf.</li>
@@ -274,7 +274,7 @@ export default function PrivacyPage() {
                   <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
                     <li>Encryption of personal data in transit using TLS 1.2 or higher protocols.</li>
                     <li>Encryption of sensitive personal data at rest using AES-256 encryption standards.</li>
-                    <li>Secure API connections for all data transmissions between the Platform and third-party integrations (DigiLocker, BBPS, Razorpay, banking partners).</li>
+                    <li>Secure API connections for all data transmissions between the Platform and third-party integrations (DigiLocker, BBPS, Cashfree, banking partners).</li>
                     <li>Multi-factor authentication for administrative access to backend systems.</li>
                     <li>Regular security audits, vulnerability assessments, and penetration testing of the Platform infrastructure.</li>
                     <li>Automated backup systems with encrypted storage and disaster recovery protocols.</li>
@@ -293,7 +293,7 @@ export default function PrivacyPage() {
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.3 PCI-DSS Compliance</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    All payment card data handling is delegated entirely to Razorpay, which maintains PCI-DSS Level 1 compliance. No credit card, debit card, or net banking credentials are stored on or transmitted through PowerNetPro&rsquo;s servers.
+                    All payment card data handling is delegated entirely to Cashfree, which maintains PCI-DSS Level 1 compliance. No credit card, debit card, or net banking credentials are stored on or transmitted through PowerNetPro&rsquo;s servers.
                   </p>
 
                   <h3 className="text-xl font-semibold text-black mb-3 mt-6 flex items-center gap-2">
@@ -301,14 +301,14 @@ export default function PrivacyPage() {
                     7.4 Third-Party Payment Processing
                   </h3>
                   <p className="text-gray-700 leading-relaxed">
-                    All payment transactions on PowerNetPro are processed through Razorpay Payments Private Limited, an RBI-authorised Payment Aggregator. Razorpay is PCI DSS Level 1 certified. We do not store your credit card, debit card, or UPI details on our servers. All payment data is handled securely by Razorpay in accordance with RBI guidelines. For Razorpay&rsquo;s privacy practices, please refer to Razorpay&rsquo;s Privacy Policy at{" "}
+                    All payment transactions on PowerNetPro are processed through Cashfree Payments Private Limited, an RBI-authorised Payment Aggregator. Cashfree is PCI DSS Level 1 certified. We do not store your credit card, debit card, or UPI details on our servers. All payment data is handled securely by Cashfree in accordance with RBI guidelines. For Cashfree&rsquo;s privacy practices, please refer to Cashfree&rsquo;s Privacy Policy at{" "}
                     <a
-                      href="https://razorpay.com/privacy/"
+                      href="https://www.cashfree.com/privacy-policy"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gold hover:underline"
                     >
-                      https://razorpay.com/privacy/
+                      https://www.cashfree.com/privacy-policy
                     </a>
                     .
                   </p>

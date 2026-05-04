@@ -87,7 +87,7 @@ export default function CapacitySelector({ selectedProject,capacity,setCapacity,
               {/* Enhanced Capacity display */}
               <div className="text-center mb-5">
                 <motion.div
-                  className="text-5xl font-bold mb-1"
+                  className="text-4xl sm:text-5xl font-bold mb-1"
                   key={capacity}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}

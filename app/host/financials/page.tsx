@@ -35,11 +35,7 @@ interface VerifyResponse {
   error?: { message?: string } | string;
 }
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+import { launchCashfreeCheckout } from "@/lib/payments/cashfreeClient";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -56,25 +52,6 @@ function formatDate(value: string) {
     day: "numeric",
     month: "short",
     year: "numeric",
-  });
-}
-
-async function loadRazorpayScript() {
-  if (typeof window === "undefined" || window.Razorpay) return true;
-  return await new Promise<boolean>((resolve) => {
-    const existing = document.querySelector(
-      'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
-    );
-    if (existing) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
   });
 }
 
@@ -120,6 +97,15 @@ export default function HostFinancialsPage() {
     if (!summary || !summary.isLiveData || summary.paymentStatus === "PAID") return;
     if (!summary.hasBilledPeriod) return;
 
+    let phone = "";
+    if (typeof window !== "undefined") {
+      phone = window.prompt("Enter your 10-digit mobile number for payment receipt") || "";
+    }
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      setError("A valid 10-digit Indian mobile number is required to start payment.");
+      return;
+    }
+
     setLoadingPayment(true);
     setError("");
 
@@ -131,6 +117,7 @@ export default function HostFinancialsPage() {
         body: JSON.stringify({
           billingMonth: summary.billingMonth,
           billingYear: summary.billingYear,
+          customer_phone: phone,
         }),
       });
 
@@ -143,81 +130,41 @@ export default function HostFinancialsPage() {
         );
       }
 
-      if (orderResult.data.mock) {
-        const verifyResponse = await fetch("/api/host/financials/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            razorpay_order_id: orderResult.data.order_id,
-            razorpay_payment_id: `mock_payment_${Date.now()}`,
-            razorpay_signature: "mock_signature",
-          }),
-        });
-        const verifyResult: VerifyResponse = await verifyResponse.json();
-        if (!verifyResult.success) {
-          throw new Error(
-            typeof verifyResult.error === "string"
-              ? verifyResult.error
-              : verifyResult.error?.message || "Payment verification failed"
-          );
-        }
-        setPaymentSuccess({
-          invoiceId: verifyResult.data?.invoice?.id,
-          invoiceNumber:
-            verifyResult.data?.invoice?.invoice_number || summary.invoiceNumber,
-          paymentReference:
-            verifyResult.data?.payment?.payment_reference || orderResult.data.order_id,
-        });
-        setSummary({ ...summary, paymentStatus: "PAID" });
+      const result = await launchCashfreeCheckout({
+        paymentSessionId: orderResult.data.payment_session_id,
+        mode: orderResult.data.mode,
+      });
+
+      if (result.status === "failed") {
+        throw new Error(result.error || "Payment failed");
+      }
+
+      if (result.status === "dismissed") {
         return;
       }
 
-      const loaded = await loadRazorpayScript();
-      if (!loaded || !window.Razorpay) {
-        throw new Error("Razorpay checkout could not be loaded.");
-      }
-
-      const razorpay = new window.Razorpay({
-        key: orderResult.data.key,
-        amount: orderResult.data.amount,
-        currency: orderResult.data.currency,
-        name: "PowerNetPro Host Billing",
-        description: `${summary.billingLabel} electricity invoice`,
-        order_id: orderResult.data.order_id,
-        theme: { color: "#0D2818" },
-        handler: async (response: any) => {
-          const verifyResponse = await fetch("/api/host/financials/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            }),
-          });
-          const verifyResult: VerifyResponse = await verifyResponse.json();
-          if (verifyResult.success) {
-            setPaymentSuccess({
-              invoiceId: verifyResult.data?.invoice?.id,
-              invoiceNumber:
-                verifyResult.data?.invoice?.invoice_number || summary.invoiceNumber,
-              paymentReference:
-                verifyResult.data?.payment?.payment_reference ||
-                response.razorpay_payment_id,
-            });
-            setSummary((s) => (s ? { ...s, paymentStatus: "PAID" } : s));
-          } else {
-            throw new Error(
-              typeof verifyResult.error === "string"
-                ? verifyResult.error
-                : verifyResult.error?.message || "Payment verification failed"
-            );
-          }
-        },
+      const verifyResponse = await fetch("/api/host/financials/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ order_id: orderResult.data.order_id }),
       });
-      razorpay.open();
+      const verifyResult: VerifyResponse = await verifyResponse.json();
+      if (!verifyResult.success) {
+        throw new Error(
+          typeof verifyResult.error === "string"
+            ? verifyResult.error
+            : verifyResult.error?.message || "Payment verification failed"
+        );
+      }
+      setPaymentSuccess({
+        invoiceId: verifyResult.data?.invoice?.id,
+        invoiceNumber:
+          verifyResult.data?.invoice?.invoice_number || summary.invoiceNumber,
+        paymentReference:
+          verifyResult.data?.payment?.payment_reference || orderResult.data.order_id,
+      });
+      setSummary((s) => (s ? { ...s, paymentStatus: "PAID" } : s));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Payment failed");
     } finally {
@@ -274,7 +221,7 @@ export default function HostFinancialsPage() {
             </h1>
             <p className="max-w-2xl text-sm sm:text-base text-white/75">
               PowerNetPro bills the previous complete calendar month on the 1st.
-              Pay securely via Razorpay before the due date to avoid late fees.
+              Pay securely via Cashfree before the due date to avoid late fees.
             </p>
           </div>
 
@@ -538,7 +485,7 @@ export default function HostFinancialsPage() {
                         <CreditCard className="w-4 h-4 mr-2" />
                         {summary.paymentStatus === "OVERDUE"
                           ? "Pay Overdue Invoice"
-                          : "Pay Securely via Razorpay"}
+                          : "Pay Securely via Cashfree"}
                       </Button>
                       {paymentSuccess?.invoiceId ? (
                         <Link
@@ -592,11 +539,23 @@ export default function HostFinancialsPage() {
                           : "Electricity bill against the active PPA"}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
                       <span className="font-semibold text-black">
                         {formatMoney(invoice.amount)}
                       </span>
                       <StatusBadge status={invoice.status} />
+                      {invoice.status === "PAID" && invoice.invoiceId && (
+                        <Link
+                          href={`/api/host/financials/invoices/${invoice.invoiceId}/download`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:border-gold/40 hover:text-black transition-colors"
+                          title="Download invoice PDF"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          Invoice
+                        </Link>
+                      )}
                     </div>
                   </div>
                 ))
@@ -644,7 +603,7 @@ export default function HostFinancialsPage() {
                 </div>
                 <p>
                   <span className="font-medium text-black">Pay.</span> Settle through
-                  Razorpay before the due day. Late payments accrue a fee.
+                  Cashfree before the due day. Late payments accrue a fee.
                 </p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-gray-50/70 p-3">
@@ -672,12 +631,11 @@ export default function HostFinancialsPage() {
                 generation — not from the browser.
               </p>
               <p>
-                Payments flow through Razorpay; PowerNetPro never sees or stores your
+                Payments flow through Cashfree; PowerNetPro never sees or stores your
                 card details.
               </p>
               <p>
-                Invoice records are written only after Razorpay returns a valid
-                signature.
+                Invoice records are written only after Cashfree confirms the payment.
               </p>
             </CardContent>
           </Card>

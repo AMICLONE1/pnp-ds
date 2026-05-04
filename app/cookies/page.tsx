@@ -318,7 +318,7 @@ export default function CookiesPage() {
 
               <SectionCard icon={CreditCard} title="5. Cookies Set by Third-Party Payment Processors">
                 <p className="text-gray-700 leading-relaxed">
-                  When you interact with the Razorpay payment checkout on our Platform, Razorpay may set its own cookies on your device to facilitate secure payment processing, fraud detection, and session management. These cookies are governed by Razorpay’s own privacy and cookie policies, and PowerNetPro does not control the cookies set by Razorpay. We encourage you to review Razorpay’s privacy policy at <a href="https://razorpay.com/privacy/" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">https://razorpay.com/privacy/</a> for details on their cookie practices.
+                  When you interact with the Cashfree payment checkout on our Platform, Cashfree may set its own cookies on your device to facilitate secure payment processing, fraud detection, and session management. These cookies are governed by Cashfree’s own privacy and cookie policies, and PowerNetPro does not control the cookies set by Cashfree. We encourage you to review Cashfree’s privacy policy at <a href="https://www.cashfree.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">https://www.cashfree.com/privacy-policy</a> for details on their cookie practices.
                 </p>
               </SectionCard>
 

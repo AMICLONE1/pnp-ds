@@ -11,7 +11,8 @@
       "Bash(pkill -f \"next dev\")",
       "Bash(npm run:*)",
       "Bash(tee -a server_full.log)",
-      "Bash(grep -h \"^import.*from.*data\" \"d:/PowerNetPro/PNP-DSnew/components/host/financials\"/*.tsx)"
+      "Bash(grep -h \"^import.*from.*data\" \"d:/PowerNetPro/PNP-DSnew/components/host/financials\"/*.tsx)",
+      "WebSearch"
     ]
   }
 }

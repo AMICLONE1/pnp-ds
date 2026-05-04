@@ -4,8 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { BILLING_HISTORY } from "@/components/host/financials/data";
 import { calculatePpaBilling } from "@/lib/host/billing";
 
-function hasRazorpayKeys() {
-  return Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
+function hasCashfreeKeys() {
+  return Boolean(process.env.CASHFREE_APP_ID && process.env.CASHFREE_SECRET_KEY);
 }
 
 function demoMonthForIndex(index: number) {
@@ -129,9 +129,9 @@ export async function GET() {
           recentPayments: BILLING_HISTORY.map((entry, index) => mapDemoPayment(entry, index, hostId || undefined)),
           recentInvoices: BILLING_HISTORY.map((entry, index) => mapDemoPayment(entry, index, hostId || undefined)),
           paymentGateway: {
-            configured: hasRazorpayKeys(),
-            keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
-            mode: process.env.NODE_ENV === "production" ? "live" : "development",
+            configured: hasCashfreeKeys(),
+            appId: process.env.CASHFREE_APP_ID || "",
+            mode: process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" ? "production" : "sandbox",
           },
           invoiceNote: "Admin provisioning is pending. This is a demo billing snapshot.",
         },
@@ -256,9 +256,9 @@ export async function GET() {
         recentPayments,
         recentInvoices,
         paymentGateway: {
-          configured: hasRazorpayKeys(),
-          keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
-          mode: process.env.NODE_ENV === "production" ? "live" : "development",
+          configured: hasCashfreeKeys(),
+          appId: process.env.CASHFREE_APP_ID || "",
+          mode: process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" ? "production" : "sandbox",
         },
         invoiceNote: latestInvoice
           ? `Invoice ${latestInvoice.invoice_number} is ready for receipt download.`

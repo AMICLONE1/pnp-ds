@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { verifyHost, hostUnauthorizedResponse } from "@/lib/host/hostAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildInvoiceNumber } from "@/lib/host/billing";
+import { fetchCashfreeOrder, fetchCashfreePayments } from "@/lib/payments/cashfree";
+import { ensureHostInvoiceForPayment } from "@/lib/host/ensureInvoice";
 
 export async function POST(request: Request) {
   try {
@@ -11,44 +12,35 @@ export async function POST(request: Request) {
       return hostUnauthorizedResponse(authResult.error || "UNAUTHORIZED");
     }
 
-    const body = await request.json();
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
+    const body = await request.json().catch(() => ({}));
+    const { order_id } = body || {};
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (!order_id) {
+      return NextResponse.json(
+        { success: false, error: { code: "VALIDATION_ERROR", message: "Missing order_id" } },
+        { status: 400 }
+      );
+    }
+
+    const order = await fetchCashfreeOrder(order_id);
+    if (order.order_status !== "PAID") {
       return NextResponse.json(
         {
           success: false,
-          error: {
-            code: "VALIDATION_ERROR",
-            message: "Missing payment verification details",
-          },
+          error: { code: "PAYMENT_NOT_COMPLETED", message: `Payment is ${order.order_status}` },
+          data: { order_status: order.order_status },
         },
         { status: 400 }
       );
     }
 
-    const isMockPayment =
-      razorpay_payment_id.startsWith("mock_payment_") ||
-      razorpay_signature === "mock_signature";
-
-    if (!isMockPayment) {
-      const expectedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "")
-        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-        .digest("hex");
-
-      if (expectedSignature !== razorpay_signature) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "INVALID_SIGNATURE",
-              message: "Payment signature verification failed",
-            },
-          },
-          { status: 400 }
-        );
-      }
+    const payments = await fetchCashfreePayments(order_id);
+    const successful = payments.find((p) => p.payment_status === "SUCCESS");
+    if (!successful) {
+      return NextResponse.json(
+        { success: false, error: { code: "PAYMENT_NOT_COMPLETED", message: "No successful payment found" } },
+        { status: 400 }
+      );
     }
 
     const adminClient = createAdminClient();
@@ -57,64 +49,51 @@ export async function POST(request: Request) {
       .from("host_payments")
       .select("*")
       .eq("host_id", authResult.host.id)
-      .eq("gateway_order_id", razorpay_order_id)
+      .eq("gateway_order_id", order_id)
       .limit(1);
 
     const paymentRecord = paymentRows?.[0];
 
     if (paymentError || !paymentRecord) {
       return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "PAYMENT_NOT_FOUND",
-            message: "Host payment record not found for this order",
-          },
-        },
+        { success: false, error: { code: "PAYMENT_NOT_FOUND", message: "Host payment record not found for this order" } },
         { status: 404 }
       );
     }
 
     if (paymentRecord.status === "COMPLETED") {
-      const { data: existingInvoice } = await adminClient
-        .from("host_invoices")
-        .select("*")
-        .eq("id", paymentRecord.invoice_id)
-        .limit(1);
+      // The webhook may have marked it COMPLETED already without creating
+      // the invoice (older deploys). Ensure one exists now.
+      const { invoice } = await ensureHostInvoiceForPayment(
+        paymentRecord.id,
+        adminClient
+      );
 
       return NextResponse.json({
         success: true,
         data: {
           payment: paymentRecord,
-          invoice: existingInvoice?.[0] || null,
+          invoice,
           alreadyProcessed: true,
         },
       });
     }
 
-    const updatePayload = {
-      gateway_payment_id: razorpay_payment_id,
-      gateway_signature: razorpay_signature,
-      payment_reference: razorpay_payment_id,
-      status: "COMPLETED",
-      paid_at: new Date().toISOString(),
-      payment_method: isMockPayment ? "MOCK_RAZORPAY" : "RAZORPAY",
-    };
-
     const { error: updateError } = await adminClient
       .from("host_payments")
-      .update(updatePayload)
+      .update({
+        gateway_payment_id: successful.cf_payment_id,
+        gateway_signature: null,
+        payment_reference: successful.cf_payment_id,
+        status: "COMPLETED",
+        paid_at: new Date().toISOString(),
+        payment_method: "CASHFREE",
+      })
       .eq("id", paymentRecord.id);
 
     if (updateError) {
       return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "DB_ERROR",
-            message: updateError.message,
-          },
-        },
+        { success: false, error: { code: "DB_ERROR", message: updateError.message } },
         { status: 500 }
       );
     }
@@ -128,11 +107,7 @@ export async function POST(request: Request) {
     const ppa = ppaRows?.[0];
 
     const { data: projectRows } = ppa
-      ? await adminClient
-          .from("projects")
-          .select("name")
-          .eq("id", ppa.project_id)
-          .limit(1)
+      ? await adminClient.from("projects").select("name").eq("id", ppa.project_id).limit(1)
       : { data: [] };
 
     const projectName = projectRows?.[0]?.name || "Solar Project";
@@ -143,7 +118,7 @@ export async function POST(request: Request) {
     });
 
     let invoiceId = paymentRecord.invoice_id;
-    let invoiceRecord = null;
+    let invoiceRecord: any = null;
 
     if (!invoiceId) {
       const { data: createdInvoice, error: invoiceError } = await adminClient
@@ -166,17 +141,10 @@ export async function POST(request: Request) {
 
       if (invoiceError || !createdInvoice) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "DB_ERROR",
-              message: invoiceError?.message || "Failed to generate host invoice",
-            },
-          },
+          { success: false, error: { code: "DB_ERROR", message: invoiceError?.message || "Failed to generate host invoice" } },
           { status: 500 }
         );
       }
-
       invoiceRecord = createdInvoice;
       invoiceId = createdInvoice.id;
 
@@ -190,7 +158,6 @@ export async function POST(request: Request) {
         .select("*")
         .eq("id", invoiceId)
         .limit(1);
-
       invoiceRecord = existingInvoice?.[0] || null;
     }
 
@@ -207,10 +174,7 @@ export async function POST(request: Request) {
       if (invoiceWithPath) {
         invoiceRecord = invoiceWithPath;
       } else if (invoiceRecord) {
-        invoiceRecord = {
-          ...invoiceRecord,
-          pdf_path: invoiceDownloadPath,
-        };
+        invoiceRecord = { ...invoiceRecord, pdf_path: invoiceDownloadPath };
       }
     }
 
@@ -220,7 +184,7 @@ export async function POST(request: Request) {
         payment: {
           ...paymentRecord,
           status: "COMPLETED",
-          payment_reference: razorpay_payment_id,
+          payment_reference: successful.cf_payment_id,
         },
         invoice: invoiceRecord,
         projectName,
@@ -229,13 +193,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Host billing verification error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: "HOST_BILLING_ERROR",
-          message: error.message || "Failed to verify host payment",
-        },
-      },
+      { success: false, error: { code: "HOST_BILLING_ERROR", message: error.message || "Failed to verify host payment" } },
       { status: 500 }
     );
   }

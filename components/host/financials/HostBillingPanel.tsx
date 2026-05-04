@@ -18,12 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatDate } from "@/lib/utils";
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+import { launchCashfreeCheckout } from "@/lib/payments/cashfreeClient";
 
 type BillingPanelState = {
   demo: boolean;
@@ -91,8 +86,8 @@ type BillingPanelState = {
   }>;
   paymentGateway?: {
     configured: boolean;
-    keyId: string;
-    mode: "live" | "development";
+    appId: string;
+    mode: "sandbox" | "production";
   };
   invoiceNote?: string;
 };
@@ -127,52 +122,11 @@ export function HostBillingPanel() {
     loadBilling();
   }, []);
 
-  const ensureRazorpay = () => {
-    return new Promise<boolean>((resolve) => {
-      if (typeof window === "undefined") {
-        resolve(false);
-        return;
-      }
-
-      if (window.Razorpay) {
-        resolve(true);
-        return;
-      }
-
-      const existingScript = document.querySelector<HTMLScriptElement>(
-        'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
-      );
-
-      if (existingScript) {
-        existingScript.addEventListener("load", () => resolve(true), { once: true });
-        existingScript.addEventListener("error", () => resolve(false), { once: true });
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.async = true;
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
-  const finalizePayment = async (payload: {
-    orderId: string;
-    paymentId: string;
-    signature: string;
-    hostPaymentId: string;
-  }) => {
+  const finalizePayment = async (orderId: string, hostPaymentId: string) => {
     const verifyResponse = await fetch("/api/host/payments/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        razorpay_order_id: payload.orderId,
-        razorpay_payment_id: payload.paymentId,
-        razorpay_signature: payload.signature,
-        payment_id: payload.hostPaymentId,
-      }),
+      body: JSON.stringify({ order_id: orderId, payment_id: hostPaymentId }),
     });
 
     const verifyResult = await verifyResponse.json();
@@ -191,6 +145,15 @@ export function HostBillingPanel() {
       return;
     }
 
+    let phone = "";
+    if (typeof window !== "undefined") {
+      phone = window.prompt("Enter your 10-digit mobile number for payment receipt") || "";
+    }
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      setError("A valid 10-digit Indian mobile number is required to start payment.");
+      return;
+    }
+
     setPaying(true);
     setError("");
 
@@ -198,7 +161,10 @@ export function HostBillingPanel() {
       const orderResponse = await fetch("/api/host/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payment_id: currentPayment.id }),
+        body: JSON.stringify({
+          payment_id: currentPayment.id,
+          customer_phone: phone,
+        }),
       });
 
       const orderResult = await orderResponse.json();
@@ -207,50 +173,20 @@ export function HostBillingPanel() {
         throw new Error(orderResult.error?.message || "Failed to create payment order");
       }
 
-      if (orderResult.data.mock) {
-        await finalizePayment({
-          orderId: orderResult.data.order_id,
-          paymentId: `mock_payment_${Date.now()}`,
-          signature: "mock_signature",
-          hostPaymentId: currentPayment.id,
-        });
+      const result = await launchCashfreeCheckout({
+        paymentSessionId: orderResult.data.payment_session_id,
+        mode: orderResult.data.mode,
+      });
+
+      if (result.status === "failed") {
+        throw new Error(result.error || "Payment failed");
+      }
+
+      if (result.status === "dismissed") {
         return;
       }
 
-      const loaded = await ensureRazorpay();
-
-      if (!loaded || !window.Razorpay) {
-        throw new Error("Razorpay checkout could not be loaded");
-      }
-
-      const checkout = new window.Razorpay({
-        key: orderResult.data.key,
-        amount: orderResult.data.amount,
-        currency: orderResult.data.currency,
-        name: billing.host?.businessName || "PNP Solar",
-        description: `Monthly PPA invoice ${currentPayment.invoiceNumber}`,
-        order_id: orderResult.data.order_id,
-        handler: async (response: any) => {
-          await finalizePayment({
-            orderId: response.razorpay_order_id,
-            paymentId: response.razorpay_payment_id,
-            signature: response.razorpay_signature,
-            hostPaymentId: currentPayment.id,
-          });
-        },
-        prefill: {
-          email: "",
-          contact: "",
-        },
-        theme: {
-          color: "#1B4332",
-        },
-        modal: {
-          ondismiss: () => setPaying(false),
-        },
-      });
-
-      checkout.open();
+      await finalizePayment(orderResult.data.order_id, currentPayment.id);
     } catch (payError: any) {
       setError(payError.message || "Payment could not be started");
     } finally {
@@ -288,7 +224,7 @@ export function HostBillingPanel() {
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${billing?.paymentGateway?.configured ? "bg-green-50 text-green-700 border-green-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}>
                 <BadgeCheck className="w-3.5 h-3.5" />
-                {billing?.paymentGateway?.configured ? "Razorpay ready" : "Demo checkout only"}
+                {billing?.paymentGateway?.configured ? "Cashfree ready" : "Demo checkout only"}
               </span>
               <button
                 type="button"

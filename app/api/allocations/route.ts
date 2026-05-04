@@ -82,7 +82,7 @@ export async function GET() {
  * The legacy "reserve first, pay later" path let any authenticated user
  * create unpaid allocations against legacy AVAILABLE seed blocks. Under the
  * virtual booking model, allocations are only ever created after a
- * Razorpay payment is verified, inside /api/signup/complete (new users) or
+ * Cashfree payment is verified, inside /api/signup/complete (new users) or
  * a future /api/reserve/complete (existing users). Hard-closed here so the
  * endpoint can never be used to mint free capacity.
  */

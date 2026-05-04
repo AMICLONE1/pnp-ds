@@ -2,21 +2,20 @@ import { NextResponse } from "next/server";
 import { verifyHost, hostUnauthorizedResponse } from "@/lib/host/hostAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { calculateHostBillingSummary } from "@/lib/host/billing";
+import {
+  buildAllowedPaymentMethods,
+  createCashfreeOrder,
+  getCashfreeMode,
+  getPublicAppId,
+  isCashfreeConfigured,
+} from "@/lib/payments/cashfree";
 
-function initRazorpay() {
-  try {
-    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
-      const Razorpay = require("razorpay");
-      return new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET,
-      });
-    }
-  } catch (error) {
-    console.warn("Razorpay not configured:", error);
-  }
-
-  return null;
+function getAppOrigin(request: Request) {
+  return (
+    process.env.NEXT_PUBLIC_APP_URL ||
+    request.headers.get("origin") ||
+    "http://localhost:3000"
+  );
 }
 
 function sumKwh(rows: Array<{ kwh: string | number }>) {
@@ -34,9 +33,7 @@ async function buildLiveBillingSummary(hostId: string, billingMonth?: number, bi
     .order("created_at", { ascending: false });
 
   const activePpa = ppaRows?.[0];
-  if (!activePpa) {
-    return null;
-  }
+  if (!activePpa) return null;
 
   const { data: projectData } = await adminClient
     .from("projects")
@@ -44,9 +41,7 @@ async function buildLiveBillingSummary(hostId: string, billingMonth?: number, bi
     .eq("id", activePpa.project_id)
     .single();
 
-  if (!projectData) {
-    return null;
-  }
+  if (!projectData) return null;
 
   const targetMonth = billingMonth || new Date().getMonth() + 1;
   const targetYear = billingYear || new Date().getFullYear();
@@ -82,18 +77,13 @@ async function buildLiveBillingSummary(hostId: string, billingMonth?: number, bi
     }
   }
 
-  if (generationKwh === 0) {
-    return null;
-  }
+  if (generationKwh === 0) return null;
 
   const dueDate = new Date(
     finalYear,
     finalMonth - 1,
     Math.min(Math.max(Number(activePpa.payment_due_day || 10), 1), 28),
-    18,
-    0,
-    0,
-    0
+    18, 0, 0, 0
   );
 
   const paymentStatus = new Date() > dueDate ? "OVERDUE" : "PENDING";
@@ -128,9 +118,32 @@ export async function POST(request: Request) {
       return hostUnauthorizedResponse(authResult.error || "UNAUTHORIZED");
     }
 
+    if (!isCashfreeConfigured()) {
+      return NextResponse.json(
+        { success: false, error: { code: "GATEWAY_NOT_CONFIGURED", message: "Cashfree keys are not configured" } },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json().catch(() => ({}));
     const billingMonth = body.billingMonth ? Number(body.billingMonth) : undefined;
     const billingYear = body.billingYear ? Number(body.billingYear) : undefined;
+    const customerPhone = String(body.customer_phone || "").trim();
+    const customerEmail = String(body.customer_email || "").trim();
+
+    const phone = customerPhone || (authResult.host as any)?.contact_phone || "";
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "PHONE_REQUIRED",
+            message: "A 10-digit Indian mobile number is required to start payment",
+          },
+        },
+        { status: 400 }
+      );
+    }
 
     const summary = await buildLiveBillingSummary(authResult.host.id, billingMonth, billingYear);
 
@@ -140,7 +153,8 @@ export async function POST(request: Request) {
           success: false,
           error: {
             code: "BILLING_NOT_READY",
-            message: "Host billing data is not ready yet. The host must have an active PPA and generation data before payment can start.",
+            message:
+              "Host billing data is not ready yet. The host must have an active PPA and generation data before payment can start.",
           },
         },
         { status: 409 }
@@ -159,20 +173,10 @@ export async function POST(request: Request) {
 
     if (existingPayment?.[0]?.status === "COMPLETED") {
       return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "ALREADY_PAID",
-            message: "This billing cycle has already been paid.",
-          },
-        },
+        { success: false, error: { code: "ALREADY_PAID", message: "This billing cycle has already been paid." } },
         { status: 409 }
       );
     }
-
-    const paymentMethod = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET
-      ? "RAZORPAY"
-      : "MOCK_RAZORPAY";
 
     const paymentPayload = {
       host_id: authResult.host.id,
@@ -187,7 +191,7 @@ export async function POST(request: Request) {
       total_amount: summary.totalAmount,
       status: "PENDING",
       due_date: summary.dueDate,
-      payment_method: paymentMethod,
+      payment_method: "CASHFREE",
       invoice_id: null,
       gateway_order_id: null,
       gateway_payment_id: null,
@@ -209,13 +213,7 @@ export async function POST(request: Request) {
 
       if (updateError) {
         return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "DB_ERROR",
-              message: updateError.message,
-            },
-          },
+          { success: false, error: { code: "DB_ERROR", message: updateError.message } },
           { status: 500 }
         );
       }
@@ -230,49 +228,38 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             success: false,
-            error: {
-              code: "DB_ERROR",
-              message: insertError?.message || "Failed to create host payment record",
-            },
+            error: { code: "DB_ERROR", message: insertError?.message || "Failed to create host payment record" },
           },
           { status: 500 }
         );
       }
-
       paymentId = createdPayment.id;
     }
 
-    const razorpayInstance = initRazorpay();
+    const orderId = `pnp_host_${paymentId}`;
+    const origin = getAppOrigin(request);
 
-    if (!razorpayInstance) {
-      const mockOrderId = `host_order_mock_${Date.now()}`;
-
-      await adminClient
-        .from("host_payments")
-        .update({ gateway_order_id: mockOrderId })
-        .eq("id", paymentId);
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          order_id: mockOrderId,
-          amount: Math.round(summary.totalAmount * 100),
-          currency: "INR",
-          payment_id: paymentId,
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
-          mock: true,
-          summary,
-        },
-      });
-    }
-
-    const order = await razorpayInstance.orders.create({
-      amount: Math.round(summary.totalAmount * 100),
-      currency: "INR",
-      receipt: summary.invoiceNumber,
-      notes: {
+    const order = await createCashfreeOrder({
+      order_id: orderId,
+      order_amount: Math.round(summary.totalAmount * 100) / 100,
+      order_currency: "INR",
+      customer_details: {
+        customer_id: authResult.host.id,
+        customer_phone: phone,
+        customer_email: customerEmail || (authResult.host as any)?.contact_email || "host@powernetpro.local",
+        customer_name: (authResult.host as any)?.business_name || "Host",
+      },
+      order_meta: {
+        return_url: `${origin}/host/financials?order_id={order_id}`,
+        notify_url: `${origin}/api/payments/webhook`,
+        payment_methods: buildAllowedPaymentMethods(),
+        invoice_date: new Date().toISOString(),
+        invoice_id: summary.invoiceNumber,
+      },
+      order_note: summary.invoiceNumber,
+      order_tags: {
+        host_payment_id: String(paymentId),
         host_id: authResult.host.id,
-        ppa_agreement_id: summary.ppaAgreementId,
         billing_month: String(summary.billingMonth),
         billing_year: String(summary.billingYear),
         invoice_number: summary.invoiceNumber,
@@ -281,18 +268,19 @@ export async function POST(request: Request) {
 
     await adminClient
       .from("host_payments")
-      .update({ gateway_order_id: order.id })
+      .update({ gateway_order_id: order.order_id })
       .eq("id", paymentId);
 
     return NextResponse.json({
       success: true,
       data: {
-        order_id: order.id,
-        amount: order.amount,
-        currency: order.currency,
+        order_id: order.order_id,
+        payment_session_id: order.payment_session_id,
+        amount: order.order_amount,
+        currency: order.order_currency,
         payment_id: paymentId,
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        mock: false,
+        app_id: getPublicAppId(),
+        mode: getCashfreeMode(),
         summary,
       },
     });
@@ -301,10 +289,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: {
-          code: "HOST_BILLING_ERROR",
-          message: error.message || "Failed to create host billing order",
-        },
+        error: { code: "HOST_BILLING_ERROR", message: error.message || "Failed to create host billing order" },
       },
       { status: 500 }
     );

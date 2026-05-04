@@ -2,6 +2,10 @@
 const nextConfig = {
   // Use empty turbopack config to allow Turbopack (Next.js 16 default)
   turbopack: {},
+  // pdf-lib + pdfkit reach into binary asset paths that Turbopack would
+  // otherwise rewrite into the build cache. Marking them serverExternal
+  // forces Next.js to require them from node_modules at runtime.
+  serverExternalPackages: ["pdfkit", "pdf-lib", "@pdf-lib/fontkit"],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'kmwinrwqavqvclnevyxp.supabase.co' },

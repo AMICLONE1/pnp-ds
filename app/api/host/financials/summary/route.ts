@@ -114,7 +114,7 @@ export async function GET() {
     // Build history (paid + pending + overdue) from host_payments
     const { data: historyRows } = await adminClient
       .from("host_payments")
-      .select("id, billing_month, billing_year, total_amount, status, due_date, paid_at")
+      .select("id, invoice_id, billing_month, billing_year, total_amount, status, due_date, paid_at")
       .eq("host_id", authResult.host.id)
       .order("billing_year", { ascending: false })
       .order("billing_month", { ascending: false })
@@ -129,6 +129,7 @@ export async function GET() {
     const history = (historyRows || []).map(
       (row: {
         id: string;
+        invoice_id: string | null;
         billing_month: number;
         billing_year: number;
         total_amount: number;
@@ -140,6 +141,7 @@ export async function GET() {
           row.status !== "COMPLETED" && new Date() > new Date(row.due_date);
         return {
           id: row.id,
+          invoiceId: row.invoice_id,
           period: monthFmt(row.billing_month, row.billing_year),
           amount: Number(row.total_amount),
           status:

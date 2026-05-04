@@ -251,7 +251,7 @@ export default function TermsPage() {
                 <div>
                   <h3 className="text-xl font-semibold text-black mb-3 mt-4">6.2 Reservation Fee</h3>
                   <p className="text-gray-700 leading-relaxed mb-3">
-                    The Reservation Fee is a one-time payment in the range of INR 35,000 to INR 40,000 per kW (subject to applicable government subsidies and promotions). The Reservation Fee is processed through Razorpay and routed to the Escrow Account. The Reservation Fee is payable through UPI, net banking, credit card, debit card, or other payment methods supported by Razorpay.
+                    The Reservation Fee is a one-time payment in the range of INR 35,000 to INR 40,000 per kW (subject to applicable government subsidies and promotions). The Reservation Fee is processed through Cashfree and routed to the Escrow Account. The Reservation Fee is payable through UPI, net banking, credit card, debit card, or other payment methods supported by Cashfree.
                   </p>
                 </div>
                 <div>
@@ -343,7 +343,7 @@ export default function TermsPage() {
                 <div>
                   <h3 className="text-xl font-semibold text-black mb-3 mt-4">10.3 Third-Party Services</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    The Platform integrates with third-party services including Razorpay, DigiLocker, BBPS, and banking partners. PowerNetPro is not responsible for the availability, accuracy, performance, or security of any third-party service. Any issues arising from third-party services should be directed to the respective service provider.
+                    The Platform integrates with third-party services including Cashfree, DigiLocker, BBPS, and banking partners. PowerNetPro is not responsible for the availability, accuracy, performance, or security of any third-party service. Any issues arising from third-party services should be directed to the respective service provider.
                   </p>
                 </div>
                 <div>

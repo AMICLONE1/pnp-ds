@@ -295,7 +295,7 @@ export default function HostSettingsPage() {
               metered generation. Browser-submitted values are never accepted.
             </p>
             <p className="rounded-2xl bg-gray-50 p-4">
-              Payments flow through Razorpay — PowerNetPro never stores card
+              Payments flow through Cashfree — PowerNetPro never stores card
               data. Password resets and account changes are handled by your
               admin.
             </p>

@@ -5,12 +5,6 @@ import { Suspense } from "react";
 import { Header } from "@/components/layout/header";
 import PaymentContent from "@/components/reserve/PaymentContent";
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
 
 export default function PaymentPage() {
   return (

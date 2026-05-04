@@ -31,33 +31,61 @@ export async function GET(
     }
 
     // Before reading plant data, require that the caller has a paid
-    // allocation in this plant — this is both the authorisation check and
-    // the reason we can then bypass the RLS "ACTIVE-only" filter on
-    // projects using the service-role client.
-    const { data: callerAllocs } = await supabase
-      .from("allocations")
-      .select("id, capacity_kw, capacity_block:capacity_blocks!inner(project_id)")
-      .eq("user_id", user.id)
-      .eq("capacity_block.project_id", id);
+    // allocation in this plant. We resolve allocation → capacity_block via
+    // the admin client because RLS on capacity_blocks only exposes rows
+    // whose status is AVAILABLE — once a block is allocated/sold it would
+    // otherwise be invisible to the anon client and the join would return
+    // zero rows even for legitimate owners.
+    const admin = createAdminClient();
 
-    if (!callerAllocs || callerAllocs.length === 0) {
+    const { data: ownerAllocs, error: ownerErr } = await admin
+      .from("allocations")
+      .select("id, capacity_kw, capacity_block_id")
+      .eq("user_id", user.id);
+
+    if (ownerErr) {
+      return NextResponse.json(
+        { success: false, error: { code: "DB_ERROR", message: ownerErr.message } },
+        { status: 500 }
+      );
+    }
+
+    const blockIds = (ownerAllocs || []).map((a: any) => a.capacity_block_id).filter(Boolean);
+    const { data: ownerBlocks } = blockIds.length
+      ? await admin
+          .from("capacity_blocks")
+          .select("id, project_id")
+          .in("id", blockIds)
+          .eq("project_id", id)
+      : { data: [] as any[] };
+
+    const allowedBlockIds = new Set((ownerBlocks || []).map((b: any) => b.id));
+    const callerAllocs = (ownerAllocs || []).filter((a: any) =>
+      allowedBlockIds.has(a.capacity_block_id)
+    );
+
+    if (callerAllocs.length === 0) {
       return NextResponse.json(
         { success: false, error: { code: "FORBIDDEN", message: "No allocation in this project" } },
         { status: 403 }
       );
     }
 
-    const admin = createAdminClient();
-
     const { data: project, error: projectErr } = await admin
       .from("projects")
-      .select("id, name, location, total_kw, rate_per_kwh, status, commissioning_date")
+      .select("id, name, location, total_kw, rate_per_kwh, status")
       .eq("id", id)
       .maybeSingle();
 
     if (projectErr || !project) {
       return NextResponse.json(
-        { success: false, error: { code: "NOT_FOUND", message: "Project not found" } },
+        {
+          success: false,
+          error: {
+            code: "NOT_FOUND",
+            message: projectErr?.message || "Project not found",
+          },
+        },
         { status: 404 }
       );
     }
@@ -125,7 +153,6 @@ export async function GET(
           total_kw: totalKw,
           rate_per_kwh: Number(project.rate_per_kwh || 7),
           status: project.status,
-          commissioning_date: project.commissioning_date || null,
         },
         user: {
           reserved_kw: userKw,

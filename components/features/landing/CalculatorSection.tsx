@@ -105,7 +105,7 @@ export function CalculatorSection() {
         >
           <div className="relative bg-white rounded-3xl border border-gray-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden">
             {/* Plant badge */}
-            <div className="bg-gradient-to-r from-gold/10 via-gold/5 to-transparent border-b border-gray-100 px-6 py-4">
+            <div className="bg-gradient-to-r from-gold/10 via-gold/5 to-transparent border-b border-gray-100 px-4 sm:px-6 py-4">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
@@ -138,9 +138,9 @@ export function CalculatorSection() {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 p-5 sm:p-6 lg:p-8">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 p-3 sm:p-6 lg:p-8 min-w-0">
               {/* LEFT: Inputs */}
-              <div className="space-y-5">
+              <div className="space-y-5 min-w-0">
                 <p
                   className="text-base sm:text-lg font-semibold text-black"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -246,12 +246,12 @@ export function CalculatorSection() {
               </div>
 
               {/* RIGHT: Results */}
-              <div className="space-y-3 flex flex-col justify-between">
+              <div className="space-y-3 flex flex-col justify-between min-w-0">
                 {/* Recommended Capacity + Monthly + Annual */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="rounded-2xl bg-gold/10 border border-gold/20 p-4 text-center">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-3 w-full">
+                  <div className="rounded-2xl bg-gold/10 border border-gold/20 p-2.5 sm:p-4 text-center min-w-0">
                     <p
-                      className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold mb-1"
+                      className="text-[8px] sm:text-[10px] uppercase tracking-wide text-gray-500 font-semibold mb-1 leading-tight"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       Book Capacity
@@ -260,16 +260,16 @@ export function CalculatorSection() {
                       key={calc.reservedSolarKw}
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-2xl sm:text-3xl font-bold text-gold"
+                      className="text-lg sm:text-2xl md:text-3xl font-bold text-gold break-words"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       {calc.reservedSolarKw}
                     </motion.p>
-                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">kW</p>
+                    <p className="text-[9px] sm:text-[10px] text-gray-500 font-medium mt-0.5">kW</p>
                   </div>
-                  <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4 text-center">
+                  <div className="rounded-2xl bg-gray-50 border border-gray-100 p-2.5 sm:p-4 text-center min-w-0">
                     <p
-                      className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold mb-1"
+                      className="text-[8px] sm:text-[10px] uppercase tracking-wide text-gray-500 font-semibold mb-1 leading-tight"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       Monthly Savings
@@ -278,15 +278,15 @@ export function CalculatorSection() {
                       key={calc.monthlySavings}
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-2xl sm:text-3xl font-bold text-black"
+                      className="text-sm sm:text-2xl md:text-3xl font-bold text-black"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       {formatCurrency(calc.monthlySavings)}
                     </motion.p>
                   </div>
-                  <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4 text-center">
+                  <div className="rounded-2xl bg-gray-50 border border-gray-100 p-2.5 sm:p-4 text-center min-w-0">
                     <p
-                      className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold mb-1"
+                      className="text-[8px] sm:text-[10px] uppercase tracking-wide text-gray-500 font-semibold mb-1 leading-tight"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       Annual Savings
@@ -295,7 +295,7 @@ export function CalculatorSection() {
                       key={calc.annualSavings}
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-2xl sm:text-3xl font-bold text-black"
+                      className="text-sm sm:text-2xl md:text-3xl font-bold text-black"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       {formatCurrency(calc.annualSavings)}

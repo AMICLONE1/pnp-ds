@@ -11,7 +11,7 @@ import { ArrowLeft, Clock, Mail } from "lucide-react";
 
 /**
  * Reserve-more-capacity is temporarily disabled for existing users. New users
- * go through /signup (which bundles reserve + Razorpay payment in one flow).
+ * go through /signup (which bundles reserve + Cashfree payment in one flow).
  * Until /api/reserve/complete exists for logged-in users, we show a notice
  * here rather than breaking mid-flow against the hard-closed POST
  * /api/allocations endpoint.

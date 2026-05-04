@@ -1,8 +1,8 @@
-import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { verifyHost, hostUnauthorizedResponse } from "@/lib/host/hostAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildInvoiceNumber, calculatePpaBilling } from "@/lib/host/billing";
+import { fetchCashfreeOrder, fetchCashfreePayments } from "@/lib/payments/cashfree";
 
 export async function POST(request: Request) {
   try {
@@ -13,60 +13,34 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json().catch(() => ({}));
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, payment_id } = body;
+    const { order_id, payment_id } = body || {};
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !payment_id) {
+    if (!order_id || !payment_id) {
+      return NextResponse.json(
+        { success: false, error: { code: "VALIDATION_ERROR", message: "Missing payment verification details" } },
+        { status: 400 }
+      );
+    }
+
+    const order = await fetchCashfreeOrder(order_id);
+    if (order.order_status !== "PAID") {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "VALIDATION_ERROR", message: "Missing payment verification details" },
+          error: { code: "PAYMENT_NOT_COMPLETED", message: `Payment is ${order.order_status}` },
+          data: { order_status: order.order_status },
         },
         { status: 400 }
       );
     }
 
-    const isMockPayment =
-      razorpay_payment_id.startsWith("mock_payment_") ||
-      razorpay_signature === "mock_signature";
-
-    if (!isMockPayment) {
-      const text = `${razorpay_order_id}|${razorpay_payment_id}`;
-      const generatedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "")
-        .update(text)
-        .digest("hex");
-
-      if (generatedSignature !== razorpay_signature) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: { code: "INVALID_SIGNATURE", message: "Invalid payment signature" },
-          },
-          { status: 400 }
-        );
-      }
-    } else if (process.env.NODE_ENV === "production") {
+    const payments = await fetchCashfreePayments(order_id);
+    const successful = payments.find((p) => p.payment_status === "SUCCESS");
+    if (!successful) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "DEMO_DISABLED", message: "Mock host payments are disabled in production" },
-        },
-        { status: 403 }
+        { success: false, error: { code: "PAYMENT_NOT_COMPLETED", message: "No successful payment found" } },
+        { status: 400 }
       );
-    }
-
-    if (payment_id === "demo-payment") {
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: payment_id,
-          gateway_order_id: razorpay_order_id,
-          gateway_payment_id: razorpay_payment_id,
-          status: "COMPLETED",
-          invoice_created: true,
-          demo: true,
-        },
-      });
     }
 
     const adminClient = createAdminClient();
@@ -83,10 +57,7 @@ export async function POST(request: Request) {
 
     if (paymentError || !payment) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "PAYMENT_NOT_FOUND", message: "Host payment record not found" },
-        },
+        { success: false, error: { code: "PAYMENT_NOT_FOUND", message: "Host payment record not found" } },
         { status: 404 }
       );
     }
@@ -105,12 +76,9 @@ export async function POST(request: Request) {
       });
     }
 
-    if (payment.gateway_order_id && payment.gateway_order_id !== razorpay_order_id) {
+    if (payment.gateway_order_id && payment.gateway_order_id !== order_id) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "ORDER_MISMATCH", message: "The payment order does not match this billing record" },
-        },
+        { success: false, error: { code: "ORDER_MISMATCH", message: "The payment order does not match this billing record" } },
         { status: 400 }
       );
     }
@@ -133,7 +101,7 @@ export async function POST(request: Request) {
 
     const now = new Date().toISOString();
     let invoiceId = payment.invoice_id;
-    let invoiceRecord = null;
+    let invoiceRecord: any = null;
 
     if (invoiceId) {
       const { data: existingInvoice } = await adminClient
@@ -142,7 +110,6 @@ export async function POST(request: Request) {
         .eq("id", invoiceId)
         .eq("host_id", hostId)
         .single();
-
       invoiceRecord = existingInvoice || null;
     }
 
@@ -167,14 +134,10 @@ export async function POST(request: Request) {
 
       if (invoiceError || !createdInvoice) {
         return NextResponse.json(
-          {
-            success: false,
-            error: { code: "INVOICE_ERROR", message: invoiceError?.message || "Failed to generate invoice" },
-          },
+          { success: false, error: { code: "INVOICE_ERROR", message: invoiceError?.message || "Failed to generate invoice" } },
           { status: 500 }
         );
       }
-
       invoiceRecord = createdInvoice;
       invoiceId = createdInvoice.id;
     } else {
@@ -195,14 +158,10 @@ export async function POST(request: Request) {
 
       if (updateInvoiceError || !updatedInvoice) {
         return NextResponse.json(
-          {
-            success: false,
-            error: { code: "INVOICE_ERROR", message: updateInvoiceError?.message || "Failed to update invoice" },
-          },
+          { success: false, error: { code: "INVOICE_ERROR", message: updateInvoiceError?.message || "Failed to update invoice" } },
           { status: 500 }
         );
       }
-
       invoiceRecord = updatedInvoice;
     }
 
@@ -218,10 +177,7 @@ export async function POST(request: Request) {
     if (invoiceWithPath) {
       invoiceRecord = invoiceWithPath;
     } else if (invoiceRecord) {
-      invoiceRecord = {
-        ...invoiceRecord,
-        pdf_path: invoiceDownloadPath,
-      };
+      invoiceRecord = { ...invoiceRecord, pdf_path: invoiceDownloadPath };
     }
 
     const { data: updatedPayment, error: paymentUpdateError } = await adminClient
@@ -230,11 +186,11 @@ export async function POST(request: Request) {
         invoice_id: invoiceId,
         status: "COMPLETED",
         paid_at: now,
-        payment_method: "RAZORPAY",
-        payment_reference: razorpay_payment_id,
-        gateway_order_id: razorpay_order_id,
-        gateway_payment_id: razorpay_payment_id,
-        gateway_signature: razorpay_signature,
+        payment_method: "CASHFREE",
+        payment_reference: successful.cf_payment_id,
+        gateway_order_id: order_id,
+        gateway_payment_id: successful.cf_payment_id,
+        gateway_signature: null,
         updated_at: now,
       })
       .eq("id", payment.id)
@@ -246,10 +202,7 @@ export async function POST(request: Request) {
 
     if (paymentUpdateError || !updatedPayment) {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: "PAYMENT_UPDATE_ERROR", message: paymentUpdateError?.message || "Failed to finalize payment" },
-        },
+        { success: false, error: { code: "PAYMENT_UPDATE_ERROR", message: paymentUpdateError?.message || "Failed to finalize payment" } },
         { status: 500 }
       );
     }
@@ -279,10 +232,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Host payment verification error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: { code: "SERVER_ERROR", message: error.message || "Failed to verify host payment" },
-      },
+      { success: false, error: { code: "SERVER_ERROR", message: error.message || "Failed to verify host payment" } },
       { status: 500 }
     );
   }

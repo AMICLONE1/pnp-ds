@@ -142,7 +142,7 @@ export default function MultipleUtilitiesPage() {
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-2 text-black">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-2 text-black">
               Multiple Utility Accounts
             </h1>
             <p className="text-black">

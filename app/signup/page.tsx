@@ -43,11 +43,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+import { launchCashfreeCheckout, loadCashfreeSdk } from "@/lib/payments/cashfreeClient";
 
 // ─── Types ───────────────────────────────────────────────────
 interface SignupData {
@@ -1279,7 +1275,7 @@ function Step5Payment({
         </span>
         <span className="flex items-center gap-1">
           <CreditCard className="w-3 h-3" />
-          Razorpay Secured
+          Cashfree Secured
         </span>
         <span className="flex items-center gap-1">
           <Lock className="w-3 h-3" />
@@ -1378,14 +1374,9 @@ function SignupContent() {
     []
   );
 
-  // Load Razorpay script
+  // Pre-load Cashfree SDK
   useEffect(() => {
-    if (typeof window !== "undefined" && !window.Razorpay) {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
+    loadCashfreeSdk();
   }, []);
 
   // Fetch projects
@@ -1439,18 +1430,16 @@ function SignupContent() {
     setStep(3);
   };
 
-  // Step 5 → Init signup (server-side), open Razorpay, then complete after pay.
-  // No auth user is created until the server has VERIFIED the Razorpay
-  // signature in /api/signup/complete. Dismissing the gateway leaves nothing
-  // behind except the pending_signups row, which auto-expires.
+  // Step 5 → Init signup (server-side), open Cashfree Drop-in, then complete after pay.
+  // No auth user is created until the server has VERIFIED the order with Cashfree
+  // in /api/signup/complete. Dismissing checkout leaves only the pending_signups
+  // row, which auto-expires.
   const handlePayment = async () => {
     if (!data.selectedProject) return;
     setLoading(true);
     setError("");
 
     const finishLogin = async () => {
-      // After /complete, sign the user in via the hardened login endpoint so
-      // the auth cookie is set, then go to dashboard.
       try {
         const loginRes = await fetch("/api/auth/login", {
           method: "POST",
@@ -1470,7 +1459,6 @@ function SignupContent() {
     };
 
     try {
-      // 1. Init signup — server validates, holds a pending row, returns Razorpay order.
       const initRes = await fetch("/api/signup/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1494,62 +1482,35 @@ function SignupContent() {
       }
       const order = initResult.data;
 
-      const completeAndLogin = async (resp: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
-        const completeRes = await fetch("/api/signup/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...resp, password: data.password }),
-        });
-        const completeResult = await completeRes.json();
-        if (!completeRes.ok || !completeResult.success) {
-          setError(completeResult.error || "Payment verification failed. Contact support.");
-          setLoading(false);
-          return;
-        }
-        await finishLogin();
-      };
+      const result = await launchCashfreeCheckout({
+        paymentSessionId: order.payment_session_id,
+        mode: order.mode,
+      });
 
-      // 2. Open Razorpay (or mock in dev).
-      if (order.mock) {
-        await completeAndLogin({
-          razorpay_order_id: order.order_id,
-          razorpay_payment_id: `mock_payment_${Date.now()}`,
-          razorpay_signature: "mock_signature",
-        });
+      if (result.status === "failed") {
+        setError(result.error || "Payment failed");
+        setLoading(false);
         return;
       }
 
-      if (!window.Razorpay) {
-        throw new Error("Payment gateway not loaded. Please refresh and try again.");
+      if (result.status === "dismissed") {
+        setError("Payment cancelled. Your account has not been created.");
+        setLoading(false);
+        return;
       }
 
-      const options = {
-        key: order.key,
-        amount: order.amount,
-        currency: order.currency,
-        name: "PowerNetPro",
-        description: `${data.capacity.toFixed(2)} kW Solar Reservation`,
-        order_id: order.order_id,
-        handler: async (response: any) => {
-          await completeAndLogin({
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
-        },
-        modal: {
-          ondismiss: () => {
-            // Nothing to roll back — no auth user was created. The pending row
-            // auto-expires server-side after 1 hour.
-            setError("Payment cancelled. Your account has not been created.");
-            setLoading(false);
-          },
-        },
-        prefill: { name: data.name, email: data.email, contact: data.phone },
-        theme: { color: "#F5A623" },
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      const completeRes = await fetch("/api/signup/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: order.order_id, password: data.password }),
+      });
+      const completeResult = await completeRes.json();
+      if (!completeRes.ok || !completeResult.success) {
+        setError(completeResult.error || "Payment verification failed. Contact support.");
+        setLoading(false);
+        return;
+      }
+      await finishLogin();
     } catch (err: any) {
       setError(err.message || "Payment failed");
       setLoading(false);

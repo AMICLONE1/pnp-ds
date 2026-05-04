@@ -146,13 +146,13 @@ export default function HostLandingPage() {
             {/* Host-specific header */}
             <HostHeader />
 
-            <main className="flex-1 mt-[96px]">
+            <main className="flex-1 mt-[56px] sm:mt-[80px] md:mt-[96px]">
                 {/* ============================================ */}
                 {/* HERO SECTION */}
                 {/* ============================================ */}
                 <section
                     id="overview"
-                    className="relative overflow-hidden py-16 md:py-24 lg:py-32 px-4 md:px-8"
+                    className="relative overflow-hidden py-12 sm:py-16 md:py-24 lg:py-32 px-4 sm:px-6 md:px-8"
                 >
                     {/* Background image */}
                     <div
@@ -294,7 +294,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* TRUST BAR */}
                 {/* ============================================ */}
-                <div className="bg-gray-50 border-b border-gray-200 py-5 px-6 md:px-10">
+                <div className="bg-gray-50 border-b border-gray-200 py-5 px-4 sm:px-4 sm:px-6 md:px-10">
                     <div className="w-full mx-auto flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10">
                         <span
                             style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -323,7 +323,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* BENEFITS */}
                 {/* ============================================ */}
-                <section id="benefits" className="bg-white py-12 md:py-16 px-6 md:px-10">
+                <section id="benefits" className="bg-white py-12 md:py-16 px-4 sm:px-6 md:px-10">
                     <div className="w-full mx-auto">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -395,7 +395,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 <section
                     id="how-it-works"
-                    className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 px-6 md:px-10"
+                    className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 px-4 sm:px-6 md:px-10"
                 >
                     <div className="w-full mx-auto">
                         <motion.div
@@ -468,7 +468,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* SAVINGS COMPARISON */}
                 {/* ============================================ */}
-                <section id="savings" className="bg-white py-12 md:py-16 px-6 md:px-10">
+                <section id="savings" className="bg-white py-12 md:py-16 px-4 sm:px-6 md:px-10">
                     <div className="w-full mx-auto">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -580,7 +580,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 <section
                     id="eligibility"
-                    className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 px-6 md:px-10"
+                    className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 px-4 sm:px-6 md:px-10"
                 >
                     <div className="w-full mx-auto">
                         <motion.div
@@ -644,7 +644,7 @@ export default function HostLandingPage() {
                 {/* ============================================ */}
                 {/* FAQ */}
                 {/* ============================================ */}
-                <section id="faq" className="bg-white py-12 md:py-16 px-6 md:px-10 w-full">
+                <section id="faq" className="bg-white py-12 md:py-16 px-4 sm:px-6 md:px-10 w-full">
                     <div className="w-full mx-auto flex items-center justify-center">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -708,7 +708,7 @@ export default function HostLandingPage() {
 
                 {/* ============================================ */}
                 {/* CTA */}
-                <section id="cta" className="text-center py-[100px] px-6 md:px-12" style={{ background: 'linear-gradient(175deg, #0F4425 0%, #0A0A0A 100%)' }}>
+                <section id="cta" className="text-center py-16 sm:py-20 md:py-[100px] px-4 sm:px-6 md:px-12" style={{ background: 'linear-gradient(175deg, #0F4425 0%, #0A0A0A 100%)' }}>
                     <h2 className="font-['Playfair_Display',Georgia,serif] text-[clamp(32px,4vw,50px)] font-medium text-white leading-[1.15] mb-4">
                         Ready to save <span className="text-[#D4A843] italic">40-50%</span><br aria-hidden="true" className="hidden sm:block" /> on your electricity bill?
                     </h2>
@@ -726,7 +726,7 @@ export default function HostLandingPage() {
                 </section>
 
                 {/* FOOTER */}
-                <footer className="bg-[#0A0A0A] py-[64px] px-6 md:px-10 pb-8 text-white/50">
+                <footer className="bg-[#0A0A0A] py-12 sm:py-[64px] px-4 sm:px-6 md:px-10 pb-8 text-white/50">
                     <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
                         <div className="lg:col-span-2">
                             <Link href="/" className="flex items-center gap-2 mb-4 text-white no-underline w-fit">

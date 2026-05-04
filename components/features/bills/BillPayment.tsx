@@ -44,7 +44,7 @@ export function BillPayment({ bill, onPaymentComplete }: BillPaymentProps) {
 
       if (result.success) {
         if (result.data.requires_payment) {
-          // Redirect to Razorpay payment
+          // Redirect to Cashfree payment
           // For now, just show success
           setSuccess(true);
           if (onPaymentComplete) {
