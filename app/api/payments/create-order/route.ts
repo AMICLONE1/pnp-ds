@@ -234,7 +234,7 @@ export async function POST(request: Request) {
           customer_name: customer_name || (user.user_metadata?.name as string) || "Customer",
         },
         order_meta: {
-          return_url: `${origin}/reserve/payment/return?order_id=${orderId}`,
+          return_url: `${origin}/reserve/payment/return`,
           notify_url: `${origin}/api/payments/webhook`,
           payment_methods: buildAllowedPaymentMethods(),
           invoice_date: new Date().toISOString(),
