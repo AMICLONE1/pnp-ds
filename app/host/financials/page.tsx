@@ -130,6 +130,10 @@ export default function HostFinancialsPage() {
         );
       }
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pnp_payment_flow", "host_financials");
+      }
+
       const result = await launchCashfreeCheckout({
         paymentSessionId: orderResult.data.payment_session_id,
         mode: orderResult.data.mode,

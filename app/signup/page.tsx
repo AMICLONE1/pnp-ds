@@ -1482,6 +1482,10 @@ function SignupContent() {
       }
       const order = initResult.data;
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pnp_payment_flow", "signup");
+      }
+
       const result = await launchCashfreeCheckout({
         paymentSessionId: order.payment_session_id,
         mode: order.mode,

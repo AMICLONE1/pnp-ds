@@ -173,6 +173,10 @@ export function HostBillingPanel() {
         throw new Error(orderResult.error?.message || "Failed to create payment order");
       }
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pnp_payment_flow", "host_payment");
+      }
+
       const result = await launchCashfreeCheckout({
         paymentSessionId: orderResult.data.payment_session_id,
         mode: orderResult.data.mode,
