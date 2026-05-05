@@ -153,7 +153,7 @@ export async function POST(request: Request) {
         customer_name: body.name.trim(),
       },
       order_meta: {
-        return_url: `${origin}/signup?order_id={order_id}`,
+        return_url: `${origin}/signup?order_id=${orderId}`,
         notify_url: `${origin}/api/payments/webhook`,
         payment_methods: buildAllowedPaymentMethods(),
         invoice_date: new Date().toISOString(),
