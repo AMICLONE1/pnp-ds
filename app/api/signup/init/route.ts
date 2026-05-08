@@ -33,11 +33,13 @@ function getClientIp(req: Request): string {
 }
 
 function getAppOrigin(request: Request) {
-  return (
+  const raw =
     process.env.NEXT_PUBLIC_APP_URL ||
     request.headers.get("origin") ||
-    "http://localhost:3000"
-  );
+    "http://localhost:3000";
+  // Strip whitespace + trailing slash. Vercel env-var pastes can carry a
+  // leading tab/space which Cashfree's URL validator silently rejects.
+  return raw.trim().replace(/\/$/, "");
 }
 
 export async function POST(request: Request) {
