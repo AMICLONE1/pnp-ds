@@ -12,6 +12,8 @@ import {
   Leaf,
   CheckCircle,
   Clock,
+  FileText,
+  ShieldCheck,
 } from "lucide-react";
 
 export interface Project {
@@ -26,6 +28,12 @@ export interface Project {
   commission_date?: string;
   operational_until?: string;
   rate_per_kwh?: number;
+  documents?: {
+    ppa_available: boolean;
+    ppa_uploaded_at: string | null;
+    insurance_available: boolean;
+    insurance_uploaded_at: string | null;
+  };
 }
 
 interface ProjectCardProps {
@@ -217,6 +225,38 @@ export function ProjectCard({ project, isSelected, onSelect }: ProjectCardProps)
                   Until {new Date(project.operational_until).getFullYear()}
                 </span>
               </div>
+            )}
+          </div>
+        )}
+
+        {/* Public document downloads — visible to anyone, no login needed. */}
+        {(project.documents?.ppa_available || project.documents?.insurance_available) && (
+          <div
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            className="mt-5 pt-5 border-t border-gray-100 flex flex-wrap gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {project.documents?.ppa_available && (
+              <a
+                href={`/api/projects/${project.id}/documents/ppa`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gold/30 bg-gold/5 text-xs font-semibold text-gold-dark hover:bg-gold/10 transition-colors"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                View PPA
+              </a>
+            )}
+            {project.documents?.insurance_available && (
+              <a
+                href={`/api/projects/${project.id}/documents/insurance`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-300/40 bg-emerald-50 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition-colors"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                View Insurance
+              </a>
             )}
           </div>
         )}

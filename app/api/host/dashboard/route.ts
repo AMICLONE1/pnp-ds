@@ -28,6 +28,12 @@ interface DashboardPlant {
   efficiency: number;
   ppaRate: number;
   dataLoggerSerialId: string | null;
+  documents?: {
+    ppaAvailable: boolean;
+    ppaUploadedAt: string | null;
+    insuranceAvailable: boolean;
+    insuranceUploadedAt: string | null;
+  };
 }
 
 interface LiveInverterData {
@@ -73,13 +79,13 @@ export async function GET() {
         admin
           .from("projects")
           .select(
-            "id, name, location, state, total_kw, rate_per_kwh, status, trillectric_site_ids, created_at"
+            "id, name, location, state, total_kw, rate_per_kwh, status, trillectric_site_ids, created_at, insurance_document_path, insurance_uploaded_at"
           )
           .eq("host_id", hostId)
           .is("deleted_at", null),
         admin
           .from("ppa_agreements")
-          .select("project_id, rate_per_kwh, status")
+          .select("project_id, rate_per_kwh, status, agreement_document_path, agreement_document_uploaded_at")
           .eq("host_id", hostId)
           .eq("status", "ACTIVE"),
         admin
@@ -120,9 +126,26 @@ export async function GET() {
     );
 
     const ppaRateByProject = new Map<string, number>();
-    ppas.forEach((p: { project_id: string; rate_per_kwh: number }) => {
-      ppaRateByProject.set(p.project_id, Number(p.rate_per_kwh || 0));
-    });
+    const ppaDocByProject = new Map<
+      string,
+      { path: string | null; uploaded_at: string | null }
+    >();
+    ppas.forEach(
+      (p: {
+        project_id: string;
+        rate_per_kwh: number;
+        agreement_document_path?: string | null;
+        agreement_document_uploaded_at?: string | null;
+      }) => {
+        ppaRateByProject.set(p.project_id, Number(p.rate_per_kwh || 0));
+        if (!ppaDocByProject.has(p.project_id)) {
+          ppaDocByProject.set(p.project_id, {
+            path: p.agreement_document_path || null,
+            uploaded_at: p.agreement_document_uploaded_at || null,
+          });
+        }
+      }
+    );
 
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
@@ -210,6 +233,8 @@ export async function GET() {
         total_kw: number;
         rate_per_kwh: number;
         status: string;
+        insurance_document_path?: string | null;
+        insurance_uploaded_at?: string | null;
       }) => {
         const totalKw = Number(p.total_kw || 0);
         const ppaRate = ppaRateByProject.get(p.id) ?? Number(p.rate_per_kwh || 0);
@@ -248,6 +273,7 @@ export async function GET() {
               )
             : 0;
 
+        const ppaDoc = ppaDocByProject.get(p.id);
         return {
           plant: {
             id: p.id,
@@ -262,6 +288,12 @@ export async function GET() {
             efficiency,
             ppaRate,
             dataLoggerSerialId: null,
+            documents: {
+              ppaAvailable: Boolean(ppaDoc?.path),
+              ppaUploadedAt: ppaDoc?.uploaded_at || null,
+              insuranceAvailable: Boolean(p.insurance_document_path),
+              insuranceUploadedAt: p.insurance_uploaded_at || null,
+            },
           } as DashboardPlant,
           live,
           expectedMonthly,

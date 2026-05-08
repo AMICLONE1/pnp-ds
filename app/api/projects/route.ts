@@ -110,12 +110,20 @@ export async function GET() {
     if (projects.length > 0) {
       const projectIds = projects.map((p: any) => p.id);
 
-      // Get available capacity blocks for all projects
-      const { data: capacityBlocks } = await supabase
-        .from("capacity_blocks")
-        .select("project_id, kw")
-        .in("project_id", projectIds)
-        .eq("status", "AVAILABLE");
+      const [capacityResult, ppaResult] = await Promise.all([
+        supabase
+          .from("capacity_blocks")
+          .select("project_id, kw")
+          .in("project_id", projectIds)
+          .eq("status", "AVAILABLE"),
+        supabase
+          .from("ppa_agreements")
+          .select("project_id, agreement_document_path, agreement_document_uploaded_at, created_at")
+          .in("project_id", projectIds)
+          .order("created_at", { ascending: false }),
+      ]);
+
+      const capacityBlocks = capacityResult.data;
 
       // Calculate available capacity per project
       const capacityMap = new Map<string, number>();
@@ -126,10 +134,22 @@ export async function GET() {
         });
       }
 
-      // Add available_capacity_kw to each project
+      // Map most-recent PPA per project for document availability
+      const ppaMap = new Map<string, { path: string | null; uploaded_at: string | null }>();
+      (ppaResult.data || []).forEach((row: any) => {
+        if (!ppaMap.has(row.project_id)) {
+          ppaMap.set(row.project_id, {
+            path: row.agreement_document_path || null,
+            uploaded_at: row.agreement_document_uploaded_at || null,
+          });
+        }
+      });
+
       projects = projects.map((project: any) => ({
         ...project,
         available_capacity_kw: capacityMap.get(project.id) || project.total_kw || 0,
+        ppa_document_path: ppaMap.get(project.id)?.path || null,
+        ppa_document_uploaded_at: ppaMap.get(project.id)?.uploaded_at || null,
       }));
     }
 

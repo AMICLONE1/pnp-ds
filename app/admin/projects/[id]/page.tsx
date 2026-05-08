@@ -35,7 +35,7 @@ import {
 } from "@/components/admin/shared/AdminPageHeader";
 import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
 
-type TabId = "analytics" | "host" | "bookers" | "generation" | "billing" | "alerts";
+type TabId = "analytics" | "host" | "bookers" | "generation" | "billing" | "alerts" | "documents";
 
 interface ProjectDetail {
   project: any;
@@ -292,6 +292,7 @@ export default function ProjectDetailPage() {
               { id: "bookers", label: "Bookers", count: bookers.length, icon: <Users className="w-4 h-4" /> },
               { id: "generation", label: "Generation", count: generation.entries.length, icon: <Zap className="w-4 h-4" /> },
               { id: "billing", label: "PPA & Billing", count: ppa_agreements.length, icon: <Wallet className="w-4 h-4" /> },
+              { id: "documents", label: "Documents", icon: <FileText className="w-4 h-4" /> },
               { id: "alerts", label: "Alerts", count: analytics?.alerts.length, icon: <AlertTriangle className="w-4 h-4" /> },
             ]}
             active={activeTab}
@@ -304,6 +305,15 @@ export default function ProjectDetailPage() {
           {activeTab === "bookers" && <BookersTab bookers={bookers} />}
           {activeTab === "generation" && <GenerationTab entries={generation.entries} />}
           {activeTab === "billing" && <BillingTab agreements={ppa_agreements} />}
+          {activeTab === "documents" && (
+            <DocumentsTab
+              projectId={projectId}
+              insurancePath={project.insurance_document_path || null}
+              insuranceUploadedAt={project.insurance_uploaded_at || null}
+              ppaPath={ppa_agreements?.[0]?.agreement_document_path || null}
+              ppaUploadedAt={ppa_agreements?.[0]?.agreement_document_uploaded_at || null}
+            />
+          )}
           {activeTab === "alerts" && analytics && <AlertsTab alerts={analytics.alerts} />}
         </div>
       </div>
@@ -576,4 +586,137 @@ function StatusBadge({ status }: { status: string }) {
     RETIRED: "bg-red-100 text-red-700",
   };
   return <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${colors[status] || "bg-gray-100 text-gray-700"}`}>{status}</span>;
+}
+
+function DocumentRow({
+  projectId,
+  kind,
+  label,
+  description,
+  hasFile,
+  uploadedAt,
+}: {
+  projectId: string;
+  kind: "ppa" | "insurance";
+  label: string;
+  description: string;
+  hasFile: boolean;
+  uploadedAt: string | null;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const downloadHref = `/api/projects/${projectId}/documents/${kind}`;
+
+  const handleUpload = async (file: File) => {
+    setError(null);
+    setSuccess(false);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("kind", kind);
+      fd.append("file", file);
+      const res = await fetch(`/api/admin/projects/${projectId}/documents`, {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Upload failed");
+      }
+      setSuccess(true);
+      // Force a refresh after a short delay so the new uploadedAt shows.
+      setTimeout(() => window.location.reload(), 800);
+    } catch (err: any) {
+      setError(err?.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-5">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-sm font-semibold text-black">{label}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+          {hasFile && uploadedAt && (
+            <p className="text-[11px] text-gray-400 mt-2">
+              Last uploaded {new Date(uploadedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+            </p>
+          )}
+        </div>
+        {hasFile && (
+          <a
+            href={downloadHref}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs font-medium text-gold-dark hover:underline"
+          >
+            View current
+          </a>
+        )}
+      </div>
+
+      <div className="mt-4 flex items-center gap-3 flex-wrap">
+        <input
+          type="file"
+          accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          disabled={uploading}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleUpload(f);
+          }}
+          className="block text-sm text-gray-700 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gold/10 file:text-gold-dark hover:file:bg-gold/15"
+        />
+        {uploading && <span className="text-xs text-gray-500 inline-flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> Uploading…</span>}
+        {success && <span className="text-xs text-green-600">Uploaded — refreshing…</span>}
+      </div>
+
+      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+function DocumentsTab({
+  projectId,
+  insurancePath,
+  insuranceUploadedAt,
+  ppaPath,
+  ppaUploadedAt,
+}: {
+  projectId: string;
+  insurancePath: string | null;
+  insuranceUploadedAt: string | null;
+  ppaPath: string | null;
+  ppaUploadedAt: string | null;
+}) {
+  return (
+    <div className="space-y-4">
+      <p className="text-xs text-gray-500">
+        These documents are visible to anyone visiting the public reserve page, and to the host and existing subscribers.
+        Upload a new file to replace the existing one — the previous file is removed and an audit_log entry records the change.
+      </p>
+
+      <DocumentRow
+        projectId={projectId}
+        kind="ppa"
+        label="PPA Agreement"
+        description="The signed Power Purchase Agreement governing this project."
+        hasFile={Boolean(ppaPath)}
+        uploadedAt={ppaUploadedAt}
+      />
+
+      <DocumentRow
+        projectId={projectId}
+        kind="insurance"
+        label="Plant Insurance"
+        description="Insurance certificate covering the solar plant."
+        hasFile={Boolean(insurancePath)}
+        uploadedAt={insuranceUploadedAt}
+      />
+    </div>
+  );
 }

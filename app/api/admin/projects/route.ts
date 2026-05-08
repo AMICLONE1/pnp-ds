@@ -6,6 +6,7 @@ import { calculatePpaBilling } from "@/lib/host/billing";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sanitizeSearchTerm } from "@/lib/security/inputSanitizer";
 import { SOLAR_CONSTANTS } from "@/lib/solar-constants";
+import { uploadProjectDocument } from "@/lib/admin/projectDocuments";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type ProjectStatus = "DRAFT" | "ACTIVE" | "MAINTENANCE" | "RETIRED";
@@ -61,45 +62,9 @@ async function supportsProjectLoggerSerial(adminClient: any) {
     throw error;
 }
 
-/**
- * Upload PPA PDF to Supabase Storage and return the document path
- */
-async function uploadPpaPdf(
-    adminClient: SupabaseClient,
-    pdfFile: File,
-    hostId: string,
-    spvId: string
-): Promise<string> {
-    if (!pdfFile || pdfFile.size === 0) {
-        throw new Error("PDF file is empty");
-    }
-
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    if (pdfFile.size > maxSize) {
-        throw new Error("PDF file exceeds 10MB limit");
-    }
-
-    if (pdfFile.type !== "application/pdf") {
-        throw new Error("File must be a PDF");
-    }
-
-    const buffer = await pdfFile.arrayBuffer();
-    const timestamp = Date.now();
-    const fileName = `ppa-documents/${hostId}/${spvId}/${timestamp}.pdf`;
-
-    const { error: uploadError } = await adminClient.storage
-        .from("ppa-documents")
-        .upload(fileName, buffer, {
-            contentType: "application/pdf",
-            upsert: false,
-        });
-
-    if (uploadError) {
-        throw new Error(`Failed to upload PDF: ${uploadError.message}`);
-    }
-
-    return fileName;
-}
+// PPA + insurance uploads now live in @/lib/admin/projectDocuments. Both are
+// PDF / Word, max 10 MB; PPA goes to ppa-documents bucket, insurance goes
+// to project-documents.
 
 /**
  * GET /api/admin/projects
@@ -305,6 +270,7 @@ export async function POST(request: NextRequest) {
     let createdProjectId: string | null = null;
     let createdHostAccount: ProvisionedHostAccount | null = null;
     let uploadedPdfPath: string | null = null;
+    let uploadedInsurancePath: string | null = null;
 
     try {
         const authResult = await verifyAdmin();
@@ -332,6 +298,7 @@ export async function POST(request: NextRequest) {
         const host_contact_phone = formData.get("host_contact_phone") as string;
         const host_password = formData.get("host_password") as string;
         const ppaDocument = formData.get("ppa_document") as File | null;
+        const insuranceDocument = formData.get("insurance_document") as File | null;
 
         if (
             !spv_id ||
@@ -414,17 +381,31 @@ export async function POST(request: NextRequest) {
             authResult.user?.id
         );
 
-        // Upload PPA PDF if provided
+        // Upload PPA + insurance documents if provided. Both are optional —
+        // admin can backfill them later via the project edit page.
         if (ppaDocument) {
             try {
-                uploadedPdfPath = await uploadPpaPdf(
-                    adminClient,
-                    ppaDocument,
-                    createdHostAccount.hostId,
-                    normalizedSpvId
-                );
+                uploadedPdfPath = await uploadProjectDocument(adminClient, {
+                    kind: "ppa",
+                    file: ppaDocument,
+                    hostId: createdHostAccount.hostId,
+                    spvId: normalizedSpvId,
+                });
             } catch (uploadErr) {
-                throw new Error(uploadErr instanceof Error ? uploadErr.message : "PDF upload failed");
+                throw new Error(uploadErr instanceof Error ? uploadErr.message : "PPA upload failed");
+            }
+        }
+
+        if (insuranceDocument) {
+            try {
+                uploadedInsurancePath = await uploadProjectDocument(adminClient, {
+                    kind: "insurance",
+                    file: insuranceDocument,
+                    hostId: createdHostAccount.hostId,
+                    spvId: normalizedSpvId,
+                });
+            } catch (uploadErr) {
+                throw new Error(uploadErr instanceof Error ? uploadErr.message : "Insurance upload failed");
             }
         }
 
@@ -443,6 +424,8 @@ export async function POST(request: NextRequest) {
                 updated_at: now,
                 logger_api_key: logger_api_key ? String(logger_api_key).trim() : null,
                 trillectric_site_ids,
+                insurance_document_path: uploadedInsurancePath,
+                insurance_uploaded_at: uploadedInsurancePath ? now : null,
         };
 
         if (loggerSerialSupported) {
@@ -495,6 +478,7 @@ export async function POST(request: NextRequest) {
                 payment_due_day: 10,
                 status: "ACTIVE",
                 agreement_document_path: uploadedPdfPath,
+                agreement_document_uploaded_at: uploadedPdfPath ? now : null,
             })
             .select("id, agreement_number, status")
             .single();

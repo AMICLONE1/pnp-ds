@@ -15,6 +15,12 @@ export interface DashboardPlant {
   efficiency: number;
   ppaRate: number;
   dataLoggerSerialId: string | null;
+  documents?: {
+    ppaAvailable: boolean;
+    ppaUploadedAt: string | null;
+    insuranceAvailable: boolean;
+    insuranceUploadedAt: string | null;
+  };
 }
 
 export interface DashboardStats {

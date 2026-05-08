@@ -28,6 +28,7 @@ import EmptyState from "@/components/dashboard/EmptyState";
 import StatCard from "@/components/dashboard/StatCard";
 import QuickActionButton from "@/components/dashboard/QuickActionButton";
 import AllocationCard from "@/components/dashboard/AllocationCard";
+import { ProjectDocumentsCard } from "@/components/projects/ProjectDocumentsCard";
 
 
 interface DashboardSummary {
@@ -315,6 +316,37 @@ export default function DashboardPage() {
               </Card>
             </motion.div>
           </div>
+
+          {/* Project documents — visible once the subscriber has at least
+              one allocation. Same docs that prospective subscribers see on
+              /reserve, surfaced on the dashboard for transparency. */}
+          {allocations.length > 0 && (() => {
+            const seen = new Set<string>();
+            const projectDocs = allocations
+              .map((a) => a.project)
+              .filter((p) => p && !seen.has(p.id) && (seen.add(p.id), true));
+
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.85 }}
+                className="space-y-4"
+              >
+                {projectDocs.map((project: any) => (
+                  <ProjectDocumentsCard
+                    key={`docs-${project.id}`}
+                    projectId={project.id}
+                    projectName={project.name}
+                    ppaAvailable={Boolean(project.ppa_document_path)}
+                    ppaUploadedAt={project.ppa_document_uploaded_at}
+                    insuranceAvailable={Boolean(project.insurance_document_path)}
+                    insuranceUploadedAt={project.insurance_uploaded_at}
+                  />
+                ))}
+              </motion.div>
+            );
+          })()}
 
           {/* Credit History Chart */}
           <motion.div

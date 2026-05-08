@@ -21,6 +21,10 @@ interface DatabaseProject {
   operational_until?: string;
   image_url?: string;
   spv_id?: string;
+  insurance_document_path?: string | null;
+  insurance_uploaded_at?: string | null;
+  ppa_document_path?: string | null;
+  ppa_document_uploaded_at?: string | null;
 }
 
 export function transformProject(project: DatabaseProject) {
@@ -41,6 +45,12 @@ export function transformProject(project: DatabaseProject) {
     operational_until: project.operational_until,
     image_url: project.image_url,
     rate_per_kwh: project.rate_per_kwh || project.price_per_kw || 6.05,
+    documents: {
+      ppa_available: Boolean(project.ppa_document_path),
+      ppa_uploaded_at: project.ppa_document_uploaded_at || null,
+      insurance_available: Boolean(project.insurance_document_path),
+      insurance_uploaded_at: project.insurance_uploaded_at || null,
+    },
   };
 }
 

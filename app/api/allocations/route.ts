@@ -50,14 +50,41 @@ export async function GET() {
       .select("id, kw, project_id")
       .in("id", blockIds);
     const projectIds = [...new Set((blocks || []).map((b: any) => b.project_id))];
-    const { data: projects } = await admin
-      .from("projects")
-      .select("*")
-      .in("id", projectIds);
+
+    const [projectsResult, ppaResult] = await Promise.all([
+      admin.from("projects").select("*").in("id", projectIds),
+      admin
+        .from("ppa_agreements")
+        .select("project_id, agreement_document_path, agreement_document_uploaded_at, created_at")
+        .in("project_id", projectIds)
+        .order("created_at", { ascending: false }),
+    ]);
+
+    const projects = projectsResult.data;
+
+    // Fold the most-recent PPA into each project so the dashboard can render
+    // download buttons without a second round-trip.
+    const ppaByProject = new Map<string, { path: string | null; uploaded_at: string | null }>();
+    (ppaResult.data || []).forEach((row: any) => {
+      if (!ppaByProject.has(row.project_id)) {
+        ppaByProject.set(row.project_id, {
+          path: row.agreement_document_path || null,
+          uploaded_at: row.agreement_document_uploaded_at || null,
+        });
+      }
+    });
 
     const enriched = rows.map((a: any) => {
       const block = blocks?.find((b: any) => b.id === a.capacity_block_id) || null;
-      const project = projects?.find((p: any) => p.id === block?.project_id) || null;
+      const baseProject = projects?.find((p: any) => p.id === block?.project_id) || null;
+      const ppa = baseProject ? ppaByProject.get(baseProject.id) : null;
+      const project = baseProject
+        ? {
+            ...baseProject,
+            ppa_document_path: ppa?.path || null,
+            ppa_document_uploaded_at: ppa?.uploaded_at || null,
+          }
+        : null;
       return {
         ...a,
         capacity_block: block ? { ...block, project } : null,

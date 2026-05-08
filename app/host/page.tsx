@@ -26,6 +26,7 @@ import { AlertsPanel } from "@/components/host/AlertsPanel";
 import { QuickActions } from "@/components/host/QuickActions";
 import { useDashboard } from "@/lib/utils/host/useDashboard";
 import { Card } from "@/components/ui/card";
+import { ProjectDocumentsCard } from "@/components/projects/ProjectDocumentsCard";
 
 
 // Register Chart.js components
@@ -128,6 +129,18 @@ export default function HostDashboard() {
 
       {/* Plant Overview */}
       <PlantOverviewCards plant={data.plant} />
+
+      {/* Project documents — host always sees their own PPA + insurance */}
+      {data.plant && (data.plant.documents?.ppaAvailable || data.plant.documents?.insuranceAvailable) && (
+        <ProjectDocumentsCard
+          projectId={data.plant.id}
+          projectName={data.plant.name}
+          ppaAvailable={Boolean(data.plant.documents?.ppaAvailable)}
+          ppaUploadedAt={data.plant.documents?.ppaUploadedAt || null}
+          insuranceAvailable={Boolean(data.plant.documents?.insuranceAvailable)}
+          insuranceUploadedAt={data.plant.documents?.insuranceUploadedAt || null}
+        />
+      )}
 
       {/* Charts Row 2: Hourly + Revenue */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

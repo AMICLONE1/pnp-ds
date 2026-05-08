@@ -1171,6 +1171,47 @@ export default function AdminProjectsPage() {
                                             />
                                         </div>
                                     </div>
+
+                                    <div className="mt-5 pt-5 border-t border-emerald-200/60 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                PPA Document
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                onChange={(e) =>
+                                                    setNewProject({
+                                                        ...newProject,
+                                                        ppa_document: e.target.files?.[0] || null,
+                                                    })
+                                                }
+                                                className="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gold/10 file:text-gold-dark hover:file:bg-gold/15"
+                                            />
+                                            <p className="mt-1 text-[11px] text-gray-500">
+                                                PDF or Word document, up to 10MB. Visible to host, subscribers, and prospective signups.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                                Plant Insurance
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                onChange={(e) =>
+                                                    setNewProject({
+                                                        ...newProject,
+                                                        insurance_document: e.target.files?.[0] || null,
+                                                    })
+                                                }
+                                                className="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gold/10 file:text-gold-dark hover:file:bg-gold/15"
+                                            />
+                                            <p className="mt-1 text-[11px] text-gray-500">
+                                                PDF or Word document, up to 10MB. Visible to host, subscribers, and prospective signups.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

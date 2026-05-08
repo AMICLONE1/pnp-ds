@@ -84,6 +84,7 @@ interface NewProject {
     host_contact_phone: string;
     host_password: string;
     ppa_document?: File | null;
+    insurance_document?: File | null;
 }
 
 const emptyNewProject: NewProject = {
@@ -103,6 +104,7 @@ const emptyNewProject: NewProject = {
     host_contact_phone: "",
     host_password: "",
     ppa_document: null,
+    insurance_document: null,
 };
 
 export function useProjects(){
@@ -299,17 +301,29 @@ export function useProjects(){
             return;
         }
 
-        // Validate PDF if provided
-        if (newProject.ppa_document) {
-            if (newProject.ppa_document.type !== "application/pdf") {
-                showToast("error", "PPA document must be a PDF file");
-                return;
+        // Allowed mime types for PPA + insurance docs (PDF or Word).
+        const ALLOWED_DOC_TYPES = [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ];
+        const MAX_DOC_BYTES = 10 * 1024 * 1024;
+
+        const validateDoc = (file: File | null | undefined, label: string): boolean => {
+            if (!file) return true;
+            if (!ALLOWED_DOC_TYPES.includes(file.type)) {
+                showToast("error", `${label} must be a PDF or Word document`);
+                return false;
             }
-            if (newProject.ppa_document.size > 10 * 1024 * 1024) {
-                showToast("error", "PPA document must be less than 10MB");
-                return;
+            if (file.size > MAX_DOC_BYTES) {
+                showToast("error", `${label} must be under 10MB`);
+                return false;
             }
-        }
+            return true;
+        };
+
+        if (!validateDoc(newProject.ppa_document, "PPA document")) return;
+        if (!validateDoc(newProject.insurance_document, "Plant insurance")) return;
 
         setActionLoading(true);
         try {
@@ -334,6 +348,9 @@ export function useProjects(){
             formData.append("host_password", newProject.host_password);
             if (newProject.ppa_document) {
                 formData.append("ppa_document", newProject.ppa_document);
+            }
+            if (newProject.insurance_document) {
+                formData.append("insurance_document", newProject.insurance_document);
             }
 
             const res = await fetch("/api/admin/projects", {
