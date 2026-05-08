@@ -153,7 +153,7 @@ export async function POST(request: Request) {
         customer_name: body.name.trim(),
       },
       order_meta: {
-        return_url: `${origin}/`,
+        return_url: origin,
         notify_url: `${origin}/api/payments/webhook`,
         payment_methods: buildAllowedPaymentMethods(),
         invoice_date: new Date().toISOString(),
