@@ -18,11 +18,14 @@ export function calculateAllocationPrice(capacityKw: number) {
   const subtotal = calculateSetupCost(capacityKw); // setup cost with bulk discount
 
   if (SMOKE_TEST_MODE) {
+    // Force ₹1 total for end-to-end production smoke testing. Subtotal in
+    // the breakdown still reflects the real setup cost so the UI doesn't
+    // look broken, but `total` is what /api/signup/init sends to Cashfree.
     return {
       subtotal,
       platformFee: 0,
       gst: 0,
-      total: subtotal,
+      total: 1,
     };
   }
 
