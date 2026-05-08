@@ -250,7 +250,7 @@ export async function POST(request: Request) {
         customer_name: (authResult.host as any)?.business_name || "Host",
       },
       order_meta: {
-        return_url: `${origin}/payment/return`,
+        return_url: `${origin}/`,
         notify_url: `${origin}/api/payments/webhook`,
         payment_methods: buildAllowedPaymentMethods(),
         invoice_date: new Date().toISOString(),
