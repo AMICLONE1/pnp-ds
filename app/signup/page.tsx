@@ -694,30 +694,30 @@ function Step3SolarPlan({
           <div className="relative bg-white rounded-2xl border-2 border-gray-200 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.08)] overflow-hidden">
             {/* Project header bar */}
             {data.selectedProject && (
-              <div className="bg-gradient-to-r from-gold/10 via-gold/5 to-transparent border-b border-gray-200 px-5 sm:px-7 py-5">
+              <div className="bg-gradient-to-r from-gold/10 via-gold/5 to-transparent border-b border-gray-200 px-4 sm:px-7 py-4 sm:py-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                    <Sun className="w-5 h-5 text-white" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shrink-0">
+                    <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <div>
-                    <p className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-black font-bold text-base sm:text-lg truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       {data.selectedProject.name}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] sm:text-xs text-gray-500">
                       <span className="text-gold font-semibold">{data.selectedProject.available_capacity_kw} kW Capacity</span>
-                      <span>•</span>
+                      <span className="hidden sm:inline">•</span>
                       <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{data.selectedProject.location}</span>
                     </div>
                   </div>
                 </div>
-                <p className="mt-2 text-sm font-semibold text-charcoal" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <p className="mt-2 text-xs sm:text-sm font-semibold text-charcoal" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                   1 unit of energy generated = ₹{data.selectedProject.rate_per_kwh || SOLAR_CONSTANTS.creditRatePerUnit} discount on your power bill
                 </p>
               </div>
             )}
 
             {/* Main 2-column layout */}
-            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 p-5 sm:p-7">
+            <div className="grid lg:grid-cols-2 gap-5 lg:gap-8 p-4 sm:p-7">
               {/* LEFT: Bill input + Savings slider */}
               <div className="space-y-6">
                 {/* Bill input */}
@@ -731,8 +731,8 @@ function Step3SolarPlan({
                       ? "border-gold bg-gold/5 shadow-[0_0_0_4px_rgba(255,184,0,0.1)]"
                       : "border-gray-200 bg-gray-50 hover:border-gray-300"
                   }`}>
-                    <div className="pl-4 pr-1 py-3 flex items-center">
-                      <span className="text-gold font-bold text-xl">₹</span>
+                    <div className="pl-3 sm:pl-4 pr-1 py-3 flex items-center">
+                      <span className="text-gold font-bold text-lg sm:text-xl">₹</span>
                     </div>
                     <input
                       type="text"
@@ -763,27 +763,49 @@ function Step3SolarPlan({
                         }
                       }}
                       placeholder="2500"
-                      className="flex-1 bg-transparent text-black font-bold text-2xl py-3 outline-none min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="flex-1 bg-transparent text-black font-bold text-xl sm:text-2xl py-3 outline-none min-w-0 w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     />
-                    <span className="pr-4 text-gray-400 text-xs font-medium">/month</span>
+                    <span className="pr-3 sm:pr-4 text-gray-400 text-[10px] sm:text-xs font-medium shrink-0">/month</span>
                   </div>
                 </div>
 
                 {/* Savings slider */}
                 <div>
-                  <label className="text-xs sm:text-sm text-gray-600 font-semibold mb-2 flex items-center gap-2" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    Choose Savings Range
-                    <span className="text-black font-bold">({data.savingsPercent}%)</span>
+                  <label className="text-xs sm:text-sm text-gray-600 font-semibold mb-3 flex items-center justify-between gap-2" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                    <span className="flex items-center gap-2">
+                      Choose Savings Range
+                    </span>
+                    <span className="inline-flex items-baseline gap-0.5 px-2.5 py-1 rounded-lg bg-gradient-to-br from-gold/15 to-amber-100/60 border border-gold/30 text-black font-bold text-xs sm:text-sm tabular-nums shadow-sm">
+                      {data.savingsPercent}<span className="text-gold text-[10px] sm:text-xs">%</span>
+                    </span>
                   </label>
-                  <div className="relative pt-1 pb-2">
-                    <div className="relative h-3 bg-gray-200 rounded-full overflow-visible">
+                  <div className="relative pt-2 pb-3 group">
+                    {/* Track */}
+                    <div className="relative h-2.5 rounded-full bg-gradient-to-b from-gray-200/90 to-gray-100 shadow-[inset_0_1px_2px_rgba(0,0,0,0.08)] ring-1 ring-black/5 overflow-hidden">
+                      {/* Fill */}
                       <motion.div
-                        className="h-full bg-gold rounded-full"
+                        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-amber-500 via-gold to-amber-300 shadow-[0_0_12px_rgba(255,184,0,0.45)]"
                         animate={{ width: `${((data.savingsPercent - 10) / 90) * 100}%` }}
-                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                      />
+                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        {/* Glossy highlight */}
+                        <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-full bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+                      </motion.div>
                     </div>
+
+                    {/* Custom thumb (visual) */}
+                    <motion.div
+                      className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20"
+                      animate={{ left: `${((data.savingsPercent - 10) / 90) * 100}%` }}
+                      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <div className="relative w-6 h-6 rounded-full bg-white shadow-[0_4px_12px_rgba(0,0,0,0.18),0_0_0_1px_rgba(0,0,0,0.04)] ring-2 ring-gold transition-transform duration-150 group-hover:scale-110 group-active:scale-95">
+                        <div className="absolute inset-1 rounded-full bg-gradient-to-br from-gold to-amber-500 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]" />
+                      </div>
+                    </motion.div>
+
+                    {/* Native range — invisible, drives the value */}
                     <input
                       type="range"
                       min="10"
@@ -791,19 +813,17 @@ function Step3SolarPlan({
                       step="5"
                       value={data.savingsPercent}
                       onChange={(e) => onChange({ savingsPercent: Number(e.target.value) })}
-                      className="absolute top-0 w-full h-5 bg-transparent appearance-none cursor-pointer z-10
-                        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
-                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gold [&::-webkit-slider-thumb]:border-[3px]
-                        [&::-webkit-slider-thumb]:border-gold [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer
-                        [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform
-                        [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5
-                        [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-gold [&::-moz-range-thumb]:border-[3px]
-                        [&::-moz-range-thumb]:border-gold [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:shadow-md"
-                      style={{ background: "transparent", height: "12px", margin: 0, padding: 0 }}
+                      aria-label="Savings range"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30
+                        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:cursor-pointer
+                        [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-transparent [&::-moz-range-thumb]:cursor-pointer"
                     />
                   </div>
-                  <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                  <div className="flex justify-between text-[10px] font-medium text-gray-400 mt-1.5 tracking-wide">
                     <span>10%</span>
+                    <span className="text-gray-300">25%</span>
+                    <span className="text-gray-300">50%</span>
+                    <span className="text-gray-300">75%</span>
                     <span>100%</span>
                   </div>
                 </div>
@@ -837,10 +857,10 @@ function Step3SolarPlan({
               {/* RIGHT: Results panel */}
               <div className="space-y-3">
                 {/* Monthly savings highlight */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-gold/10 via-amber-50/50 to-gold/5 border-2 border-gold/30 shadow-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Zap className="w-5 h-5 text-gold" />
-                    <span className="text-gray-700 text-xs font-semibold uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <div className="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-gold/10 via-amber-50/50 to-gold/5 border-2 border-gold/30 shadow-lg">
+                  <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-gold shrink-0" />
+                    <span className="text-gray-700 text-[10px] sm:text-xs font-semibold uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       Your monthly savings
                     </span>
                   </div>
@@ -849,7 +869,7 @@ function Step3SolarPlan({
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 200 }}
-                    className="block text-3xl sm:text-4xl font-bold bg-gradient-to-r from-gold via-amber-500 to-gold bg-clip-text text-transparent"
+                    className="block text-2xl sm:text-4xl font-bold bg-gradient-to-r from-gold via-amber-500 to-gold bg-clip-text text-transparent"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
                     {fmt(monthlySavings)}
@@ -857,44 +877,44 @@ function Step3SolarPlan({
                 </div>
 
                 {/* Stats grid */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div className="p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
-                    <p className="text-gray-500 text-[10px] font-medium uppercase tracking-wide">Reserved Solar</p>
-                    <p className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="min-w-0 p-2.5 sm:p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
+                    <p className="text-gray-500 text-[9px] sm:text-[10px] font-medium uppercase tracking-wide truncate">Reserved Solar</p>
+                    <p className="text-black font-bold text-base sm:text-lg truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       {reservedWatts} W
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
-                    <p className="text-gray-500 text-[10px] font-medium uppercase tracking-wide">Energy /Month</p>
-                    <p className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <div className="min-w-0 p-2.5 sm:p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
+                    <p className="text-gray-500 text-[9px] sm:text-[10px] font-medium uppercase tracking-wide truncate">Energy /Month</p>
+                    <p className="text-black font-bold text-base sm:text-lg truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       {energyProduced.toFixed(1)} kWh
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
-                    <p className="text-gray-500 text-[10px] font-medium uppercase tracking-wide">Annual Savings</p>
-                    <p className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <div className="min-w-0 p-2.5 sm:p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
+                    <p className="text-gray-500 text-[9px] sm:text-[10px] font-medium uppercase tracking-wide truncate">Annual Savings</p>
+                    <p className="text-black font-bold text-base sm:text-lg truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       {fmt(annualSavings)}
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
-                    <p className="text-gray-500 text-[10px] font-medium uppercase tracking-wide">15 Year Savings</p>
-                    <p className="text-black font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <div className="min-w-0 p-2.5 sm:p-3 rounded-xl bg-white border border-gray-200 shadow-sm">
+                    <p className="text-gray-500 text-[9px] sm:text-[10px] font-medium uppercase tracking-wide truncate">15 Year Savings</p>
+                    <p className="text-black font-bold text-base sm:text-lg truncate" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       {fmt(fifteenYearSavings)}
                     </p>
                   </div>
                 </div>
 
                 {/* Reservation fee */}
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-gold/10 to-amber-50 border-2 border-gold/30">
-                  <div className="flex items-center justify-between">
-                    <p className="text-black font-bold text-sm" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-gold/10 to-amber-50 border-2 border-gold/30">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-black font-bold text-xs sm:text-sm min-w-0" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                       One-time Reservation Fee
                     </p>
                     <motion.p
                       key={setupCost}
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-gold font-bold text-xl"
+                      className="text-gold font-bold text-lg sm:text-xl whitespace-nowrap"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       {fmt(setupCost)}
