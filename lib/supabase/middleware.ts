@@ -118,13 +118,15 @@ export async function updateSession(request: NextRequest) {
     "/host-landing",
     "/reserve",
     "/about",
-    "/refund"
+    "/refund",
+    "/payment/return"
   ];
   const isPublicPath =
     publicPaths.includes(request.nextUrl.pathname) ||
     request.nextUrl.pathname.startsWith("/reserve") ||
     request.nextUrl.pathname.startsWith("/blog") ||
     request.nextUrl.pathname.startsWith("/api") ||
+    request.nextUrl.pathname.startsWith("/payment/") ||
     request.nextUrl.pathname.startsWith("/_next");
 
   if (!user && !isPublicPath) {
