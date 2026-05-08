@@ -11,8 +11,21 @@ import { SOLAR_CONSTANTS, calculateSetupCost } from "@/lib/solar-constants";
  * Always re-compute this on the server in /api/payments/create-order — never
  * trust an amount sent from the client.
  */
+// TEMPORARY: smoke-test mode. Set to false to restore production pricing.
+const SMOKE_TEST_MODE = true;
+
 export function calculateAllocationPrice(capacityKw: number) {
   const subtotal = calculateSetupCost(capacityKw); // setup cost with bulk discount
+
+  if (SMOKE_TEST_MODE) {
+    return {
+      subtotal,
+      platformFee: 0,
+      gst: 0,
+      total: subtotal,
+    };
+  }
+
   const platformFee = SOLAR_CONSTANTS.platformFee;
   const preGst = subtotal + platformFee;
   const gst = Math.round(preGst * SOLAR_CONSTANTS.gstRate);
