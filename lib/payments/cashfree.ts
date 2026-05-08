@@ -146,10 +146,9 @@ export function createCashfreeOrder(payload: CashfreeOrderRequest) {
       invoice_name: payload.order_note || invoiceNumber,
       // Cashfree's "Invoice details required" flag enforces a `gst` field
       // (GST amount, not GSTIN). order_tags values must be strings, but
-      // Cashfree validates this as a number — and rejects zero. Compute a
-      // notional 18% portion of the order amount as a placeholder until real
-      // GST is wired in per-merchant.
-      gst: (Math.round(payload.order_amount * 18) / 118).toFixed(2),
+      // Cashfree validates this as a number — and rejects zero or values
+      // under ~₹1. Compute a notional 18% slice and floor it at ₹1.
+      gst: Math.max(1, Math.round((payload.order_amount * 18) / 118 * 100) / 100).toFixed(2),
       // Syntactically-valid placeholder GSTIN (15 chars: 2-digit state + 10
       // PAN + 1 entity + Z + 1 check). Replace with the merchant's real
       // GSTIN once we collect it during host onboarding.
