@@ -4,8 +4,8 @@ import { checkRateLimit } from "@/lib/security/rateLimiter";
 import { createServerClient } from "@supabase/ssr";
 
 // Waitlist mode - redirect auth pages to waitlist
-const WAITLIST_MODE = false;
-const WAITLIST_REDIRECT_PATHS = ["/signup"];
+const WAITLIST_MODE = true;
+const WAITLIST_REDIRECT_PATHS = ["/signup", "/reserve"];
 
 // Routes that require HOST role
 const HOST_ROUTES = ["/host"];
@@ -88,8 +88,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Waitlist mode: redirect auth/protected pages to waitlist
-  if (WAITLIST_MODE && WAITLIST_REDIRECT_PATHS.includes(pathname)) {
+  // Waitlist mode: redirect auth/protected pages to waitlist. Match exact
+  // paths or any nested route (e.g. /reserve/payment) under a redirect root.
+  if (
+    WAITLIST_MODE &&
+    WAITLIST_REDIRECT_PATHS.some(
+      (p) => pathname === p || pathname.startsWith(p + "/")
+    )
+  ) {
     return NextResponse.redirect(new URL("/waitlist", request.url));
   }
 

@@ -11,24 +11,8 @@ import { SOLAR_CONSTANTS, calculateSetupCost } from "@/lib/solar-constants";
  * Always re-compute this on the server in /api/payments/create-order — never
  * trust an amount sent from the client.
  */
-// TEMPORARY: smoke-test mode. Set to false to restore production pricing.
-const SMOKE_TEST_MODE = true;
-
 export function calculateAllocationPrice(capacityKw: number) {
   const subtotal = calculateSetupCost(capacityKw); // setup cost with bulk discount
-
-  if (SMOKE_TEST_MODE) {
-    // Force ₹10 total for end-to-end production smoke testing. ₹1 was too
-    // small for Cashfree's gst tag validator (which floors at ₹1, leaving
-    // no room under the order amount). ₹10 keeps the test cheap while
-    // satisfying the validator.
-    return {
-      subtotal,
-      platformFee: 0,
-      gst: 0,
-      total: 10,
-    };
-  }
 
   const platformFee = SOLAR_CONSTANTS.platformFee;
   const preGst = subtotal + platformFee;
