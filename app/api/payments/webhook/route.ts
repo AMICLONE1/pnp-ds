@@ -7,7 +7,7 @@ import { ensureHostInvoiceForPayment } from "@/lib/host/ensureInvoice";
  * Cashfree webhook receiver for driver/user payments.
  *
  * Cashfree POSTs JSON with headers:
- *  - x-webhook-timestamp
+ *  - x-webhook-timestamp  (Unix epoch seconds)
  *  - x-webhook-signature  (HMAC-SHA256(timestamp + rawBody) base64)
  *
  * The body MUST be read as raw text (not JSON-parsed) for signature
@@ -17,6 +17,22 @@ import { ensureHostInvoiceForPayment } from "@/lib/host/ensureInvoice";
  * for fast UX, but this webhook reconciles the record even if the client
  * never calls back (closed tab, network failure, etc.).
  */
+
+// Reject webhooks where the signature timestamp is more than 5 minutes off
+// from now — guards against replay of captured webhook traffic.
+const MAX_WEBHOOK_SKEW_SECONDS = 300;
+
+// Only accept event types we actually handle. Any other type is rejected
+// up-front so a leaked secret can't be used to drive unexpected branches.
+const ACCEPTED_EVENT_TYPES = new Set([
+  "PAYMENT_SUCCESS_WEBHOOK",
+  "PAYMENT_FAILED_WEBHOOK",
+  "PAYMENT_USER_DROPPED_WEBHOOK",
+  "REFUND_STATUS_WEBHOOK",
+  "REFUND_SUCCESS_WEBHOOK",
+  "REFUND_FAILED_WEBHOOK",
+]);
+
 export async function POST(request: Request) {
   try {
     const rawBody = await request.text();
@@ -30,6 +46,19 @@ export async function POST(request: Request) {
       );
     }
 
+    // Recency check: stop replays of captured webhook payloads.
+    const tsSeconds = Number(timestamp);
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    if (
+      !Number.isFinite(tsSeconds) ||
+      Math.abs(nowSeconds - tsSeconds) > MAX_WEBHOOK_SKEW_SECONDS
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Webhook timestamp out of range" },
+        { status: 401 }
+      );
+    }
+
     if (!verifyCashfreeWebhook(rawBody, timestamp, signature)) {
       return NextResponse.json(
         { success: false, error: "Invalid signature" },
@@ -38,7 +67,12 @@ export async function POST(request: Request) {
     }
 
     const event = JSON.parse(rawBody);
-    const eventType: string = event?.type || event?.data?.payment?.payment_status || "";
+    const eventType: string = event?.type || "";
+    if (!ACCEPTED_EVENT_TYPES.has(eventType)) {
+      return NextResponse.json(
+        { success: true, ignored: true, reason: "unsupported_event_type" }
+      );
+    }
     const payload = event?.data || {};
     const orderId: string | undefined = payload?.order?.order_id;
     const cfPayment = payload?.payment;
@@ -46,7 +80,7 @@ export async function POST(request: Request) {
 
     if (!orderId) {
       // Non-payment event (e.g., REFUND_*) is handled separately further down.
-      if (event?.type?.startsWith("REFUND_")) {
+      if (eventType.startsWith("REFUND_")) {
         return handleRefundEvent(event);
       }
       return NextResponse.json({ success: true, ignored: true });

@@ -105,11 +105,21 @@ async function cashfreeFetch<T>(
   if (!res.ok) {
     const message = json?.message || json?.error_description || `Cashfree API error (${res.status})`;
     const code = json?.code || `HTTP_${res.status}`;
+    // Log only what we need to diagnose — never the request body. The body
+    // contains customer phone, email, name, GSTIN and other PII that must
+    // not end up in Vercel runtime logs.
+    const sentBodyShape =
+      init.body && typeof init.body === "object"
+        ? Object.keys(init.body as Record<string, unknown>)
+        : undefined;
     console.error("[Cashfree] request failed", {
       path,
       status: res.status,
-      sentBody: init.body,
-      response: json,
+      code,
+      message,
+      sentBodyKeys: sentBodyShape,
+      response_code: json?.code,
+      response_type: json?.type,
     });
     const err = new Error(message) as Error & { code?: string; status?: number; raw?: any };
     err.code = code;
@@ -149,10 +159,10 @@ export function createCashfreeOrder(payload: CashfreeOrderRequest) {
       // Cashfree validates this as a number — and rejects zero or values
       // under ~₹1. Compute a notional 18% slice and floor it at ₹1.
       gst: Math.max(1, Math.round((payload.order_amount * 18) / 118 * 100) / 100).toFixed(2),
-      // Syntactically-valid placeholder GSTIN (15 chars: 2-digit state + 10
-      // PAN + 1 entity + Z + 1 check). Replace with the merchant's real
-      // GSTIN once we collect it during host onboarding.
-      gstin: "27AAAAA0000A1Z5",
+      // GSTIN is sourced from CASHFREE_GSTIN env var. In production this
+      // is required; locally we fall back to a syntactically-valid
+      // placeholder via getCashfreeGstin().
+      gstin: getCashfreeGstin(),
     },
   };
 
@@ -241,4 +251,21 @@ export function buildAllowedPaymentMethods() {
   // Server controls which methods are offered at checkout. Wallets/pay-later are
   // intentionally excluded per current product decision.
   return "cc,dc,upi,nb";
+}
+
+// Syntactically-valid placeholder GSTIN used only in non-production. In
+// production, CASHFREE_GSTIN must be set to the merchant's real registered
+// GSTIN — we fail closed if it is missing so we never ship test data into
+// real Cashfree orders.
+const PLACEHOLDER_GSTIN = "27AAAAA0000A1Z5";
+
+export function getCashfreeGstin(): string {
+  const fromEnv = (process.env.CASHFREE_GSTIN || "").trim();
+  if (fromEnv) return fromEnv;
+  if (process.env.NEXT_PUBLIC_CASHFREE_MODE === "production") {
+    throw new Error(
+      "CASHFREE_GSTIN env var is required in production. Set it to the merchant's registered GSTIN."
+    );
+  }
+  return PLACEHOLDER_GSTIN;
 }

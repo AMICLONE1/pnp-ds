@@ -68,6 +68,16 @@ export async function GET(
       );
     }
 
+    // Defence in depth: refuse any path containing traversal segments.
+    // Upload helper already strips these, but we double-check here in case
+    // a row was hand-written into the database.
+    if (storagePath.includes("..") || storagePath.startsWith("/")) {
+      return NextResponse.json(
+        { success: false, error: "Invalid document path" },
+        { status: 400 }
+      );
+    }
+
     // Pick the correct bucket and stream the file.
     const bucket = bucketForKind(kind);
     const { data: blob, error: downloadErr } = await admin.storage
@@ -81,14 +91,22 @@ export async function GET(
       );
     }
 
-    extension = (storagePath.split(".").pop() || "pdf").toLowerCase();
+    // Whitelist extensions — anything else gets octet-stream + forced
+    // attachment so a tampered storage path can't trigger inline rendering
+    // of arbitrary content.
+    const rawExt = (storagePath.split(".").pop() || "").toLowerCase();
+    const ALLOWED_EXTS = ["pdf", "doc", "docx"] as const;
+    extension = (ALLOWED_EXTS as readonly string[]).includes(rawExt) ? rawExt : "bin";
 
     // Generate a clean filename: "<Project-Name>-<KIND>.<ext>"
     const projectSlug = String(project.name)
       .replace(/[^A-Za-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
     const kindLabel = kind === "ppa" ? "PPA" : "Insurance";
-    const filename = `${projectSlug}-${kindLabel}.${extension}`;
+    const filenameAscii = `${projectSlug}-${kindLabel}.${extension}`;
+    // RFC 5987 percent-encoding so any future Unicode in project names is
+    // safe in the header. Strips quotes and CR/LF defensively.
+    const filenameUtf8 = encodeURIComponent(filenameAscii).replace(/['()]/g, escape);
 
     const contentType =
       extension === "pdf"
@@ -99,17 +117,19 @@ export async function GET(
         ? "application/msword"
         : "application/octet-stream";
 
+    // Force attachment disposition for everything that isn't a known PDF.
+    // This stops any tampered-path scenario where HTML/SVG could be served
+    // inline under our origin and execute scripts in the user's browser.
+    const disposition = extension === "pdf" ? "inline" : "attachment";
+
     const arrayBuffer = await blob.arrayBuffer();
 
     return new NextResponse(Buffer.from(arrayBuffer) as unknown as BodyInit, {
       status: 200,
       headers: {
         "Content-Type": contentType,
-        // PDFs render inline in the browser; Word docs always download.
-        "Content-Disposition":
-          extension === "pdf"
-            ? `inline; filename="${filename}"`
-            : `attachment; filename="${filename}"`,
+        "X-Content-Type-Options": "nosniff",
+        "Content-Disposition": `${disposition}; filename="${filenameAscii}"; filename*=UTF-8''${filenameUtf8}`,
         "Cache-Control": "public, max-age=300",
       },
     });

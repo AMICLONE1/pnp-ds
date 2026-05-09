@@ -17,6 +17,12 @@ const ALLOWED_KINDS: ProjectDocumentKind[] = ["ppa", "insurance"];
  *   kind     — "ppa" | "insurance"
  *   file     — PDF or Word doc, ≤10 MB
  *
+ * Authorization model:
+ *   Any authenticated user with users.role = 'ADMIN' can upload/replace
+ *   documents for any project. We do not subdivide admins by tenant or
+ *   project — if you introduce role tiers (e.g. "host-relations admin"),
+ *   add scoping here.
+ *
  * Replaces the existing file if one is already attached, deletes the old
  * storage object, and writes an audit_log row noting which admin replaced
  * what.
@@ -55,12 +61,12 @@ export async function POST(
     const { data: project } = await admin
       .from("projects")
       .select(
-        "id, spv_id, host_id, insurance_document_path, insurance_uploaded_at"
+        "id, spv_id, host_id, insurance_document_path, insurance_uploaded_at, deleted_at"
       )
       .eq("id", projectId)
       .maybeSingle();
 
-    if (!project) {
+    if (!project || project.deleted_at) {
       return NextResponse.json(
         { success: false, error: "Project not found" },
         { status: 404 }

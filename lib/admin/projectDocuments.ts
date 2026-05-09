@@ -23,6 +23,17 @@ function bucketFor(kind: ProjectDocumentKind) {
   return kind === "ppa" ? PPA_BUCKET : INSURANCE_BUCKET;
 }
 
+// Path segments must contain ONLY safe characters. Anything outside this
+// set is stripped, which makes it impossible to introduce `..`, `/`, or
+// other traversal sequences via the `spv_id` field. UUIDs already match
+// this set so hostId is unaffected.
+const SAFE_SEGMENT_RE = /[^A-Za-z0-9_.-]/g;
+
+function safeSegment(value: string, fallback: string) {
+  const cleaned = String(value || "").replace(SAFE_SEGMENT_RE, "");
+  return cleaned || fallback;
+}
+
 function pathFor(
   kind: ProjectDocumentKind,
   hostId: string,
@@ -33,7 +44,9 @@ function pathFor(
   // replace without affecting other plants. Filename includes a timestamp so
   // signed-URL caches don't return a stale doc after a replace.
   const folder = kind === "ppa" ? "ppa-documents" : "insurance-documents";
-  return `${folder}/${hostId}/${spvId}/${Date.now()}.${ext}`;
+  const safeHost = safeSegment(hostId, "unknown-host");
+  const safeSpv = safeSegment(spvId, "unknown-spv");
+  return `${folder}/${safeHost}/${safeSpv}/${Date.now()}.${ext}`;
 }
 
 export type UploadOptions = {
@@ -68,6 +81,12 @@ export async function uploadProjectDocument(
   const ext = EXTENSION_BY_MIME[file.type];
   const buffer = await file.arrayBuffer();
   const path = pathFor(kind, hostId, spvId, ext);
+
+  // Final guard — should never trigger because pathFor sanitizes inputs,
+  // but if anyone refactors safeSegment loosely we want this to fail loud.
+  if (path.includes("..") || path.startsWith("/")) {
+    throw new Error("Refusing to upload to suspicious path");
+  }
 
   const { error } = await adminClient.storage
     .from(bucketFor(kind))
