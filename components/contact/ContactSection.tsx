@@ -162,7 +162,11 @@ export default function ContactSection(){
                             <p className="text-green-700">We&apos;ve sent your message to {SUPPORT_EMAIL} and will get back to you soon.</p>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form
+                                method="post"
+                                onSubmit={handleSubmit}
+                                className="space-y-4"
+                            >
                             <Input
                                 type="text"
                                 name="name"
