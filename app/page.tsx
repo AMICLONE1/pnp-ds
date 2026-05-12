@@ -40,61 +40,13 @@ import {
 import { faqData } from "../lib/utils/data"
 import { Testimonials } from "@/components/ui/Testimonials";
 import { BlogSection } from "@/components/features/landing/BlogSection";
+import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqData.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-};
-
-// Product schema for the subscriber-facing digital solar reservation. Prices
-// in lib/contact.ts are the source of truth; keep this in sync if those
-// constants change. Eligible for Google's product rich result.
-const productJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Digital Solar Reservation",
-  description:
-    "Reserve solar capacity from a community solar project. Credits are applied directly to your electricity bill. No installation, no rooftop required.",
-  brand: {
-    "@type": "Brand",
-    name: "PowerNetPro",
-  },
-  category: "Renewable Energy / Solar",
-  offers: {
-    "@type": "Offer",
-    priceCurrency: "INR",
-    price: "50000",
-    priceSpecification: {
-      "@type": "UnitPriceSpecification",
-      priceCurrency: "INR",
-      price: "50000",
-      unitText: "kW reserved capacity",
-    },
-    availability: "https://schema.org/PreOrder",
-    areaServed: "IN",
-  },
-};
 
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-      />
+      <HomeJsonLd />
       {/* Smooth Scroll Progress Indicator */}
       <SmoothScrollProgress />
 
