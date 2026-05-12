@@ -63,7 +63,10 @@ const nextConfig = {
       "frame-src 'self' https://*.cashfree.com https://*.cashfree.net",
       "object-src 'none'",
       "base-uri 'self'",
-      "form-action 'self'",
+      // Cashfree's Drop-in checkout posts a form to its hosted session URL
+      // (sandbox.cashfree.com / payments.cashfree.com). 'self' alone would
+      // block this and the payment silently fails in the browser console.
+      "form-action 'self' https://*.cashfree.com https://*.cashfree.net",
       "frame-ancestors 'none'",
       "upgrade-insecure-requests",
     ].join("; ");
