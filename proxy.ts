@@ -4,7 +4,7 @@ import { checkRateLimit } from "@/lib/security/rateLimiter";
 import { createServerClient } from "@supabase/ssr";
 
 // Waitlist mode - redirect auth pages to waitlist
-const WAITLIST_MODE = false;
+const WAITLIST_MODE = true;
 const WAITLIST_REDIRECT_PATHS = ["/signup", "/reserve"];
 
 // Routes that require HOST role
