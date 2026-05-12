@@ -1,6 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=TASA+Explorer:wght@400..800&display=swap');
+/*
+ * Fonts: Inter, Space Grotesk, Oswald, and Open Sans are loaded via
+ * next/font/google in app/layout.tsx — they self-host, preload, and avoid
+ * render-blocking CSS. Montserrat is still referenced inline by some
+ * components; if any LCP-critical surface depends on it, migrate it the
+ * same way. Do NOT add @import url(https://fonts.googleapis.com/...) here —
+ * it blocks first paint and tanks LCP on the homepage.
+ */
 
 /* Custom cursor styles for brand experience */
 .cursor-gold {
@@ -13,6 +18,159 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Blog post visual scaffolding. The content field is rendered via
+ * dangerouslySetInnerHTML, so React components inside it aren't an option —
+ * these classes give the same visual output via plain HTML. Scope everything
+ * under .blog-content so the rules can't leak into the rest of the site.
+ *
+ * Authoring shape inside blog content HTML:
+ *   <aside class="blog-callout blog-callout--tip">
+ *     <span class="blog-callout__label">DID YOU KNOW</span>
+ *     <p>...body...</p>
+ *   </aside>
+ *
+ *   <div class="blog-table">
+ *     <table>...standard table HTML...</table>
+ *   </div>
+ *
+ *   <figure class="blog-image">
+ *     <img src="..." alt="..." />
+ *     <figcaption>Optional caption</figcaption>
+ *   </figure>
+ *
+ *   <a class="blog-cta" href="/host-landing">Become a host →</a>
+ */
+.blog-content .blog-callout {
+  display: block;
+  position: relative;
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid;
+  font-size: 0.975rem;
+  line-height: 1.65;
+}
+.blog-content .blog-callout > * + * {
+  margin-top: 0.5rem;
+}
+.blog-content .blog-callout p {
+  margin: 0;
+}
+.blog-content .blog-callout__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.blog-content .blog-callout--tip {
+  background: #fffaf0;
+  border-color: #f5d899;
+}
+.blog-content .blog-callout--tip .blog-callout__label {
+  color: #b67d10;
+}
+.blog-content .blog-callout--info {
+  background: #f0f7ff;
+  border-color: #bfdbfe;
+}
+.blog-content .blog-callout--info .blog-callout__label {
+  color: #1d4ed8;
+}
+.blog-content .blog-callout--bottomline {
+  background: #fdf6e3;
+  border-color: #ecd28a;
+  border-left-width: 4px;
+}
+.blog-content .blog-callout--bottomline .blog-callout__label {
+  color: #b08400;
+}
+
+.blog-content .blog-table {
+  margin: 2rem 0;
+  overflow-x: auto;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+.blog-content .blog-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.blog-content .blog-table thead {
+  background: linear-gradient(135deg, #14532d, #166534);
+}
+.blog-content .blog-table thead th {
+  color: #ffffff;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #15803d;
+}
+.blog-content .blog-table tbody td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1f2937;
+  vertical-align: top;
+}
+.blog-content .blog-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+.blog-content .blog-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.blog-content .blog-image {
+  margin: 2.5rem 0;
+  display: block;
+}
+.blog-content .blog-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  display: block;
+}
+.blog-content .blog-image figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.blog-content .blog-cta {
+  display: block;
+  margin: 3rem 0 1rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #14532d, #0f4023);
+  color: #ffffff !important;
+  border-radius: 1.25rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none !important;
+  transition: transform 200ms ease;
+}
+.blog-content .blog-cta:hover {
+  transform: translateY(-2px);
+}
+.blog-content .blog-cta strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+.blog-content .blog-cta__sub {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
 
 @layer base {
   * {

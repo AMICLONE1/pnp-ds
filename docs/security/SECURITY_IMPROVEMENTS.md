@@ -242,8 +242,8 @@ If you suspect a security issue:
 ---
 
 ## ✅ Current Security Status
-
-**Overall:** 🟢 Good foundation, improvements in progress
+IMprovements hshould be made in the security checklist 
+**Overall:** 🟢 Good foundation, improvements in progress as we are 
 
 **Strengths:**
 - ✅ RLS enabled

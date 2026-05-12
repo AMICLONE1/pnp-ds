@@ -288,7 +288,7 @@ export function HeroSection() {
               style={{ fontFamily: "'Oswald', sans-serif", boxShadow: '0 6px 32px 0 rgba(255,184,0,0.10)' }}
             >
               <motion.span
-                initial={{ y: 60, opacity: 0 }}
+                initial={{ y: 60 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="text-black"
@@ -296,7 +296,7 @@ export function HeroSection() {
                 What if your electricity bill was ₹0 ? 
               </motion.span>
               <motion.span
-                initial={{ y: 60, opacity: 0 }}
+                initial={{ y: 60 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="text-black"
@@ -306,7 +306,7 @@ export function HeroSection() {
               {/* hello */}
               {/* Hii */}
               <motion.span
-                initial={{ y: 60, opacity: 0 }}
+                initial={{ y: 60 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 className="inline-block"
@@ -314,7 +314,7 @@ export function HeroSection() {
                 <ShimmeringText text="Full Price" className="font-bold" />
               </motion.span>
               <motion.span
-                initial={{ y: 60, opacity: 0 }}
+                initial={{ y: 60 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="text-black"

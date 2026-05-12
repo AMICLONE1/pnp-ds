@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import Link from "next/link";
 import { blogData } from "@/lib/utils/data";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -10,6 +12,54 @@ import {
     KeyTakeaways,
 } from "@/components/features/blog/BlogComponents";
 import { normalizeBlogHtml } from "@/lib/utils/blog-format";
+import { buildMetadata, SITE_URL, SITE_LEGAL_NAME } from "@/lib/seo";
+
+// Refresh statically-rendered blog detail every hour so updated content
+// reaches search engines without a redeploy. Pure SEO move — actual content
+// edits still require a code change because blog data lives in source.
+export const revalidate = 3600;
+
+/**
+ * Pick up to `limit` related posts: same category first (excluding the
+ * current post), then fill from other recent posts. This is a pure SEO
+ * play — Google ranks pages with strong inbound internal links higher,
+ * and "Continue reading" sections keep readers on-site (reducing pogo).
+ */
+function getRelatedPosts(currentSlug: string, currentCategory: string, limit = 3) {
+    const others = (blogData as any[]).filter((p) => p.slug !== currentSlug);
+    const sameCategory = others.filter((p) => p.category === currentCategory);
+    const rest = others.filter((p) => p.category !== currentCategory);
+    return [...sameCategory, ...rest].slice(0, limit);
+}
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+    const { slug } = await params;
+    const post = (blogData as any[]).find((p) => p.slug === slug);
+
+    if (!post) {
+        return {
+            title: "Article not found",
+            robots: { index: false, follow: false },
+        };
+    }
+
+    const description = String(post.description || post.excerpt || "")
+        .replace(/\s+/g, " ")
+        .slice(0, 200);
+
+    return buildMetadata({
+        title: post.title,
+        description,
+        path: `/blog/${post.slug}`,
+        image: post.image,
+        type: "article",
+        publishedTime: post.date,
+        authors: [post.author?.name || "PowerNetPro Team"],
+        keywords: [post.category, "digital solar", "PowerNetPro blog"].filter(Boolean),
+    });
+}
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -21,9 +71,72 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
     const hasToc = Boolean(post.toc?.length);
     const contentHtml = normalizeBlogHtml(post.content);
+    const relatedPosts = getRelatedPosts(post.slug, post.category, 3);
+
+    const articleUrl = `${SITE_URL}/blog/${post.slug}`;
+    const articleJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: post.title,
+        description: post.description || post.excerpt,
+        image: post.image,
+        datePublished: post.date,
+        dateModified: post.date,
+        author: {
+            "@type": "Organization",
+            name: post.author?.name || "PowerNetPro Team",
+        },
+        publisher: {
+            "@type": "Organization",
+            name: SITE_LEGAL_NAME,
+            logo: {
+                "@type": "ImageObject",
+                url: `${SITE_URL}/icon.svg`,
+            },
+        },
+        mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": articleUrl,
+        },
+        articleSection: post.category,
+        inLanguage: "en-IN",
+    };
+
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: SITE_URL,
+            },
+            {
+                "@type": "ListItem",
+                position: 2,
+                name: "Blog",
+                item: `${SITE_URL}/blog`,
+            },
+            {
+                "@type": "ListItem",
+                position: 3,
+                name: post.title,
+                item: articleUrl,
+            },
+        ],
+    };
 
     return (
         <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,_rgba(255,184,0,0.08),_transparent_30%),linear-gradient(180deg,#ffffff_0%,#fbfaf6_100%)]">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
             <LandingHeader />
 
             <main className="flex-1 pt-28 pb-20 sm:pt-32 sm:pb-24">
@@ -94,6 +207,44 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             </div>
                         </article>
                     </div>
+
+                    {relatedPosts.length > 0 && (
+                        <aside className="mt-16">
+                            <h2 className="mb-6 text-2xl font-heading font-bold text-black sm:text-3xl">
+                                Continue reading
+                            </h2>
+                            <div className="grid gap-6 md:grid-cols-3">
+                                {relatedPosts.map((related: any) => (
+                                    <Link
+                                        key={related.slug}
+                                        href={`/blog/${related.slug}`}
+                                        className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:shadow-lg"
+                                    >
+                                        <div className="relative aspect-[16/9] overflow-hidden">
+                                            <Image
+                                                src={related.image}
+                                                alt={related.title}
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, 33vw"
+                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                        </div>
+                                        <div className="p-5">
+                                            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-dark">
+                                                {related.category}
+                                            </span>
+                                            <h3 className="mt-2 line-clamp-2 text-lg font-heading font-bold text-black transition-colors group-hover:text-gold-dark">
+                                                {related.title}
+                                            </h3>
+                                            <p className="mt-2 line-clamp-2 text-sm text-gray-600">
+                                                {related.excerpt}
+                                            </p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </aside>
+                    )}
                 </div>
             </main>
 

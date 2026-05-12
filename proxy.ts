@@ -88,6 +88,16 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // SEO: collapse mixed-case URLs to lowercase via 301. Two distinct URLs
+  // (/About and /about) would otherwise split link equity. API routes are
+  // exempt — some external callers may already be hitting them with case
+  // we don't control.
+  if (!pathname.startsWith("/api/") && pathname !== pathname.toLowerCase()) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.toLowerCase();
+    return NextResponse.redirect(url, 301);
+  }
+
   // Waitlist mode: redirect auth/protected pages to waitlist. Match exact
   // paths or any nested route (e.g. /reserve/payment) under a redirect root.
   if (
